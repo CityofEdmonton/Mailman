@@ -1,0 +1,24 @@
+{
+  "name": "mailman",
+  "version": "1.0.0",
+  "description": "A Google Sheets add on that allows you to email users when you want to!",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "gasify": "^0.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coe-google-apps-support/Mailman.git"
+  },
+  "author": "CoE Google Support Team",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/coe-google-apps-support/Mailman/issues"
+  },
+  "homepage": "https://github.com/coe-google-apps-support/Mailman#readme"
+}
