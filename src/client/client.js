@@ -1,2 +1,8 @@
-var test1 = require('./test1.js');
-var test2 = require('./test2.js');
+var $ = require('jquery');
+var MailMan = require('./mailman.js')
+var Util = require('./util.js');
+
+$(document).ready(function() {
+    var mailman = new MailMan();
+    mailman.init();
+});
