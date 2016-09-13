@@ -81,49 +81,24 @@
     font: 13px/18px arial, sans-serif;
     margin: 0;
   }
+
+  /** Google's Material Icons */
   /* Rules for sizing the icon. */
+  .material-icons.md-11 { font-size: 11px; }
+  .material-icons.md-13 { font-size: 13px; }
+  .material-icons.md-18 { font-size: 18px; }
+  .material-icons.md-24 { font-size: 24px; }
+  .material-icons.md-36 { font-size: 36px; }
+  .material-icons.md-48 { font-size: 48px; }
 
-  .material-icons.md-11 {
-    font-size: 11px;
-  }
-
-  .material-icons.md-13 {
-    font-size: 13px;
-  }
-
-  .material-icons.md-18 {
-    font-size: 18px;
-  }
-
-  .material-icons.md-24 {
-    font-size: 24px;
-  }
-
-  .material-icons.md-36 {
-    font-size: 36px;
-  }
-
-  .material-icons.md-48 {
-    font-size: 48px;
-  }
   /* Rules for using icons as black on a light background. */
+  .material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+  .material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
 
-  .material-icons.md-dark {
-    color: rgba(0, 0, 0, 0.54);
-  }
-
-  .material-icons.md-dark.md-inactive {
-    color: rgba(0, 0, 0, 0.26);
-  }
   /* Rules for using icons as white on a dark background. */
-
-  .material-icons.md-light {
-    color: rgba(255, 255, 255, 1);
-  }
-
-  .material-icons.md-light.md-inactive {
-    color: rgba(255, 255, 255, 0.3);
-  }
+  .material-icons.md-light { color: rgba(255, 255, 255, 1); }
+  .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+  /** End Material Icons */
 
   .sidebar {
     -moz-box-sizing: border-box;
@@ -217,20 +192,6 @@
     margin-left: 12px;
   }
   /****  Google Icons Styles ****/
-  /** The icon sprite **/
-
-  .docs-icon-img:before {
-    content: url(//ssl.gstatic.com/docs/common/jfk_sprite153.png);
-  }
-  /* Top-most */
-
-  .docs-icon-img-container {
-    height: 3792px;
-    position: absolute;
-    width: 42px;
-  }
-
-  .docs-icon-img {}
 
     .docs-icon-grid {
       left: 0;
@@ -525,7 +486,7 @@
     /* Used for the slide between divs */
 
     .slider {
-      width: 300px;
+      width: 600px; /*DEBUGGING, original value 300px*/
       height: 100%;
       overflow: hidden;
       position: relative;
@@ -541,6 +502,18 @@
       padding: 8px 0px 0px 0px;
     }
     /* Used for the Last Sent Column */
+
+    /*Our custom CSS begins below*/
+
+    .icon-right {
+      border: none;
+      height: 11px;
+      width: 7px;
+      position: absolute;
+      right: 21px;
+      top: 6px;
+    }
+
     </style>
 
     <script src="bundle.js"></script>
@@ -581,7 +554,6 @@
               <div class="rest-right">
                 <span id="subjectButton" role="button" class="goog-inline-block jfk-button jfk-button-standard jfk-button-narrow waffle-range-selection-button" tabindex="0" data-tooltip="Select data range" style="-webkit-user-select: none;">
                   <div class="docs-icon goog-inline-block ">
-                    <!-- <div class="docs-icon-img-container docs-icon-img docs-icon-grid"></div> -->
                     <i class="docs-icon-img-container material-icons md-18">grid_on</i>
                   </div>
                 </span>
@@ -600,13 +572,7 @@
                 <div id="select-ddl-button" class="waffle-conditionalformat-condition-type-select">
                   <div class="goog-inline-block goog-flat-menu-button jfk-select" role="listbox" tabindex="0" style="-webkit-user-select: none;">
                     <div class="goog-inline-block goog-flat-menu-button-caption" id="comparison" role="option">Text is exactly</div>
-                    <div class="goog-inline-block goog-flat-menu-button-dropdown">&nbsp;</div>
-                  </div>
-                </div>
-                <div class="waffle-conditionalformat-condition-date-select">
-                  <div class="goog-inline-block goog-flat-menu-button jfk-select" role="listbox" tabindex="0" style="-webkit-user-select: none; display: none;">
-                    <div class="goog-inline-block goog-flat-menu-button-caption" id=":qg" role="option"></div>
-                    <div class="goog-inline-block goog-flat-menu-button-dropdown">&nbsp;</div>
+                    <i class="icon-right material-icons md-18">arrow_drop_down</i>
                   </div>
                 </div>
                 <div class="waffle-conditionalformat-arg1-holder">
@@ -630,7 +596,6 @@
                       <td class="waffle-range-selection-button-container">
                         <div role="button" class="goog-inline-block jfk-button jfk-button-standard jfk-button-narrow waffle-range-selection-button" tabindex="0" data-tooltip="Select data range" style="-webkit-user-select: none;">
                           <div class="docs-icon goog-inline-block ">
-                            <!-- <div class="docs-icon-img-container docs-icon-img docs-icon-grid">&nbsp;</div> -->
                             <i class="docs-icon-img-container docs-icon-img material-icons md-18">grid_on</i>
                           </div>
                         </div>
@@ -741,6 +706,9 @@
       <img alt="Add-on logo" class="logo" src="http://onecity.edmonton.ca/interface/coe_logo_77x20.png">
       <span class="gray branding-text">Mailman by City of Edmonton</span>
     </div>
-  </body>
 
-  </html>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    </body>
+
+    </html>
