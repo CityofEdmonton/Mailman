@@ -2,698 +2,745 @@
 <html>
 
 <head>
-    <base target="_top">
+  <base target="_top">
 
-    <style>
-        .hover-text:hover {
-            text-decoration: underline;
-        }
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <style>
+  .hover-text:hover {
+    text-decoration: underline;
+  }
 
-        textarea:focus {
-            outline: none !important;
-            border: none;
-            box-shadow: none;
-        }
+  textarea:focus {
+    outline: none !important;
+    border: none;
+    box-shadow: none;
+  }
 
-        .branding-below {
-            bottom: 56px;
-            top: 0;
-        }
+  .branding-below {
+    bottom: 56px;
+    top: 0;
+  }
 
-        .branding-text {
-            left: 7px;
-            position: relative;
-            top: 3px;
-        }
+  .branding-text {
+    left: 7px;
+    position: relative;
+    top: 3px;
+  }
 
-        .border-bottom {
-            border-bottom: 1px solid #cfcfcf;
-            margin: 0px 0px 0px 0px
-        }
+  .border-bottom {
+    border-bottom: 1px solid #cfcfcf;
+    margin: 0px 0px 0px 0px
+  }
 
-        .input-full {
-            box-sizing: border-box;
-            box-shadow: none;
-            border: transparent;
-            background-color: white;
-            font: 13px Arial;
-            margin: 4px 0px 4px 0px;
-            outline: none;
-            padding: 4px 1px 4px 2px;
-            resize: none;
-            -webkit-box-sizing: border-box;
-            width: 60%;
-        }
+  .input-full {
+    box-sizing: border-box;
+    box-shadow: none;
+    border: transparent;
+    background-color: white;
+    font: 13px Arial;
+    margin: 4px 0px 4px 0px;
+    outline: none;
+    padding: 4px 1px 4px 2px;
+    resize: none;
+    -webkit-box-sizing: border-box;
+    width: 60%;
+  }
 
-        .rest-right {
-            float: right;
-        }
+  .rest-right {
+    float: right;
+  }
 
-        .show-text {
-            color: #777;
-            font-size: 13px;
-            padding: 0 8px 0 0;
-        }
+  .show-text {
+    color: #777;
+    font-size: 13px;
+    padding: 0 8px 0 0;
+  }
 
-        .select-text {
-            cursor: pointer;
-            -webkit-user-select: none;
-        }
+  .select-text {
+    cursor: pointer;
+    -webkit-user-select: none;
+  }
 
-        .blank-textarea {
-            resize: none;
-            border: hidden;
-            width: 100%;
-            height: 100%;
-            font: 13px Arial;
-        }
+  .blank-textarea {
+    resize: none;
+    border: hidden;
+    width: 100%;
+    height: 100%;
+    font: 13px Arial;
+  }
 
-        .fixed-button {
-            height: 30px;
-            padding: 10px 0px 10px 0px;
-        }
-        /**** Taken from Google's Addons Stylesheet: ****/
-        /* <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css"> */
+  .fixed-button {
+    height: 30px;
+    padding: 10px 0px 10px 0px;
+  }
+  /**** Taken from Google's Addons Stylesheet: ****/
+  /* <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css"> */
 
-        body {
-            color: #222;
-            font: 13px/18px arial, sans-serif;
-            margin: 0;
-        }
+  body {
+    color: #222;
+    font: 13px/18px arial, sans-serif;
+    margin: 0;
+  }
+  /* Rules for sizing the icon. */
 
-        .sidebar {
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-            overflow-y: auto;
-            padding: 12px;
-            position: absolute;
-            width: 100%;
-        }
+  .material-icons.md-11 {
+    font-size: 11px;
+  }
 
-        .bottom,
-        .bottom-left,
-        .button-bar {
-            bottom: 0;
-            position: absolute;
-        }
+  .material-icons.md-13 {
+    font-size: 13px;
+  }
 
-        .gray,
-        .grey {
-            color: #777;
-        }
+  .material-icons.md-18 {
+    font-size: 18px;
+  }
 
-        .button.disabled,
-        button:disabled,
-        input[type="button"]:disabled,
-        input[type="image"]:disabled,
-        input[type="reset"]:disabled,
-        input[type="submit"]:disabled {
-            background: #fff;
-            border: 1px solid #dcdcdc;
-            -moz-box-shadow: none;
-            -webkit-box-shadow: none;
-            box-shadow: none;
-            color: #333;
-            opacity: .5;
-        }
+  .material-icons.md-24 {
+    font-size: 24px;
+  }
 
-        .button,
-        button,
-        input[type="button"],
-        input[type="image"],
-        input[type="reset"],
-        input[type="submit"] {
-            background: -moz-linear-gradient(top, #f5f5f5, #f1f1f1);
-            background: -ms-linear-gradient(top, #f5f5f5, #f1f1f1);
-            background: -o-linear-gradient(top, #f5f5f5, #f1f1f1);
-            background: -webkit-linear-gradient(top, #f5f5f5, #f1f1f1);
-            background: linear-gradient(top, #f5f5f5, #f1f1f1);
-            border: 1px solid #dcdcdc;
-            -moz-border-radius: 2px;
-            -webkit-border-radius: 2px;
-            border-radius: 2px;
-            -moz-box-shadow: none;
-            -webkit-box-shadow: none;
-            box-shadow: none;
-            color: #333;
-            cursor: pointer;
-            font-family: arial, sans-serif;
-            font-size: 11px;
-            font-weight: bold;
-            height: 29px;
-            line-height: 27px;
-            margin: 0;
-            min-width: 72px;
-            outline: 0;
-            padding: 0 8px;
-            text-align: center;
-            white-space: nowrap;
-        }
+  .material-icons.md-36 {
+    font-size: 36px;
+  }
 
-        .button.action,
-        .button.blue,
-        button.action,
-        button.blue,
-        input[type="button"].action,
-        input[type="button"].blue,
-        input[type="submit"].action,
-        input[type="submit"].blue {
-            background: -moz-linear-gradient(top, #4d90fe, #4787ed);
-            background: -ms-linear-gradient(top, #4d90fe, #4787ed);
-            background: -o-linear-gradient(top, #4d90fe, #4787ed);
-            background: -webkit-linear-gradient(top, #4d90fe, #4787ed);
-            background: linear-gradient(top, #4d90fe, #4787ed);
-            border: 1px solid #3079ed;
-            color: #fff;
-        }
+  .material-icons.md-48 {
+    font-size: 48px;
+  }
+  /* Rules for using icons as black on a light background. */
 
-        .button+.button,
-        button+button,
-        input+input {
-            margin-left: 12px;
-        }
-        /****  Google Icons Styles ****/
-        /** The icon sprite **/
+  .material-icons.md-dark {
+    color: rgba(0, 0, 0, 0.54);
+  }
 
-        .docs-icon-img:before {
-            content: url(//ssl.gstatic.com/docs/common/jfk_sprite153.png);
-        }
-        /* Top-most */
+  .material-icons.md-dark.md-inactive {
+    color: rgba(0, 0, 0, 0.26);
+  }
+  /* Rules for using icons as white on a dark background. */
 
-        .docs-icon-img-container {
-            height: 3792px;
-            position: absolute;
-            width: 42px;
-        }
+  .material-icons.md-light {
+    color: rgba(255, 255, 255, 1);
+  }
 
-        .docs-icon-img {}
+  .material-icons.md-light.md-inactive {
+    color: rgba(255, 255, 255, 0.3);
+  }
 
-        .docs-icon-grid {
-            left: 0;
-            top: -168px;
-        }
-        /* Second */
+  .sidebar {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding: 12px;
+    position: absolute;
+    width: 100%;
+  }
 
-        .docs-icon {
-            direction: ltr;
-            text-align: left;
-            height: 21px;
-            overflow: hidden;
-            vertical-align: middle;
-            width: 21px;
-        }
+  .bottom,
+  .bottom-left,
+  .button-bar {
+    bottom: 0;
+    position: absolute;
+  }
 
-        .goog-inline-block {
-            position: relative;
-            display: -moz-inline-box;
-            display: inline-block;
-        }
-        /* Bottom-most */
+  .gray,
+  .grey {
+    color: #777;
+  }
 
-        .jfk-button {
-            -webkit-border-radius: 2px;
-            -moz-border-radius: 2px;
-            border-radius: 2px;
-            cursor: default;
-            font-size: 11px;
-            font-weight: bold;
-            text-align: center;
-            white-space: nowrap;
-            margin-right: 16px;
-            height: 27px;
-            line-height: 27px;
-            min-width: 54px;
-            outline: 0px;
-            padding: 0 8px;
-        }
+  .button.disabled,
+  button:disabled,
+  input[type="button"]:disabled,
+  input[type="image"]:disabled,
+  input[type="reset"]:disabled,
+  input[type="submit"]:disabled {
+    background: #fff;
+    border: 1px solid #dcdcdc;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    color: #333;
+    opacity: .5;
+  }
 
-        .jfk-button-standard {
-            -webkit-box-shadow: none;
-            -moz-box-shadow: none;
-            box-shadow: none;
-            background-color: #f5f5f5;
-            background-image: -webkit-linear-gradient(top, #f5f5f5, #f1f1f1);
-            background-image: -moz-linear-gradient(top, #f5f5f5, #f1f1f1);
-            background-image: -ms-linear-gradient(top, #f5f5f5, #f1f1f1);
-            background-image: -o-linear-gradient(top, #f5f5f5, #f1f1f1);
-            background-image: linear-gradient(top, #f5f5f5, #f1f1f1);
-            color: #333;
-            border: 1px solid #dcdcdc;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-        }
+  .button,
+  button,
+  input[type="button"],
+  input[type="image"],
+  input[type="reset"],
+  input[type="submit"] {
+    background: -moz-linear-gradient(top, #f5f5f5, #f1f1f1);
+    background: -ms-linear-gradient(top, #f5f5f5, #f1f1f1);
+    background: -o-linear-gradient(top, #f5f5f5, #f1f1f1);
+    background: -webkit-linear-gradient(top, #f5f5f5, #f1f1f1);
+    background: linear-gradient(top, #f5f5f5, #f1f1f1);
+    border: 1px solid #dcdcdc;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    color: #333;
+    cursor: pointer;
+    font-family: arial, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    height: 29px;
+    line-height: 27px;
+    margin: 0;
+    min-width: 72px;
+    outline: 0;
+    padding: 0 8px;
+    text-align: center;
+    white-space: nowrap;
+  }
 
-        .jfk-button-narrow {
-            min-width: 34px;
-            padding: 0;
-        }
+  .button.action,
+  .button.blue,
+  button.action,
+  button.blue,
+  input[type="button"].action,
+  input[type="button"].blue,
+  input[type="submit"].action,
+  input[type="submit"].blue {
+    background: -moz-linear-gradient(top, #4d90fe, #4787ed);
+    background: -ms-linear-gradient(top, #4d90fe, #4787ed);
+    background: -o-linear-gradient(top, #4d90fe, #4787ed);
+    background: -webkit-linear-gradient(top, #4d90fe, #4787ed);
+    background: linear-gradient(top, #4d90fe, #4787ed);
+    border: 1px solid #3079ed;
+    color: #fff;
+  }
 
-        .waffle-range-selection-button {
-            background: transparent!important;
-            border: transparent!important;
-            cursor: pointer;
-            margin: 0 0 0 -13px;
-            opacity: .70;
-            white-space: nowrap;
-        }
-        /****  Google Sheets Conditional Format CSS ****/
-        /* Apply to range */
+  .button+.button,
+  button+button,
+  input+input {
+    margin-left: 12px;
+  }
+  /****  Google Icons Styles ****/
+  /** The icon sprite **/
 
-        .waffle-conditionalformat-range-picker {
-            padding: 0 18px 18px 18px;
-        }
+  .docs-icon-img:before {
+    content: url(//ssl.gstatic.com/docs/common/jfk_sprite153.png);
+  }
+  /* Top-most */
 
-        .waffle-conditionalformat-edit-pill-section-label {
-            color: #646464;
-            font-family: Arial;
-            font-size: 12px;
-            line-height: 14px;
-            margin-bottom: 6px;
-            margin-top: 18px;
-        }
+  .docs-icon-img-container {
+    height: 3792px;
+    position: absolute;
+    width: 42px;
+  }
 
-        .waffle-conditionalformat-range-wrapper {
-            color: #444;
-            font-family: Arial;
-            font-size: 12px;
-        }
+  .docs-icon-img {}
 
-        .waffle-range-selection-container {
-            background: #fff;
-            border: 1px solid #d9d9d9;
-            border-top: 1px solid #c0c0c0;
-            min-width: 20px;
-            width: 100%;
-            padding: 0px;
-        }
+    .docs-icon-grid {
+      left: 0;
+      top: -168px;
+    }
+    /* Second */
 
-        .waffle-range-selection-container-focus {
-            border: 1px solid #4d90fe;
-            -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
-            -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
-            outline: none
-        }
+    .docs-icon {
+      direction: ltr;
+      text-align: left;
+      height: 21px;
+      overflow: hidden;
+      vertical-align: middle;
+      width: 21px;
+    }
 
-        .waffle-range-selection-input,
-        .waffle-range-selection-input:focus {
-            background: transparent!important;
-            border: none!important;
-            box-sizing: border-box;
-            -webkit-box-shadow: none;
-            -moz-box-shadow: none;
-            box-shadow: none;
-            height: 25px;
-            margin: 0;
-            outline: none!important;
-            padding: 1px 8px!important;
-            width: 100%;
-        }
+    .goog-inline-block {
+      position: relative;
+      display: -moz-inline-box;
+      display: inline-block;
+    }
+    /* Bottom-most */
 
-        .waffle-range-selection-button-container {
-            overflow: hidden;
-            padding: 0 0 0 8px;
-            text-align: right;
-            width: 21px;
-        }
-        /* Override the default addons css */
+    .jfk-button {
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      border-radius: 2px;
+      cursor: default;
+      font-size: 11px;
+      font-weight: bold;
+      text-align: center;
+      white-space: nowrap;
+      margin-right: 16px;
+      height: 27px;
+      line-height: 27px;
+      min-width: 54px;
+      outline: 0px;
+      padding: 0 8px;
+    }
 
-        td.waffle-row {
-            padding: 0px;
-        }
-        /* Format cells if... */
+    .jfk-button-standard {
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+      background-color: #f5f5f5;
+      background-image: -webkit-linear-gradient(top, #f5f5f5, #f1f1f1);
+      background-image: -moz-linear-gradient(top, #f5f5f5, #f1f1f1);
+      background-image: -ms-linear-gradient(top, #f5f5f5, #f1f1f1);
+      background-image: -o-linear-gradient(top, #f5f5f5, #f1f1f1);
+      background-image: linear-gradient(top, #f5f5f5, #f1f1f1);
+      color: #333;
+      border: 1px solid #dcdcdc;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
 
-        .waffle-conditionalformat-boolean-condition-picker,
-        .waffle-conditionalformat-gradient-format-picker {
-            padding: 0px 18px 18px 18px;
-        }
+    .jfk-button-narrow {
+      min-width: 34px;
+      padding: 0;
+    }
 
-        .goog-flat-menu-button {
-            -webkit-border-radius: 2px;
-            -moz-border-radius: 2px;
-            border-radius: 2px;
-            background-color: #f5f5f5;
-            background-image: -webkit-linear-gradient(top, #f5f5f5, #f1f1f1);
-            background-image: -moz-linear-gradient(top, #f5f5f5, #f1f1f1);
-            background-image: -ms-linear-gradient(top, #f5f5f5, #f1f1f1);
-            background-image: -o-linear-gradient(top, #f5f5f5, #f1f1f1);
-            background-image: linear-gradient(top, #f5f5f5, #f1f1f1);
-            border: 1px solid #dcdcdc;
-            color: #333;
-            cursor: default;
-            font-size: 11px;
-            font-weight: bold;
-            line-height: 27px;
-            list-style: none;
-            margin: 0 2px;
-            min-width: 46px;
-            outline: none;
-            padding: 0 18px 0 6px;
-            text-align: center;
-            text-decoration: none;
-        }
+    .waffle-range-selection-button {
+      background: transparent!important;
+      border: transparent!important;
+      cursor: pointer;
+      margin: 0 0 0 -13px;
+      opacity: .70;
+      white-space: nowrap;
+    }
+    /****  Google Sheets Conditional Format CSS ****/
+    /* Apply to range */
 
-        .goog-flat-menu-button:hover {
-            background-color: #f8f8f8;
-            background-image: -webkit-linear-gradient(top, #f8f8f8, #f1f1f1);
-            background-image: -moz-linear-gradient(top, #f8f8f8, #f1f1f1);
-            background-image: -ms-linear-gradient(top, #f8f8f8, #f1f1f1);
-            background-image: -o-linear-gradient(top, #f8f8f8, #f1f1f1);
-            background-image: linear-gradient(top, #f8f8f8, #f1f1f1);
-            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
-            -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
-            box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
-            border-color: #c6c6c6;
-            color: #111
-        }
+    .waffle-conditionalformat-range-picker {
+      padding: 0 18px 18px 18px;
+    }
 
-        .waffle-conditionalformat-condition-type-select .jfk-select,
-        .waffle-conditionalformat-condition-date-select .jfk-select {
-            margin: 0;
-            width: 238px;
-        }
+    .waffle-conditionalformat-edit-pill-section-label {
+      color: #646464;
+      font-family: Arial;
+      font-size: 12px;
+      line-height: 14px;
+      margin-bottom: 6px;
+      margin-top: 18px;
+    }
 
-        .waffle-conditionalformat-condition-type-select .goog-flat-menu-button,
-        .waffle-conditionalformat-condition-date-select .goog-flat-menu-button {
-            text-align: left;
-        }
+    .waffle-conditionalformat-range-wrapper {
+      color: #444;
+      font-family: Arial;
+      font-size: 12px;
+    }
 
-        .jfk-select .goog-flat-menu-button-caption {
-            overflow: hidden;
-            width: 100%;
-        }
+    .waffle-range-selection-container {
+      background: #fff;
+      border: 1px solid #d9d9d9;
+      border-top: 1px solid #c0c0c0;
+      min-width: 20px;
+      width: 100%;
+      padding: 0px;
+    }
 
-        .goog-flat-menu-button-caption {
-            vertical-align: top;
-            white-space: nowrap;
-        }
+    .waffle-range-selection-container-focus {
+      border: 1px solid #4d90fe;
+      -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+      -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+      outline: none
+    }
 
-        .jfk-select .goog-flat-menu-button-dropdown {
-            background: url(//ssl.gstatic.com/ui/v1/disclosure/grey-disclosure-arrow-up-down.png) center no-repeat;
-            border: none;
-            height: 11px;
-            margin-top: -4px;
-            width: 7px;
-        }
+    .waffle-range-selection-input,
+    .waffle-range-selection-input:focus {
+      background: transparent!important;
+      border: none!important;
+      box-sizing: border-box;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+      height: 25px;
+      margin: 0;
+      outline: none!important;
+      padding: 1px 8px!important;
+      width: 100%;
+    }
 
-        .goog-flat-menu-button-dropdown {
-            border-color: #777 transparent;
-            border-style: solid;
-            border-width: 4px 4px 0 4px;
-            height: 0;
-            width: 0;
-            position: absolute;
-            right: 5px;
-            top: 12px;
-        }
+    .waffle-range-selection-button-container {
+      overflow: hidden;
+      padding: 0 0 0 8px;
+      text-align: right;
+      width: 21px;
+    }
+    /* Override the default addons css */
 
-        .waffle-conditionalformat-arg1 {
-            margin: 6px 6px 0 0;
-            width: 246px;
-        }
+    td.waffle-row {
+      padding: 0px;
+    }
+    /* Format cells if... */
 
-        .jfk-textinput {
-            -webkit-border-radius: 1px;
-            -moz-border-radius: 1px;
-            border-radius: 1px;
-            border: 1px solid #d9d9d9;
-            border-top: 1px solid #c0c0c0;
-            font-size: 13px;
-            height: 25px;
-            padding: 1px 8px;
-        }
-        /* Google DDLs */
+    .waffle-conditionalformat-boolean-condition-picker,
+    .waffle-conditionalformat-gradient-format-picker {
+      padding: 0px 18px 18px 18px;
+    }
 
-        .goog-menu {
-            z-index: 1003;
-        }
+    .goog-flat-menu-button {
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      border-radius: 2px;
+      background-color: #f5f5f5;
+      background-image: -webkit-linear-gradient(top, #f5f5f5, #f1f1f1);
+      background-image: -moz-linear-gradient(top, #f5f5f5, #f1f1f1);
+      background-image: -ms-linear-gradient(top, #f5f5f5, #f1f1f1);
+      background-image: -o-linear-gradient(top, #f5f5f5, #f1f1f1);
+      background-image: linear-gradient(top, #f5f5f5, #f1f1f1);
+      border: 1px solid #dcdcdc;
+      color: #333;
+      cursor: default;
+      font-size: 11px;
+      font-weight: bold;
+      line-height: 27px;
+      list-style: none;
+      margin: 0 2px;
+      min-width: 46px;
+      outline: none;
+      padding: 0 18px 0 6px;
+      text-align: center;
+      text-decoration: none;
+    }
 
-        .goog-menu {
-            -webkit-border-radius: 0;
-            -moz-border-radius: 0;
-            border-radius: 0;
-            -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            -moz-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            -webkit-transition: opacity 0.218s;
-            -moz-transition: opacity 0.218s;
-            -o-transition: opacity 0.218s;
-            transition: opacity 0.218s;
-            background: #fff;
-            border: 1px solid #ccc;
-            border: 1px solid rgba(0, 0, 0, .2);
-            cursor: default;
-            font-size: 13px;
-            margin: 0;
-            outline: none;
-            padding: 6px 0;
-            position: absolute;
-        }
+    .goog-flat-menu-button:hover {
+      background-color: #f8f8f8;
+      background-image: -webkit-linear-gradient(top, #f8f8f8, #f1f1f1);
+      background-image: -moz-linear-gradient(top, #f8f8f8, #f1f1f1);
+      background-image: -ms-linear-gradient(top, #f8f8f8, #f1f1f1);
+      background-image: -o-linear-gradient(top, #f8f8f8, #f1f1f1);
+      background-image: linear-gradient(top, #f8f8f8, #f1f1f1);
+      -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+      -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+      border-color: #c6c6c6;
+      color: #111
+    }
 
-        .goog-menuitem,
-        .goog-tristatemenuitem,
-        .goog-filterobsmenuitem {
-            position: relative;
-            color: #333;
-            cursor: pointer;
-            list-style: none;
-            margin: 0;
-            padding: 6px 8em 6px 30px;
-            white-space: nowrap;
-        }
+    .waffle-conditionalformat-condition-type-select .jfk-select,
+    .waffle-conditionalformat-condition-date-select .jfk-select {
+      margin: 0;
+      width: 238px;
+    }
 
-        .goog-menuseparator {
-            border-top: 1px solid #ebebeb;
-            margin-top: 6px;
-            margin-bottom: 6px;
-        }
+    .waffle-conditionalformat-condition-type-select .goog-flat-menu-button,
+    .waffle-conditionalformat-condition-date-select .goog-flat-menu-button {
+      text-align: left;
+    }
 
-        .goog-menuitem,
-        .goog-tristatemenuitem,
-        .goog-filterobsmenuitem {
-            position: relative;
-            color: #333;
-            cursor: pointer;
-            list-style: none;
-            margin: 0;
-            padding: 6px 8em 6px 30px;
-            white-space: nowrap;
-        }
-        /* Used for the slide between divs */
+    .jfk-select .goog-flat-menu-button-caption {
+      overflow: hidden;
+      width: 100%;
+    }
 
-        .slider {
-            width: 300px;
-            height: 100%;
-            overflow: hidden;
-            position: relative;
-        }
+    .goog-flat-menu-button-caption {
+      vertical-align: top;
+      white-space: nowrap;
+    }
 
-        .slide {
-            float: left;
-            width: 300px;
-        }
+    .jfk-select .goog-flat-menu-button-dropdown {
+      background: url(//ssl.gstatic.com/ui/v1/disclosure/grey-disclosure-arrow-up-down.png) center no-repeat;
+      border: none;
+      height: 11px;
+      margin-top: -4px;
+      width: 7px;
+    }
 
-        .holder {
-            width: 300%;
-            padding: 8px 0px 0px 0px;
-            overflow: visible;
-        }
-        /* Used for the Last Sent Column */
+    .goog-flat-menu-button-dropdown {
+      border-color: #777 transparent;
+      border-style: solid;
+      border-width: 4px 4px 0 4px;
+      height: 0;
+      width: 0;
+      position: absolute;
+      right: 5px;
+      top: 12px;
+    }
+
+    .waffle-conditionalformat-arg1 {
+      margin: 6px 6px 0 0;
+      width: 246px;
+    }
+
+    .jfk-textinput {
+      -webkit-border-radius: 1px;
+      -moz-border-radius: 1px;
+      border-radius: 1px;
+      border: 1px solid #d9d9d9;
+      border-top: 1px solid #c0c0c0;
+      font-size: 13px;
+      height: 25px;
+      padding: 1px 8px;
+    }
+    /* Google DDLs */
+
+    .goog-menu {
+      z-index: 1003;
+    }
+
+    .goog-menu {
+      -webkit-border-radius: 0;
+      -moz-border-radius: 0;
+      border-radius: 0;
+      -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      -moz-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      -webkit-transition: opacity 0.218s;
+      -moz-transition: opacity 0.218s;
+      -o-transition: opacity 0.218s;
+      transition: opacity 0.218s;
+      background: #fff;
+      border: 1px solid #ccc;
+      border: 1px solid rgba(0, 0, 0, .2);
+      cursor: default;
+      font-size: 13px;
+      margin: 0;
+      outline: none;
+      padding: 6px 0;
+      position: absolute;
+    }
+
+    .goog-menuitem,
+    .goog-tristatemenuitem,
+    .goog-filterobsmenuitem {
+      position: relative;
+      color: #333;
+      cursor: pointer;
+      list-style: none;
+      margin: 0;
+      padding: 6px 8em 6px 30px;
+      white-space: nowrap;
+    }
+
+    .goog-menuseparator {
+      border-top: 1px solid #ebebeb;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
+    .goog-menuitem,
+    .goog-tristatemenuitem,
+    .goog-filterobsmenuitem {
+      position: relative;
+      color: #333;
+      cursor: pointer;
+      list-style: none;
+      margin: 0;
+      padding: 6px 8em 6px 30px;
+      white-space: nowrap;
+    }
+    /* Used for the slide between divs */
+
+    .slider {
+      width: 300px;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slide {
+      float: left;
+      width: 300px;
+    }
+
+    .holder {
+      width: 300%;
+      padding: 8px 0px 0px 0px;
+    }
+    /* Used for the Last Sent Column */
     </style>
 
     <script src="bundle.js"></script>
 
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="slider">
-        <div id="slider" class="holder sidebar branding-below" style="padding-bottom: 150px;">
+      <div id="slider" class="holder sidebar branding-below" style="padding-bottom: 150px;">
 
-            <div class="slide block form-group" style="height: 100%; overflow:">
-                <div class="border-bottom">
-                    <div id="senderInputs">
-                        <div id="toLine">
-                            <input name="recipients" class="input-full" placeholder="To" />
+        <div class="slide block form-group" style="height: 100%;">
+          <div class="border-bottom">
+            <div id="senderInputs">
+              <div id="toLine">
+                <input name="recipients" class="input-full" placeholder="To" />
 
-                            <div id="toUtilities" class="rest-right">
-                                <!-- Google's way of using buttons -->
-                                <span id="toButton" role="button" class="goog-inline-block jfk-button jfk-button-standard jfk-button-narrow waffle-range-selection-button" tabindex="0" data-tooltip="Select data range" style="-webkit-user-select: none;">
+                <div id="toUtilities" class="rest-right">
+                  <!-- Google's way of using buttons -->
+                  <span id="toButton" role="button" class="goog-inline-block jfk-button jfk-button-standard jfk-button-narrow waffle-range-selection-button" tabindex="0" data-tooltip="Select data range" style="-webkit-user-select: none;">
                     <div class="docs-icon goog-inline-block ">
-                      <div class="docs-icon-img-container docs-icon-img docs-icon-grid"></div>
+                      <!-- <div class="docs-icon-img-container docs-icon-img docs-icon-grid"></div> -->
+                      <i class="docs-icon-img-container material-icons md-18">grid_on</i>
                     </div>
                   </span>
 
-                                <span id="ccSpan" class="hover-text show-text select-text" role="link" data-tooltip="Add Cc Recipients">Cc</span>
-                                <span id="bccSpan" class="hover-text show-text select-text" role="link" data-tooltip="Add Bcc Recipients">Bcc</span>
-                            </div>
-                        </div>
-
-                        <div id="ccLine"></div>
-                        <div id="bccLine"></div>
-                    </div>
+                  <span id="ccSpan" class="hover-text show-text select-text" role="link" data-tooltip="Add Cc Recipients">Cc</span>
+                  <span id="bccSpan" class="hover-text show-text select-text" role="link" data-tooltip="Add Bcc Recipients">Bcc</span>
                 </div>
-                <div class="border-bottom">
-                    <div id="subjectLine">
-                        <input id="subject" name="subject" class="input-full" placeholder="Subject" />
-                        <div class="rest-right">
-                            <span id="subjectButton" role="button" class="goog-inline-block jfk-button jfk-button-standard jfk-button-narrow waffle-range-selection-button" tabindex="0" data-tooltip="Select data range" style="-webkit-user-select: none;">
+              </div>
+
+              <div id="ccLine"></div>
+              <div id="bccLine"></div>
+            </div>
+          </div>
+          <div class="border-bottom">
+            <div id="subjectLine">
+              <input id="subject" name="subject" class="input-full" placeholder="Subject" />
+              <div class="rest-right">
+                <span id="subjectButton" role="button" class="goog-inline-block jfk-button jfk-button-standard jfk-button-narrow waffle-range-selection-button" tabindex="0" data-tooltip="Select data range" style="-webkit-user-select: none;">
                   <div class="docs-icon goog-inline-block ">
-                    <div class="docs-icon-img-container docs-icon-img docs-icon-grid"></div>
+                    <!-- <div class="docs-icon-img-container docs-icon-img docs-icon-grid"></div> -->
+                    <i class="docs-icon-img-container material-icons md-18">grid_on</i>
                   </div>
                 </span>
-                        </div>
-                    </div>
-                </div>
-
-                <textarea id="body" class="blank-textarea"></textarea>
+              </div>
             </div>
-            <div class="slide">
+          </div>
 
-                <div class="waffle-conditionalformat-boolean-condition-picker">
-                    <div class="waffle-conditionalformat-edit-pill-section-label">Send email if...</div>
-                    <div class="waffle-conditionalformat-boolean-condition-picker-body" role="group">
-                        <div class="waffle-conditionalformat-edit-pill-section-body">
-                            <div id="select-ddl-button" class="waffle-conditionalformat-condition-type-select">
-                                <div class="goog-inline-block goog-flat-menu-button jfk-select" role="listbox" tabindex="0" style="-webkit-user-select: none;">
-                                    <div class="goog-inline-block goog-flat-menu-button-caption" id="comparison" role="option">Text is exactly</div>
-                                    <div class="goog-inline-block goog-flat-menu-button-dropdown">&nbsp;</div>
-                                </div>
-                            </div>
-                            <div class="waffle-conditionalformat-condition-date-select">
-                                <div class="goog-inline-block goog-flat-menu-button jfk-select" role="listbox" tabindex="0" style="-webkit-user-select: none; display: none;">
-                                    <div class="goog-inline-block goog-flat-menu-button-caption" id=":qg" role="option"></div>
-                                    <div class="goog-inline-block goog-flat-menu-button-dropdown">&nbsp;</div>
-                                </div>
-                            </div>
-                            <div class="waffle-conditionalformat-arg1-holder">
-                                <div class="goog-inline-block">
-                                    <input id="value-to-watch" type="text" class="waffle-conditionalformat-arg1 jfk-textinput" placeholder="Value">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="waffle-conditionalformat-range-picker" role="group" style="border-top: 1px solid #d6d6d6; border-bottom: 1px solid #d6d6d6;padding: 0 18px 18px 18px;">
-                    <div class="waffle-conditionalformat-edit-pill-section-label">Apply to range</div>
-                    <div class="waffle-conditionalformat-range-wrapper">
-                        <div>
-                            <table cellpadding="0" cellspacing="0" class="waffle-range-selection-container">
-                                <tbody>
-                                    <tr>
-                                        <td class="waffle-row">
-                                            <input id="range" class="waffle-range-selection-input" spellcheck="false" placeholder="">
-                                        </td>
-                                        <td class="waffle-range-selection-button-container">
-                                            <div role="button" class="goog-inline-block jfk-button jfk-button-standard jfk-button-narrow waffle-range-selection-button" tabindex="0" data-tooltip="Select data range" style="-webkit-user-select: none;">
-                                                <div class="docs-icon goog-inline-block ">
-                                                    <div class="docs-icon-img-container docs-icon-img docs-icon-grid">&nbsp;</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="waffle-conditionalformat-range-picker" role="group">
-                    <div class="waffle-conditionalformat-edit-pill-section-label">Last sent column</div>
-                    <div class="waffle-conditionalformat-range-wrapper">
-                        <div>
-                            <table cellpadding="0" cellspacing="0" class="waffle-range-selection-container">
-                                <tbody>
-                                    <tr>
-                                        <td class="waffle-row">
-                                            <input id="last-sent" class="waffle-range-selection-input" spellcheck="false" placeholder="">
-                                        </td>
-                                        <td class="waffle-range-selection-button-container">
-                                            <div role="button" class="goog-inline-block jfk-button jfk-button-standard jfk-button-narrow waffle-range-selection-button" tabindex="0" data-tooltip="Select data range" style="-webkit-user-select: none;">
-                                                <div class="docs-icon goog-inline-block ">
-                                                    <div class="docs-icon-img-container docs-icon-img docs-icon-grid">&nbsp;</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          <textarea id="body" class="blank-textarea"></textarea>
         </div>
+        <div class="slide">
+
+          <div class="waffle-conditionalformat-boolean-condition-picker">
+            <div class="waffle-conditionalformat-edit-pill-section-label">Send email if...</div>
+            <div class="waffle-conditionalformat-boolean-condition-picker-body" role="group">
+              <div class="waffle-conditionalformat-edit-pill-section-body">
+                <div id="select-ddl-button" class="waffle-conditionalformat-condition-type-select">
+                  <div class="goog-inline-block goog-flat-menu-button jfk-select" role="listbox" tabindex="0" style="-webkit-user-select: none;">
+                    <div class="goog-inline-block goog-flat-menu-button-caption" id="comparison" role="option">Text is exactly</div>
+                    <div class="goog-inline-block goog-flat-menu-button-dropdown">&nbsp;</div>
+                  </div>
+                </div>
+                <div class="waffle-conditionalformat-condition-date-select">
+                  <div class="goog-inline-block goog-flat-menu-button jfk-select" role="listbox" tabindex="0" style="-webkit-user-select: none; display: none;">
+                    <div class="goog-inline-block goog-flat-menu-button-caption" id=":qg" role="option"></div>
+                    <div class="goog-inline-block goog-flat-menu-button-dropdown">&nbsp;</div>
+                  </div>
+                </div>
+                <div class="waffle-conditionalformat-arg1-holder">
+                  <div class="goog-inline-block">
+                    <input id="value-to-watch" type="text" class="waffle-conditionalformat-arg1 jfk-textinput" placeholder="Value">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="waffle-conditionalformat-range-picker" role="group" style="border-top: 1px solid #d6d6d6; border-bottom: 1px solid #d6d6d6;padding: 0 18px 18px 18px;">
+            <div class="waffle-conditionalformat-edit-pill-section-label">Apply to range</div>
+            <div class="waffle-conditionalformat-range-wrapper">
+              <div>
+                <table cellpadding="0" cellspacing="0" class="waffle-range-selection-container">
+                  <tbody>
+                    <tr>
+                      <td class="waffle-row">
+                        <input id="range" class="waffle-range-selection-input" spellcheck="false" placeholder="">
+                      </td>
+                      <td class="waffle-range-selection-button-container">
+                        <div role="button" class="goog-inline-block jfk-button jfk-button-standard jfk-button-narrow waffle-range-selection-button" tabindex="0" data-tooltip="Select data range" style="-webkit-user-select: none;">
+                          <div class="docs-icon goog-inline-block ">
+                            <!-- <div class="docs-icon-img-container docs-icon-img docs-icon-grid">&nbsp;</div> -->
+                            <i class="docs-icon-img-container docs-icon-img material-icons md-18">grid_on</i>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="waffle-conditionalformat-range-picker" role="group">
+            <div class="waffle-conditionalformat-edit-pill-section-label">Last sent column</div>
+            <div class="waffle-conditionalformat-range-wrapper">
+              <div>
+                <table cellpadding="0" cellspacing="0" class="waffle-range-selection-container">
+                  <tbody>
+                    <tr>
+                      <td class="waffle-row">
+                        <input id="last-sent" class="waffle-range-selection-input" spellcheck="false" placeholder="">
+                      </td>
+                      <td class="waffle-range-selection-button-container">
+                        <div role="button" class="goog-inline-block jfk-button jfk-button-standard jfk-button-narrow waffle-range-selection-button" tabindex="0" data-tooltip="Select data range" style="-webkit-user-select: none;">
+                          <div class="docs-icon goog-inline-block ">
+                            <!-- <div class="docs-icon-img-container docs-icon-img docs-icon-grid">&nbsp;</div> -->
+                            <i class="docs-icon-img-container material-icons md-18">grid_on</i>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- This is the pop up Google uses for its DDL -->
     <div id="select-ddl" class="goog-menu goog-menu-vertical" style="-webkit-user-select: none; visibility: visible; overflow-y: auto; height: auto; left: 0px; top: 0; display: none;" role="menu">
-        <div class="goog-menuitem" role="menuitem" id=":og" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Cell is empty</div>
-        </div>
-        <div class="goog-menuitem" role="menuitem" id=":oh" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Cell is not empty</div>
-        </div>
-        <div class="goog-menuitem" role="menuitem" id=":oi" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Text contains</div>
-        </div>
-        <div class="goog-menuitem" role="menuitem" id=":oj" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Text does not contain</div>
-        </div>
-        <div class="goog-menuitem" role="menuitem" id=":ok" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Text starts with</div>
-        </div>
-        <div class="goog-menuitem" role="menuitem" id=":ol" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Text ends with</div>
-        </div>
-        <div class="goog-menuitem" role="menuitem" id=":om" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Text is exactly</div>
-        </div>
-        <div class="goog-menuseparator" aria-disabled="true" role="separator" id=":on" style="-webkit-user-select: none;"></div>
-        <div class="goog-menuitem" role="menuitem" id=":oo" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Date is</div>
-        </div>
-        <div class="goog-menuitem" role="menuitem" id=":op" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Date is before</div>
-        </div>
-        <div class="goog-menuitem" role="menuitem" id=":oq" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Date is after</div>
-        </div>
-        <div class="goog-menuseparator" aria-disabled="true" role="separator" id=":or" style="-webkit-user-select: none;"></div>
-        <div class="goog-menuitem" role="menuitem" id=":os" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Greater than</div>
-        </div>
-        <div class="goog-menuitem" role="menuitem" id=":ot" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Greater than or equal to</div>
-        </div>
-        <div class="goog-menuitem" role="menuitem" id=":ou" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Less than</div>
-        </div>
-        <div class="goog-menuitem" role="menuitem" id=":ov" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Less than or equal to</div>
-        </div>
-        <div class="goog-menuitem" role="menuitem" id=":ow" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Is equal to</div>
-        </div>
-        <div class="goog-menuitem" role="menuitem" id=":ox" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Is not equal to</div>
-        </div>
-        <div class="goog-menuitem" role="menuitem" id=":oy" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Is between</div>
-        </div>
-        <div class="goog-menuitem" role="menuitem" id=":oz" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Is not between</div>
-        </div>
-        <div class="goog-menuseparator" aria-disabled="true" role="separator" id=":p0" style="-webkit-user-select: none;"></div>
-        <div class="goog-menuitem" role="menuitem" id=":p1" style="-webkit-user-select: none;">
-            <div class="goog-menuitem-content" style="-webkit-user-select: none;">Custom formula is</div>
-        </div>
+      <div class="goog-menuitem" role="menuitem" id=":og" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Cell is empty</div>
+      </div>
+      <div class="goog-menuitem" role="menuitem" id=":oh" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Cell is not empty</div>
+      </div>
+      <div class="goog-menuitem" role="menuitem" id=":oi" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Text contains</div>
+      </div>
+      <div class="goog-menuitem" role="menuitem" id=":oj" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Text does not contain</div>
+      </div>
+      <div class="goog-menuitem" role="menuitem" id=":ok" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Text starts with</div>
+      </div>
+      <div class="goog-menuitem" role="menuitem" id=":ol" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Text ends with</div>
+      </div>
+      <div class="goog-menuitem" role="menuitem" id=":om" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Text is exactly</div>
+      </div>
+      <div class="goog-menuseparator" aria-disabled="true" role="separator" id=":on" style="-webkit-user-select: none;"></div>
+      <div class="goog-menuitem" role="menuitem" id=":oo" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Date is</div>
+      </div>
+      <div class="goog-menuitem" role="menuitem" id=":op" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Date is before</div>
+      </div>
+      <div class="goog-menuitem" role="menuitem" id=":oq" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Date is after</div>
+      </div>
+      <div class="goog-menuseparator" aria-disabled="true" role="separator" id=":or" style="-webkit-user-select: none;"></div>
+      <div class="goog-menuitem" role="menuitem" id=":os" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Greater than</div>
+      </div>
+      <div class="goog-menuitem" role="menuitem" id=":ot" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Greater than or equal to</div>
+      </div>
+      <div class="goog-menuitem" role="menuitem" id=":ou" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Less than</div>
+      </div>
+      <div class="goog-menuitem" role="menuitem" id=":ov" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Less than or equal to</div>
+      </div>
+      <div class="goog-menuitem" role="menuitem" id=":ow" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Is equal to</div>
+      </div>
+      <div class="goog-menuitem" role="menuitem" id=":ox" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Is not equal to</div>
+      </div>
+      <div class="goog-menuitem" role="menuitem" id=":oy" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Is between</div>
+      </div>
+      <div class="goog-menuitem" role="menuitem" id=":oz" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Is not between</div>
+      </div>
+      <div class="goog-menuseparator" aria-disabled="true" role="separator" id=":p0" style="-webkit-user-select: none;"></div>
+      <div class="goog-menuitem" role="menuitem" id=":p1" style="-webkit-user-select: none;">
+        <div class="goog-menuitem-content" style="-webkit-user-select: none;">Custom formula is</div>
+      </div>
     </div>
 
     <div class="sidebar bottom">
-        <div class="fixed-button" id="button-bar">
-            <button id="back">Back</button>
-            <button class="blue" id="next">Next</button>
-        </div>
-        <img alt="Add-on logo" class="logo" src="http://onecity.edmonton.ca/interface/coe_logo_77x20.png">
-        <span class="gray branding-text">Mailman by City of Edmonton</span>
+      <div class="fixed-button" id="button-bar">
+        <button id="back">Back</button>
+        <button class="blue" id="next">Next</button>
+      </div>
+      <img alt="Add-on logo" class="logo" src="http://onecity.edmonton.ca/interface/coe_logo_77x20.png">
+      <span class="gray branding-text">Mailman by City of Edmonton</span>
     </div>
-</body>
+  </body>
 
-</html>
+  </html>
