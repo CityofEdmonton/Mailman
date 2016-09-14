@@ -1,8 +1,9 @@
+var browserify = require('browserify');
+var gjslint = require('gulp-gjslint');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var replace = require('gulp-replace');
 var source = require('vinyl-source-stream');
-var browserify = require('browserify');
 
 var exec = require('child_process').exec;
 var fs = require('fs');
@@ -13,22 +14,24 @@ gulp.task('test-web', ['build-web'], openWeb);
 
 // These are the build tasks
 gulp.task('deploy-gas', ['build-gas'], deployGAS);
-gulp.task('browserify', browserifyBundle);
+gulp.task('browserify', ['browserify'], browserifyBundle);
 gulp.task('build-gas', ['browserify'], buildGAS);
 gulp.task('build-web', ['browserify'], buildWeb);
+gulp.task('lint-all', closureLint);
+gulp.task('fix-all', closureFix);
 
 /**
  * Bundles up client.js (and all required functionality) and places it in a build directory.
  *
  */
 function browserifyBundle() {
-    return browserify('./src/client/js/client.js')
-        .bundle()
-        .on('error', function(e) {
-            gutil.log(e);
-        })
-        .pipe(source('bundle.js'))
-        .pipe(gulp.dest('./build'));
+  return browserify('./src/client/js/client.js')
+    .bundle()
+    .on('error', function(e) {
+      gutil.log(e);
+    })
+    .pipe(source('bundle.js'))
+    .pipe(gulp.dest('./build'));
 }
 
 /**
@@ -37,20 +40,20 @@ function browserifyBundle() {
  * TODO Make this more dynamic. It should swap out the script ref for the actual script.
  */
 function buildGAS() {
-    // HTML
-    var jsFile = fs.readFileSync('./build/bundle.js', 'utf8');
+  // HTML
+  var jsFile = fs.readFileSync('./build/bundle.js', 'utf8');
 
-    // Resolved an issue where $& in the replacement string would be replaced by the matched string.
-    // It required me to use a function instead of a string as the second param.
-    gulp.src('./src/client/html/*.html')
-        .pipe(replace(/<script src="\w*.js">\s*<\/script>/g, function(match, p1, p2, p3, offset, string) {
-            return '<script type="text/javascript">\n' + jsFile + '\n</script>';
-        }))
-        .pipe(gulp.dest('./build/gas'));
+  // Resolved an issue where $& in the replacement string would be replaced by the matched string.
+  // It required me to use a function instead of a string as the second param.
+  gulp.src('./src/client/html/*.html')
+    .pipe(replace(/<script src="\w*.js">\s*<\/script>/g, function(match, p1, p2, p3, offset, string) {
+      return '<script type="text/javascript">\n' + jsFile + '\n</script>';
+    }))
+    .pipe(gulp.dest('./build/gas'));
 
-    // GAS
-    gulp.src('./src/GAS/*')
-        .pipe(gulp.dest('./build/gas/GAS'));
+  // GAS
+  gulp.src('./src/GAS/*')
+    .pipe(gulp.dest('./build/gas/GAS'));
 }
 
 /**
@@ -58,16 +61,16 @@ function buildGAS() {
  *
  */
 function buildWeb() {
-    gulp.src('./build/bundle.js')
-        .pipe(gulp.dest('./build/web'));
+  gulp.src('./build/bundle.js')
+    .pipe(gulp.dest('./build/web'));
 
-    // HTML
-    gulp.src('./src/client/html/*.html')
-        .pipe(gulp.dest('./build/web'));
+  // HTML
+  gulp.src('./src/client/html/*.html')
+    .pipe(gulp.dest('./build/web'));
 
-    // GAS
-    gulp.src('./src/GAS/*')
-        .pipe(gulp.dest('./build/web/GAS'));
+  // GAS
+  gulp.src('./src/GAS/*')
+    .pipe(gulp.dest('./build/web/GAS'));
 }
 
 /**
@@ -76,11 +79,11 @@ function buildWeb() {
  *
  */
 function deployGAS(cb) {
-    exec('gapps push', function(err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        cb(err);
-    });
+  exec('gapps push', function(err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    cb(err);
+  });
 }
 
 /**
@@ -89,15 +92,15 @@ function deployGAS(cb) {
  *
  */
 function openGAS(cb) {
-    // Open the project in chrome
-    var key = JSON.parse(fs.readFileSync('gapps.config.json', 'utf8')).fileId;
+  // Open the project in chrome
+  var key = JSON.parse(fs.readFileSync('gapps.config.json', 'utf8')).fileId;
 
-    var chrome = 'start chrome https://script.google.com/a/edmonton.ca/d/' + key + '/edit'
-    exec(chrome, function(err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        cb(err);
-    });
+  var chrome = 'start chrome https://script.google.com/a/edmonton.ca/d/' + key + '/edit';
+  exec(chrome, function(err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    cb(err);
+  });
 }
 
 /**
@@ -106,10 +109,42 @@ function openGAS(cb) {
  *
  */
 function openWeb(cb) {
-    var chrome = 'start chrome ./build/web/ListSetupSidebar.html';
-    exec(chrome, function(err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        cb(err);
-    });
+  var chrome = 'start chrome ./build/web/ListSetupSidebar.html';
+  exec(chrome, function(err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    cb(err);
+  });
+}
+
+/**
+ * Runs Google's own Closure Linter on the JS destined for the web
+ *
+ */
+function closureLint() {
+
+  // flags: https://github.com/jmendiara/node-closure-linter-wrapper#flags
+  var lintOptions = {
+    flags: ['--max_line_length 120', '--strict']
+  };
+
+  // Output all failures to the console, and \then fail.
+  gulp.src(['./src/client/js/*.js', './src/GAS/*.js'])
+    .pipe(gjslint(lintOptions))
+    .pipe(gjslint.reporter('console'));
+}
+
+/**
+ * Attempts to automatically fix many of the errors that gjslint checks for.
+ *
+ */
+function closureFix(cb) {
+
+  var fixJS = 'fixjsstyle ./src/client/js/*.js ./src/GAS/*.js';
+
+  exec(fixJS, function(err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    cb(err);
+  });
 }
