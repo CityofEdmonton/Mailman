@@ -24,7 +24,7 @@ gulp.task('build-web', ['browserify'], buildWeb);
 function browserifyBundle() {
     return browserify('./src/client/js/client.js')
         .bundle()
-        .on('error', function() {
+        .on('error', function(e) {
             gutil.log(e);
         })
         .pipe(source('bundle.js'))
