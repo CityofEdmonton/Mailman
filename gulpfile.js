@@ -76,11 +76,11 @@ function buildWeb() {
  *
  */
 function deployGAS(cb) {
-  exec('gapps push', function (err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
-  });
+    exec('gapps push', function(err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb(err);
+    });
 }
 
 /**
@@ -89,15 +89,15 @@ function deployGAS(cb) {
  *
  */
 function openGAS(cb) {
-  // Open the project in chrome
-  var key = JSON.parse(fs.readFileSync('gapps.config.json', 'utf8')).fileId;
+    // Open the project in chrome
+    var key = JSON.parse(fs.readFileSync('gapps.config.json', 'utf8')).fileId;
 
-  var chrome = 'start chrome https://script.google.com/a/edmonton.ca/d/' + key + '/edit'
-  exec(chrome, function (err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
-  });
+    var chrome = 'start chrome https://script.google.com/a/edmonton.ca/d/' + key + '/edit'
+    exec(chrome, function(err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb(err);
+    });
 }
 
 /**
@@ -106,11 +106,10 @@ function openGAS(cb) {
  *
  */
 function openWeb(cb) {
-
-  var chrome = 'start chrome ./build/web/ListSetupSidebar.html';
-  exec(chrome, function (err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
-  });
+    var chrome = 'start chrome ./build/web/ListSetupSidebar.html';
+    exec(chrome, function(err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb(err);
+    });
 }
