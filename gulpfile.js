@@ -3,16 +3,16 @@ var gutil = require('gulp-util');
 var replace = require('gulp-replace');
 var source = require('vinyl-source-stream');
 var browserify = require('browserify');
+
+var exec = require('child_process').exec;
 var fs = require('fs');
 
-/**
- * Runs the default build tasks.
- *
- */
-gulp.task('default', function() {
-    // place code for your default task here
-});
+// These are the primary tasks
+gulp.task('test-gas', ['deploy-gas'], openGAS);
+gulp.task('test-web', ['build-web'], openWeb);
 
+// These are the build tasks
+gulp.task('deploy-gas', ['build-gas'], deployGAS);
 gulp.task('browserify', browserifyBundle);
 gulp.task('build-gas', ['browserify'], buildGAS);
 gulp.task('build-web', ['browserify'], buildWeb);
@@ -68,4 +68,49 @@ function buildWeb() {
     // GAS
     gulp.src('./src/GAS/*')
         .pipe(gulp.dest('./build/web/GAS'));
+}
+
+/**
+ * Deploys the GAS code up to the project.
+ * Calls browserifyBundle, then buildGAS.
+ *
+ */
+function deployGAS(cb) {
+  exec('gapps push', function (err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    cb(err);
+  });
+}
+
+/**
+ * Opens up the project in GAS in chrome.
+ * Calls browserifyBundle, then buildGAS, then deployGAS.
+ *
+ */
+function openGAS(cb) {
+  // Open the project in chrome
+  var key = JSON.parse(fs.readFileSync('gapps.config.json', 'utf8')).fileId;
+
+  var chrome = 'start chrome https://script.google.com/a/edmonton.ca/d/' + key + '/edit'
+  exec(chrome, function (err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    cb(err);
+  });
+}
+
+/**
+ * Opens up the project in chrome.
+ * Calls browserifyBundle, then buildWeb.
+ *
+ */
+function openWeb(cb) {
+
+  var chrome = 'start chrome ./build/web/ListSetupSidebar.html';
+  exec(chrome, function (err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    cb(err);
+  });
 }
