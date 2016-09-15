@@ -128,7 +128,7 @@ function closureLint() {
   };
 
   // Output all failures to the console, and \then fail.
-  gulp.src(['./src'])
+  gulp.src(['./src/**/*.js'])
     .pipe(gjslint(lintOptions))
     .pipe(gjslint.reporter('console'));
 }
