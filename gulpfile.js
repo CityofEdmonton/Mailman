@@ -14,7 +14,7 @@ gulp.task('test-web', ['build-web'], openWeb);
 
 // These are the build tasks
 gulp.task('deploy-gas', ['build-gas'], deployGAS);
-gulp.task('browserify', ['browserify'], browserifyBundle);
+gulp.task('browserify', browserifyBundle);
 gulp.task('build-gas', ['browserify'], buildGAS);
 gulp.task('build-web', ['browserify'], buildWeb);
 gulp.task('lint-all', closureLint);
