@@ -4,7 +4,7 @@
  */
 
 Comparison = {
-  'Text is exactly' : textIsExactly
+  'Text is exactly': textIsExactly
 };
 
 function textIsExactly(text, mustBe) {

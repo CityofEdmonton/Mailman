@@ -122,25 +122,24 @@ function openWeb(cb) {
  *
  */
 function closureLint() {
-
   // flags: https://github.com/jmendiara/node-closure-linter-wrapper#flags
   var lintOptions = {
     flags: ['--max_line_length 120', '--strict']
   };
 
   // Output all failures to the console, and \then fail.
-  gulp.src(['./src/client/js/*.js', './src/GAS/*.js'])
+  gulp.src(['./src'])
     .pipe(gjslint(lintOptions))
     .pipe(gjslint.reporter('console'));
 }
 
 /**
  * Attempts to automatically fix many of the errors that gjslint checks for.
- *
+ * Runs a shell command.
  */
 function closureFix(cb) {
 
-  var fixJS = 'fixjsstyle ./src/client/js/*.js ./src/GAS/*.js';
+  var fixJS = 'fixjsstyle --strict --max_line_length 120 -r ./src';
 
   exec(fixJS, function(err, stdout, stderr) {
     console.log(stdout);

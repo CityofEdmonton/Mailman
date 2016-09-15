@@ -1,8 +1,8 @@
 var $ = require('jquery');
-var MailMan = require('./mailman.js')
+var MailMan = require('./mailman.js');
 var Util = require('./util.js');
 
 $(document).ready(function() {
-    var mailman = new MailMan();
-    mailman.init();
+  var mailman = new MailMan();
+  mailman.init();
 });
