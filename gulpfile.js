@@ -198,7 +198,7 @@ function closureFix(cb) {
 
 
 /**
- * Compiles SASS
+ * Compiles SASS (?) ¯\_(ツ)_/¯
  *
  * @return {stream} the stream as the completion hint to the gulp engine
  */
