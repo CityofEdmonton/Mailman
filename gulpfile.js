@@ -1,10 +1,13 @@
+// NPM packages
 var browserify = require('browserify');
 var gjslint = require('gulp-gjslint');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
-var replace = require('gulp-replace');
+var htmlProcessor = require('gulp-htmlprocessor');
+var sass = require('gulp-sass');
 var source = require('vinyl-source-stream');
 
+// Node modules
 var exec = require('child_process').exec;
 var fs = require('fs');
 
@@ -12,66 +15,86 @@ var fs = require('fs');
 gulp.task('test-gas', ['deploy-gas'], openGAS);
 gulp.task('test-web', ['build-web'], openWeb);
 
-// These are the build tasks
-gulp.task('deploy-gas', ['build-gas'], deployGAS);
-gulp.task('browserify', browserifyBundle);
-gulp.task('build-gas', ['browserify'], buildGAS);
-gulp.task('build-web', ['browserify'], buildWeb);
+// General
 gulp.task('lint-all', closureLint);
 gulp.task('fix-all', closureFix);
+gulp.task('browserify', browserifyBundle);
+gulp.task('compile-sass', compileSASS);
+
+// Web specific
+gulp.task('build-web', ['browserify', 'compile-sass'], buildWeb);
+
+// GAS specific
+gulp.task('deploy-gas', ['swap-tags'], deployGAS);
+gulp.task('swap-tags', ['build-gas'], replaceTags);
+gulp.task('build-gas', ['browserify', 'compile-sass'], buildGAS);
 
 /**
  * Bundles up client.js (and all required functionality) and places it in a build directory.
  *
  */
 function browserifyBundle() {
-  return browserify('./src/client/js/client.js')
-    .bundle()
-    .on('error', function(e) {
-      gutil.log(e);
-    })
-    .pipe(source('bundle.js'))
-    .pipe(gulp.dest('./build'));
+  return browserify('./src/client/js/root.js')
+      .bundle()
+      .on('error', function(e) {
+          gutil.log(e);
+        })
+      .pipe(source('bundle.js'))
+      .pipe(gulp.dest('./build/common'));
 }
 
 /**
  * Builds the project for GAS.
  * GAS doesn't allow seperate CSS or JS, so both need to be injected into the main HTML.
- * TODO Make this more dynamic. It should swap out the script ref for the actual script.
  */
 function buildGAS() {
-  // HTML
-  var jsFile = fs.readFileSync('./build/bundle.js', 'utf8');
-  var cssFile = fs.readFileSync('./src/client/css/styles.css', 'utf8');
 
-  // Resolved an issue where $& in the replacement string would be replaced by the matched string.
-  // It required me to use a function instead of a string as the second param.
-  gulp.src('./src/client/html/ListSetupSidebar.html')
-    .pipe(replace('<script src="../js/bundle.js"></script>', function(match, p1, p2, p3, offset, string) {
-      return '<script type="text/javascript">\n' + jsFile + '\n</script>';
-    }))
-    .pipe(replace('<link rel="stylesheet" type="text/css" href="../css/styles.css"/>', function(match, p1, p2, p3, offset, string) {
-      return '<style>\n' + cssFile + '\n</style>';
-    }))
-    .pipe(gulp.dest('./build/gas'));
+  gulp.src('./src/client/html/**', {
+          base: './src/client'
+        })
+      .pipe(gulp.dest('./build/gas'));
 
   // GAS
-  gulp.src('./src/GAS/*')
-    .pipe(gulp.dest('./build/gas/GAS'));
+  return gulp.src('./src/GAS/*')
+      .pipe(gulp.dest('./build/gas/GAS'));
+}
+
+/**
+ * Replaces all script tags and css links.
+ * Note: This is done relative to this gulpfile.
+ * All swap tags are relative to this gulpfile.
+ */
+function replaceTags() {
+  return gulp.src('./build/gas/html/*.html')
+      .pipe(htmlProcessor({
+          includeBase: './'
+        }))
+      .pipe(gulp.dest('./build/gas/html/'));
 }
 
 /**
  * Builds the project for the web.
  *
  */
+function buildWeb() {
+  gulp.src('./build/common/bundle.js')
+      .pipe(gulp.dest('./build/web/client/js'));
 
- function buildWeb() {
-  gulp.src('./build/bundle.js')
-    .pipe(gulp.dest('./build/web/client/js'));
+  gulp.src('./src/client/css/*')
+      .pipe(gulp.dest('./build/web/client/css'));
 
-  gulp.src(['!./src/client/js/*', './src/**'])
-    .pipe(gulp.dest('./build/web'));
- }
+  gulp.src('./src/client/html/*')
+      .pipe(gulp.dest('./build/web/client/html'));
+
+  gulp.src('./src/client/images/*')
+      .pipe(gulp.dest('./build/web/client/images'));
+
+  gulp.src('./build/common/css/*')
+      .pipe(gulp.dest('./build/web/client/css'));
+
+  return gulp.src('./src/GAS/*')
+      .pipe(gulp.dest('./build/web/GAS'));
+}
 
 /**
  * Deploys the GAS code up to the project.
@@ -79,11 +102,11 @@ function buildGAS() {
  *
  */
 function deployGAS(cb) {
-  exec('gapps push', function(err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
-  });
+  return exec('gapps push', function(err, stdout, stderr) {
+      console.log(stdout);
+      console.log(stderr);
+      cb(err);
+    });
 }
 
 /**
@@ -96,11 +119,11 @@ function openGAS(cb) {
   var key = JSON.parse(fs.readFileSync('gapps.config.json', 'utf8')).fileId;
 
   var chrome = 'start chrome https://script.google.com/a/edmonton.ca/d/' + key + '/edit';
-  exec(chrome, function(err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
-  });
+  return exec(chrome, function(err, stdout, stderr) {
+      console.log(stdout);
+      console.log(stderr);
+      cb(err);
+    });
 }
 
 /**
@@ -109,12 +132,12 @@ function openGAS(cb) {
  *
  */
 function openWeb(cb) {
-  var chrome = 'start chrome ./build/web/client/html/ListSetupSidebar.html';
-  exec(chrome, function(err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
-  });
+  var chrome = 'start chrome ./build/web/client/html/index.html';
+  return exec(chrome, function(err, stdout, stderr) {
+      console.log(stdout);
+      console.log(stderr);
+      cb(err);
+    });
 }
 
 /**
@@ -124,13 +147,13 @@ function openWeb(cb) {
 function closureLint() {
   // flags: https://github.com/jmendiara/node-closure-linter-wrapper#flags
   var lintOptions = {
-    flags: ['--max_line_length 120', '--strict']
-  };
+      flags: ['--max_line_length 120', '--strict']
+    };
 
   // Output all failures to the console, and \then fail.
-  gulp.src(['./src/**/*.js'])
-    .pipe(gjslint(lintOptions))
-    .pipe(gjslint.reporter('console'));
+  return gulp.src(['./src/**/*.js'])
+      .pipe(gjslint(lintOptions))
+      .pipe(gjslint.reporter('console'));
 }
 
 /**
@@ -141,9 +164,19 @@ function closureFix(cb) {
 
   var fixJS = 'fixjsstyle --strict --max_line_length 120 -r ./src';
 
-  exec(fixJS, function(err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
-  });
+  return exec(fixJS, function(err, stdout, stderr) {
+      console.log(stdout);
+      console.log(stderr);
+      cb(err);
+    });
+}
+
+function compileSASS() {
+  return gulp.src('./src/client/sass/*.scss')
+      .pipe(sass().on('error', function(error) {
+          var message = new gutil.PluginError('sass', error.messageFormatted).toString();
+          process.stderr.write(message + '\n');
+          process.exit(1);
+        }))
+      .pipe(gulp.dest('./build/common/css'));
 }
