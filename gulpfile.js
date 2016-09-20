@@ -27,7 +27,7 @@ gulp.task('build-web', ['browserify', 'compile-sass'], buildWeb);
 // GAS specific
 gulp.task('deploy-gas', ['swap-tags'], deployGAS);
 gulp.task('swap-tags', ['build-gas'], replaceTags);
-gulp.task('build-gas', ['browserify'], buildGAS);
+gulp.task('build-gas', ['browserify', 'compile-sass'], buildGAS);
 
 
 /**
