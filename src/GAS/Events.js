@@ -7,12 +7,13 @@ function onInstall(e) {
 
 function onOpen(e) {
   SpreadsheetApp.getUi()
-    .createAddonMenu()//'Defect Tracker'
-    .addItem('Set Up Email List', 'openListSetUpSidebar')
-    .addToUi();
+      .createAddonMenu() //'Defect Tracker'
+      .addItem('Set Up Email List', 'openListSetUpSidebar')
+      .addToUi();
 
-    PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, SpreadsheetApp.getActiveSpreadsheet().getId());
+  PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, SpreadsheetApp.getActiveSpreadsheet().getId());
 }
+
 
 /**
  * Creates an HTML sidebar for creating/viewing mailman rules.
@@ -20,8 +21,8 @@ function onOpen(e) {
  */
 function openListSetUpSidebar() {
   var ui = HtmlService.createHtmlOutputFromFile('ListSetupSidebar')
-    .setTitle('Set Up Email List')
-    .setSandboxMode(HtmlService.SandboxMode.IFRAME);
+      .setTitle('Set Up Email List')
+      .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 
   SpreadsheetApp.getUi().showSidebar(ui);
 }
