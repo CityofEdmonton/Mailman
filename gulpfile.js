@@ -3,9 +3,11 @@ var browserify = require('browserify');
 var gjslint = require('gulp-gjslint');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
-var source = require('vinyl-source-stream');
 var htmlProcessor = require('gulp-htmlprocessor');
+var open = require('gulp-open');
+var os = require('os');
 var sass = require('gulp-sass');
+var source = require('vinyl-source-stream');
 
 // Node modules
 var exec = require('child_process').exec;
@@ -124,39 +126,42 @@ function deployGAS(cb) {
 
 
 /**
- * Opens up the project in GAS in chrome.
+ * Opens up the project in GAS in Google Chrome.
  * Calls browserifyBundle, then buildGAS, then deployGAS.
  *
- * @param  {callback} cb - a callback so the engine knows when it'll be done
  * @return {stream} the stream as the completion hint to the gulp engine
  */
-function openGAS(cb) {
-  // Open the project in chrome
+function openGAS() {
   var key = JSON.parse(fs.readFileSync('gapps.config.json', 'utf8')).fileId;
+  var url = 'https://script.google.com/a/edmonton.ca/d/' + key + '/edit';
 
-  var chrome = 'start chrome https://script.google.com/a/edmonton.ca/d/' + key + '/edit';
-  return exec(chrome, function(err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
-  });
+  var browser = os.platform() === 'win32' ? 'chrome' : (
+      os.platform() === 'linux' ? 'google-chrome' : (
+      os.platform() === 'darwin' ? 'google chrome' : 'firefox'));
+
+  var options = {
+    uri: url,
+    app: browser
+  };
+
+  return gulp.src(__filename)
+      .pipe(open(options));
 }
 
 
 /**
- * Opens up the project in chrome.
+ * Opens up the project in Google Chrome.
  * Calls browserifyBundle, then buildWeb.
  *
- * @param  {callback} cb - a callback so the engine knows when it'll be done
  * @return {stream} the stream as the completion hint to the gulp engine
  */
-function openWeb(cb) {
-  var chrome = 'start chrome ./build/web/client/html/ListSetupSidebar.html';
-  return exec(chrome, function(err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
-  });
+function openWeb() {
+  var browser = os.platform() === 'win32' ? 'chrome' : (
+      os.platform() === 'linux' ? 'google-chrome' : (
+      os.platform() === 'darwin' ? 'google chrome' : 'firefox'));
+
+  return gulp.src('./build/web/client/html/ListSetupSidebar.html')
+      .pipe(open({app: browser}));
 }
 
 
@@ -171,7 +176,7 @@ function closureLint() {
     flags: ['--max_line_length 120', '--strict']
   };
 
-  // Output all failures to the console, and \then fail.
+  // Output all failures to the console, and then fail.
   return gulp.src(['./src/**/*.js'])
       .pipe(gjslint(lintOptions))
       .pipe(gjslint.reporter('console'));
