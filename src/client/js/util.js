@@ -1,5 +1,7 @@
 var $ = require('jquery');
 
+var Util = module.exports = function() {};
+
 $.fn.extend({
   insertAtCaret: function(myValue) {
     var obj;
@@ -17,3 +19,23 @@ $.fn.extend({
     obj.scrollTop = scrollTop;
   }
 });
+
+/**
+ * Reverses the properties in a JavaScript object.
+ * Found here:
+ *http://stackoverflow.com/questions/10974493/javascript-quickly-lookup-value-in-object-like-we-can-with-properties
+ *
+ * @param {object} map The object that we are interested in flipping.
+ * @return {object} An object with all keys and values swapped.
+ */
+Util.reverseObject = function(map) {
+  var reverseMap = {};
+
+  for (j in map) {
+    if (Object.prototype.hasOwnProperty.call(map, j)) {
+      reverseMap[map[j]] = j;
+    }
+  }
+
+  return reverseMap;
+};
