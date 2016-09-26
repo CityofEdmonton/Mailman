@@ -151,7 +151,7 @@ function openGAS(cb) {
  * @return {stream} the stream as the completion hint to the gulp engine
  */
 function openWeb(cb) {
-  var chrome = 'start chrome ./build/web/client/html/ListSetupSidebar.html';
+  var chrome = 'start chrome ./build/web/client/html/NewEmailDialog.html';
   return exec(chrome, function(err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
