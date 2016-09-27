@@ -25,39 +25,82 @@
           <!-- <div class="mdl-layout__header-row">
             <span class="mdl-layout-title">Mailman</span>
           </div> -->
-          <div class="mdl-layout__header-row demo-crumbs mdl-color-text--grey-500">
-            To &gt; From &gt; Subject
-          </div>
+          <div id="nav-bar" class="mdl-layout__header-row demo-crumbs mdl-color-text--grey-500"></div>
         </header>
         <div class="demo-ribbon"></div>
+
+
         <main class="demo-main mdl-layout__content">
-          <div class="demo-container mdl-grid">
+          <div id="content-area" class="demo-container mdl-grid">
             <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
-            <div class="demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
-              <h4>What's your subject?</h4>
+
+            <div id="to-card" class="demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
+              <h4>Who are you sending to?</h4>
               <p>
-                Cillum dolor esse sit incididunt velit eiusmod magna ad nostrud officia aute dolor dolor. Quis aliqua nostrud Lorem occaecat sunt. Eiusmod quis amet ullamco aliquip dolore ut incididunt duis adipisicing. Elit consequat nisi eiusmod aute ipsum sunt veniam do est. Occaecat mollit aliquip ut proident consectetur amet ex dolore consectetur aliqua elit.
+                This will be a help area. If you have help on, this will be displayed. If not, it will be hidden.
               </p>
 
               <form action="#">
                 <div class="mdl-textfield mdl-js-textfield demo-text-field">
-                  <input class="mdl-textfield__input" type="text" id="sample3">
-                  <label class="mdl-textfield__label" for="sample3">Subject...</label>
+                  <input class="mdl-textfield__input" type="text">
+                  <label class="mdl-textfield__label">To...</label>
                 </div>
               </form>
             </div>
+
+            <div id="from-card" class="hidden demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
+              <h4>Who's this from?</h4>
+              <p>
+                This will be a help area. If you have help on, this will be displayed. If not, it will be hidden.
+              </p>
+
+              <form action="#">
+                <div class="mdl-textfield mdl-js-textfield demo-text-field">
+                  <input class="mdl-textfield__input" type="text" id="from-input">
+                  <label class="mdl-textfield__label" for="from-input">From...</label>
+                </div>
+              </form>
+            </div>
+
+            <div id="subject-card" class="hidden demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
+              <h4>What's your subject?</h4>
+              <p>Cillum dolor esse sit incididunt velit eiusmod magna ad nostrud officia aute dolor dolor. Quis aliqua nostrud Lorem occaecat sunt. Eiusmod quis amet ullamco aliquip dolore ut incididunt duis adipisicing. Elit consequat nisi eiusmod aute ipsum sunt veniam do est. Occaecat mollit aliquip ut proident consectetur amet ex dolore consectetur aliqua elit.</p>
+
+              <form action="#">
+                <div class="mdl-textfield mdl-js-textfield demo-text-field">
+                  <input class="mdl-textfield__input" type="text" id="subject-input">
+                  <label class="mdl-textfield__label" for="subject-input">Subject...</label>
+                </div>
+              </form>
+            </div>
+
+            <!-- <div id="body-card" class="hidden demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
+              <h4>What's in the body??</h4>
+              <p>This will be a help area. If you have help on, this will be displayed. If not, it will be hidden.</p>
+
+              <form action="#">
+                <div class="mdl-textfield mdl-js-textfield demo-text-field">
+                  <textarea class="mdl-textfield__input" type="text" rows="6" id="body-input"></textarea>
+                  <label class="mdl-textfield__label" for="body-input">Body...</label>
+                </div>
+              </form>
+            </div> -->
+
           </div>
+
+          <footer class="demo-footer mdl-mini-footer">
+            <div class="mdl-mini-footer--left-section">
+              <ul class="mdl-mini-footer--link-list">
+                <li>
+                  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="continue">Next</button>
+                </li>
+              </ul>
+            </div>
+          </footer>
 
         </main>
 
-        <footer class="demo-footer mdl-mini-footer">
-          <div class="mdl-mini-footer--left-section">
-            <ul class="mdl-mini-footer--link-list">
-              <li><a href="#">Help</a></li>
-              <li><a href="#">User Agreement</a></li>
-            </ul>
-          </div>
-        </footer>
+
       </div>
 </body>
 
