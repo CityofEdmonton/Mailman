@@ -3,21 +3,28 @@ var $ = require('jquery');
 // HTML Templates
 var inputHTML = require('../html/input-content-div.html');
 var textareaHTML = require('../html/textarea-content-div.html');
+var infoHTML = require('../html/info-content-div.html');
 
 var Card = function(appendTo, type, options) {
 
   // *** LOCAL VARIABLES *** //
   var base;
+  var self;
 
   // *** CONSTRUCTOR *** //
 
   this.init = function(appendTo, type, options) {
+    var self = this;
+
     // Handle type
-    if (type === Card.types.input) {
+    if (type === Card.types.INPUT) {
       base = $(inputHTML);
     }
-    else if (type === Card.types.textarea) {
+    else if (type === Card.types.TEXTAREA) {
       base = $(textareaHTML);
+    }
+    else if (type === Card.types.INFO) {
+      base = $(infoHTML);
     }
     else {
       throw new Error('type must be one of ' + JSON.stringify(Card.types));
@@ -42,11 +49,20 @@ var Card = function(appendTo, type, options) {
           this.hide();
         }
       }
+      if (options.paragraphs !== undefined) {
+        options.paragraphs.every(function(data) {
+          self.addParagraph(data);
+          return true;
+        })
+      }
     }
 
     appendTo.append(base);
     // MDL requires dynamically created components be registered. TODO force MDL to use browserify. Right now, componentHandler is just floating around in global.
-    componentHandler.upgradeElement(base.find('.mdl-js-textfield')[0], 'MaterialTextfield');
+    if (type !== Card.types.INFO) {
+      componentHandler.upgradeElement(base.find('.mdl-js-textfield')[0], 'MaterialTextfield');
+    }
+
   }
 
 
@@ -74,14 +90,17 @@ var Card = function(appendTo, type, options) {
   };
 
   this.setHelp = function(help) {
-    base.find('p').text(help);
+    base.find('.help').text(help);
   };
 
   this.setLabel = function(label) {
     base.find('label').text(label);
   };
 
-
+  this.addParagraph = function(content) {
+    var para = $('<p>' + content + '</p>');
+    base.append(para);
+  }
 
   // *** PRIVATE FUNCTIONS *** //
 
@@ -90,8 +109,9 @@ var Card = function(appendTo, type, options) {
 
 // This is meant to be accessed statically.
 Card.types = {
-    input: 'input',
-    textarea: 'textarea'
+    INPUT: 'input',
+    TEXTAREA: 'textarea',
+    INFO: 'info'
 };
 
 module.exports = Card;

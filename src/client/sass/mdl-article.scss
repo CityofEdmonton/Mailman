@@ -63,6 +63,11 @@
 	h3 {
 		margin-top: 48px;
 	}
+
+  .help {
+    margin-left: 24px;
+    color: $fade-gray;
+  }
 }
 
 .demo-layout.is-small-screen {
@@ -82,4 +87,15 @@
 			font-size: 13px;
 		}
 	}
+}
+
+// MDL Changes
+.mailman-button {
+    background: $pantone-2945;
+    color: $white;
+
+    &:hover {
+      background: $pantone-2945;
+      color: $white;
+    }
 }

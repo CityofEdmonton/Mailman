@@ -21,38 +21,50 @@ var MailMan = function() {
     // Configuration
     contentArea = $('#content-area');
 
-    cards[0] = new Card(contentArea, Card.types.input, {
+    cards[0] = new Card(contentArea, Card.types.INFO, {
+      title: 'Welcome!',
+      help: 'Help will be displayed here normally. Since this is just the welcome page, there isn\'t much to know!',
+      paragraphs: [
+        "Welcome to Mailman! This application helps users easily create mail merges. It aims to be easy to use, while also providing advanced options for power users.",
+        "To get started, simply click NEXT down below."
+      ]
+    });
+    cards[1] = new Card(contentArea, Card.types.INPUT, {
+      title: 'Which Sheet are we sending from?',
+      help: 'HELP',
+      label: 'Sheet...'
+    });
+    cards[2] = new Card(contentArea, Card.types.INPUT, {
       title: 'Who are you sending to?',
       help: 'HELP',
-      label: 'To...',
-      visible: true
+      label: 'To...'
     });
-    cards[1] = new Card(contentArea, Card.types.input, {
+    cards[3] = new Card(contentArea, Card.types.INPUT, {
       title: 'Who\'s this from?',
       help: 'HELP',
-      label: 'From...',
-      visible: false
+      label: 'From...'
     });
-    cards[2] = new Card(contentArea, Card.types.input, {
+    cards[4] = new Card(contentArea, Card.types.INPUT, {
       title: 'What\'s your subject?',
       help: 'HELP',
-      label: 'Subject...',
-      visible: false
+      label: 'Subject...'
     });
-    cards[3] = new Card(contentArea, Card.types.textarea, {
+    cards[5] = new Card(contentArea, Card.types.TEXTAREA, {
       title: 'What\'s in the body?',
       help: 'HELP',
-      label: 'Body...',
-      visible: false
+      label: 'Body...'
     });
 
     activeCard = cards[0];
 
-    cards[0].name = 'To';
-    cards[1].name = 'From';
-    cards[2].name = 'Subject';
-    cards[3].name = 'Body';
+    cards[0].name = 'Welcome';
+    cards[1].name = 'Sheet';
+    cards[2].name = 'To';
+    cards[3].name = 'From';
+    cards[4].name = 'Subject';
+    cards[5].name = 'Body';
 
+    show(activeCard);
     buildNavTree(activeCard);
 
     // All UI Bindings
