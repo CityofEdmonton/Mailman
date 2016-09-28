@@ -5,19 +5,13 @@ var Card = require('./simple-content-div.js');
 var MailMan = function() {
 
   // *** GLOBAL VARIABLES *** //
-  // This links up the links in the header to the actual cards.
-  var navToID = {
-    'To': 'to-card',
-    'From': 'from-card',
-    'Subject': 'subject-card',
-    'Body' : 'body-card'
-  };
-
-  // For convenience, this will hold the reverse lookup of navToID.
-  var idToNav;
 
   // This holds all the "cards"
   var contentArea;
+
+  // This stores all the
+  var cards = [];
+  var activeCard;
 
   // ********** PUBLIC **********//
 
@@ -25,10 +19,41 @@ var MailMan = function() {
     self = this;
 
     // Configuration
-    idToNav = Util.reverseObject(navToID);
     contentArea = $('#content-area');
 
-    var body = new Card('test', contentArea);
+    cards[0] = new Card(contentArea, Card.types.input, {
+      title: 'Who are you sending to?',
+      help: 'HELP',
+      label: 'To...',
+      visible: true
+    });
+    cards[1] = new Card(contentArea, Card.types.input, {
+      title: 'Who\'s this from?',
+      help: 'HELP',
+      label: 'From...',
+      visible: false
+    });
+    cards[2] = new Card(contentArea, Card.types.input, {
+      title: 'What\'s your subject?',
+      help: 'HELP',
+      label: 'Subject...',
+      visible: false
+    });
+    cards[3] = new Card(contentArea, Card.types.textarea, {
+      title: 'What\'s in the body?',
+      help: 'HELP',
+      label: 'Body...',
+      visible: false
+    });
+
+    activeCard = cards[0];
+
+    cards[0].name = 'To';
+    cards[1].name = 'From';
+    cards[2].name = 'Subject';
+    cards[3].name = 'Body';
+
+    buildNavTree(activeCard);
 
     // All UI Bindings
     $('#continue').on('click', self.next);
@@ -36,35 +61,39 @@ var MailMan = function() {
   };
 
   this.next = function(event) {
-    var current = $('.demo-content:not(.hidden)');
-    var next = current.next('.demo-content');
+    if (cards.indexOf(activeCard) + 1 < cards.length) {
+      activeCard = cards[cards.indexOf(activeCard) + 1];
+    }
 
-    show(next);
-
-    // Make sure this isn't the last one.
+    show(activeCard);
 
     // Add to the nav location
-    addNavLink(idToNav[next.attr('id')]);
+    buildNavTree(activeCard);
   };
-
-
-
-
 
   // ********** PRIVATE **********//
 
   /**
    * Adds a new nav link to the top navigation bar. Each content div (the card looking things) should have a related nav item.
    *
-   * @param {string} value The string to display in the navigation bar.
+   * @param {Card} card The Card to display in the navigation bar.
    */
-  var addNavLink = function(value) {
-    var newLink = $('<a>' + value + '</a>')
-      .on('click', navigate);
+  var addNavLink = function(card) {
+    var newLink = $('<a>' + card.name + '</a>')
+      .on('click', card, navigate);
 
     $('#nav-bar')
       .append('&nbsp;&gt;&nbsp;')
       .append(newLink);
+  };
+
+  var buildNavTree = function(card) {
+    $('#nav-bar').empty();
+
+    var stop = cards.indexOf(card);
+    for (var i = 0; i <= stop; i++) {
+      addNavLink(cards[i]);
+    }
   };
 
   /**
@@ -74,21 +103,27 @@ var MailMan = function() {
    * @param {event} e The event that triggerred this function.
    */
   var navigate = function(e) {
-    var id = navToID[$(this).text()];
+    activeCard = e.data;
 
-    // Show only the selected conent div
-    show($('#' + id));
-
+    show(e.data);
+    buildNavTree(e.data);
   };
 
   /**
    * Hides all the primary content divs. There are spacing divs, so those ones aren't hidden. Then shows the parameter div.
    *
-   * @param {jquery} contentDiv The div to leave visible. All other are 'display:none'ed
+   * @param {Card} card The div to leave visible. All other are 'display:none'ed
    */
-  var show = function(contentDiv) {
-    $('.demo-content').addClass('hidden');
-    contentDiv.removeClass('hidden');
+  var show = function(card) {
+    hideAll();
+    card.show();
+  };
+
+  var hideAll = function() {
+    cards.every(function(card) {
+      card.hide();
+      return true;
+    });
   };
 
   var done = function() {
