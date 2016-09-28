@@ -16,6 +16,9 @@ var MailMan = function() {
   var cards = [];
   var activeCard;
 
+  // This alters how many card links will be shown in the nav bar
+  var maxNavItems;
+
   // ********** PUBLIC **********//
 
   this.init = function() {
@@ -24,6 +27,7 @@ var MailMan = function() {
     // Configuration
     contentArea = $('#content-area');
     showHelp = false;
+    maxNavItems = 4;
 
     cards[0] = new Card(contentArea, Card.types.INFO, {
       title: 'Welcome!',
@@ -120,7 +124,8 @@ var MailMan = function() {
     $('#nav-bar').empty();
 
     var stop = cards.indexOf(card);
-    for (var i = 0; i <= stop; i++) {
+    var start = Math.max(0, stop - maxNavItems + 1);
+    for (var i = start; i <= stop; i++) {
       addNavLink(cards[i]);
     }
   };
