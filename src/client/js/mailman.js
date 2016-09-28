@@ -6,10 +6,13 @@ var MailMan = function() {
 
   // *** GLOBAL VARIABLES *** //
 
-  // This holds all the "cards"
+  // This holds all the "cards".
   var contentArea;
 
-  // This stores all the
+  // This tracks whether help is being displayed currently.
+  var showHelp;
+
+  // These are used to keep track of the visible card as well as the hidden cards.
   var cards = [];
   var activeCard;
 
@@ -20,38 +23,39 @@ var MailMan = function() {
 
     // Configuration
     contentArea = $('#content-area');
+    showHelp = false;
 
     cards[0] = new Card(contentArea, Card.types.INFO, {
       title: 'Welcome!',
       help: 'Help will be displayed here normally. Since this is just the welcome page, there isn\'t much to know!',
       paragraphs: [
-        "Welcome to Mailman! This application helps users easily create mail merges. It aims to be easy to use, while also providing advanced options for power users.",
-        "To get started, simply click NEXT down below."
+        'Welcome to Mailman! This application helps users easily create mail merges. It aims to be easy to use, while also providing advanced options for power users.',
+        'To get started, simply click NEXT down below.'
       ]
     });
     cards[1] = new Card(contentArea, Card.types.INPUT, {
       title: 'Which Sheet are we sending from?',
-      help: 'HELP',
+      help: 'This Sheet must contain all the information you may want to send in an email.',
       label: 'Sheet...'
     });
     cards[2] = new Card(contentArea, Card.types.INPUT, {
       title: 'Who are you sending to?',
-      help: 'HELP',
+      help: 'This is the column filled with the email addresses of the recipients.',
       label: 'To...'
     });
     cards[3] = new Card(contentArea, Card.types.INPUT, {
       title: 'Who\'s this from?',
-      help: 'HELP',
+      help: 'Who should recipients see as the sender of these emails?',
       label: 'From...'
     });
     cards[4] = new Card(contentArea, Card.types.INPUT, {
       title: 'What\'s your subject?',
-      help: 'HELP',
+      help: 'Recipients will see this as the subject line of the email. Type "<<" to see a list of column names. These tags will be swapped out with the associated values in the Sheet.',
       label: 'Subject...'
     });
     cards[5] = new Card(contentArea, Card.types.TEXTAREA, {
       title: 'What\'s in the body?',
-      help: 'HELP',
+      help: 'Recipients will see this as the body of the email. Type "<<" to see a list of column names. These tags will be swapped out with the associated values in the Sheet.',
       label: 'Body...'
     });
 
@@ -66,9 +70,11 @@ var MailMan = function() {
 
     show(activeCard);
     buildNavTree(activeCard);
+    $('.help').addClass('hidden');
 
     // All UI Bindings
     $('#continue').on('click', self.next);
+    $('#help').on('click', self.toggleHelp)
 
   };
 
@@ -82,6 +88,17 @@ var MailMan = function() {
     // Add to the nav location
     buildNavTree(activeCard);
   };
+
+  this.toggleHelp = function() {
+    if (showHelp) {
+      showHelp = false;
+      $('.help').addClass('hidden');
+    }
+    else {
+      showHelp = true;
+      $('.help').removeClass('hidden');
+    }
+  }
 
   // ********** PRIVATE **********//
 

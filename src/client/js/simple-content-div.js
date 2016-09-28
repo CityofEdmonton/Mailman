@@ -104,6 +104,8 @@ var Card = function(appendTo, type, options) {
 
   // *** PRIVATE FUNCTIONS *** //
 
+
+  // Call the constructor
   this.init(appendTo, type, options);
 }
 
