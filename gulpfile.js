@@ -117,7 +117,7 @@ function buildWeb() {
 
 
 /**
- * Deploys the GAS code up to the project. 
+ * Deploys the GAS code up to the project.
  * Calls browserifyBundle, then buildGAS.
  *
  * @param  {callback} cb - a callback so the engine knows when it'll be done
