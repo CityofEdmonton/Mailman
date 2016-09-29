@@ -8,6 +8,7 @@ var open = require('gulp-open');
 var os = require('os');
 var sass = require('gulp-sass');
 var source = require('vinyl-source-stream');
+var stringify = require('stringify');
 
 // Node modules
 var exec = require('child_process').exec;
@@ -34,11 +35,17 @@ gulp.task('build-gas', ['browserify', 'compile-sass'], buildGAS);
 
 /**
  * Bundles up client.js (and all required functionality) and places it in a build directory.
+ * We apply a stringify transform. This package finds requires that require .html files. It swaps them out for the actual text.
+ * This is great for breaking up html and can be used as a templating tool.
  *
  * @return {stream} the stream as the completion hint to the gulp engine
  */
 function browserifyBundle() {
   return browserify('./src/client/js/client.js')
+      .transform(stringify, {
+        appliesTo: { includeExtensions: ['.html'] },
+        minify: false
+      })
       .bundle()
       .on('error', function(e) {
         gutil.log(e);
@@ -160,7 +167,7 @@ function openWeb() {
       os.platform() === 'linux' ? 'google-chrome' : (
       os.platform() === 'darwin' ? 'google chrome' : 'firefox'));
 
-  return gulp.src('./build/web/client/html/ListSetupSidebar.html')
+  return gulp.src('./build/web/client/html/NewEmailDialog.html')
       .pipe(open({app: browser}));
 }
 

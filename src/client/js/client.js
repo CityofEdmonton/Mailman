@@ -4,5 +4,4 @@ var Util = require('./util.js');
 
 $(document).ready(function() {
   var mailman = new MailMan();
-  mailman.init();
 });
