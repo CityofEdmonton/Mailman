@@ -79,8 +79,9 @@
 	padding-left: 40px;
   position: fixed;
   bottom: 0px;
-  width:100%;
-  background-color: $bar-black;
+  // TODO Actually calculate this value using variables.
+  width: calc(100% - 72px);
+  background-color: transparent;
 
 	.mdl-mini-footer--link-list {
 		a {

@@ -1,5 +1,9 @@
 var $ = require('jquery');
 
+
+/**
+ *
+ */
 var Util = module.exports = function() {};
 
 $.fn.extend({
@@ -19,6 +23,7 @@ $.fn.extend({
     obj.scrollTop = scrollTop;
   }
 });
+
 
 /**
  * Reverses the properties in a JavaScript object.

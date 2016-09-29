@@ -7,11 +7,12 @@ var infoHTML = require('../html/info-content-div.html');
 
 var Card = function(appendTo, type, options) {
 
-  // *** LOCAL VARIABLES *** //
+  //***** LOCAL VARIABLES *****//
+
   var base;
   var self;
 
-  // *** CONSTRUCTOR *** //
+  //***** CONSTRUCTOR *****//
 
   this.init = function(appendTo, type, options) {
     var self = this;
@@ -53,21 +54,20 @@ var Card = function(appendTo, type, options) {
         options.paragraphs.every(function(data) {
           self.addParagraph(data);
           return true;
-        })
+        });
       }
     }
 
     appendTo.append(base);
-    // MDL requires dynamically created components be registered. TODO force MDL to use browserify. Right now, componentHandler is just floating around in global.
+    // MDL requires dynamically created components be registered.
+    // TODO force MDL to use browserify. Right now, componentHandler is just floating around in global.
     if (type !== Card.types.INFO) {
       componentHandler.upgradeElement(base.find('.mdl-js-textfield')[0], 'MaterialTextfield');
     }
 
-  }
+  };
 
-
-
-  // *** PUBLIC FUNCTIONS *** //
+  //***** PUBLIC FUNCTIONS *****//
 
   this.show = function() {
     base.removeClass('hidden');
@@ -100,20 +100,26 @@ var Card = function(appendTo, type, options) {
   this.addParagraph = function(content) {
     var para = $('<p>' + content + '</p>');
     base.append(para);
-  }
+  };
 
-  // *** PRIVATE FUNCTIONS *** //
-
+  //***** PRIVATE FUNCTIONS *****//
 
   // Call the constructor
   this.init(appendTo, type, options);
-}
-
-// This is meant to be accessed statically.
-Card.types = {
-    INPUT: 'input',
-    TEXTAREA: 'textarea',
-    INFO: 'info'
 };
 
+
+/**
+ * This is meant to be accessed statically.
+ */
+Card.types = {
+  INPUT: 'input',
+  TEXTAREA: 'textarea',
+  INFO: 'info'
+};
+
+
+/**
+ *
+ */
 module.exports = Card;
