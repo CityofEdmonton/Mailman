@@ -89,8 +89,6 @@ var MailMan = function() {
       label: 'Sheet...',
       autocomplete: {
         results: sheets,
-        prepend: '<<',
-        append: '>>',
         maxResults: maxResults,
         triggerOnFocus: true
       }
