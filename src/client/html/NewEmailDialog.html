@@ -5,52 +5,57 @@
     <base target="_top">
 
     <!-- Remote stylesheets -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.teal-red.min.css">
 
+    <!-- Local stylesheets -->
     <!-- build:css inline build/common/css/mdl-article.css -->
-    <link rel="stylesheet" type="text/css" href="../css/mdl-article.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/mdl-article.css" />
     <!-- /build -->
 
+    <!-- build:css inline build/common/css/material-icons.css -->
+    <link rel="stylesheet" type="text/css" href="../css/material-icons.css" />
+    <!-- /build -->
+
+    <!-- Remote JavaScript -->
     <script src="https://code.getmdl.io/1.2.1/material.min.js"></script>
 
+    <!-- Local JavaScript -->
     <!-- build:js inline build/common/bundle.js -->
     <script src="../js/bundle.js"></script>
     <!-- /build -->
 </head>
 
 <body>
-  <div class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
+    <div class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
         <header class="demo-header mdl-layout__header mdl-layout__header--scroll mdl-color--grey-100 mdl-color-text--grey-800">
-          <div class="mdl-layout__header-row">
-            <div id="nav-bar" class="demo-crumbs mdl-color-text--grey-500"></div>
-            <div class="mdl-layout-spacer"></div>
-            <button id="help" class="mdl-button mdl-js-button mdl-button--icon">?</button>
-          </div>
+            <div class="mdl-layout__header-row">
+                <div id="nav-bar" class="demo-crumbs mdl-color-text--grey-500"></div>
+                <div class="mdl-layout-spacer"></div>
+                <button id="help" class="mdl-button mdl-js-button mdl-button--icon">?</button>
+            </div>
 
         </header>
         <div class="demo-ribbon"></div>
 
 
         <main class="demo-main mdl-layout__content">
-          <div id="content-area" class="demo-container mdl-grid">
-            <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
-
-          </div>
-
-          <footer class="demo-footer mdl-mini-footer">
-            <div class="mdl-mini-footer--left-section">
-              <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="back">Back</button>
+            <div id="content-area" class="demo-container mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
             </div>
-            <div class="mdl-layout-spacer"></div>
-            <div class="mdl-mini-footer--right-section">
-              <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mailman-button" id="step">Next</button>
-              <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mailman-button" id="done">Done</button>
-            </div>
-          </footer>
+
+            <footer class="demo-footer mdl-mini-footer">
+                <div class="mdl-mini-footer--left-section">
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" id="back">Back</button>
+                </div>
+                <div class="mdl-layout-spacer"></div>
+                <div class="mdl-mini-footer--right-section">
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mailman-button" id="step">Next</button>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mailman-button" id="done">Done</button>
+                </div>
+            </footer>
 
         </main>
-      </div>
+    </div>
 </body>
 
 </html>
