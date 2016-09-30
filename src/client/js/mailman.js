@@ -74,8 +74,7 @@ var MailMan = function() {
     });
 
     activeCard = cards[0];
-    cards['Welcome'] =
-        cards[0].name = 'Welcome';
+    cards[0].name = 'Welcome';
     cards[1].name = 'Sheet';
     cards[2].name = 'To';
     cards[3].name = 'From';
