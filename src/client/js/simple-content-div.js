@@ -128,6 +128,22 @@ var Card = function(appendTo, type, options) {
     return null;
   };
 
+  this.setAutocompleteSource = function(source) {
+    var input;
+
+    if (type === Card.types.INPUT) {
+      input = base.find('input');
+    }
+    else if (type === Card.types.TEXTAREA) {
+      input = base.find('textarea');
+    }
+    else {
+      throw new Error('Card type ' + type + ' doesn\'t support autocomplete.');
+    }
+
+    input.autocomplete('option', 'source', source);
+  };
+
   this.setValue = function(value) {
     base.find('input').val(value);
   };
