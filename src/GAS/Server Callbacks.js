@@ -14,30 +14,23 @@ function getSheetSelection() {
  * The ultimate output of the client-side html form.
  * Used to create a new rule to check.
  *
- * @param  {string} to          The A1 notation for the column containing the primary recipients
- * @param  {string} cc          The A1 notation for the column containing the cc recipients
- * @param  {string} bcc         The A1 notation for the column containing the bcc recipients
- * @param  {string} subject     The A1 notation for the column containing the subject
- * @param  {string} body        The A1 notation for the body column
- * @param  {string} range       The A1 notation for the range to be searched/emailed
- * @param  {string} comparison  The type of comparison (TODO only supports Text is exactly...)
- * @param  {string} value       The value corresponding to the comparison
- * @param  {string} previous    The last time this row sent an email
- * @return {string} Success     value that informs users of issues/success
+ * @param {string} to The user to send the email to.
+ * @param {string} subject The subject of the email.
+ * @param {string} body The body of the email. If it's HTML, you must set the htmlBody option to have it rendered.
+ * @param {object} options The additional options for the email. See:
+ *  https://developers.google.com/apps-script/reference/mail/mail-app#sendEmail(String,String,String,Object)
+ * @param {string} sheet The sheet name that emails will be sent from.
+ * @return {string} Success value that informs users of issues/success
  */
-function createRule(to, cc, bcc, subject, body, range, comparison, value, previous) {
+function createRule(to, subject, body, options, sheet) {
   // Test all the values
 
   var rule = {
     'to': to,
-    'cc': cc,
-    'bcc': bcc,
     'subject': subject,
     'body': body,
-    'range': range,
-    'comparison': comparison,
-    'value': value,
-    'previous': previous
+    'options': options,
+    'sheet': sheet
   };
 
   PropertiesService.getDocumentProperties().setProperty(PROPERTY_RULE, JSON.stringify(rule));
@@ -45,5 +38,20 @@ function createRule(to, cc, bcc, subject, body, range, comparison, value, previo
   Logger.log(rule);
 
   // TEMP
-  onTrigger();
+  //onTrigger();
+}
+
+/**
+ * Sends an email.
+ * TODO Ensure success/fail are handled elegantly.
+ *
+ * @param {string} to The user to send the email to.
+ * @param {string} subject The subject of the email.
+ * @param {string} body The body of the email. If it's HTML, you must set the htmlBody option to have it rendered.
+ * @param {object} options The additional options for the email. See:
+ *  https://developers.google.com/apps-script/reference/mail/mail-app#sendEmail(String,String,String,Object)
+ */
+function sendEmail(to, subject, body, options) {
+  Logger.log('Sending email to ' + to);
+  MailApp.sendEmail(to, subject, body, options);
 }

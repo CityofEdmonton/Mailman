@@ -193,6 +193,29 @@ var MailMan = function() {
   };
 
   /**
+   * Submits data back to google.
+   * NOTE: GAS only
+   *
+   * @param {event} event The event that triggered the function call.
+   */
+  this.done = function(event) {
+    // SUBMIT THE INFO BACK TO SHEETS
+    console.log('done');
+
+    var to = cards[2].getValue();
+    var subject = cards[4].getValue();
+    var body = cards[5].getValue();
+    var sheet = cards[1].getValue();
+    var options = null;
+
+    google.script.run
+        .withSuccessHandler(ruleCreationSuccess)
+        .createRule(to, subject, body, options, sheet);
+  };
+
+
+
+  /**
    * This function toggles the state of the help <p> tags.
    *
    * @param {event} event The event that triggered this function.
@@ -335,17 +358,14 @@ var MailMan = function() {
   };
 
   /**
-   * Submits data back to google.
-   * NOTE: GAS only
+   * Called when a rule is successfully created.
    *
-   * @private
+   * @param {boolean} serverReturn A boolean indicating not much.
    */
-  var done = function() {
-    // SUBMIT THE INFO BACK TO SHEETS
-    console.log('done');
-    google.script.run
-        .withSuccessHandler(submitData)
-        .createRule(to, cc, bcc, subject, body, range, comparison, value, lastSent);
+  var ruleCreationSuccess = function(serverReturn) {
+    if (google !== undefined) {
+      google.script.host.close();
+    }
   };
 
   this.init();
