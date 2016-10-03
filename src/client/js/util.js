@@ -1,6 +1,5 @@
 
 
-
 /**
  *
  */
@@ -24,6 +23,14 @@ $.fn.extend({
   }
 });
 
+/**
+ * Resolves an issue with jQuery UI's autocomplete not resizing the DDL properly.
+ * http://stackoverflow.com/questions/5643767/jquery-ui-autocomplete-width-not-set-correctly
+ */
+jQuery.ui.autocomplete.prototype._resizeMenu = function () {
+  var ul = this.menu.element;
+  ul.outerWidth(this.element.outerWidth());
+}
 
 /**
  * Reverses the properties in a JavaScript object.
