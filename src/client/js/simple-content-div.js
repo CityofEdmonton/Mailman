@@ -155,7 +155,6 @@ var Card = function(appendTo, type, options) {
     return {
       minLength: 0,
       source: function(request, response) {
-        console.log('TEST');
         if (trigger === undefined) {
           response($.ui.autocomplete.filter(results, request.term.split(/,\s*/).pop()).slice(0, maxResults));
         }
