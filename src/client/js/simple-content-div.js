@@ -11,11 +11,12 @@ var Card = function(appendTo, type, options) {
 
   var base;
   var self;
+  var type;
 
   //***** CONSTRUCTOR *****//
 
   this.init = function(appendTo, type, options) {
-
+    var type = type;
     self = this;
 
     // Handle type
@@ -117,7 +118,14 @@ var Card = function(appendTo, type, options) {
   };
 
   this.getValue = function() {
-    base.find('input').val();
+    if (type === Card.types.INPUT) {
+      return base.find('input').val();
+    }
+    else if (type === Card.types.TEXTAREA) {
+      return base.find('textarea').val();
+    }
+
+    return null;
   };
 
   this.setValue = function(value) {
