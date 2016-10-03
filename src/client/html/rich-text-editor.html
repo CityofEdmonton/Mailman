@@ -7,6 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mailman</title>
 
+    <!-- Remote stylesheets,  -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.teal-red.min.css">
+
+    <!-- Local stylesheets -->
+    <!-- build:css inline build/common/css/mdl-article.css -->
+    <link rel="stylesheet" type="text/css" href="../css/mdl-article.css" />
+    <!-- /build -->
+
     <!-- build:css inline build/common/css/material-icons.css -->
     <link rel="stylesheet" type="text/css" href="../css/material-icons.css" />
     <!-- /build -->
@@ -15,16 +24,15 @@
     <link rel="stylesheet" type="text/css" href="../css/rich-text-editor.css" />
     <!-- /build -->
 
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet" />
-
+    <!-- Remote JavaScript -->
+    <script src="https://code.getmdl.io/1.2.1/material.min.js"></script>
 </head>
 
 <body>
     <div class="container">
-        <!-- <h1>Mailman</h1> -->
         <div class="btn-toolbar" data-role="editor-toolbar" data-target="#editor">
             <div class="btn-group">
-                <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="Font Size"><i class="material-icons md-24">text_fields</i>&nbsp;<i class="material-icons md-18">keyboard_arrow_down</i></a>
+                <a class="mdl-button mdl-js-button dropdown-toggle" data-toggle="dropdown" title="Font Size"><i class="material-icons md-24">text_fields</i><i class="material-icons md-18">keyboard_arrow_down</i></a>
                 <ul class="dropdown-menu">
                     <li><a data-edit="fontSize 5" class="fs-Five">Huge</a></li>
                     <li><a data-edit="fontSize 3" class="fs-Three">Normal</a></li>
@@ -32,46 +40,45 @@
                 </ul>
             </div>
             <div class="btn-group">
-                <a class="btn btn-default" data-edit="bold" title="Bold (Ctrl/Cmd+B)"><i class="material-icons md-24">format_bold</i></a>
-                <a class="btn btn-default" data-edit="italic" title="Italic (Ctrl/Cmd+I)"><i class="material-icons md-24">format_italic</i></a>
-                <a class="btn btn-default" data-edit="strikethrough" title="Strikethrough"><i class="material-icons md-24">strikethrough_s</i></a>
-                <a class="btn btn-default" data-edit="underline" title="Underline (Ctrl/Cmd+U)"><i class="material-icons md-24">format_underlined</i></a>
+                <a class="mdl-button mdl-js-button" data-edit="bold" title="Bold (Ctrl+B)"><i class="material-icons md-24">format_bold</i></a>
+                <a class="mdl-button mdl-js-button" data-edit="italic" title="Italic (Ctrl+I)"><i class="material-icons md-24">format_italic</i></a>
+                <a class="mdl-button mdl-js-button" data-edit="strikethrough" title="Strikethrough"><i class="material-icons md-24">strikethrough_s</i></a>
+                <a class="mdl-button mdl-js-button" data-edit="underline" title="Underline (Ctrl+U)"><i class="material-icons md-24">format_underlined</i></a>
             </div>
             <div class="btn-group">
-                <a class="btn btn-default" data-edit="insertunorderedlist" title="Bullet list"><i class="material-icons md-24">format_list_bulleted</i></a>
-                <a class="btn btn-default" data-edit="insertorderedlist" title="Number list"><i class="material-icons md-24">format_list_numbered</i></a>
-                <a class="btn btn-default" data-edit="outdent" title="Reduce indent (Shift+Tab)"><i class="material-icons md-24">format_indent_decrease</i></a>
-                <a class="btn btn-default" data-edit="indent" title="Indent (Tab)"><i class="material-icons md-24">format_indent_increase</i></a>
+                <a class="mdl-button mdl-js-button" data-edit="insertunorderedlist" title="Bullet list"><i class="material-icons md-24">format_list_bulleted</i></a>
+                <a class="mdl-button mdl-js-button" data-edit="insertorderedlist" title="Number list"><i class="material-icons md-24">format_list_numbered</i></a>
+                <a class="mdl-button mdl-js-button" data-edit="outdent" title="Reduce indent (Shift+Tab)"><i class="material-icons md-24">format_indent_decrease</i></a>
+                <a class="mdl-button mdl-js-button" data-edit="indent" title="Indent (Tab)"><i class="material-icons md-24">format_indent_increase</i></a>
             </div>
             <div class="btn-group">
-                <a class="btn btn-default" data-edit="justifyleft" title="Align Left (Ctrl/Cmd+L)"><i class="material-icons md-24">format_align_left</i></a>
-                <a class="btn btn-default" data-edit="justifycenter" title="Center (Ctrl/Cmd+E)"><i class="material-icons md-24">format_align_center</i></a>
-                <a class="btn btn-default" data-edit="justifyright" title="Align Right (Ctrl/Cmd+R)"><i class="material-icons md-24">format_align_right</i></a>
-                <a class="btn btn-default" data-edit="justifyfull" title="Justify (Ctrl/Cmd+J)"><i class="material-icons md-24">format_align_justify</i></a>
+                <a class="mdl-button mdl-js-button" data-edit="justifyleft" title="Align Left (Ctrl+L)"><i class="material-icons md-24">format_align_left</i></a>
+                <a class="mdl-button mdl-js-button" data-edit="justifycenter" title="Center (Ctrl+E)"><i class="material-icons md-24">format_align_center</i></a>
+                <a class="mdl-button mdl-js-button" data-edit="justifyright" title="Align Right (Ctrl+R)"><i class="material-icons md-24">format_align_right</i></a>
+                <a class="mdl-button mdl-js-button" data-edit="justifyfull" title="Justify (Ctrl+J)"><i class="material-icons md-24">format_align_justify</i></a>
             </div>
             <div class="btn-group">
-                <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="Hyperlink"><i class="material-icons md-24">insert_link</i></a>
+                <a class="mdl-button mdl-js-button mdl-button--icon" data-toggle="dropdown" title="Hyperlink"><i class="material-icons md-24">insert_link</i></a>
                 <div class="dropdown-menu input-append">
                     <input placeholder="URL" type="text" data-edit="createLink" />
-                    <button class="btn" type="button">Add</button>
+                    <button class="btn" type="button">Insert</button>
                 </div>
             </div>
             <div class="btn-group">
-                <!-- <a class="btn btn-default" data-edit="unlink" title="Remove Hyperlink"><i class="material-icons md-24">unlink"></i></a> -->
-                <a id="picBtn" class="btn btn-default dropdown-toggle" title="Insert picture (or just drag & drop)" onclick="$('#pictureBtn').click();"><i class="material-icons md-24">insert_photo</i></a>
+                <a id="picBtn" class="mdl-button mdl-js-button dropdown-toggle" title="Insert picture (or just drag & drop)" onclick="$('#pictureBtn').click();"><i class="material-icons md-24">insert_photo</i></a>
 
                 <input id="pictureBtn" class="imgUpload" type="file" data-edit="insertImage" data-role="magic-overlay" />
             </div>
             <div class="btn-group">
-                <a class="btn btn-default" data-edit="undo" title="Undo (Ctrl/Cmd+Z)"><i class="material-icons md-24">undo</i></a>
-                <a class="btn btn-default" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i class="material-icons md-24">redo</i></a>
+                <a class="mdl-button mdl-js-button" data-edit="undo" title="Undo (Ctrl+Z)"><i class="material-icons md-24">undo</i></a>
+                <a class="mdl-button mdl-js-button" data-edit="redo" title="Redo (Ctrl+Y)"><i class="material-icons md-24">redo</i></a>
             </div>
         </div>
         <div id="editor" class="lead" data-placeholder="Build your email template."></div>
         <div id="editorPreview"></div>
-        <!--         <p style="text-align: center;">
-            <a class="btn btn-large btn-default jumbo" href="#!" onClick="$('#editorPreview').html($('#editor').html());">Submit</a>
-        </p> -->
+        <p style="text-align: center;">
+            <a class="btn btn-large  jumbo" href="#!" onClick="$('#editorPreview').html($('#editor').html());">Submit</a>
+        </p>
     </div>
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.js"></script>
@@ -283,12 +290,10 @@
         })(jQuery || this.jQuery || window.jQuery);
     </script>
 
-    <!-- <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script> -->
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
 
-    <!-- <script src="../bower_components/google-code-prettify/src/prettify.js"></script> -->
 
-    <!-- <script src="../src/bootstrap-wysiwyg.js"></script> -->
+    <!-- bootstrap-wysiwyg.js -->
     <script>
         /* @fileoverview
          * Provides full Bootstrap based, multi-instance WYSIWYG editor.
