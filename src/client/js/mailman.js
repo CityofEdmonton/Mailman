@@ -156,6 +156,13 @@ var MailMan = function() {
     $('#back').on('click', self.back);
     $('#help').on('click', self.toggleHelp);
 
+
+    // Load information from GAS
+    if (window.google !== undefined) {
+      google.script.run
+          .withSuccessHandler(setSheets)
+          .getSheets();
+    }
   };
 
   /**
@@ -200,7 +207,6 @@ var MailMan = function() {
    */
   this.done = function(event) {
     // SUBMIT THE INFO BACK TO SHEETS
-    console.log('done');
 
     var to = cards[2].getValue();
     var subject = cards[4].getValue();
@@ -208,9 +214,15 @@ var MailMan = function() {
     var sheet = cards[1].getValue();
     var options = null;
 
-    google.script.run
-        .withSuccessHandler(ruleCreationSuccess)
-        .createRule(to, subject, body, options, sheet);
+    if (window.google !== undefined) {
+      google.script.run
+          .withSuccessHandler(ruleCreationSuccess)
+          .createRule(to, subject, body, options, sheet);
+    }
+    else {
+      console.log('Creating rule.');
+    }
+
   };
 
 
@@ -363,10 +375,13 @@ var MailMan = function() {
    * @param {boolean} serverReturn A boolean indicating not much.
    */
   var ruleCreationSuccess = function(serverReturn) {
-    if (google !== undefined) {
-      google.script.host.close();
-    }
+    google.script.host.close();
   };
+
+  var setSheets = function(sheets) {
+    sheets = sheets;
+    cards[1].setAutocompleteSource(sheets);
+  }
 
   this.init();
 };

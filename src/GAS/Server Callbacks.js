@@ -55,3 +55,24 @@ function sendEmail(to, subject, body, options) {
   Logger.log('Sending email to ' + to);
   MailApp.sendEmail(to, subject, body, options);
 }
+
+function getSheets() {
+  SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheets = ss.getSheets();
+
+  var names = [];
+  for (var i = 0; i < sheets.length; i++) {
+    names.push(sheets[i].getName());
+  }
+
+  return names;
+}
+
+function getHeaderNames(sheetName) {
+  SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName(sheetName);
+
+  return getHeaderStrings(sheet);
+}
