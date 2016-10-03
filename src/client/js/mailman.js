@@ -172,7 +172,19 @@ var MailMan = function() {
    * @param {event} event The event that triggered the function call.
    */
   this.next = function(event) {
+
+
     if (cards.indexOf(activeCard) + 1 < cards.length) {
+      // Temp TODO Refactor this
+      if (cards.indexOf(activeCard) === 1) {
+        if (window.google !== undefined) {
+          google.script.run
+              .withSuccessHandler(setColumns)
+              .getHeaderNames(cards[1].getValue());
+        }
+
+      }
+
       activeCard = cards[cards.indexOf(activeCard) + 1];
     }
 
@@ -381,7 +393,15 @@ var MailMan = function() {
   var setSheets = function(sheets) {
     sheets = sheets;
     cards[1].setAutocompleteSource(sheets);
-  }
+  };
+
+  var setColumns = function(columns) {
+    columns = columns;
+
+    cards[2].setAutocompleteSource(columns);
+    cards[4].setAutocompleteSource(columns);
+    cards[5].setAutocompleteSource(columns);
+  };
 
   this.init();
 };

@@ -13,6 +13,11 @@ var Card = function(appendTo, type, options) {
   var self;
   var type;
 
+  // Variables for autocompletion
+  var autoResults;
+  var trigger;
+  var maxResults;
+
   //***** CONSTRUCTOR *****//
 
   this.init = function(appendTo, type, options) {
@@ -59,11 +64,10 @@ var Card = function(appendTo, type, options) {
         });
       }
       if (options.autocomplete !== undefined) {
-        var trigger;
         var append = '';
         var prepend = '';
         var maxResults;
-        var results = [];
+        var autoResults = [];
         var input;
 
         if (type === Card.types.INPUT) {
@@ -92,10 +96,10 @@ var Card = function(appendTo, type, options) {
           input.on('focus', function() {input.autocomplete('search', self.getValue())});
         }
         if (options.autocomplete.results !== undefined) {
-          results = options.autocomplete.results;
+          autoResults = options.autocomplete.results;
         }
 
-        input.autocomplete(getAutocompleteConfig(results, trigger, append, prepend, maxResults));
+        input.autocomplete(getAutocompleteConfig(append, prepend));
       }
     }
 
@@ -141,7 +145,9 @@ var Card = function(appendTo, type, options) {
       throw new Error('Card type ' + type + ' doesn\'t support autocomplete.');
     }
 
-    input.autocomplete('option', 'source', source);
+    autoResults = source;
+
+    input.autocomplete('option', 'source', autoSource);
   };
 
   this.setValue = function(value) {
@@ -167,26 +173,10 @@ var Card = function(appendTo, type, options) {
 
   //***** PRIVATE FUNCTIONS *****//
 
-  var getAutocompleteConfig = function(results, trigger, append, prepend, maxResults) {
+  var getAutocompleteConfig = function(append, prepend) {
     return {
       minLength: 0,
-      source: function(request, response) {
-        if (trigger === undefined) {
-          response($.ui.autocomplete.filter(results, request.term.split(/,\s*/).pop()).slice(0, maxResults));
-        }
-        else {
-          var last = request.term.split(trigger).pop();
-
-          // Fixes weird bug that doesn't force the DDL to hide if you trigger it with nothing.
-          if (trigger !== '' && request.term === '') {
-            response('');
-          }
-          else {
-            // delegate back to autocomplete, but extract the last term
-            response($.ui.autocomplete.filter(results, last).slice(0, maxResults));
-          }
-        }
-      },
+      source: autoSource,
       focus: function() {
         // prevent value inserted on focus
         return false;
@@ -225,6 +215,24 @@ var Card = function(appendTo, type, options) {
         return false;
       }
     };
+  };
+
+  var autoSource = function(request, response) {
+    if (trigger === undefined) {
+      response($.ui.autocomplete.filter(autoResults, request.term.split(/,\s*/).pop()).slice(0, maxResults));
+    }
+    else {
+      var last = request.term.split(trigger).pop();
+
+      // Fixes weird bug that doesn't force the DDL to hide if you trigger it with nothing.
+      if (trigger !== '' && request.term === '') {
+        response('');
+      }
+      else {
+        // delegate back to autocomplete, but extract the last term
+        response($.ui.autocomplete.filter(autoResults, last).slice(0, maxResults));
+      }
+    }
   };
 
   // Call the constructor
