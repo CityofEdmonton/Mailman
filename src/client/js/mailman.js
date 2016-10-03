@@ -1,4 +1,4 @@
-var $ = require('jquery');
+
 var Util = require('./util.js');
 var Card = require('./simple-content-div.js');
 
@@ -21,6 +21,12 @@ var MailMan = function() {
   // This alters how many card links will be shown in the nav bar
   var maxNavItems;
 
+  // All the different sheet names.
+  var sheets;
+
+  // All the columns of the selected sheet.
+  var columns;
+
   //***** PUBLIC *****//
 
   /**
@@ -31,10 +37,42 @@ var MailMan = function() {
   this.init = function() {
     self = this;
 
+    // TEMP
+    sheets = [
+      'Title Page',
+      'DEV Defect Log',
+      'UAT Tests',
+      'Team',
+      'UAT Log',
+      'Production Accounts',
+      'QA Log',
+      'Log Template'
+    ];
+
+    columns = [
+      'ID',
+      'Project Number',
+      'Issue Title',
+      'Description (include expected and actual outcomes)',
+      'Status',
+      'Priority',
+      'Attachment (Screenshots, Documents, etc.)',
+      'Comments',
+      'Created By',
+      'Created Date and Time',
+      'Identified By',
+      'Identified Date and Time',
+      'Assigned To',
+      'Completion Required Date',
+      'Completed By',
+      'Actual Completion Date'
+    ];
+
     // Configuration
     contentArea = $('#content-area');
     showHelp = false;
     maxNavItems = 3;
+    var maxResults = 5;
 
     cards[0] = new Card(contentArea, Card.types.INFO, {
       title: 'Welcome!',
@@ -48,12 +86,24 @@ var MailMan = function() {
     cards[1] = new Card(contentArea, Card.types.INPUT, {
       title: 'Which Sheet are we sending from?',
       help: 'This Sheet must contain all the information you may want to send in an email.',
-      label: 'Sheet...'
+      label: 'Sheet...',
+      autocomplete: {
+        results: sheets,
+        maxResults: maxResults,
+        triggerOnFocus: true
+      }
     });
     cards[2] = new Card(contentArea, Card.types.INPUT, {
       title: 'Who are you sending to?',
       help: 'This is the column filled with the email addresses of the recipients.',
-      label: 'To...'
+      label: 'To...',
+      autocomplete: {
+        results: columns,
+        prepend: '<<',
+        append: '>>',
+        maxResults: maxResults,
+        triggerOnFocus: true
+      }
     });
     cards[3] = new Card(contentArea, Card.types.INPUT, {
       title: 'Who\'s this from?',
@@ -64,13 +114,27 @@ var MailMan = function() {
       title: 'What\'s your subject?',
       help: 'Recipients will see this as the subject line of the email. Type "<<" to see a list of column names. ' +
           'These tags will be swapped out with the associated values in the Sheet.',
-      label: 'Subject...'
+      label: 'Subject...',
+      autocomplete: {
+        results: columns,
+        trigger: '<<',
+        prepend: '<<',
+        append: '>>',
+        maxResults: maxResults
+      }
     });
     cards[5] = new Card(contentArea, Card.types.TEXTAREA, {
       title: 'What\'s in the body?',
       help: 'Recipients will see this as the body of the email. Type "<<" to see a list of column names. These tags ' +
           'will be swapped out with the associated values in the Sheet.',
-      label: 'Body...'
+      label: 'Body...',
+      autocomplete: {
+        results: columns,
+        trigger: '<<',
+        prepend: '<<',
+        append: '>>',
+        maxResults: maxResults
+      }
     });
 
     activeCard = cards[0];
