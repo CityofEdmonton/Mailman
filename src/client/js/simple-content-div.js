@@ -66,8 +66,8 @@ var Card = function(appendTo, type, options) {
       if (options.autocomplete !== undefined) {
         var append = '';
         var prepend = '';
-        var maxResults;
-        var autoResults = [];
+        maxResults;
+        autoResults = [];
         var input;
 
         if (type === Card.types.INPUT) {
