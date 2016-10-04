@@ -1,5 +1,6 @@
 $icon-font-size: 24;
 $button-color: #000000;
+$text-color: #000000;
 
 @mixin no-select($type) {
   -webkit-touch-callout: $type; /* iOS Safari */
@@ -110,4 +111,8 @@ li {
 
 .mdl-layout__header {
   background-color: transparent;
+}
+
+.mdl-textfield__input {
+  color: $text-color;
 }
