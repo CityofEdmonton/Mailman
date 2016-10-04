@@ -6,9 +6,12 @@ function onInstall(e) {
 }
 
 function onOpen(e) {
-  SpreadsheetApp.getUi()
-      .createAddonMenu() //'Defect Tracker'
-      .addItem('Set Up Email List', 'openModalDialog')
+  var menu = SpreadsheetApp.getUi().createAddonMenu();
+
+  menu.addItem('Set Up Email List', 'openSidebar')
+      .addToUi();
+
+  menu.addItem('Build Email', 'openModalDialog')
       .addToUi();
 
   PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, SpreadsheetApp.getActiveSpreadsheet().getId());
@@ -19,12 +22,26 @@ function onOpen(e) {
  * Creates an HTML sidebar for creating/viewing mailman rules.
  *
  */
-function openModalDialog() {
+function openSidebar() {
   var ui = HtmlService.createHtmlOutputFromFile('NewEmailDialog')
       .setTitle('Mailman')
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 
   SpreadsheetApp.getUi().showSidebar(ui);
+}
+
+/**
+ * Creates an HTML modal for creating/viewing Mailman email templates.
+ *
+ */
+function openModalDialog() {
+  var ui = HtmlService.createHtmlOutputFromFile('rich-text-editor')
+      .setTitle('Mailman')
+      .setSandboxMode(HtmlService.SandboxMode.IFRAME)
+      .setHeight(600)
+      .setWidth(800);
+
+  SpreadsheetApp.getUi().showModalDialog(ui, ' ');
 }
 
 function onTrigger() {
