@@ -1,3 +1,5 @@
+$icon-font-size: 24;
+
 #editor,
 #first-editor,
 #second-editor {
@@ -6,14 +8,14 @@
     background-color: white;
     border-collapse: separate;
     border: 1px solid rgb(204, 204, 204);
-    padding: 2px;
+    padding: 4px;
     box-sizing: content-box;
     -webkit-box-shadow: rgba(0, 0, 0, 0.0745098) 0 1px 1px 0 inset;
     box-shadow: rgba(0, 0, 0, 0.0745098) 0 1px 1px 0 inset;
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
-    border-bottom-left-radius: 3px;
-    border-top-left-radius: 3px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-top-left-radius: 2px;
     overflow: auto;
     outline: none;
 }
@@ -39,7 +41,19 @@ div[data-role="editor-toolbar"] {
 }
 
 .btn-toolbar {
-    padding: 6px 0;
+    padding: 2px 2px;
+}
+
+.btn-group {
+    padding: 0px 6px;
+}
+
+.mdl-button {
+    height: $icon-font-size;
+}
+
+.mdl-js-button {
+    min-height: $icon-font-size;
 }
 
 [contentEditable=true]:empty:not(:focus):before {
@@ -64,8 +78,20 @@ div[data-role="editor-toolbar"] {
 .mdl-button {
     text-align: center;
     line-height: 50%;
-    padding: 4px 8px;
+    padding: 2px 0px;
+    min-width: inherit;
 }
+
+.mdl-js-button .mdl-button {
+    text-align: center;
+    line-height: 1;
+    padding: 0px 0px;
+}
+
+.separator {
+    border-left: thick solid #ff0000;
+}
+
 /*
 	Font Sizes
 	fs represents the font-size attribute; therefore,
