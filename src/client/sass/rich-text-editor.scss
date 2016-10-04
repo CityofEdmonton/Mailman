@@ -1,4 +1,14 @@
 $icon-font-size: 24;
+$button-color: #000000;
+
+@mixin no-select($type) {
+  -webkit-touch-callout: $type; /* iOS Safari */
+  -webkit-user-select: $type;   /* Chrome/Safari/Opera */
+  -khtml-user-select: $type;    /* Konqueror */
+  -moz-user-select: $type;      /* Firefox */
+  -ms-user-select: $type;       /* Internet Explorer/Edge */
+  user-select: $type;           /* Non-prefixed version, currently not supported by any browser */
+}
 
 #editor,
 #first-editor,
@@ -29,67 +39,32 @@ $icon-font-size: 24;
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
 }
 
-div[data-role="editor-toolbar"] {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+li {
+  a {
+    color: #000000;
+    text-decoration: none!important; //TODO remove !important
+    @include no-select(none);
+  }
 }
 
 .dropdown-menu a {
     cursor: pointer;
 }
 
-.btn-toolbar {
-    padding: 2px 2px;
-}
-
 .btn-group {
     padding: 0px 6px;
 }
 
-.mdl-button {
-    height: $icon-font-size;
-}
 
-.mdl-js-button {
-    min-height: $icon-font-size;
-}
 
 [contentEditable=true]:empty:not(:focus):before {
     content: attr(data-placeholder);
-}
-
-.container {
-    padding-right: 0;
-    padding-left: 0;
-}
-
-.placeholderText {
-    color: #777;
 }
 
 .imgUpload {
     width: 0;
     height: 0;
     position: absolute;
-}
-
-.mdl-button {
-    text-align: center;
-    line-height: 50%;
-    padding: 2px 0px;
-    min-width: inherit;
-}
-
-.mdl-js-button .mdl-button {
-    text-align: center;
-    line-height: 1;
-    padding: 0px 0px;
-}
-
-.separator {
-    border-left: thick solid #ff0000;
 }
 
 /*
@@ -108,4 +83,31 @@ div[data-role="editor-toolbar"] {
 
 .fs-Five {
     font-size: x-large;
+}
+
+/** MDL Overwrites **/
+
+.mdl-button {
+    text-align: center;
+    padding: 2px 0px;
+    min-width: inherit;
+}
+
+.mdl-js-button .mdl-button {
+    text-align: center;
+    line-height: 1;
+    padding: 0px 0px;
+}
+
+.mdl-button {
+    height: $icon-font-size;
+    color: $button-color;
+}
+
+.mdl-js-button {
+    min-height: $icon-font-size;
+}
+
+.mdl-layout__header {
+  background-color: transparent;
 }

@@ -8,13 +8,10 @@
     <title>Mailman</title>
 
     <!-- Remote stylesheets,  -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet" />
+
     <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.teal-red.min.css">
 
     <!-- Local stylesheets -->
-    <!-- build:css inline build/common/css/mdl-article.css -->
-    <link rel="stylesheet" type="text/css" href="../css/mdl-article.css" />
-    <!-- /build -->
 
     <!-- build:css inline build/common/css/material-icons.css -->
     <link rel="stylesheet" type="text/css" href="../css/material-icons.css" />
@@ -29,14 +26,16 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="btn-toolbar" data-role="editor-toolbar" data-target="#editor">
+    <div class="mdl-layout__container">
+        <div class="mdl-layout mdl-js-layout">
+        <header class="mdl-layout__header">
+          <div class="mdl-layout__header-row" data-role="editor-toolbar" data-target="#editor">
             <div class="btn-group">
-                <a class="mdl-button mdl-js-button dropdown-toggle" data-toggle="dropdown" title="Font Size"><i class="material-icons md-24">text_fields</i><i class="material-icons md-18">keyboard_arrow_down</i></a>
-                <ul class="dropdown-menu">
-                    <li><a data-edit="fontSize 5" class="fs-Five">Huge</a></li>
-                    <li><a data-edit="fontSize 3" class="fs-Three">Normal</a></li>
-                    <li><a data-edit="fontSize 1" class="fs-One">Small</a></li>
+                <a id="font-size-ddl" class="mdl-button mdl-js-button" title="Font Size"><i class="material-icons md-24">text_fields</i><i class="material-icons md-18">keyboard_arrow_down</i></a>
+                <ul for="font-size-ddl" class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect">
+                    <li class="mdl-menu__item"><a data-edit="fontSize 5" >Huge</a></li>
+                    <li class="mdl-menu__item"><a data-edit="fontSize 3" >Normal</a></li>
+                    <li class="mdl-menu__item"><a data-edit="fontSize 1" >Small</a></li>
                 </ul>
             </div>
             <div class="btn-group">
@@ -58,11 +57,16 @@
                 <a class="mdl-button mdl-js-button" data-edit="justifyfull" title="Justify (Ctrl+J)"><i class="material-icons md-24">format_align_justify</i></a>
             </div>
             <div class="btn-group">
-                <a class="mdl-button mdl-js-button dropdown-toggle" data-toggle="dropdown" title="Hyperlink"><i class="material-icons md-24">insert_link</i></a>
-                <div class="dropdown-menu input-append">
-                    <input placeholder="URL" type="text" data-edit="createLink" />
-                    <button class="btn" type="button">Insert</button>
-                </div>
+                <form action="#">
+                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+                    <label class="mdl-button mdl-js-button mdl-button--icon" for="link-address">
+                      <i class="material-icons md-24">insert_link</i>
+                    </label>
+                    <div class="mdl-textfield__expandable-holder">
+                      <input class="mdl-textfield__input" type="text" id="link-address" data-edit="createLink" placeholder="URL">
+                    </div>
+                  </div>
+                </form>
             </div>
             <div class="btn-group">
                 <a id="picBtn" class="mdl-button mdl-js-button dropdown-toggle" title="Insert picture (or just drag & drop)" onclick="$('#pictureBtn').click();"><i class="material-icons md-24">insert_photo</i></a>
@@ -73,12 +77,17 @@
                 <a class="mdl-button mdl-js-button" data-edit="undo" title="Undo (Ctrl+Z)"><i class="material-icons md-24">undo</i></a>
                 <a class="mdl-button mdl-js-button" data-edit="redo" title="Redo (Ctrl+Y)"><i class="material-icons md-24">redo</i></a>
             </div>
+          </div>
+        </header>
+
+        <main class="mdl-layout__content">
+          <div id="editor" class="lead" data-placeholder="Build your email template."></div>
+          <div id="editorPreview"></div>
+          <p style="text-align: center;">
+              <a class="btn btn-large  jumbo" href="#!" onClick="$('#editorPreview').html($('#editor').html());">Submit</a>
+          </p>
+        </main>
         </div>
-        <div id="editor" class="lead" data-placeholder="Build your email template."></div>
-        <div id="editorPreview"></div>
-        <p style="text-align: center;">
-            <a class="btn btn-large  jumbo" href="#!" onClick="$('#editorPreview').html($('#editor').html());">Submit</a>
-        </p>
     </div>
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.js"></script>
@@ -598,7 +607,6 @@
                 },
                 toolbarSelector: '[data-role=editor-toolbar]',
                 commandRole: 'edit',
-                activeToolbarClass: 'btn-info',
                 selectionMarker: 'edit-focus-marker',
                 selectionColor: 'darkgrey',
                 dragAndDropImages: true,
