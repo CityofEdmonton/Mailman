@@ -28,7 +28,7 @@
 <body>
     <div class="mdl-layout__container">
         <div class="mdl-layout mdl-js-layout">
-        <header class="mdl-layout__header">
+        <header class="mdl-layout__header mdl-layout--fixed-header">
           <div class="mdl-layout__header-row" data-role="editor-toolbar" data-target="#editor">
             <div class="btn-group">
                 <a id="font-size-ddl" class="mdl-button mdl-js-button" title="Font Size"><i class="material-icons md-24">text_fields</i><i class="material-icons md-18">keyboard_arrow_down</i></a>
@@ -64,6 +64,7 @@
                     </label>
                     <div class="mdl-textfield__expandable-holder">
                       <input class="mdl-textfield__input" type="text" id="link-address" data-edit="createLink" placeholder="URL">
+                      <label class="mdl-textfield__label" >Expandable Input</label>
                     </div>
                   </div>
                 </form>
@@ -81,7 +82,14 @@
         </header>
 
         <main class="mdl-layout__content">
-          <div id="editor" class="lead" data-placeholder="Build your email template."></div>
+          <!-- <div id="editor" class="lead" data-placeholder="Build your email template."></div> -->
+          <form action="#">
+            <div class="full-text-editor mdl-textfield mdl-js-textfield">
+              <div id="editor" class="lead mdl-textfield__input" type="text" data-placeholder="Build your email template."></div>
+              <!-- <textarea class="lead mdl-textfield__input" type="text" rows= "3" id="editor" ></textarea> -->
+              <label class="mdl-textfield__label" for="editor"></label>
+            </div>
+          </form>
           <div id="editorPreview"></div>
           <p style="text-align: center;">
               <a class="btn btn-large  jumbo" href="#!" onClick="$('#editorPreview').html($('#editor').html());">Submit</a>
