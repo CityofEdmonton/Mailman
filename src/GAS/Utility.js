@@ -1,3 +1,45 @@
+function getHeaderStrings(sheet) {
+  return getValues(sheet, 0);
+}
+
+function getValues(sheet, rowIndex) {
+  var range = sheet.getDataRange();
+
+  // Find the header row
+  var row = range.offset(rowIndex, 0, 1, range.getNumColumns());
+
+  // Make an array of header names
+  var values = [];
+  for (var i = 1; i <= row.getNumColumns(); i++) {
+    values.push(row.getCell(1, i).getValue());
+  }
+
+  return values;
+}
+
+function test() {
+  var ss = SpreadsheetApp.openById('1G0APrUUpZv-TpFmqdlSPUpzQL3mbDhZQ4stQFWjU30c');
+  var sheet = ss.getSheetByName('Defects');
+  var header = getHeaderStrings(sheet);
+  var row = getValues(sheet, 2);
+
+  var superObj;
+  for (var i = 0; i < header.length; i++) {
+    superObj[header[i]] = row[i];
+  }
+
+  Logger.log(replaceTags('This is a <<Category>>. Another priority: <<Priority>>.', sheet, superObj));
+}
+
+function replaceTags(text, sheet, headerToData) {
+  var dataText = text.replace(/<<.*?>>/g, function(match, offset, string) {
+    var columnName = match.slice(2, match.length - 2);
+    return headerToData[columnName];
+  });
+
+  return dataText;
+}
+
 /**
  * Given a range in A1 notation, this function extracts the sheet name.
  * Example: TestSheet1!A4:D10 returns TestSheet1.

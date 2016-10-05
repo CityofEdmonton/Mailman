@@ -156,6 +156,13 @@ var MailMan = function() {
     $('#back').on('click', self.back);
     $('#help').on('click', self.toggleHelp);
 
+
+    // Load information from GAS
+    if (window.google !== undefined) {
+      google.script.run
+          .withSuccessHandler(setSheets)
+          .getSheets();
+    }
   };
 
   /**
@@ -165,7 +172,19 @@ var MailMan = function() {
    * @param {event} event The event that triggered the function call.
    */
   this.next = function(event) {
+
+
     if (cards.indexOf(activeCard) + 1 < cards.length) {
+      // Temp TODO Refactor this
+      if (cards.indexOf(activeCard) === 1) {
+        if (window.google !== undefined) {
+          google.script.run
+              .withSuccessHandler(setColumns)
+              .getHeaderNames(cards[1].getValue());
+        }
+
+      }
+
       activeCard = cards[cards.indexOf(activeCard) + 1];
     }
 
@@ -191,6 +210,34 @@ var MailMan = function() {
     // Add to the nav location
     buildNavTree(activeCard);
   };
+
+  /**
+   * Submits data back to google.
+   * NOTE: GAS only
+   *
+   * @param {event} event The event that triggered the function call.
+   */
+  this.done = function(event) {
+    // SUBMIT THE INFO BACK TO SHEETS
+
+    var to = cards[2].getValue();
+    var subject = cards[4].getValue();
+    var body = cards[5].getValue();
+    var sheet = cards[1].getValue();
+    var options = null;
+
+    if (window.google !== undefined) {
+      google.script.run
+          .withSuccessHandler(ruleCreationSuccess)
+          .createRule(to, subject, body, options, sheet);
+    }
+    else {
+      console.log('Creating rule.');
+    }
+
+  };
+
+
 
   /**
    * This function toggles the state of the help <p> tags.
@@ -335,17 +382,25 @@ var MailMan = function() {
   };
 
   /**
-   * Submits data back to google.
-   * NOTE: GAS only
+   * Called when a rule is successfully created.
    *
-   * @private
+   * @param {boolean} serverReturn A boolean indicating not much.
    */
-  var done = function() {
-    // SUBMIT THE INFO BACK TO SHEETS
-    console.log('done');
-    google.script.run
-        .withSuccessHandler(submitData)
-        .createRule(to, cc, bcc, subject, body, range, comparison, value, lastSent);
+  var ruleCreationSuccess = function(serverReturn) {
+    google.script.host.close();
+  };
+
+  var setSheets = function(sheets) {
+    sheets = sheets;
+    cards[1].setAutocompleteSource(sheets);
+  };
+
+  var setColumns = function(columns) {
+    columns = columns;
+
+    cards[2].setAutocompleteSource(columns);
+    cards[4].setAutocompleteSource(columns);
+    cards[5].setAutocompleteSource(columns);
   };
 
   this.init();
