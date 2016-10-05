@@ -42,7 +42,7 @@ function onTrigger() {
   var range = sheet.getDataRange();
   var header = getHeaderStrings(sheet);
 
-  for (var i = 1; i <= range.getNumRows(); i++) {
+  for (var i = 1; i < range.getNumRows(); i++) {
     var row = getValues(sheet, i);
 
     var combinedObj = {};
@@ -52,10 +52,10 @@ function onTrigger() {
 
 
     // Convert <<>> tags to actual text.
-    var to = replaceTags(rules.to, sheet, combinedObj);
-    var subject = replaceTags(rules.subject, sheet, combinedObj);
-    var body = replaceTags(rules.body, sheet, combinedObj);
-
+    var to = replaceTags(rule.to, sheet, combinedObj);
+    var subject = replaceTags(rule.subject, sheet, combinedObj);
+    var body = replaceTags(rule.body, sheet, combinedObj);
+    Logger.log('Sending email to ' + to);
     MailApp.sendEmail(to, subject, body);
   }
 

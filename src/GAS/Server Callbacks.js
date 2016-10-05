@@ -38,7 +38,7 @@ function createRule(to, subject, body, options, sheet) {
   Logger.log(rule);
 
   // TEMP
-  //onTrigger();
+  onTrigger();
 }
 
 /**
