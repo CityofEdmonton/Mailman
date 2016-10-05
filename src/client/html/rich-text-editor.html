@@ -28,73 +28,112 @@
 <body>
     <div class="mdl-layout__container">
         <div class="mdl-layout mdl-js-layout">
-        <header class="mdl-layout__header mdl-layout--fixed-header">
-          <div class="mdl-layout__header-row" data-role="editor-toolbar" data-target="#editor">
-            <div class="btn-group">
-                <a id="font-size-ddl" class="mdl-button mdl-js-button" title="Font Size"><i class="material-icons md-24">text_fields</i><i class="material-icons md-18">keyboard_arrow_down</i></a>
-                <ul for="font-size-ddl" class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect">
-                    <li class="mdl-menu__item"><a data-edit="fontSize 5" >Huge</a></li>
-                    <li class="mdl-menu__item"><a data-edit="fontSize 3" >Normal</a></li>
-                    <li class="mdl-menu__item"><a data-edit="fontSize 1" >Small</a></li>
-                </ul>
-            </div>
-            <div class="btn-group">
-                <a class="mdl-button mdl-js-button" data-edit="bold" title="Bold (Ctrl+B)"><i class="material-icons md-24">format_bold</i></a>
-                <a class="mdl-button mdl-js-button" data-edit="italic" title="Italic (Ctrl+I)"><i class="material-icons md-24">format_italic</i></a>
-                <a class="mdl-button mdl-js-button" data-edit="strikethrough" title="Strikethrough"><i class="material-icons md-24">strikethrough_s</i></a>
-                <a class="mdl-button mdl-js-button" data-edit="underline" title="Underline (Ctrl+U)"><i class="material-icons md-24">format_underlined</i></a>
-            </div>
-            <div class="btn-group">
-                <a class="mdl-button mdl-js-button" data-edit="insertunorderedlist" title="Bullet list"><i class="material-icons md-24">format_list_bulleted</i></a>
-                <a class="mdl-button mdl-js-button" data-edit="insertorderedlist" title="Number list"><i class="material-icons md-24">format_list_numbered</i></a>
-                <a class="mdl-button mdl-js-button" data-edit="outdent" title="Reduce indent (Shift+Tab)"><i class="material-icons md-24">format_indent_decrease</i></a>
-                <a class="mdl-button mdl-js-button" data-edit="indent" title="Indent (Tab)"><i class="material-icons md-24">format_indent_increase</i></a>
-            </div>
-            <div class="btn-group">
-                <a class="mdl-button mdl-js-button" data-edit="justifyleft" title="Align Left (Ctrl+L)"><i class="material-icons md-24">format_align_left</i></a>
-                <a class="mdl-button mdl-js-button" data-edit="justifycenter" title="Center (Ctrl+E)"><i class="material-icons md-24">format_align_center</i></a>
-                <a class="mdl-button mdl-js-button" data-edit="justifyright" title="Align Right (Ctrl+R)"><i class="material-icons md-24">format_align_right</i></a>
-                <a class="mdl-button mdl-js-button" data-edit="justifyfull" title="Justify (Ctrl+J)"><i class="material-icons md-24">format_align_justify</i></a>
-            </div>
-            <div class="btn-group">
-                <form action="#">
-                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
-                    <label class="mdl-button mdl-js-button mdl-button--icon" for="link-address">
-                      <i class="material-icons md-24">insert_link</i>
-                    </label>
-                    <div class="mdl-textfield__expandable-holder">
-                      <input class="mdl-textfield__input" type="text" id="link-address" data-edit="createLink" placeholder="URL">
-                      <label class="mdl-textfield__label" >Expandable Input</label>
-                    </div>
+            <header class="mdl-layout__header mdl-layout--fixed-header">
+                <div class="mdl-layout__header-row" data-role="editor-toolbar" data-target="#editor">
+
+                  <div class="btn-group">
+                      <a class="mdl-button mdl-js-button" data-edit="undo" title="Undo (Ctrl+Z)">
+                          <i class="material-icons md-24">undo</i>
+                      </a>
+                      <a class="mdl-button mdl-js-button" data-edit="redo" title="Redo (Ctrl+Y)">
+                          <i class="material-icons md-24">redo</i>
+                      </a>
                   </div>
+
+                    <div class="btn-group">
+                        <a class="mdl-button mdl-js-button" data-edit="bold" title="Bold (Ctrl+B)">
+                            <i class="material-icons md-24">format_bold</i>
+                        </a>
+                        <a class="mdl-button mdl-js-button" data-edit="italic" title="Italic (Ctrl+I)">
+                            <i class="material-icons md-24">format_italic</i>
+                        </a>
+                        <a class="mdl-button mdl-js-button" data-edit="strikethrough" title="Strikethrough">
+                            <i class="material-icons md-24">strikethrough_s</i>
+                        </a>
+                        <a class="mdl-button mdl-js-button" data-edit="underline" title="Underline (Ctrl+U)">
+                            <i class="material-icons md-24">format_underlined</i>
+                        </a>
+                    </div>
+                    <div class="btn-group">
+                        <a class="mdl-button mdl-js-button" data-edit="insertunorderedlist" title="Bullet list">
+                            <i class="material-icons md-24">format_list_bulleted</i>
+                        </a>
+                        <a class="mdl-button mdl-js-button" data-edit="insertorderedlist" title="Number list">
+                            <i class="material-icons md-24">format_list_numbered</i>
+                        </a>
+                        <a class="mdl-button mdl-js-button" data-edit="outdent" title="Reduce indent (Shift+Tab)">
+                            <i class="material-icons md-24">format_indent_decrease</i>
+                        </a>
+                        <a class="mdl-button mdl-js-button" data-edit="indent" title="Indent (Tab)">
+                            <i class="material-icons md-24">format_indent_increase</i>
+                        </a>
+                    </div>
+                    <div class="btn-group">
+                        <a class="mdl-button mdl-js-button" data-edit="justifyleft" title="Align Left (Ctrl+L)">
+                            <i class="material-icons md-24">format_align_left</i>
+                        </a>
+                        <a class="mdl-button mdl-js-button" data-edit="justifycenter" title="Center (Ctrl+E)">
+                            <i class="material-icons md-24">format_align_center</i>
+                        </a>
+                        <a class="mdl-button mdl-js-button" data-edit="justifyright" title="Align Right (Ctrl+R)">
+                            <i class="material-icons md-24">format_align_right</i>
+                        </a>
+                        <a class="mdl-button mdl-js-button" data-edit="justifyfull" title="Justify (Ctrl+J)">
+                            <i class="material-icons md-24">format_align_justify</i>
+                        </a>
+                    </div>
+                    <div class="btn-group">
+                        <a id="font-size-ddl" class="mdl-button mdl-js-button" title="Font Size">
+                            <i class="material-icons md-24">text_fields</i>
+                            <i class="material-icons md-18">keyboard_arrow_down</i>
+                        </a>
+                        <ul for="font-size-ddl" class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect">
+                            <li class="mdl-menu__item">
+                                <a data-edit="fontSize 5">Huge</a>
+                            </li>
+                            <li class="mdl-menu__item">
+                                <a data-edit="fontSize 3">Normal</a>
+                            </li>
+                            <li class="mdl-menu__item">
+                                <a data-edit="fontSize 1">Small</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <a id="picBtn" class="mdl-button mdl-js-button dropdown-toggle" title="Insert picture (or just drag & drop)" onclick="$('#pictureBtn').click();">
+                            <i class="material-icons md-24">insert_photo</i>
+                        </a>
+
+                        <input id="pictureBtn" class="imgUpload" type="file" data-edit="insertImage" data-role="magic-overlay" />
+                    </div>
+                    <div class="btn-group">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+                            <label class="mdl-button mdl-js-button mdl-button--icon" for="link-address">
+                                <i class="material-icons md-24">insert_link</i>
+                            </label>
+                            <div class="mdl-textfield__expandable-holder">
+                                <input class="mdl-textfield__input" type="text" id="link-address" data-edit="createLink" placeholder="URL">
+                                <label class="mdl-textfield__label">Expandable Input</label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </header>
+
+            <main class="mdl-layout__content">
+                <form action="#">
+                    <div class="full-text-editor mdl-textfield mdl-js-textfield">
+                        <div id="editor" class="lead mdl-textfield__input" type="text" data-placeholder="Build your email template."></div>
+                        <label class="mdl-textfield__label" for="editor"></label>
+                    </div>
                 </form>
-            </div>
-            <div class="btn-group">
-                <a id="picBtn" class="mdl-button mdl-js-button dropdown-toggle" title="Insert picture (or just drag & drop)" onclick="$('#pictureBtn').click();"><i class="material-icons md-24">insert_photo</i></a>
 
-                <input id="pictureBtn" class="imgUpload" type="file" data-edit="insertImage" data-role="magic-overlay" />
-            </div>
-            <div class="btn-group">
-                <a class="mdl-button mdl-js-button" data-edit="undo" title="Undo (Ctrl+Z)"><i class="material-icons md-24">undo</i></a>
-                <a class="mdl-button mdl-js-button" data-edit="redo" title="Redo (Ctrl+Y)"><i class="material-icons md-24">redo</i></a>
-            </div>
-          </div>
-        </header>
-
-        <main class="mdl-layout__content">
-          <!-- <div id="editor" class="lead" data-placeholder="Build your email template."></div> -->
-          <form action="#">
-            <div class="full-text-editor mdl-textfield mdl-js-textfield">
-              <div id="editor" class="lead mdl-textfield__input" type="text" data-placeholder="Build your email template."></div>
-              <!-- <textarea class="lead mdl-textfield__input" type="text" rows= "3" id="editor" ></textarea> -->
-              <label class="mdl-textfield__label" for="editor"></label>
-            </div>
-          </form>
-          <div id="editorPreview"></div>
-          <p style="text-align: center;">
-              <a class="btn btn-large  jumbo" href="#!" onClick="$('#editorPreview').html($('#editor').html());">Submit</a>
-          </p>
-        </main>
+                <p style="text-align: center;">
+                    <a class="btn btn-large  jumbo" href="#!" onClick="$('#editorPreview').html($('#editor').html());">Submit</a>
+                </p>
+            </main>
         </div>
     </div>
 

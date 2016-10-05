@@ -30,6 +30,7 @@ function openSidebar() {
   SpreadsheetApp.getUi().showSidebar(ui);
 }
 
+
 /**
  * Creates an HTML modal for creating/viewing Mailman email templates.
  *
@@ -39,7 +40,7 @@ function openModalDialog() {
       .setTitle('Mailman')
       .setSandboxMode(HtmlService.SandboxMode.IFRAME)
       .setHeight(600)
-      .setWidth(800);
+      .setWidth(750);
 
   SpreadsheetApp.getUi().showModalDialog(ui, ' ');
 }
