@@ -136,6 +136,10 @@ var MailMan = function() {
         maxResults: maxResults
       }
     });
+    cards[6] = new Card(contentArea, Card.types.INFO, {
+      title: 'Example',
+      help: 'This is an example of how the email may look.'
+    });
 
     activeCard = cards[0];
     cards[0].name = 'Welcome';
@@ -156,6 +160,17 @@ var MailMan = function() {
     $('#back').on('click', self.back);
     $('#help').on('click', self.toggleHelp);
 
+    // Card change Bindings
+    cards[1].attachEvent('card.hide', function(event) {
+      if (window.google !== undefined) {
+        google.script.run
+            .withSuccessHandler(setColumns)
+            .getHeaderNames(this.getValue());
+      }
+      else {
+        console.log('Setting columns based on sheet.')
+      }
+    });
 
     // Load information from GAS
     if (window.google !== undefined) {
@@ -173,18 +188,7 @@ var MailMan = function() {
    */
   this.next = function(event) {
 
-
     if (cards.indexOf(activeCard) + 1 < cards.length) {
-      // Temp TODO Refactor this
-      if (cards.indexOf(activeCard) === 1) {
-        if (window.google !== undefined) {
-          google.script.run
-              .withSuccessHandler(setColumns)
-              .getHeaderNames(cards[1].getValue());
-        }
-
-      }
-
       activeCard = cards[cards.indexOf(activeCard) + 1];
     }
 
@@ -401,6 +405,12 @@ var MailMan = function() {
     cards[2].setAutocompleteSource(columns);
     cards[4].setAutocompleteSource(columns);
     cards[5].setAutocompleteSource(columns);
+  };
+
+  var buildExample = function(emailObject) {
+    cards[6].addParagraph('To: ' + emailObject.to);
+    cards[6].addParagraph(emailObject.subject);
+    cards[6].addParagraph(emailObject.body);
   };
 
   this.init();
