@@ -18,11 +18,19 @@ var Card = function(appendTo, type, options) {
   var trigger;
   var maxResults;
 
+  // Events
+
+  //var hideEvent;
+  //var showEvent;
+
   //***** CONSTRUCTOR *****//
 
   this.init = function(appendTo, type, options) {
     var type = type;
     self = this;
+
+    //hideEvent = new Event('hide');
+    //showEvent = new Event('show');
 
     // Handle type
     if (type === Card.types.INPUT) {
@@ -114,11 +122,20 @@ var Card = function(appendTo, type, options) {
   //***** PUBLIC FUNCTIONS *****//
 
   this.show = function() {
-    base.removeClass('hidden');
+    if (base.hasClass('hidden') === true) {
+      base.removeClass('hidden');
+      base.trigger('card.show');
+    }
+
   };
 
   this.hide = function() {
-    base.addClass('hidden');
+
+    if (base.hasClass('hidden') === false) {
+      base.addClass('hidden');
+      base.trigger('card.hide');
+    }
+
   };
 
   this.getValue = function() {
@@ -169,6 +186,10 @@ var Card = function(appendTo, type, options) {
   this.addParagraph = function(content) {
     var para = $('<p>' + content + '</p>');
     base.append(para);
+  };
+
+  this.attachEvent = function(name, toExecute) {
+    base.on(name, toExecute);
   };
 
   //***** PRIVATE FUNCTIONS *****//
