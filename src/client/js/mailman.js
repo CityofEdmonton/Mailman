@@ -136,10 +136,10 @@ var MailMan = function() {
         maxResults: maxResults
       }
     });
-    cards[6] = new Card(contentArea, Card.types.INFO, {
-      title: 'Example',
-      help: 'This is an example of how the email may look.'
-    });
+    // cards[6] = new Card(contentArea, Card.types.INFO, {
+    //   title: 'Example',
+    //   help: 'This is an example of how the email may look.'
+    // });
 
     activeCard = cards[0];
     cards[0].name = 'Welcome';
