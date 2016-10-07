@@ -1,6 +1,8 @@
 
 var Util = require('./util.js');
 var Card = require('./simple-content-div.js');
+var InputCard = require('./card-input.js');
+var TitledCard = require('./card-titled.js');
 
 var MailMan = function() {
 
@@ -74,7 +76,7 @@ var MailMan = function() {
     maxNavItems = 3;
     var maxResults = 5;
 
-    cards[0] = new Card(contentArea, Card.types.INFO, {
+    cards[0] = new TitledCard(contentArea, {
       title: 'Welcome!',
       help: 'Help will be displayed here normally. Since this is just the welcome page, there isn\'t much to know!',
       paragraphs: [
@@ -136,10 +138,6 @@ var MailMan = function() {
         maxResults: maxResults
       }
     });
-    // cards[6] = new Card(contentArea, Card.types.INFO, {
-    //   title: 'Example',
-    //   help: 'This is an example of how the email may look.'
-    // });
 
     activeCard = cards[0];
     cards[0].name = 'Welcome';
