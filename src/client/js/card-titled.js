@@ -12,8 +12,20 @@ var TitledCard = function(appendTo, options) {
   // Public Variables
 
 
+  //***** Private Methods *****//
+
+
+  //***** Privileged Methods *****//
+  this.setTitle = function(title) {
+    innerBase.filter('h4').text(title);
+  };
+
+  this.setHelp = function(help) {
+    innerBase.filter('.help').text(help);
+  };
+
   // constructor
-  this.base.append(innerBase);
+  this.insert(innerBase, 0);
 
   if (options !== undefined) {
     if (options.title !== undefined) {
@@ -22,23 +34,7 @@ var TitledCard = function(appendTo, options) {
     if (options.help !== undefined) {
       this.setHelp(options.help);
     }
-    if (options.label !== undefined) {
-      this.setLabel(options.label);
-    }
-    if (options.paragraphs !== undefined) {
-      options.paragraphs.every(function(data) {
-        self.addParagraph(data);
-        return true;
-      });
-    }
   }
-
-
-
-  //***** Private Methods *****//
-
-
-  //***** Privileged Methods *****//
 };
 
 TitledCard.prototype = Object.create(Card.prototype);
@@ -46,18 +42,7 @@ TitledCard.prototype.constructor = TitledCard;
 
 //***** Public Methods *****//
 
-TitledCard.prototype.setTitle = function(title) {
-  this.base.find('h4').text(title);
-};
 
-TitledCard.prototype.setHelp = function(help) {
-  this.base.find('.help').text(help);
-};
-
-TitledCard.prototype.addParagraph = function(content) {
-  var para = $('<p>' + content + '</p>');
-  this.base.append(para);
-};
 
 
 
