@@ -1,8 +1,8 @@
 
 var Util = require('./util.js');
-var Card = require('./simple-content-div.js');
 var InputCard = require('./card-input.js');
 var TitledCard = require('./card-titled.js');
+var TextareaCard = require('./card-textarea.js');
 
 var MailMan = function() {
 
@@ -28,6 +28,9 @@ var MailMan = function() {
 
   // All the columns of the selected sheet.
   var columns;
+
+  // The maximum number of results to display in the autocompletes
+  var maxResults;
 
   //***** PUBLIC *****//
 
@@ -74,7 +77,7 @@ var MailMan = function() {
     contentArea = $('#content-area');
     showHelp = false;
     maxNavItems = 3;
-    var maxResults = 5;
+    maxResults = 5;
 
     cards[0] = new TitledCard(contentArea, {
       title: 'Welcome!',
@@ -85,7 +88,7 @@ var MailMan = function() {
         'To get started, simply click NEXT down below.'
       ]
     });
-    cards[1] = new Card(contentArea, Card.types.INPUT, {
+    cards[1] = new InputCard(contentArea, {
       title: 'Which Sheet are we sending from?',
       help: 'This Sheet must contain all the information you may want to send in an email.',
       label: 'Sheet...',
@@ -95,7 +98,7 @@ var MailMan = function() {
         triggerOnFocus: true
       }
     });
-    cards[2] = new Card(contentArea, Card.types.INPUT, {
+    cards[2] = new InputCard(contentArea, {
       title: 'Who are you sending to?',
       help: 'This is the column filled with the email addresses of the recipients.',
       label: 'To...',
@@ -107,12 +110,12 @@ var MailMan = function() {
         triggerOnFocus: true
       }
     });
-    cards[3] = new Card(contentArea, Card.types.INPUT, {
+    cards[3] = new InputCard(contentArea, {
       title: 'Who\'s this from?',
       help: 'Who should recipients see as the sender of these emails?',
       label: 'From...'
     });
-    cards[4] = new Card(contentArea, Card.types.INPUT, {
+    cards[4] = new InputCard(contentArea, {
       title: 'What\'s your subject?',
       help: 'Recipients will see this as the subject line of the email. Type "<<" to see a list of column names. ' +
           'These tags will be swapped out with the associated values in the Sheet.',
@@ -125,7 +128,7 @@ var MailMan = function() {
         maxResults: maxResults
       }
     });
-    cards[5] = new Card(contentArea, Card.types.TEXTAREA, {
+    cards[5] = new TextareaCard(contentArea, {
       title: 'What\'s in the body?',
       help: 'Recipients will see this as the body of the email. Type "<<" to see a list of column names. These tags ' +
           'will be swapped out with the associated values in the Sheet.',
@@ -160,10 +163,12 @@ var MailMan = function() {
 
     // Card change Bindings
     cards[1].attachEvent('card.hide', function(event) {
+
       if (window.google !== undefined) {
+        var sheet = cards[1].getValue();
         google.script.run
             .withSuccessHandler(setColumns)
-            .getHeaderNames(this.getValue());
+            .getHeaderNames(sheet);
       }
       else {
         console.log('Setting columns based on sheet.')
@@ -394,15 +399,38 @@ var MailMan = function() {
 
   var setSheets = function(sheets) {
     sheets = sheets;
-    cards[1].setAutocompleteSource(sheets);
+    cards[1].setAutocomplete({
+      results: sheets,
+      maxResults: maxResults,
+      triggerOnFocus: true
+    });
   };
 
   var setColumns = function(columns) {
     columns = columns;
 
-    cards[2].setAutocompleteSource(columns);
-    cards[4].setAutocompleteSource(columns);
-    cards[5].setAutocompleteSource(columns);
+    cards[2].setAutocomplete({
+      results: columns,
+      prepend: '<<',
+      append: '>>',
+      maxResults: maxResults,
+      triggerOnFocus: true
+    });
+
+    cards[4].setAutocomplete({
+      results: columns,
+      trigger: '<<',
+      prepend: '<<',
+      append: '>>',
+      maxResults: maxResults
+    });
+    cards[5].setAutocomplete({
+      results: columns,
+      trigger: '<<',
+      prepend: '<<',
+      append: '>>',
+      maxResults: maxResults
+    });
   };
 
   var buildExample = function(emailObject) {
