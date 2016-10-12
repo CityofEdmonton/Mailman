@@ -69,9 +69,10 @@ function onTrigger() {
     }
 
     // Convert <<>> tags to actual text.
-    var to = replaceTags(rule.to, sheet, combinedObj);
-    var subject = replaceTags(rule.subject, sheet, combinedObj);
-    var body = replaceTags(rule.body, sheet, combinedObj);
+    var to = replaceTags(rule.to, combinedObj);
+    var subject = replaceTags(rule.subject, combinedObj);
+    var body = replaceTags(rule.body, combinedObj);
+
     Logger.log('Sending email to ' + to);
     MailApp.sendEmail(to, subject, body);
   }

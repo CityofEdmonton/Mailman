@@ -84,7 +84,7 @@ var Card = function(appendTo, options) {
     }
     if (options.paragraphs !== undefined) {
       options.paragraphs.every(function(data) {
-        self.addParagraph(data);
+        self.append('<p>' + data + '</p>');
         return true;
       });
     }
