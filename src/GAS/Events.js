@@ -1,3 +1,9 @@
+/**
+ * Prepares the add on after a user has opted to install it.
+ * TODO Test this
+ *
+ * @param {object} e The event object https://developers.google.com/apps-script/guides/triggers/events
+ */
 function onInstall(e) {
   //Install triggers
   PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, SpreadsheetApp.getActiveSpreadsheet().getId());
@@ -5,6 +11,12 @@ function onInstall(e) {
   onOpen(e);
 }
 
+
+/**
+ * Called when the Spreadsheet is opened.
+ *
+ * @param {object} e The event object https://developers.google.com/apps-script/guides/triggers/events
+ */
 function onOpen(e) {
   SpreadsheetApp.getUi()
       .createAddonMenu() //'Defect Tracker'
@@ -27,6 +39,12 @@ function openModalDialog() {
   SpreadsheetApp.getUi().showSidebar(ui);
 }
 
+
+/**
+ * This function will be called by trigger eventually.
+ * TODO Triggers
+ *
+ */
 function onTrigger() {
   Logger.log('Running trigger function...');
 
@@ -49,7 +67,6 @@ function onTrigger() {
     for (var j = 0; j < header.length; j++) {
       combinedObj[header[j]] = row[j];
     }
-
 
     // Convert <<>> tags to actual text.
     var to = replaceTags(rule.to, sheet, combinedObj);

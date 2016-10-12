@@ -16,10 +16,21 @@ var TitledCard = function(appendTo, options) {
 
 
   //***** Privileged Methods *****//
+
+  /**
+   * Sets the title that is displayed for this Card.
+   *
+   * @param {string} title The title of the Card.
+   */
   this.setTitle = function(title) {
     innerBase.filter('h4').text(title);
   };
 
+  /**
+   * This sets the help that is displayed for this card.
+   *
+   * @param {string} help The help to be displayed to users about this Card.
+   */
   this.setHelp = function(help) {
     innerBase.filter('.help').text(help);
   };
@@ -37,13 +48,13 @@ var TitledCard = function(appendTo, options) {
   }
 };
 
-TitledCard.prototype = Object.create(Card.prototype);
+
+/** */
 TitledCard.prototype.constructor = TitledCard;
+TitledCard.prototype = Object.create(Card.prototype);
 
 //***** Public Methods *****//
 
 
-
-
-
+/** */
 module.exports = TitledCard;

@@ -12,9 +12,17 @@ var InputCard = function(appendTo, options) {
 
   // Public Variables
 
-
-
   //***** Private Methods *****//
+  /**
+   * Gets the jQuery UI autocomplete config.
+   *
+   * @param {string} append The string to put after a selection is made.
+   * @param {string} prepend The string to put before the selection.
+   * @param {number} maxResults The maximum number of results displayed when filtering results.
+   * @param {string} trigger A string to watch for that triggers selection.
+   * @param {Array<string>} results The results to filter for autocomplete.
+   * @return {object} A configuration object used by jQuery UI.
+   */
   var getAutocompleteConfig = function(append, prepend, maxResults, trigger, results) {
     return {
       minLength: 0,
@@ -66,6 +74,11 @@ var InputCard = function(appendTo, options) {
 
 
   //***** Privileged Methods *****//
+  /**
+   * Sets autocomplete bsaed upon some options.
+   *
+   * @param {object} options The options to set up autocomplete.
+   */
   this.setAutocomplete = function(options) {
     var append = '';
     var prepend = '';
@@ -96,18 +109,32 @@ var InputCard = function(appendTo, options) {
     input.autocomplete(getAutocompleteConfig(append, prepend, maxResults, trigger, results));
   };
 
+  /**
+   * Gets the value in the input.
+   *
+   * @return {string} The value in the input.
+   */
   this.getValue = function() {
     return innerBase.find('input').val();
   };
 
+  /**
+   * Sets the value of the input.
+   *
+   * @param {string} value The value to set in the input.
+   */
   this.setValue = function(value) {
     innerBase.find('input').val(value);
   };
 
+  /**
+   * Sets the label shown in the input when nothing has been typed.
+   *
+   * @param {string} label The value to set as the label.
+   */
   this.setLabel = function(label) {
     innerBase.find('label').text(label);
   };
-
 
   // constructor
   this.append(innerBase);
@@ -116,17 +143,21 @@ var InputCard = function(appendTo, options) {
     if (options.label !== undefined) {
       this.setLabel(options.label);
     }
-    if(options.autocomplete !== undefined) {
+    if (options.autocomplete !== undefined) {
       this.setAutocomplete(options.autocomplete);
     }
   }
 
-  componentHandler.upgradeElement(innerBase.find('.mdl-js-textfield')[0], 'MaterialTextfield'); //TODO Could be source of error
+  componentHandler.upgradeElement(innerBase.find('.mdl-js-textfield')[0], 'MaterialTextfield');
 };
-InputCard.prototype = Object.create(TitledCard.prototype);
+
+
+/** */
 InputCard.prototype.constructor = InputCard;
+InputCard.prototype = Object.create(TitledCard.prototype);
 
 //***** Public Methods *****//
 
 
+/** */
 module.exports = InputCard;

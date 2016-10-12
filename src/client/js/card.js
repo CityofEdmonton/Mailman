@@ -14,6 +14,12 @@ var Card = function(appendTo, options) {
 
   //***** Privileged Methods *****//
 
+  /**
+   * Inserts HTML content at the given index.
+   *
+   * @param {string} content An HTML string to insert into the card.
+   * @param {number} index The index to insert the content at.
+   */
   this.insert = function(content, index) {
     if (index === 0) {
       base.prepend($(content));
@@ -23,6 +29,19 @@ var Card = function(appendTo, options) {
     }
   };
 
+  /**
+   * Appends content to the end of the base div (as the last child).
+   *
+   * @param {string} content An HTML string to append to base.
+   */
+  this.append = function(content) {
+    base.append($(content));
+  };
+
+  /**
+   * Shows the Card. Also triggers the event card.show.
+   *
+   */
   this.show = function() {
     if (base.hasClass('hidden') === true) {
       base.removeClass('hidden');
@@ -30,6 +49,10 @@ var Card = function(appendTo, options) {
     }
   };
 
+  /**
+   * Hides the card. Also triggers the event card.hide.
+   *
+   */
   this.hide = function() {
     if (base.hasClass('hidden') === false) {
       base.addClass('hidden');
@@ -37,17 +60,14 @@ var Card = function(appendTo, options) {
     }
   };
 
-  this.addParagraph = function(content) {
-    var para = $('<p>' + content + '</p>');
-    base.append(para);
-  };
-
+  /**
+   * Attaches an event handler to this card.
+   *
+   * @param {string} name The event to watch for.
+   @ @param {function} toExecute The callback to execute when the event is fired.
+   */
   this.attachEvent = function(name, toExecute) {
     base.on(name, toExecute);
-  };
-
-  this.append = function(content) {
-    base.append($(content));
   };
 
   // constructor
@@ -74,7 +94,7 @@ var Card = function(appendTo, options) {
 //***** Public Methods *****//
 
 
-
-
-
+/**
+ *
+ */
 module.exports = Card;

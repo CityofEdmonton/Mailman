@@ -171,7 +171,7 @@ var MailMan = function() {
             .getHeaderNames(sheet);
       }
       else {
-        console.log('Setting columns based on sheet.')
+        console.log('Setting columns based on sheet.');
       }
     });
 
@@ -431,12 +431,6 @@ var MailMan = function() {
       append: '>>',
       maxResults: maxResults
     });
-  };
-
-  var buildExample = function(emailObject) {
-    cards[6].addParagraph('To: ' + emailObject.to);
-    cards[6].addParagraph(emailObject.subject);
-    cards[6].addParagraph(emailObject.body);
   };
 
   this.init();
