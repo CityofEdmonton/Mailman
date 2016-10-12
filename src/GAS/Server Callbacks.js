@@ -1,5 +1,8 @@
+
+
 /**
  * Called from the client-side. Returns the current selection in A1 notation.
+ *
  * @return {string} The sheets selection in A1 notation.
  */
 function getSheetSelection() {
@@ -41,6 +44,7 @@ function createRule(to, subject, body, options, sheet) {
   onTrigger();
 }
 
+
 /**
  * Sends an email.
  * TODO Ensure success/fail are handled elegantly.
@@ -56,6 +60,12 @@ function sendEmail(to, subject, body, options) {
   MailApp.sendEmail(to, subject, body, options);
 }
 
+
+/**
+ * Gets the names of all the available sheets.
+ *
+ * @return {Array<string>} The names of all the sheets.
+ */
 function getSheets() {
   SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
   var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
@@ -69,6 +79,13 @@ function getSheets() {
   return names;
 }
 
+
+/**
+ * Gets the headers from a specified sheet.
+ *
+ * @param {string} sheetName The name of the sheet.
+ * @return {Array<string>} The names of all the headers.
+ */
 function getHeaderNames(sheetName) {
   SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
   var ss = SpreadsheetApp.openById(SPREADSHEET_ID);

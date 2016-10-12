@@ -1,7 +1,23 @@
+
+
+/**
+ * This gets the values of the top-most row.
+ *
+ * @param {Sheet} sheet The sheet to find the headers in.
+ * @return {Array<string>} The array of values.
+ */
 function getHeaderStrings(sheet) {
   return getValues(sheet, 0);
 }
 
+
+/**
+ * Gets an array of the values in a specific sheets row.
+ *
+ * @param {Sheet} sheet The sheet to get the values from.
+ * @param {number} rowIndex The zero-based index of the row to retrieve values for.
+ * @return {Array<string>} The array of values.
+ */
 function getValues(sheet, rowIndex) {
   var range = sheet.getDataRange();
 
@@ -17,21 +33,16 @@ function getValues(sheet, rowIndex) {
   return values;
 }
 
-function test() {
-  var ss = SpreadsheetApp.openById('1G0APrUUpZv-TpFmqdlSPUpzQL3mbDhZQ4stQFWjU30c');
-  var sheet = ss.getSheetByName('Defects');
-  var header = getHeaderStrings(sheet);
-  var row = getValues(sheet, 2);
 
-  var superObj;
-  for (var i = 0; i < header.length; i++) {
-    superObj[header[i]] = row[i];
-  }
-
-  Logger.log(replaceTags('This is a <<Category>>. Another priority: <<Priority>>.', sheet, superObj));
-}
-
-function replaceTags(text, sheet, headerToData) {
+/**
+ * This function replaces  all instances of <<tags>> with the data in headerToData.
+ *
+ * @param {string} text The string that contains the tags.
+ * @param {Object} headerToData A key-value pair where the key is a column name
+ * and the value is the data in the column.
+ * @return {string} The text with all tags replaced with data.
+ */
+function replaceTags(text, headerToData) {
   var dataText = text.replace(/<<.*?>>/g, function(match, offset, string) {
     var columnName = match.slice(2, match.length - 2);
     return headerToData[columnName];
@@ -39,6 +50,7 @@ function replaceTags(text, sheet, headerToData) {
 
   return dataText;
 }
+
 
 /**
  * Given a range in A1 notation, this function extracts the sheet name.
@@ -67,17 +79,6 @@ function extractRange(a1Notation) {
 
 
 /**
- * Ensures a given rule makes sense. It logs issues with the rule and also returns the issues in a string array.
- *
- * @param {Object} rule An object that contains to, cc, bcc, subject, body, range, comparison, value.
- * @return {Array.<string>}  A list of issues with the rules. If this is empty, the rule is good!
- */
-function validateRule(rule) {
-
-}
-
-
-/**
  * Get the rule for this document.
  *
  * @return {object} The rule in object form.
@@ -102,15 +103,6 @@ function columnToLetter(column) {
     column = (column - temp - 1) / 26;
   }
   return letter;
-}
-
-
-/**
- * Creates a rule with default test information. Used for testing purposes.
- *
- */
-function fillTestInfo() {
-  createRule('Defects!I:I', null, null, 'Defects Email!A:A', 'Defects Email!B:B', 'Defects Email!C:C', 'Text is exactly', 'TRUE', 'Defects Email!D:D');
 }
 
 
