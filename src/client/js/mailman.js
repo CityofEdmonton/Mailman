@@ -17,11 +17,10 @@ var MailMan = function() {
   // This tracks whether help is being displayed currently.
   var showHelp;
 
-  // These are used to keep track of the visible card as well as the hidden cards.
-  //var cards = [];
+  // The currently shown Card.
   var activeCard;
 
-  // This alters how many card links will be shown in the nav bar
+  // This alters how many Card links will be shown in the nav bar
   var maxNavItems;
 
   // All the different sheet names.
@@ -157,7 +156,7 @@ var MailMan = function() {
     activeCard = cards.head;
     jumpTo(activeCard.data);
 
-    //buildNavTree(activeCard);
+    buildNavTree(activeCard);
     $('.help').addClass('hidden');
 
     // All UI Bindings
@@ -271,8 +270,9 @@ var MailMan = function() {
         .on('click', node, navigate);
 
     $('#nav-bar')
-        .append('&nbsp;&gt;&nbsp;')
-        .append(newLink);
+        .prepend(newLink)
+        .prepend('&nbsp;&gt;&nbsp;');
+
   };
 
   /**
@@ -284,10 +284,12 @@ var MailMan = function() {
   var buildNavTree = function(node) {
     $('#nav-bar').empty();
 
-    var current = cards.head;
-    while(current !== null && current !== node.next) {
-      addNavLink(current);
-      current = current.next;
+    var current = node;
+    for (var i = 0; i < maxNavItems; i++) {
+      if (current !== null) {
+        addNavLink(current);
+        current = current.previous;
+      }
     }
   };
 
@@ -346,7 +348,7 @@ var MailMan = function() {
     }
 
     return null;
-  }
+  };
 
   /**
    * Hides all cards.
@@ -355,7 +357,7 @@ var MailMan = function() {
    */
   var hideAll = function() {
     var node = cards.head;
-    while(node !== null) {
+    while (node !== null) {
       node.data.hide();
       node = node.next;
     }
