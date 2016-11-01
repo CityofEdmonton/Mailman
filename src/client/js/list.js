@@ -1,93 +1,123 @@
 var Node = require('./node.js');
 
+
+// Used some of the code found here:
+// https://code.tutsplus.com/articles/data-structures-with-javascript-singly-linked-list-and-doubly-linked-list--cms-23392
+// It's worth noting that there are several errors in the list implementation on this site, so beware.
+
+
+
+/** @constructor */
 var List = function() {
   this._length = 0;
   this.head = null;
+  this.tail = null;
 };
+
 
 // ***** Public Functions ***** //
+/**
+ * Adds a new node to the end of the List.
+ *
+ * @param {Object} value The data to be assigned to the node.
+ * @return {Node} The newly created node.
+ */
 List.prototype.add = function(value) {
-    var node = new Node(value);
-    var currentNode = this.head;
+  var node = new Node(value);
 
-    // Set up the list if this is the first node.
-    if (!currentNode) {
-        this.head = node;
-        this._length++;
+  if (this._length !== 0) {
+    node.previous = this.tail;
+    this.tail.next = node;
+    this.tail = node;
+  } else {
+    this.head = node;
+    this.tail = node;
+  }
 
-        return node;
-    }
+  this._length++;
 
-    // Add a new node to the end of the list
-    while (currentNode.next) {
-        currentNode = currentNode.next;
-    }
-
-    currentNode.next = node;
-    node.previous = currentNode;
-    this._length++;
-
-    return node;
+  return node;
 };
 
+
+/**
+ * Gets a node at a specified 0-based position.
+ *
+ * @param {Number} position The 0-based position of the node to find.
+ * @return {Node} The node at position.
+ */
 List.prototype.getNode = function(position) {
-    var currentNode = this.head;
-    var length = this._length;
-    var count = 0;
+  var currentNode = this.head;
+  var length = this._length;
+  var count = 0;
 
-    // Verify the position is valid.
-    if (length === 0 || position < 0 || position >= length) {
-        throw new Error('Failure: node not in list.');
-    }
+  // Verify the position is valid.
+  if (length === 0 || position < 0 || position >= length) {
+    throw new Error('Failure: node not in list.');
+  }
 
-    while (count < position) {
-        currentNode = currentNode.next;
-        count++;
-    }
+  while (count < position) {
+    currentNode = currentNode.next;
+    count++;
+  }
 
-    return currentNode;
+  return currentNode;
 };
 
+
+/**
+ * This function removes a node from the List.
+ *
+ * @param {Number} position The 0-based position of the node to remove.
+ */
 List.prototype.remove = function(position) {
-    var currentNode = this.head;
-    var length = this._length
-    var count = 0;
-    var beforeNodeToDelete = null;
-    var nodeToDelete = null;
-    var deletedNode = null;
+  var currentNode = this.head;
+  var length = this._length;
+  var count = 0;
+  var beforeNodeToDelete = null;
+  var nodeToDelete = null;
+  var afterNodeToDelete = null;
+  //var deletedNode = null;
 
-    // Verify the position is valid.
-    if (length === 0 || position < 0 || position >= length) {
-        throw new Error('Failure: node not in list.');
+  // 1st use-case: an invalid position
+  if (length === 0 || position < 0 || position >= length) {
+    throw new Error('Failure: non-existent node in this list.');
+  }
+
+  // 2nd use-case: the first node is removed
+  if (position === 0) {
+    this.head = currentNode.next;
+
+    // 2nd use-case: there is a second node
+    if (this.head !== null) {
+      this.head.previous = null;
     }
-
-    // Head needs to be updated when it's the first node
-    if (position === 0) {
-        this.head = currentNode.next;
-        currentNode.next.previous = null;
-        deletedNode = currentNode;
-        currentNode = null;
-        this._length--;
-
-        return deletedNode;
+  // 2nd use-case: there is no second node
+    else {
+      this.tail = null;
     }
+  }
+// 3rd use-case: the last node is removed
+  else if (position === this._length - 1) {
+    this.tail = this.tail.previous;
+    this.tail.next = null;
+  }
+// 4th use-case: a middle node is removed
+  else {
+    currentNode = this.getNode(position);
 
-    while (count < position) {
-        beforeNodeToDelete = currentNode;
-        nodeToDelete = currentNode.next;
-        count++;
-    }
+    beforeNodeToDelete = currentNode.previous;
+    nodeToDelete = currentNode;
+    afterNodeToDelete = currentNode.next;
 
-    // This handles the event where it's at the end of the list.
-    if (nodeToDelete.next !== null) {
-      nodeToDelete.next.previous = beforeNodeToDelete;
-    }
-    beforeNodeToDelete.next = nodeToDelete.next;
-    deletedNode = nodeToDelete;
+    beforeNodeToDelete.next = afterNodeToDelete;
+    afterNodeToDelete.previous = beforeNodeToDelete;
     nodeToDelete = null;
-    this._length--;
+  }
 
-    return deletedNode;
+  this._length--;
 };
 
+
+/** */
 module.exports = List;
