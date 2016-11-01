@@ -35,7 +35,7 @@ function onOpen(e) {
  *
  */
 function openSidebar() {
-  var ui = HtmlService.createHtmlOutputFromFile('NewEmailDialog')
+  var ui = HtmlService.createHtmlOutputFromFile('new-email-dialog')
       .setTitle('Mailman')
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 
