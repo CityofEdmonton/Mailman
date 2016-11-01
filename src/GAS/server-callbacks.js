@@ -42,6 +42,8 @@ function createRule(to, subject, body, options, sheet) {
 
   // TEMP
   onTrigger();
+
+  return 'Success';
 }
 
 

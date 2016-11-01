@@ -69,8 +69,8 @@ function buildGAS() {
       .pipe(gulp.dest('./build/gas'));
 
   // GAS
-  return gulp.src('./src/GAS/*')
-      .pipe(gulp.dest('./build/gas/GAS'));
+  return gulp.src('./src/gas/*')
+      .pipe(gulp.dest('./build/gas/gas'));
 }
 
 
@@ -111,8 +111,8 @@ function buildWeb() {
   gulp.src('./build/common/css/*')
       .pipe(gulp.dest('./build/web/client/css'));
 
-  return gulp.src('./src/GAS/*')
-      .pipe(gulp.dest('./build/web/GAS'));
+  return gulp.src('./src/gas/*')
+      .pipe(gulp.dest('./build/web/gas'));
 }
 
 
