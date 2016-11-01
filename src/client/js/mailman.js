@@ -3,6 +3,7 @@ var Util = require('./util.js');
 var InputCard = require('./card-input.js');
 var TitledCard = require('./card-titled.js');
 var TextareaCard = require('./card-textarea.js');
+var List = require('./list.js');
 
 var MailMan = function() {
 
@@ -17,7 +18,7 @@ var MailMan = function() {
   var showHelp;
 
   // These are used to keep track of the visible card as well as the hidden cards.
-  var cards = [];
+  //var cards = [];
   var activeCard;
 
   // This alters how many card links will be shown in the nav bar
@@ -32,6 +33,9 @@ var MailMan = function() {
   // The maximum number of results to display in the autocompletes
   var maxResults;
 
+  // The list containing all the Cards.
+  var cards;
+
   //***** PUBLIC *****//
 
   /**
@@ -40,37 +44,17 @@ var MailMan = function() {
    * @constructor
    */
   this.init = function() {
+    var tempNode;
+
     self = this;
 
     // TEMP
     sheets = [
-      'Title Page',
-      'DEV Defect Log',
-      'UAT Tests',
-      'Team',
-      'UAT Log',
-      'Production Accounts',
-      'QA Log',
-      'Log Template'
+      'Loading...'
     ];
 
     columns = [
-      'ID',
-      'Project Number',
-      'Issue Title',
-      'Description (include expected and actual outcomes)',
-      'Status',
-      'Priority',
-      'Attachment (Screenshots, Documents, etc.)',
-      'Comments',
-      'Created By',
-      'Created Date and Time',
-      'Identified By',
-      'Identified Date and Time',
-      'Assigned To',
-      'Completion Required Date',
-      'Completed By',
-      'Actual Completion Date'
+      'Loading...'
     ];
 
     // Configuration
@@ -78,8 +62,9 @@ var MailMan = function() {
     showHelp = false;
     maxNavItems = 3;
     maxResults = 5;
+    cards = new List();
 
-    cards[0] = new TitledCard(contentArea, {
+    tempNode = cards.add(new TitledCard(contentArea, {
       title: 'Welcome!',
       help: 'Help will be displayed here normally. Since this is just the welcome page, there isn\'t much to know!',
       paragraphs: [
@@ -87,8 +72,16 @@ var MailMan = function() {
             'while also providing advanced options for power users.',
         'To get started, simply click NEXT down below.'
       ]
+    }));
+    tempNode.name = 'Welcome';
+    tempNode.data.attachEvent('card.hide', function(event) {
+      setHidden($('#back'), false);
     });
-    cards[1] = new InputCard(contentArea, {
+    tempNode.data.attachEvent('card.show', function(event) {
+      setHidden($('#back'), true);
+    });
+
+    tempNode = cards.add(new InputCard(contentArea, {
       title: 'Which Sheet are we sending from?',
       help: 'This Sheet must contain all the information you may want to send in an email.',
       label: 'Sheet...',
@@ -97,8 +90,21 @@ var MailMan = function() {
         maxResults: maxResults,
         triggerOnFocus: true
       }
+    }));
+    tempNode.name = 'Sheet';
+    tempNode.data.attachEvent('card.hide', function(event) {
+      if (window.google !== undefined) {
+        var sheet = getNode('Sheet').data.getValue(); // TODO use attached event data to make this smoother
+        google.script.run
+            .withSuccessHandler(setColumns)
+            .getHeaderNames(sheet);
+      }
+      else {
+        console.log('Setting columns based on sheet.');
+      }
     });
-    cards[2] = new InputCard(contentArea, {
+
+    tempNode = cards.add(new InputCard(contentArea, {
       title: 'Who are you sending to?',
       help: 'This is the column filled with the email addresses of the recipients.',
       label: 'To...',
@@ -109,13 +115,9 @@ var MailMan = function() {
         maxResults: maxResults,
         triggerOnFocus: true
       }
-    });
-    cards[3] = new InputCard(contentArea, {
-      title: 'Who\'s this from?',
-      help: 'Who should recipients see as the sender of these emails?',
-      label: 'From...'
-    });
-    cards[4] = new InputCard(contentArea, {
+    })).name = 'To';
+
+    tempNode = cards.add(new InputCard(contentArea, {
       title: 'What\'s your subject?',
       help: 'Recipients will see this as the subject line of the email. Type "<<" to see a list of column names. ' +
           'These tags will be swapped out with the associated values in the Sheet.',
@@ -127,8 +129,9 @@ var MailMan = function() {
         append: '>>',
         maxResults: maxResults
       }
-    });
-    cards[5] = new TextareaCard(contentArea, {
+    })).name = 'Subject';
+
+    tempNode = cards.add(new TextareaCard(contentArea, {
       title: 'What\'s in the body?',
       help: 'Recipients will see this as the body of the email. Type "<<" to see a list of column names. These tags ' +
           'will be swapped out with the associated values in the Sheet.',
@@ -140,19 +143,21 @@ var MailMan = function() {
         append: '>>',
         maxResults: maxResults
       }
+    }));
+    tempNode.name = 'Body';
+    tempNode.data.attachEvent('card.hide', function(event) {
+      setHidden($('#step'), false);
+      setHidden($('#done'), true);
+    });
+    tempNode.data.attachEvent('card.show', function(event) {
+      setHidden($('#step'), true);
+      setHidden($('#done'), false);
     });
 
-    activeCard = cards[0];
-    cards[0].name = 'Welcome';
-    cards[1].name = 'Sheet';
-    cards[2].name = 'To';
-    cards[3].name = 'From';
-    cards[4].name = 'Subject';
-    cards[5].name = 'Body';
+    activeCard = cards.head;
+    jumpTo(activeCard.data);
 
-    handleButtons(activeCard);
-    show(activeCard);
-    buildNavTree(activeCard);
+    //buildNavTree(activeCard);
     $('.help').addClass('hidden');
 
     // All UI Bindings
@@ -161,19 +166,6 @@ var MailMan = function() {
     $('#back').on('click', self.back);
     $('#help').on('click', self.toggleHelp);
 
-    // Card change Bindings
-    cards[1].attachEvent('card.hide', function(event) {
-
-      if (window.google !== undefined) {
-        var sheet = cards[1].getValue();
-        google.script.run
-            .withSuccessHandler(setColumns)
-            .getHeaderNames(sheet);
-      }
-      else {
-        console.log('Setting columns based on sheet.');
-      }
-    });
 
     // Load information from GAS
     if (window.google !== undefined) {
@@ -190,14 +182,15 @@ var MailMan = function() {
    * @param {event} event The event that triggered the function call.
    */
   this.next = function(event) {
-
-    if (cards.indexOf(activeCard) + 1 < cards.length) {
-      activeCard = cards[cards.indexOf(activeCard) + 1];
+    if (activeCard.next === null) {
+      return;
     }
 
-    show(activeCard);
-    handleButtons(activeCard);
-    // Add to the nav location
+    activeCard.data.hide();
+    activeCard = activeCard.next;
+    activeCard.data.show();
+
+    // After changing the card layout, the nav tree needs to be rebuilt.
     buildNavTree(activeCard);
   };
 
@@ -208,13 +201,15 @@ var MailMan = function() {
    * @param {event} event The event that triggered the function call.
    */
   this.back = function(event) {
-    if (cards.indexOf(activeCard) > 0) {
-      activeCard = cards[cards.indexOf(activeCard) - 1];
+    if (activeCard.previous === null) {
+      return;
     }
 
-    show(activeCard);
-    handleButtons(activeCard);
-    // Add to the nav location
+    activeCard.data.hide();
+    activeCard = activeCard.previous;
+    activeCard.data.show();
+
+    // After changing the card layout, the nav tree needs to be rebuilt.
     buildNavTree(activeCard);
   };
 
@@ -227,10 +222,10 @@ var MailMan = function() {
   this.done = function(event) {
     // SUBMIT THE INFO BACK TO SHEETS
 
-    var to = cards[2].getValue();
-    var subject = cards[4].getValue();
-    var body = cards[5].getValue();
-    var sheet = cards[1].getValue();
+    var to = getNode('To').data.getValue();
+    var subject = getNode('Subject').data.getValue();
+    var body = getNode('Body').data.getValue();
+    var sheet = getNode('Sheet').data.getValue();
     var options = null;
 
     if (window.google !== undefined) {
@@ -269,11 +264,11 @@ var MailMan = function() {
    * nav item.
    *
    * @private
-   * @param {Card} card The Card to display in the navigation bar.
+   * @param {Node} node The node to add to the nav bar. This node contains a related Card.
    */
-  var addNavLink = function(card) {
-    var newLink = $('<a>' + card.name + '</a>')
-        .on('click', card, navigate);
+  var addNavLink = function(node) {
+    var newLink = $('<a>' + node.name + '</a>')
+        .on('click', node, navigate);
 
     $('#nav-bar')
         .append('&nbsp;&gt;&nbsp;')
@@ -282,17 +277,17 @@ var MailMan = function() {
 
   /**
    * Builds the navigation tree from scratch. Removes the previous tree.
-   *
+   * TODO rebuild the link limit code
    * @private
-   * @param {Card} card The card to build the tree to.
+   * @param {Node} node The Node to build the tree to.
    */
-  var buildNavTree = function(card) {
+  var buildNavTree = function(node) {
     $('#nav-bar').empty();
 
-    var stop = cards.indexOf(card);
-    var start = Math.max(0, stop - maxNavItems + 1);
-    for (var i = start; i <= stop; i++) {
-      addNavLink(cards[i]);
+    var current = cards.head;
+    while(current !== null && current !== node.next) {
+      addNavLink(current);
+      current = current.next;
     }
   };
 
@@ -307,29 +302,8 @@ var MailMan = function() {
   var navigate = function(e) {
     activeCard = e.data;
 
-    show(e.data);
-    handleButtons(e.data);
+    jumpTo(e.data.data);
     buildNavTree(e.data);
-  };
-
-  /**
-   * Sets the display and behaviour of the buttons based on the activeCard.
-   *
-   * @private
-   * @param {Card} card The card that is active currently.
-   */
-  var handleButtons = function(card) {
-    setVisibility($('#back'), true);
-    setHidden($('#step'), false);
-    setHidden($('#done'), true);
-
-    if (cards.indexOf(card) === 0) {
-      setVisibility($('#back'), false);
-    }
-    else if (cards.indexOf(card) >= cards.length - 1) {
-      setHidden($('#step'), true);
-      setHidden($('#done'), false);
-    }
   };
 
   /**
@@ -339,10 +313,40 @@ var MailMan = function() {
    * @private
    * @param {Card} card The div to leave visible. All other are 'display:none'ed
    */
-  var show = function(card) {
+  var jumpTo = function(card) {
     hideAll();
-    card.show();
+
+    var node = cards.head;
+    while (node !== null) {
+      if (node.data === card) {
+        node.data.show();
+        activeCard = node;
+        return;
+      }
+
+      node = node.next;
+    }
   };
+
+  /**
+   * Gets the node with a given name. It's worth noting that the name of a node isn't something
+   * inherant to the Node object. This file adds them as an alternative way of discovery.
+   *
+   * @param {string} name The name of the Node.
+   * @return {Node} The node with the given name.
+   */
+  var getNode = function(name) {
+    var current = cards.head;
+    while (current !== null) {
+      if (current.name === name) {
+        return current;
+      }
+
+      current = current.next;
+    }
+
+    return null;
+  }
 
   /**
    * Hides all cards.
@@ -350,10 +354,11 @@ var MailMan = function() {
    * @private
    */
   var hideAll = function() {
-    cards.every(function(card) {
-      card.hide();
-      return true;
-    });
+    var node = cards.head;
+    while(node !== null) {
+      node.data.hide();
+      node = node.next;
+    }
   };
 
   /**
@@ -399,17 +404,18 @@ var MailMan = function() {
 
   var setSheets = function(sheets) {
     sheets = sheets;
-    cards[1].setAutocomplete({
+    getNode('Sheet').data.setAutocomplete({
       results: sheets,
       maxResults: maxResults,
       triggerOnFocus: true
     });
   };
 
+  // TODO Convert this to a list friendly form
   var setColumns = function(columns) {
     columns = columns;
 
-    cards[2].setAutocomplete({
+    getNode('To').data.setAutocomplete({
       results: columns,
       prepend: '<<',
       append: '>>',
@@ -417,14 +423,14 @@ var MailMan = function() {
       triggerOnFocus: true
     });
 
-    cards[4].setAutocomplete({
+    getNode('Subject').data.setAutocomplete({
       results: columns,
       trigger: '<<',
       prepend: '<<',
       append: '>>',
       maxResults: maxResults
     });
-    cards[5].setAutocomplete({
+    getNode('Body').data.setAutocomplete({
       results: columns,
       trigger: '<<',
       prepend: '<<',
