@@ -43,8 +43,6 @@ var MailMan = function() {
    * @constructor
    */
   this.init = function() {
-    var tempNode;
-
     self = this;
 
     // TEMP
@@ -63,7 +61,7 @@ var MailMan = function() {
     maxResults = 5;
     cards = new List();
 
-    tempNode = cards.add(new TitledCard(contentArea, {
+    cards.add(new TitledCard(contentArea, {
       title: 'Welcome!',
       help: 'Help will be displayed here normally. Since this is just the welcome page, there isn\'t much to know!',
       paragraphs: [
@@ -72,15 +70,15 @@ var MailMan = function() {
         'To get started, simply click NEXT down below.'
       ]
     }));
-    tempNode.name = 'Welcome';
-    tempNode.data.attachEvent('card.hide', function(event) {
+    cards.tail.name = 'Welcome';
+    cards.tail.data.attachEvent('card.hide', function(event) {
       setHidden($('#back'), false);
     });
-    tempNode.data.attachEvent('card.show', function(event) {
+    cards.tail.data.attachEvent('card.show', function(event) {
       setHidden($('#back'), true);
     });
 
-    tempNode = cards.add(new InputCard(contentArea, {
+    cards.add(new InputCard(contentArea, {
       title: 'Which Sheet are we sending from?',
       help: 'This Sheet must contain all the information you may want to send in an email.',
       label: 'Sheet...',
@@ -90,8 +88,8 @@ var MailMan = function() {
         triggerOnFocus: true
       }
     }));
-    tempNode.name = 'Sheet';
-    tempNode.data.attachEvent('card.hide', function(event) {
+    cards.tail.name = 'Sheet';
+    cards.tail.data.attachEvent('card.hide', function(event) {
       if (window.google !== undefined) {
         var sheet = getNode('Sheet').data.getValue(); // TODO use attached event data to make this smoother
         google.script.run
@@ -103,7 +101,7 @@ var MailMan = function() {
       }
     });
 
-    tempNode = cards.add(new InputCard(contentArea, {
+    cards.add(new InputCard(contentArea, {
       title: 'Who are you sending to?',
       help: 'This is the column filled with the email addresses of the recipients.',
       label: 'To...',
@@ -116,7 +114,7 @@ var MailMan = function() {
       }
     })).name = 'To';
 
-    tempNode = cards.add(new InputCard(contentArea, {
+    cards.add(new InputCard(contentArea, {
       title: 'What\'s your subject?',
       help: 'Recipients will see this as the subject line of the email. Type "<<" to see a list of column names. ' +
           'These tags will be swapped out with the associated values in the Sheet.',
@@ -130,7 +128,7 @@ var MailMan = function() {
       }
     })).name = 'Subject';
 
-    tempNode = cards.add(new TextareaCard(contentArea, {
+    cards.add(new TextareaCard(contentArea, {
       title: 'What\'s in the body?',
       help: 'Recipients will see this as the body of the email. Type "<<" to see a list of column names. These tags ' +
           'will be swapped out with the associated values in the Sheet.',
@@ -143,12 +141,12 @@ var MailMan = function() {
         maxResults: maxResults
       }
     }));
-    tempNode.name = 'Body';
-    tempNode.data.attachEvent('card.hide', function(event) {
+    cards.tail.name = 'Body';
+    cards.tail.data.attachEvent('card.hide', function(event) {
       setHidden($('#step'), false);
       setHidden($('#done'), true);
     });
-    tempNode.data.attachEvent('card.show', function(event) {
+    cards.tail.data.attachEvent('card.show', function(event) {
       setHidden($('#step'), true);
       setHidden($('#done'), false);
     });
@@ -164,7 +162,6 @@ var MailMan = function() {
     $('#done').on('click', self.done);
     $('#back').on('click', self.back);
     $('#help').on('click', self.toggleHelp);
-
 
     // Load information from GAS
     if (window.google !== undefined) {
