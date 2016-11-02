@@ -20,7 +20,7 @@ var MailMan = function() {
   // The currently shown Card.
   var activeCard;
 
-  // This alters how many Card links will be shown in the nav bar
+  // This alters how many Card links will be shown in the nav bar.
   var maxNavItems;
 
   // All the different sheet names.
@@ -29,7 +29,7 @@ var MailMan = function() {
   // All the columns of the selected sheet.
   var columns;
 
-  // The maximum number of results to display in the autocompletes
+  // The maximum number of results to display in the autocompletes.
   var maxResults;
 
   // The list containing all the Cards.
@@ -142,6 +142,9 @@ var MailMan = function() {
       }
     }));
     cards.tail.name = 'Body';
+    cards.tail.data.addOption('Rich Text Editor', function(e) {
+      console.log('Rich Text test');
+    });
     cards.tail.data.attachEvent('card.hide', function(event) {
       setHidden($('#step'), false);
       setHidden($('#done'), true);
@@ -442,7 +445,5 @@ var MailMan = function() {
 };
 
 
-/**
- *
- */
+/**  */
 module.exports = MailMan;
