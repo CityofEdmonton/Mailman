@@ -57,8 +57,9 @@ function openModalDialog() {
   SpreadsheetApp.getUi().showModalDialog(ui, ' ');
 }
 
+
 /**
- *
+ * Runs the email sending program. Can be triggered.
  */
 function onTrigger() {
   Logger.log('Running trigger function...');
