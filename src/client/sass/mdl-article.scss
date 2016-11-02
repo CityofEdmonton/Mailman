@@ -59,6 +59,7 @@
 .demo-content {
 	border-radius: 2px;
 	padding: 52px 26px;
+  position: relative;
 
 	h3 {
 		margin-top: 48px;
@@ -67,6 +68,12 @@
   .help {
     margin-left: 24px;
     color: $fade-gray;
+  }
+
+  .settings-button {
+    position: absolute;
+    right: 32px;
+    bottom: 16px;
   }
 }
 

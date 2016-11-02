@@ -167,7 +167,7 @@ function openWeb() {
       os.platform() === 'linux' ? 'google-chrome' : (
       os.platform() === 'darwin' ? 'google chrome' : 'firefox'));
 
-  return gulp.src('./build/web/client/html/NewEmailDialog.html')
+  return gulp.src('./build/web/client/html/new-email-dialog.html')
       .pipe(open({app: browser}));
 }
 
