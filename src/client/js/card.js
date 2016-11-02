@@ -4,7 +4,7 @@ var baseHTML = require('../html/card-base.html');
 var Card = function(appendTo, options) {
   // Private variables
   var self = this;
-  var base = $(baseHTML); // TEST THE LOCAL BASE
+  var base = $(baseHTML);
 
   // Public Variables
 
@@ -64,14 +64,39 @@ var Card = function(appendTo, options) {
    * Attaches an event handler to this card.
    *
    * @param {string} name The event to watch for.
-   @ @param {function} toExecute The callback to execute when the event is fired.
+   * @param {function} toExecute The callback to execute when the event is fired.
    */
   this.attachEvent = function(name, toExecute) {
     base.on(name, toExecute);
   };
 
+  /**
+   * Adds an option to the Card. This can be used to trigger functions related to that Card.
+   *
+   * @param {String} title The text to be displayed in the menu.
+   * @param {Function} callback The function to call when the menu item is clicked.
+   * @param {String | undefined} icon The icon to display next to the title. Leave undefined for no icon.
+   */
+  this.addOption = function(title, callback, icon) {
+    var menu = base.find('ul');
+    var item = menu.append('<li class="mdl-menu__item">' + title + '</li>');
+    item.on('click', callback);
+
+    var button = base.find('button');
+    button.removeClass('hidden');
+  };
+
   // constructor
   appendTo.append(base);
+
+  // Create a unique ID for binding the menu to the button.
+  // From here: https://gist.github.com/gordonbrander/2230317
+  var id = 'UID_' + Math.random().toString(36).substr(2, 9);
+  var menu = base.find('ul');
+  var button = base.find('button');
+
+  button.attr('id', id);
+  menu.attr('data-mdl-for', id);
 
   if (options !== undefined) {
     if (options.visible !== undefined) {
@@ -89,12 +114,12 @@ var Card = function(appendTo, options) {
       });
     }
   }
+
+  componentHandler.upgradeElement(base.find('.mdl-js-menu')[0], 'MaterialMenu');
 };
 
 //***** Public Methods *****//
 
 
-/**
- *
- */
+/** */
 module.exports = Card;
