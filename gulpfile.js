@@ -9,6 +9,7 @@ var os = require('os');
 var sass = require('gulp-sass');
 var source = require('vinyl-source-stream');
 var stringify = require('stringify');
+var del = require('del');
 
 // Node modules
 var exec = require('child_process').exec;
@@ -23,6 +24,7 @@ gulp.task('lint-all', closureLint);
 gulp.task('fix-all', closureFix);
 gulp.task('browserify', browserifyBundle);
 gulp.task('compile-sass', compileSASS);
+gulp.task('clean', clean);
 
 // Web specific
 gulp.task('build-web', ['browserify', 'compile-sass'], buildWeb);
@@ -210,7 +212,7 @@ function closureFix(cb) {
 
 
 /**
- * Compiles SASS (?) ¯\_(ツ)_/¯
+ * Compiles SASS into CSS.
  *
  * @return {stream} the stream as the completion hint to the gulp engine
  */
@@ -222,4 +224,15 @@ function compileSASS() {
         process.exit(1);
       }))
       .pipe(gulp.dest('./build/common/css'));
+}
+
+/**
+ * Removes all builds.
+ *
+ * @return {stream} the stream as the completion hint to the gulp engine
+ */
+function clean() {
+  return del([
+    'build/**/*'
+  ]);
 }
