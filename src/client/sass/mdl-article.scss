@@ -107,3 +107,13 @@
       color: $white;
     }
 }
+
+.mailman-button-success {
+  background: $success-green;
+  color: $white;
+
+  &:hover {
+    background: $success-green;
+    color: $white;
+  }
+}

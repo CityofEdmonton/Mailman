@@ -1,6 +1,9 @@
+@import "_colors";
+
 $icon-font-size: 24;
-$button-color: #000000;
+$button-color: #FFFFFF;
 $text-color: #000000;
+
 @mixin no-select($type) {
     -webkit-touch-callout: $type;
     /* iOS Safari */
@@ -22,6 +25,29 @@ li {
         text-decoration: none!important; //TODO remove !important
         @include no-select(none);
     }
+}
+
+.rte-controls {
+  // TODO Clean these up
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+
+  background-color: $pantone-2945;
+}
+
+.rte-card {
+  flex-grow: 1;
+  width: inherit;
+}
+
+.rte-layout {
+  padding: 4px;
+  overflow: hidden;
 }
 
 .dropdown-menu a {
@@ -59,25 +85,18 @@ li {
     font-size: x-large;
 }
 /** MDL Overwrites **/
-.mdl-button {
-    text-align: center;
-    padding: 2px 0;
+a.mdl-button, label.mdl-button {
     min-width: inherit;
-}
-
-.mdl-js-button .mdl-button {
-    text-align: center;
     line-height: 1;
     padding: 0;
-}
-
-.mdl-button {
-    height: $icon-font-size;
     color: $button-color;
 }
+label.mdl-button {
+  margin-top: -6px;
+}
 
-.mdl-js-button {
-    min-height: $icon-font-size;
+.mdl-textfield__label:after {
+  background-color: $pantone-2945;
 }
 
 .mdl-layout__header {
@@ -86,10 +105,7 @@ li {
     box-shadow: none;
 
     .mdl-layout__header-row {
-        margin: 0;
-        padding: 0;
         height: inherit;
-        margin-left: -8px;
     }
 }
 
@@ -98,11 +114,23 @@ li {
 
     .mdl-textfield__input {
         min-height: 300px;
-        max-height: 500px;
+        max-height: 425px;
         overflow: auto;
     }
 }
 
 .mdl-textfield__input {
     color: $text-color;
+}
+
+.rte-button-success {
+  width: 72px;
+
+  background: $success-green;
+  color: $white;
+
+  &:hover {
+    background: $success-green;
+    color: $white;
+  }
 }
