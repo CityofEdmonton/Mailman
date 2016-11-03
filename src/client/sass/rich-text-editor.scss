@@ -50,6 +50,10 @@ li {
   overflow: hidden;
 }
 
+.rte-footer {
+  background-color: transparent;
+}
+
 .dropdown-menu a {
     cursor: pointer;
 }
@@ -111,11 +115,15 @@ label.mdl-button {
 
 .full-text-editor {
     width: 100%;
+    padding: 0px 2px;
 
     .mdl-textfield__input {
         min-height: 300px;
-        max-height: 425px;
+        max-height: 400px;
         overflow: auto;
+    }
+    .mdl-textfield__label {
+      bottom: -20px;
     }
 }
 
