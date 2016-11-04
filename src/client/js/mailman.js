@@ -10,7 +10,7 @@ var InputCard = require('./card-input.js');
 var TitledCard = require('./card-titled.js');
 var TextareaCard = require('./card-textarea.js');
 var List = require('./list.js');
-var Intercom = require('./intercom.js');
+//var Intercom = require('./intercom.js');
 
 var MailMan = function() {
 
@@ -472,15 +472,15 @@ var MailMan = function() {
   };
 
   var onRTEOpened = function(dialogId) {
-    console.log('RTE opened successfully.');
-	intercom.on(dialogId, function(state) {
-          switch(state) {
+
+	intercom.on(dialogId, function(data) {
+
+          switch (data.state) {
             case 'done':
               console.log('Dialog submitted.\n');
-              forget(dialogId);
-              break;
-            case 'aborted':
-              console.log('Dialog cancelled.\n');
+
+              getNode('Body').data.setValue(data.message);
+
               forget(dialogId);
               break;
             case 'checkIn':
@@ -491,7 +491,7 @@ var MailMan = function() {
               console.log('Dialog lost.\n');
               break;
             default:
-              throw 'Unknown dialog state: ' + state;
+              throw 'Unknown dialog state: ' + data.state;
           }
         });
   }

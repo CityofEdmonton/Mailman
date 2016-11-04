@@ -1,7 +1,20 @@
 
 
 function launchRTE() {
-  openModalDialog();
+  var dialogId = Utilities.base64Encode(Math.random());
+
+  var template = HtmlService.createTemplateFromFile('rich-text-editor');
+  template.dialogId = dialogId;
+
+  var ui = template.evaluate()
+      .setTitle('Mailman')
+      .setSandboxMode(HtmlService.SandboxMode.IFRAME)
+      .setHeight(600)
+      .setWidth(750);
+
+  SpreadsheetApp.getUi().showModalDialog(ui, ' ');
+
+  return 'dialog';
 }
 
 /**
