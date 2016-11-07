@@ -135,22 +135,30 @@
             </ul>
           </div>
           <div class="btn-group">
-            <a id="picBtn" class="mdl-button mdl-js-button dropdown-toggle" title="Insert picture (or just drag & drop)" onclick="$('#pictureBtn').click();">
+            <a id="picBtn" class="mdl-button mdl-js-button"
+              title="Insert picture (or just drag & drop)" onclick="$('#pictureBtn').click();">
               <i class="material-icons md-24">insert_photo</i>
             </a>
 
-            <input id="pictureBtn" class="imgUpload" type="file" data-edit="insertImage" data-role="magic-overlay" />
-          </div>
-          <div class="btn-group">
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
-              <label class="mdl-button mdl-js-button mdl-button--icon" for="link-address">
+            <div class="rte-link-container">
+              <a id="link-btn" class="mdl-button mdl-js-button" data-toggle="dropdown" title="Insert a link">
                 <i class="material-icons md-24">insert_link</i>
-              </label>
-              <div class="mdl-textfield__expandable-holder">
-                <input class="mdl-textfield__input" type="text" id="link-address" data-edit="createLink" placeholder="URL">
-                <label class="mdl-textfield__label">Expandable Input</label>
+              </a>
+
+              <div id="rte-link-menu" class="rte-menu hidden" for="link-btn">
+                <div>
+                  <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input" type="text" id="link-url-value">
+                    <label class="mdl-textfield__label" for="link-url-value">Url...</label>
+                  </div>
+                </div>
+                <button id="link-insert-btn" class="mdl-button mdl-js-button mdl-js-ripple-effect rte-link-button">
+                  Insert
+                </button>
               </div>
             </div>
+
+            <input id="pictureBtn" class="imgUpload" type="file" data-edit="insertImage" data-role="magic-overlay" />
           </div>
 
         </div>
