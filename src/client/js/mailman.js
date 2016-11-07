@@ -1,9 +1,16 @@
+/**
+ * Intercom: https://github.com/diy/intercom.js/
+ * Tips on using intercom with GAS: https://github.com/googlesamples/apps-script-dialog2sidebar
+ *
+ *
+ */
 
 var Util = require('./util.js');
 var InputCard = require('./card-input.js');
 var TitledCard = require('./card-titled.js');
 var TextareaCard = require('./card-textarea.js');
 var List = require('./list.js');
+//var Intercom = require('./intercom.js');
 
 var MailMan = function() {
 
@@ -35,6 +42,22 @@ var MailMan = function() {
   // The list containing all the Cards.
   var cards;
 
+  // The object used to communicate between the sidebar and the RTE (Rich Text Editor)
+  var intercom;
+
+  /**
+	 * How long to wait for the dialog to check-in before assuming it's been
+	 * closed, in milliseconds.
+	 */
+	var DIALOG_TIMEOUT_MS = 2000;
+
+	/**
+	 * Holds a mapping from dialog ID to the ID of the timeout that is used to
+	 * check if it was lost. This is needed so we can cancel the timeout when
+	 * the dialog is closed.
+	 */
+	var timeoutIds = {};
+
   //***** PUBLIC *****//
 
   /**
@@ -45,7 +68,6 @@ var MailMan = function() {
   this.init = function() {
     self = this;
 
-    // TEMP
     sheets = [
       'Loading...'
     ];
@@ -55,6 +77,7 @@ var MailMan = function() {
     ];
 
     // Configuration
+	intercom = Intercom.getInstance();
     contentArea = $('#content-area');
     showHelp = false;
     maxNavItems = 3;
@@ -144,6 +167,13 @@ var MailMan = function() {
     cards.tail.name = 'Body';
     cards.tail.data.addOption('Rich Text Editor', function(e) {
       console.log('Rich Text test');
+
+      // Launch the RTE.
+      if (window.google !== undefined) {
+        google.script.run
+            .withSuccessHandler(onRTEOpened)
+            .launchRTE();
+      }
     });
     cards.tail.data.attachEvent('card.hide', function(event) {
       setHidden($('#step'), false);
@@ -413,7 +443,7 @@ var MailMan = function() {
     });
   };
 
-  // TODO Convert this to a list friendly form
+
   var setColumns = function(columns) {
     columns = columns;
 
@@ -440,6 +470,52 @@ var MailMan = function() {
       maxResults: maxResults
     });
   };
+
+  var onRTEOpened = function(dialogId) {
+
+	intercom.on(dialogId, function(data) {
+
+          switch (data.state) {
+            case 'done':
+              console.log('Dialog submitted.\n');
+
+              getNode('Body').data.setValue(data.message);
+
+              forget(dialogId);
+              break;
+            case 'checkIn':
+              forget(dialogId);
+              watch(dialogId);
+              break;
+            case 'lost':
+              console.log('Dialog lost.\n');
+              break;
+            default:
+              throw 'Unknown dialog state: ' + data.state;
+          }
+        });
+  }
+
+  /**
+   * Watch the given dialog, to detect when it's been X-ed out.
+   *
+   * @param {string} dialogId The ID of the dialog to watch.
+   */
+  var watch = function (dialogId) {
+    timeoutIds[dialogId] = window.setTimeout(function() {
+      intercom.emit(dialogId, 'lost');
+    }, DIALOG_TIMEOUT_MS);
+  }
+
+  /**
+   * Stop watching the given dialog.
+   * @param {string} dialogId The ID of the dialog to watch.
+   */
+  var forget = function (dialogId) {
+    if (timeoutIds[dialogId]) {
+      window.clearTimeout(timeoutIds[dialogId]);
+    }
+  }
 
   this.init();
 };
