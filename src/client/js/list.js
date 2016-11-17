@@ -39,6 +39,13 @@ List.prototype.add = function(value) {
   return node;
 };
 
+/**
+ * Inserts a Node at the given index.
+ *
+ * @param {Number} index The index to insert the Node at.
+ * @param {Object} value the value of the new Node.
+ * @return {Node} The newly inserted Node.
+ */
 List.prototype.insert = function(index, value) {
   var newNode = new Node(value);
 
