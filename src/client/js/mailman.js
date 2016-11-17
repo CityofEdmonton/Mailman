@@ -165,8 +165,7 @@ var MailMan = function() {
       }
     }));
     cards.tail.name = 'Body';
-    cards.tail.data.addOption('Rich Text Editor', function(e) {
-      console.log('Rich Text test');
+    /*cards.tail.data.addOption('Rich Text Editor', function(e) {
 
       // Launch the RTE.
       if (window.google !== undefined) {
@@ -174,7 +173,7 @@ var MailMan = function() {
             .withSuccessHandler(onRTEOpened)
             .launchRTE();
       }
-    });
+    });*/
     cards.tail.data.attachEvent('card.hide', function(event) {
       setHidden($('#step'), false);
       setHidden($('#done'), true);
@@ -473,13 +472,24 @@ var MailMan = function() {
 
   var onRTEOpened = function(dialogId) {
 
-	intercom.on(dialogId, function(data) {
+    intercom.on(dialogId, function(data) {
 
           switch (data.state) {
             case 'done':
               console.log('Dialog submitted.\n');
 
               getNode('Body').data.setValue(data.message);
+
+              // Swap out the existing body card for a different one.
+              /*var rteBody = new TitledCard(contentArea, {
+                title: 'Welcome!',
+                help: 'Help will be displayed here normally. Since this is just the welcome page, there isn\'t much to know!',
+                paragraphs: [
+                  'Welcome to Mailman! This application helps users easily create mail merges. It aims to be easy to use, ' +
+                      'while also providing advanced options for power users.',
+                  'To get started, simply click NEXT down below.'
+                ]
+              });*/
 
               forget(dialogId);
               break;
