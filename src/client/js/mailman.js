@@ -22,7 +22,7 @@ var MailMan = function() {
   var contentArea;
 
   // This tracks whether help is being displayed currently.
-  var showHelp;
+  var showingHelp;
 
   // The currently shown Card.
   var activeCard;
@@ -77,9 +77,9 @@ var MailMan = function() {
     ];
 
     // Configuration
-	intercom = Intercom.getInstance();
+    intercom = Intercom.getInstance();
     contentArea = $('#content-area');
-    showHelp = false;
+    showingHelp = false;
     maxNavItems = 3;
     maxResults = 5;
     cards = new List();
@@ -136,6 +136,23 @@ var MailMan = function() {
         triggerOnFocus: true
       }
     })).name = 'To';
+    cards.tail.data.addOption('Change Header Row', function(e) {
+
+      // Add another card before this one, but after Sheet
+
+      var headerNode = insertNode('Sheet', new InputCard(contentArea, {
+        title: 'Which row contains your header titles?',
+        help: 'By default, Mailman looks in row 1 for your header titles.' +
+        ' If your header is not in row 1, please input the row.',
+        label: 'Header row...'
+      }));
+      headerNode.name = 'Header Row';
+
+      self.setHelp();
+
+      jumpTo(headerNode.data);
+      buildNavTree(headerNode);
+    });
 
     cards.add(new InputCard(contentArea, {
       title: 'What\'s your subject?',
@@ -275,13 +292,24 @@ var MailMan = function() {
    * @param {event} event The event that triggered this function.
    */
   this.toggleHelp = function(event) {
-    if (showHelp) {
-      showHelp = false;
-      $('.help').addClass('hidden');
+    if (showingHelp) {
+      hideHelp();
     }
     else {
-      showHelp = true;
-      $('.help').removeClass('hidden');
+      showHelp();
+    }
+  };
+
+  /**
+   * This function sets the state of the help <p> tags based upon a global value.
+   *
+   */
+  this.setHelp = function() {
+    if (showingHelp) {
+      showHelp();
+    }
+    else {
+      hideHelp();
     }
   };
 
@@ -349,7 +377,9 @@ var MailMan = function() {
 
     var node = cards.head;
     while (node !== null) {
+      console.log(node.name);
       if (node.data === card) {
+        console.log('Jumping to discovered node.')
         node.data.show();
         activeCard = node;
         return;
@@ -378,6 +408,25 @@ var MailMan = function() {
 
     return null;
   };
+
+  /**
+   * Inserts a Node after the Node with the given name.
+   * Note: This cannot be used to insert a Node at the start of a list.
+   *
+   * @param {String} before The name of the Node before the Node to be inserted.
+   * @param {Card} card The Card to be inserted.
+   * @return {Node} The newly inserted Node.
+   */
+  var insertNode = function(before, card) {
+    var beforeNode = getNode(before);
+
+    if (beforeNode === null) {
+      return null;
+    }
+
+    var index = cards.getPosition(beforeNode);
+    return cards.insert(index + 1, card);
+  }
 
   /**
    * Hides all cards.
@@ -422,6 +471,24 @@ var MailMan = function() {
     else {
       object.removeClass('hidden');
     }
+  };
+
+  /**
+   * This function hides the help <p> tags.
+   *
+   */
+  var hideHelp = function() {
+    showingHelp = false;
+    $('.help').addClass('hidden');
+  };
+
+  /**
+   * This function shows the help <p> tags.
+   *
+   */
+  var showHelp = function() {
+    showingHelp = true;
+    $('.help').removeClass('hidden');
   };
 
   /**
