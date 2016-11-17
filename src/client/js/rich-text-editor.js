@@ -56,18 +56,18 @@ $(document).ready(function() {
     menu.toggleClass('hidden');
   }
 
+  /**
+   * Runs when the form is submitted.
+   */
+  function onSubmit() {
+    // Here is where you would add custom logic specific to your form.
+    // You may need to make additional google.script.run calls to store various information
+    // collected in the dialog.
+
+
+    console.log('RTE: Submitting... ' + $('#editor').cleanHtml());
+    intercom.emit(DIALOG_ID, {state: 'done', message: $('#editor').cleanHtml()});
+    google.script.host.close();
+  }
+
 });
-
-/**
- * Runs when the form is submitted.
- */
-function onSubmit() {
-  // Here is where you would add custom logic specific to your form.
-  // You may need to make additional google.script.run calls to store various information
-  // collected in the dialog.
-
-
-  console.log('RTE: Submitting... ' + $('#editor').cleanHtml());
-  intercom.emit(DIALOG_ID, {state: 'done', message: $('#editor').cleanHtml()});
-  google.script.host.close();
-}
