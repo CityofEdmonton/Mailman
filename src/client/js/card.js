@@ -41,22 +41,24 @@ var Card = function(appendTo, options) {
   /**
    * Shows the Card. Also triggers the event card.show.
    *
+   * @this Card
    */
   this.show = function() {
     if (base.hasClass('hidden') === true) {
       base.removeClass('hidden');
-      base.trigger('card.show');
+      base.trigger('card.show', this);
     }
   };
 
   /**
    * Hides the card. Also triggers the event card.hide.
    *
+   * @this Card
    */
   this.hide = function() {
     if (base.hasClass('hidden') === false) {
       base.addClass('hidden');
-      base.trigger('card.hide');
+      base.trigger('card.hide', this);
     }
   };
 
@@ -84,6 +86,26 @@ var Card = function(appendTo, options) {
 
     var button = base.find('button');
     button.removeClass('hidden');
+  };
+
+  /**
+   * Removes an option from the Card.
+   *
+   * @param {String} title The title of the option to be displayed.
+   */
+  this.removeOption = function(title) {
+    var menu = base.find('ul');
+
+    var item = menu.children().filter(function() {
+      return $(this).text() === title;
+    });
+
+    item.remove();
+
+    if (menu.children().length === 0) {
+      var button = base.find('button');
+      button.addClass('hidden');
+    }
   };
 
   // constructor

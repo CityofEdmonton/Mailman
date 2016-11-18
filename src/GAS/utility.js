@@ -7,9 +7,15 @@
  * @return {Array<string>} The array of values.
  */
 function getHeaderStrings(sheet) {
-  return getValues(sheet, 0);
-}
+  var temp = parseInt(getHeaderRow());
 
+  var headerRow = 1;
+  if (!isNaN(temp) && temp !== null && temp > 0) {
+    headerRow = temp;
+  }
+  
+  return getValues(sheet, headerRow - 1);
+}
 
 /**
  * Gets an array of the values in a specific sheets row.

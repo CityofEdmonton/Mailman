@@ -1,4 +1,12 @@
+function getHeaderRow() {
+  return PropertiesService.getDocumentProperties().getProperty(PROPERTY_HEADER_ROW);
+}
 
+function setHeaderRow(row, sheet) {
+  PropertiesService.getDocumentProperties().setProperty(PROPERTY_HEADER_ROW, row);
+
+  return getHeaderNames(sheet);
+}
 
 function launchRTE() {
   var dialogId = Utilities.base64Encode(Math.random());
