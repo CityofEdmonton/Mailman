@@ -112,6 +112,8 @@ var MailMan = function() {
       }
     }));
     cards.tail.name = 'Sheet';
+    // We hide the card before applying the event. This stops the initial trigger from happening.
+    cards.tail.data.hide();
     cards.tail.data.attachEvent('card.hide', function(event) {
       if (window.google !== undefined) {
         var sheet = getNode('Sheet').data.getValue(); // TODO use attached event data to make this smoother
@@ -147,11 +149,31 @@ var MailMan = function() {
         label: 'Header row...'
       }));
       headerNode.name = 'Header Row';
+      headerNode.data.attachEvent('card.hide', function(event, card) {
+
+        // Set the header row
+        if (window.google !== undefined) {
+          var row = card.getValue();
+          var sheet = getNode('Sheet').data.getValue();
+
+          // Verify the row data.
+          var numTest = parseInt(row);
+          if (!isNaN(numTest) && numTest > 0) {
+            google.script.run
+                .withSuccessHandler(setColumns)
+                .setHeaderRow(row, sheet);
+          }
+        }
+
+      });
 
       self.setHelp();
 
       jumpTo(headerNode.data);
       buildNavTree(headerNode);
+
+      // Remove the option
+      getNode('To').data.removeOption('Change Header Row');
     });
 
     cards.add(new InputCard(contentArea, {
@@ -379,7 +401,6 @@ var MailMan = function() {
     while (node !== null) {
       console.log(node.name);
       if (node.data === card) {
-        console.log('Jumping to discovered node.')
         node.data.show();
         activeCard = node;
         return;
@@ -508,7 +529,6 @@ var MailMan = function() {
       triggerOnFocus: true
     });
   };
-
 
   var setColumns = function(columns) {
     columns = columns;
