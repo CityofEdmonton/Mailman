@@ -34,32 +34,9 @@ gulp.task('clean', clean);
 gulp.task('build-web', ['browserify', 'compile-sass'], buildWeb);
 
 // GAS specific
-gulp.task('deploy-gas', ['swap-tags'], deployGAS);
-gulp.task('swap-tags', ['build-gas'], replaceTags);
+gulp.task('deploy-gas', ['build-gas'], deployGAS);
+//gulp.task('swap-tags', ['build-gas'], replaceTags);
 gulp.task('build-gas', ['browserify', 'compile-sass'], buildGAS);
-
-/**
- * Bundles up client.js (and all required functionality) and places it in a build directory.
- * We apply a stringify transform. This package finds requires that require .html files. It swaps them out for the actual text.
- * This is great for breaking up html and can be used as a templating tool.
- *
- * @return {stream} the stream as the completion hint to the gulp engine
- */
-// function browserifyBundle() {
-//     return browserify('./src/client/js/client.js')
-//         .transform(stringify, {
-//             appliesTo: {
-//                 includeExtensions: ['.html']
-//             },
-//             minify: false
-//         })
-//         .bundle()
-//         .on('error', function(e) {
-//             gutil.log(e);
-//         })
-//         .pipe(source('bundle.js'))
-//         .pipe(gulp.dest('./build/common'));
-// }
 
 /**
  * Bundles up client.js (and all required functionality) and places it in a build directory.
@@ -77,7 +54,7 @@ function browserifyBundle() {
 
     // map them to our stream function
     var tasks = files.map(function(entry) {
-		var path = entry.split('/');
+		    var path = entry.split('/');
 
         return browserify(entry)
             .transform(stringify, {
@@ -97,8 +74,9 @@ function browserifyBundle() {
             }))
             .pipe(gulp.dest('./build/common'));
     });
+    console.log('Done browserify');
     // create a merged stream
-    return tasks;
+    return es.merge.apply(null, tasks);
 }
 
 /**
@@ -112,6 +90,9 @@ function buildGAS() {
     gulp.src('./src/client/html/**', {
             base: './src/client'
         })
+        .pipe(htmlProcessor({
+            includeBase: './'
+        }))
         .pipe(gulp.dest('./build/gas'));
 
     // GAS
