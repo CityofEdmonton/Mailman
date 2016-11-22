@@ -138,7 +138,7 @@ var MailMan = function() {
         triggerOnFocus: true
       }
     })).name = 'To';
-    cards.tail.data.addOption('Change Header Row', function(e) {
+    cards.tail.data.addOption('change header row', function(e) {
 
       // Add another card before this one, but after Sheet
 
@@ -173,7 +173,7 @@ var MailMan = function() {
       buildNavTree(headerNode);
 
       // Remove the option
-      getNode('To').data.removeOption('Change Header Row');
+      getNode('To').data.removeOption('change header row');
     });
 
     cards.add(new InputCard(contentArea, {
@@ -213,6 +213,16 @@ var MailMan = function() {
             .launchRTE();
       }
     });*/
+
+    cards.add(new TitledCard(contentArea, {
+      title: 'Send emails now?',
+      paragraphs: [
+        'This will send out an email blast right now. ' +
+          'If you\'d like, you can send the emails at a later time, or even based upon a value in a given column. ' +
+          'Just select the related option from the bottom right.'
+      ]
+    }));
+    cards.tail.name = 'Email';
     cards.tail.data.attachEvent('card.hide', function(event) {
       setHidden($('#step'), false);
       setHidden($('#done'), true);
@@ -220,6 +230,70 @@ var MailMan = function() {
     cards.tail.data.attachEvent('card.show', function(event) {
       setHidden($('#step'), true);
       setHidden($('#done'), false);
+    });
+    cards.tail.data.addOption('send on trigger', function(e) {
+      //setHidden($('#step'), false);
+      //setHidden($('#done'), true);
+
+      // var emailNode = getNode('Email');
+      // emailNode.data.remove();
+      // cards.remove(cards.getPosition(emailNode)); // TODO Add a node-based way of removing. This is stupid inefficient.
+
+      var triggerNode = insertNode('Body', new TitledCard(contentArea, {
+        title: 'Repeated emails.',
+        paragraphs: [
+          'Mailman will now guide you through the process of creating your own repeated mail merge.',
+          'This feature can be used to set up an email-based reminder system.'
+        ],
+        help: 'If you\'d like to go back to a regular mail merge, use the options below.'
+      }));
+      triggerNode.name = 'Trigger Setup';
+
+      var node = insertNode('Trigger Setup', new InputCard(contentArea, {
+        title: 'Which column determines whether an email should be sent?',
+        paragraphs: [
+          'Mailman regularly checks whether an email needs to be sent. ' +
+            'Please specify a column that determines when an email should be sent.',
+          'Note that Mailman looks for the value TRUE to determine when to send an email.'
+        ],
+        help: 'Mailman checks roughly every 15 minutes for new emails to send. ' +
+          'Keep in mind, this can lead to sending emails to someone every 15 minutes. ' +
+          'Continue on for some ideas about how to avoid this!',
+        label: 'Send?',
+        autocomplete: {
+          results: columns,
+          prepend: '<<',
+          append: '>>',
+          maxResults: maxResults,
+          triggerOnFocus: true
+        }
+      }));
+      node.name = 'Send Confirmation';
+
+      node = insertNode('Send Confirmation', new InputCard(contentArea, {
+        title: 'Where should Mailman keep track of the previously sent email?',
+        paragraphs: [
+          'Every time Mailman sends an email, it records the time in a cell.',
+          'Using the timestamp, you can determine whether you want to send another email.'
+        ],
+        help: 'This timestamp can be used for some interesting things! ' +
+          'Imagine you are interested in sending an email to someone every day (just to annoy them). ' +
+          'You could just set the formula in the previously mentioned column to '+
+          '"=TODAY() - {put the last sent here} > 1". Now an email will be sent every time TRUE pops up (every day).',
+        label: 'Last sent...',
+        autocomplete: {
+          results: columns,
+          prepend: '<<',
+          append: '>>',
+          maxResults: maxResults,
+          triggerOnFocus: true
+        }
+      }));
+      node.name = 'Last Sent';
+
+      self.setHelp();
+      jumpTo(triggerNode.data);
+      buildNavTree(triggerNode);
     });
 
     activeCard = cards.head;
@@ -351,7 +425,6 @@ var MailMan = function() {
     $('#nav-bar')
         .prepend(newLink)
         .prepend('&nbsp;&gt;&nbsp;');
-
   };
 
   /**
@@ -399,7 +472,7 @@ var MailMan = function() {
 
     var node = cards.head;
     while (node !== null) {
-      console.log(node.name);
+
       if (node.data === card) {
         node.data.show();
         activeCard = node;
@@ -456,7 +529,9 @@ var MailMan = function() {
    */
   var hideAll = function() {
     var node = cards.head;
+
     while (node !== null) {
+
       node.data.hide();
       node = node.next;
     }
