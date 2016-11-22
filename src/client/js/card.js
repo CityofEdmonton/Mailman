@@ -39,6 +39,14 @@ var Card = function(appendTo, options) {
   };
 
   /**
+   * Removes this card.
+   *
+   */
+  this.remove = function() {
+    base.remove();
+  };
+
+  /**
    * Shows the Card. Also triggers the event card.show.
    *
    * @this Card
