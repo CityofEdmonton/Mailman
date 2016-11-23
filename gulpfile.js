@@ -35,7 +35,6 @@ gulp.task('build-web', ['browserify', 'compile-sass'], buildWeb);
 
 // GAS specific
 gulp.task('deploy-gas', ['build-gas'], deployGAS);
-//gulp.task('swap-tags', ['build-gas'], replaceTags);
 gulp.task('build-gas', ['browserify', 'compile-sass'], buildGAS);
 
 /**
@@ -74,10 +73,11 @@ function browserifyBundle() {
             }))
             .pipe(gulp.dest('./build/common'));
     });
-    console.log('Done browserify');
+
     // create a merged stream
     return es.merge.apply(null, tasks);
 }
+
 
 /**
  * Builds the project for GAS.
