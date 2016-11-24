@@ -27,6 +27,12 @@ li {
     }
 }
 
+a {
+  color: #0088cc;
+  text-decoration: underline;
+  cursor: auto;
+}
+
 .rte-controls {
   // TODO Clean these up
   -webkit-align-items: center;
@@ -59,7 +65,12 @@ li {
 }
 
 .btn-group {
-    padding: 0 6px;
+  position: relative;
+  display: inline-block;
+  font-size: 0;
+  vertical-align: middle;
+  white-space: nowrap;
+  margin: 0px 8px;
 }
 
 [contentEditable=true]:empty:not(:focus):before {
@@ -89,14 +100,10 @@ li {
     font-size: x-large;
 }
 /** MDL Overwrites **/
-a.mdl-button, label.mdl-button {
+a.mdl-button {
     min-width: inherit;
-    line-height: 1;
     padding: 0;
     color: $button-color;
-}
-label.mdl-button {
-  margin-top: -6px;
 }
 
 .mdl-textfield__label:after {
@@ -141,4 +148,55 @@ label.mdl-button {
     background: $success-green;
     color: $white;
   }
+}
+
+// This is for the link menu
+.rte-link-container {
+  display: inline;
+  position: relative;
+}
+.rte-menu {
+  position: absolute;
+  right: 0px;
+
+  z-index: 999;
+
+  display: block;
+  background: $white;
+  margin: 0;
+  padding: 10px;;
+  border: none;
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+}
+
+.rte-link-button {
+  float: right;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+// This is for the active buttons
+.btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active, .btn-info.disabled, .btn-info[disabled] {
+    color: #ffffff;
+    background-color: #2f96b4;
+}
+
+.btn-info {
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #49afcd;
+    background-image: -moz-linear-gradient(top, #5bc0de, #2f96b4);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#5bc0de), to(#2f96b4));
+    background-image: -webkit-linear-gradient(top, #5bc0de, #2f96b4);
+    background-image: -o-linear-gradient(top, #5bc0de, #2f96b4);
+    background-image: linear-gradient(to bottom, #5bc0de, #2f96b4);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff5bc0de', endColorstr='#ff2f96b4', GradientType=0);
+    border-color: #2f96b4 #2f96b4 #1f6377;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }

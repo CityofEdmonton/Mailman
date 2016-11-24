@@ -2,7 +2,6 @@ var TitledCard = require('./card-titled.js');
 var inputHTML = require('../html/card-input.html');
 
 
-
 var InputCard = function(appendTo, options) {
   TitledCard.call(this, appendTo, options);
 

@@ -41,6 +41,45 @@ List.prototype.add = function(value) {
 
 
 /**
+ * Inserts a Node at the given index.
+ *
+ * @param {Number} index The index to insert the Node at.
+ * @param {Object} value the value of the new Node.
+ * @return {Node} The newly inserted Node.
+ */
+List.prototype.insert = function(index, value) {
+  var newNode = new Node(value);
+
+  //Adding at the very end.
+  if (index === this._length) {
+    return this.add(value);
+  }
+  // Adding at the very start of the list
+  else if (index == 0) {
+    var oldNode = this.getNode(index);
+
+    this.head = newNode;
+
+    newNode.next = oldNode;
+    oldNode.previous = newNode;
+  }
+  else {
+    var oldNode = this.getNode(index);
+    var before = oldNode.previous;
+
+    before.next = newNode;
+    newNode.previous = before;
+    newNode.next = oldNode;
+    oldNode.previous = newNode;
+  }
+
+  this._length++;
+
+  return newNode;
+};
+
+
+/**
  * Gets a node at a specified 0-based position.
  *
  * @param {Number} position The 0-based position of the node to find.
@@ -62,6 +101,24 @@ List.prototype.getNode = function(position) {
   }
 
   return currentNode;
+};
+
+
+List.prototype.getPosition = function(node) {
+  var currentNode = this.head;
+  var position = -1;
+
+  while (currentNode !== null) {
+    position++;
+
+    if (currentNode === node) {
+      return position;
+    }
+
+    currentNode = currentNode.next;
+  }
+
+  return null;
 };
 
 

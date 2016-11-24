@@ -1,3 +1,29 @@
+function getHeaderRow() {
+  return PropertiesService.getDocumentProperties().getProperty(PROPERTY_HEADER_ROW);
+}
+
+function setHeaderRow(row, sheet) {
+  PropertiesService.getDocumentProperties().setProperty(PROPERTY_HEADER_ROW, row);
+
+  return getHeaderNames(sheet);
+}
+
+function launchRTE() {
+  var dialogId = Utilities.base64Encode(Math.random());
+
+  var template = HtmlService.createTemplateFromFile('rich-text-editor');
+  template.dialogId = dialogId;
+
+  var ui = template.evaluate()
+      .setTitle('Mailman')
+      .setSandboxMode(HtmlService.SandboxMode.IFRAME)
+      .setHeight(600)
+      .setWidth(750);
+
+  SpreadsheetApp.getUi().showModalDialog(ui, ' ');
+
+  return 'dialog';
+}
 
 
 /**

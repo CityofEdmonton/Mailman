@@ -1,21 +1,37 @@
+/**
+ * Intercom: https://github.com/diy/intercom.js/
+ * Tips on using intercom with GAS: https://github.com/googlesamples/apps-script-dialog2sidebar
+ *
+ *
+ */
 
 var Util = require('./util.js');
 var InputCard = require('./card-input.js');
 var TitledCard = require('./card-titled.js');
 var TextareaCard = require('./card-textarea.js');
 var List = require('./list.js');
+var EmailRule = require('./email-rule.js');
+var Database = require('./database.js');
+//var Intercom = require('./intercom.js');
 
 var MailMan = function() {
+
+  // ***** CONSTANTS ***** //
+  // This is mirrored server-side changes here must be reflected in global-variables.js
+  var RULE_KEY = 'MAILMAN_PROP_RULES';
 
   //***** LOCAL VARIABLES *****//
 
   var self;
 
+  // This handles all object reading/writing
+  var database;
+
   // This holds all the "cards".
   var contentArea;
 
   // This tracks whether help is being displayed currently.
-  var showHelp;
+  var showingHelp;
 
   // The currently shown Card.
   var activeCard;
@@ -35,6 +51,22 @@ var MailMan = function() {
   // The list containing all the Cards.
   var cards;
 
+  // The object used to communicate between the sidebar and the RTE (Rich Text Editor)
+  var intercom;
+
+	// How long to wait for the dialog to check-in before assuming it's been closed, in milliseconds.
+	var DIALOG_TIMEOUT_MS = 2000;
+
+	/**
+	 * Holds a mapping from dialog ID to the ID of the timeout that is used to
+	 * check if it was lost. This is needed so we can cancel the timeout when
+	 * the dialog is closed.
+	 */
+	var timeoutIds = {};
+
+  // This stores all the existing email rules.
+  var emailRule;
+
   //***** PUBLIC *****//
 
   /**
@@ -45,7 +77,14 @@ var MailMan = function() {
   this.init = function() {
     self = this;
 
-    // TEMP
+    // Data Config
+    database = new Database();
+
+    // Try to load an existing email rule.
+    emailRule = new EmailRule();
+    emailRule.ruleType = EmailRule.RuleTypes.INSTANT;
+    database.load(RULE_KEY, setEmailRules);
+
     sheets = [
       'Loading...'
     ];
@@ -54,11 +93,13 @@ var MailMan = function() {
       'Loading...'
     ];
 
-    // Configuration
+    // UI Configuration
+    intercom = Intercom.getInstance();
     contentArea = $('#content-area');
-    showHelp = false;
+    showingHelp = false;
     maxNavItems = 3;
     maxResults = 5;
+
     cards = new List();
 
     cards.add(new TitledCard(contentArea, {
@@ -89,6 +130,8 @@ var MailMan = function() {
       }
     }));
     cards.tail.name = 'Sheet';
+    // We hide the card before applying the event. This stops the initial trigger from happening.
+    cards.tail.data.hide();
     cards.tail.data.attachEvent('card.hide', function(event) {
       if (window.google !== undefined) {
         var sheet = getNode('Sheet').data.getValue(); // TODO use attached event data to make this smoother
@@ -113,6 +156,43 @@ var MailMan = function() {
         triggerOnFocus: true
       }
     })).name = 'To';
+    cards.tail.data.addOption('change header row', function(e) {
+
+      // Add another card before this one, but after Sheet
+
+      var headerNode = insertNode('Sheet', new InputCard(contentArea, {
+        title: 'Which row contains your header titles?',
+        help: 'By default, Mailman looks in row 1 for your header titles.' +
+            ' If your header is not in row 1, please input the row.',
+        label: 'Header row...'
+      }));
+      headerNode.name = 'Header Row';
+      headerNode.data.attachEvent('card.hide', function(event, card) {
+
+        // Set the header row
+        if (window.google !== undefined) {
+          var row = card.getValue();
+          var sheet = getNode('Sheet').data.getValue();
+
+          // Verify the row data.
+          var numTest = parseInt(row);
+          if (!isNaN(numTest) && numTest > 0) {
+            google.script.run
+                .withSuccessHandler(setColumns)
+                .setHeaderRow(row, sheet);
+          }
+        }
+
+      });
+
+      self.setHelp();
+
+      jumpTo(headerNode.data);
+      buildNavTree(headerNode);
+
+      // Remove the option
+      getNode('To').data.removeOption('change header row');
+    });
 
     cards.add(new InputCard(contentArea, {
       title: 'What\'s your subject?',
@@ -142,9 +222,25 @@ var MailMan = function() {
       }
     }));
     cards.tail.name = 'Body';
-    cards.tail.data.addOption('Rich Text Editor', function(e) {
-      console.log('Rich Text test');
-    });
+    /*cards.tail.data.addOption('Rich Text Editor', function(e) {
+
+      // Launch the RTE.
+      if (window.google !== undefined) {
+        google.script.run
+            .withSuccessHandler(onRTEOpened)
+            .launchRTE();
+      }
+    });*/
+
+    cards.add(new TitledCard(contentArea, {
+      title: 'Send emails now?',
+      paragraphs: [
+        'This will send out an email blast right now. ' +
+            'If you\'d like, you can send the emails at a later time, or even based upon a value in a given column. ' +
+            'Just select the related option from the bottom right.'
+      ]
+    }));
+    cards.tail.name = 'Email';
     cards.tail.data.attachEvent('card.hide', function(event) {
       setHidden($('#step'), false);
       setHidden($('#done'), true);
@@ -152,6 +248,67 @@ var MailMan = function() {
     cards.tail.data.attachEvent('card.show', function(event) {
       setHidden($('#step'), true);
       setHidden($('#done'), false);
+    });
+    cards.tail.data.addOption('send on trigger', function(e) {
+      emailRule.ruleType = EmailRule.RuleTypes.TRIGGER;
+
+      var triggerNode = insertNode('Body', new TitledCard(contentArea, {
+        title: 'Repeated emails.',
+        paragraphs: [
+          'Mailman will now guide you through the process of creating your own repeated mail merge.',
+          'This feature can be used to set up an email-based reminder system.'
+        ],
+        help: 'If you\'d like to go back to a regular mail merge, use the options below.'
+      }));
+      triggerNode.name = 'Trigger';
+
+      var node = insertNode('Trigger', new InputCard(contentArea, {
+        title: 'Which column determines whether an email should be sent?',
+        paragraphs: [
+          'Mailman regularly checks whether an email needs to be sent. ' +
+              'Please specify a column that determines when an email should be sent.',
+          'Note that Mailman looks for the value TRUE to determine when to send an email.'
+        ],
+        help: 'Mailman checks roughly every 15 minutes for new emails to send. ' +
+            'Keep in mind, this can lead to sending emails to someone every 15 minutes. ' +
+            'Continue on for some ideas about how to avoid this!',
+        label: 'Send?',
+        autocomplete: {
+          results: columns,
+          prepend: '<<',
+          append: '>>',
+          maxResults: maxResults,
+          triggerOnFocus: true
+        }
+      }));
+      node.name = 'Confirmation';
+
+      node = insertNode('Confirmation', new InputCard(contentArea, {
+        title: 'Where should Mailman keep track of the previously sent email?',
+        paragraphs: [
+          'Every time Mailman sends an email, it records the time in a cell.',
+          'Using the timestamp, you can determine whether you want to send another email.'
+        ],
+        help: 'This timestamp can be used for some interesting things! ' +
+            'Imagine you are interested in sending an email to someone every day (just to annoy them). ' +
+            'You could just set the formula in the previously mentioned column to ' +
+            '"=TODAY() - {put the last sent here} > 1". Now an email will be sent every time TRUE pops up (every day).',
+        label: 'Last sent...',
+        autocomplete: {
+          results: columns,
+          prepend: '<<',
+          append: '>>',
+          maxResults: maxResults,
+          triggerOnFocus: true
+        }
+      }));
+      node.name = 'Last Sent';
+
+      getNode('Email').data.removeOption('send on trigger');
+
+      self.setHelp();
+      jumpTo(triggerNode.data);
+      buildNavTree(triggerNode);
     });
 
     activeCard = cards.head;
@@ -225,17 +382,23 @@ var MailMan = function() {
     var subject = getNode('Subject').data.getValue();
     var body = getNode('Body').data.getValue();
     var sheet = getNode('Sheet').data.getValue();
-    var options = null;
 
-    if (window.google !== undefined) {
-      google.script.run
-          .withSuccessHandler(ruleCreationSuccess)
-          .createRule(to, subject, body, options, sheet);
-    }
-    else {
-      console.log('Creating rule.');
+    emailRule.to = to;
+    emailRule.subject = subject;
+    emailRule.body = body;
+    emailRule.sheet = sheet;
+
+    if (emailRule.ruleType === EmailRule.RuleTypes.TRIGGER) {
+      var setup = getNode('Confirmation').data.getValue();
+      var lastSent = getNode('Last Sent').data.getValue();
+
+      emailRule.sendColumn = setup;
+      emailRule.timestampColumn = lastSent;
     }
 
+    database.save(RULE_KEY, emailRule, function() {
+      google.script.host.close();
+    });
   };
 
 
@@ -246,17 +409,51 @@ var MailMan = function() {
    * @param {event} event The event that triggered this function.
    */
   this.toggleHelp = function(event) {
-    if (showHelp) {
-      showHelp = false;
-      $('.help').addClass('hidden');
+    if (showingHelp) {
+      hideHelp();
     }
     else {
-      showHelp = true;
-      $('.help').removeClass('hidden');
+      showHelp();
+    }
+  };
+
+  /**
+   * This function sets the state of the help <p> tags based upon a global value.
+   *
+   */
+  this.setHelp = function() {
+    if (showingHelp) {
+      showHelp();
+    }
+    else {
+      hideHelp();
     }
   };
 
   //***** PRIVATE *****//
+
+  var setEmailRules = function(value) {
+    if (value !== null) {
+      emailRule = value;
+      setCardValues();
+    }
+  };
+
+  var setCardValues = function() {
+
+    var card = getNode('Sheet').data;
+    card.setValue(emailRule.sheet);
+
+    card = getNode('To').data;
+    card.setValue(emailRule.to);
+
+    card = getNode('Subject').data;
+    card.setValue(emailRule.subject);
+
+    card = getNode('Body').data;
+    card.setValue(emailRule.body);
+
+  };
 
   /**
    * Adds a new nav link to the top navigation bar. Each content div (the card looking things) should have a related
@@ -272,7 +469,6 @@ var MailMan = function() {
     $('#nav-bar')
         .prepend(newLink)
         .prepend('&nbsp;&gt;&nbsp;');
-
   };
 
   /**
@@ -320,6 +516,7 @@ var MailMan = function() {
 
     var node = cards.head;
     while (node !== null) {
+
       if (node.data === card) {
         node.data.show();
         activeCard = node;
@@ -351,13 +548,34 @@ var MailMan = function() {
   };
 
   /**
+   * Inserts a Node after the Node with the given name.
+   * Note: This cannot be used to insert a Node at the start of a list.
+   *
+   * @param {String} before The name of the Node before the Node to be inserted.
+   * @param {Card} card The Card to be inserted.
+   * @return {Node} The newly inserted Node.
+   */
+  var insertNode = function(before, card) {
+    var beforeNode = getNode(before);
+
+    if (beforeNode === null) {
+      return null;
+    }
+
+    var index = cards.getPosition(beforeNode);
+    return cards.insert(index + 1, card);
+  };
+
+  /**
    * Hides all cards.
    *
    * @private
    */
   var hideAll = function() {
     var node = cards.head;
+
     while (node !== null) {
+
       node.data.hide();
       node = node.next;
     }
@@ -396,6 +614,24 @@ var MailMan = function() {
   };
 
   /**
+   * This function hides the help <p> tags.
+   *
+   */
+  var hideHelp = function() {
+    showingHelp = false;
+    $('.help').addClass('hidden');
+  };
+
+  /**
+   * This function shows the help <p> tags.
+   *
+   */
+  var showHelp = function() {
+    showingHelp = true;
+    $('.help').removeClass('hidden');
+  };
+
+  /**
    * Called when a rule is successfully created.
    *
    * @param {boolean} serverReturn A boolean indicating not much.
@@ -413,9 +649,8 @@ var MailMan = function() {
     });
   };
 
-  // TODO Convert this to a list friendly form
-  var setColumns = function(columns) {
-    columns = columns;
+  var setColumns = function(columnValues) {
+    columns = columnValues;
 
     getNode('To').data.setAutocomplete({
       results: columns,
@@ -439,6 +674,52 @@ var MailMan = function() {
       append: '>>',
       maxResults: maxResults
     });
+  };
+
+  var onRTEOpened = function(dialogId) {
+
+    intercom.on(dialogId, function(data) {
+
+          switch (data.state) {
+            case 'done':
+              console.log('Dialog submitted.\n');
+
+              getNode('Body').data.setValue(data.message);
+
+              forget(dialogId);
+              break;
+            case 'checkIn':
+              forget(dialogId);
+              watch(dialogId);
+              break;
+            case 'lost':
+              console.log('Dialog lost.\n');
+              break;
+            default:
+              throw 'Unknown dialog state: ' + data.state;
+          }
+        });
+  };
+
+  /**
+   * Watch the given dialog, to detect when it's been X-ed out.
+   *
+   * @param {string} dialogId The ID of the dialog to watch.
+   */
+  var watch = function(dialogId) {
+    timeoutIds[dialogId] = window.setTimeout(function() {
+      intercom.emit(dialogId, 'lost');
+    }, DIALOG_TIMEOUT_MS);
+  };
+
+  /**
+   * Stop watching the given dialog.
+   * @param {string} dialogId The ID of the dialog to watch.
+   */
+  var forget = function(dialogId) {
+    if (timeoutIds[dialogId]) {
+      window.clearTimeout(timeoutIds[dialogId]);
+    }
   };
 
   this.init();

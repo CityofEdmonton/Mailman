@@ -162,7 +162,23 @@ $.fn.wysiwyg = function(userOptions) {
                 selectedRange.select();
             }
         },
-
+        restoreSpecificSelection = function(setTo) {
+            var selection;
+            if (window.getSelection || document.createRange) {
+                selection = window.getSelection();
+                if (setTo) {
+                    try {
+                        selection.removeAllRanges();
+                    } catch (ex) {
+                        document.body.createTextRange().select();
+                        document.selection.empty();
+                    }
+                    selection.addRange(setTo);
+                }
+            } else if (document.selection && setTo) {
+                setTo.select();
+            }
+        },
         // Adding Toggle HTML based on the work by @jd0000, but cleaned up a little to work in this context.
         toggleHtmlEdit = function() {
             if ($(editor).data("wysiwyg-html-mode") !== true) {
@@ -265,6 +281,13 @@ $.fn.wysiwyg = function(userOptions) {
     toolbarBtnSelector = 'a[data-' + options.commandRole + '],button[data-' + options.commandRole + '],input[type=button][data-' + options.commandRole + ']';
     bindHotkeys(options.hotKeys);
 
+    // These are custome edits. We use these to access the private methods.
+    this.execCommand = execCommand;
+    this.saveSelection = saveSelection;
+    this.restoreSelection = restoreSelection;
+    this.restoreSpecificSelection = restoreSpecificSelection;
+    this.getCurrentRange = getCurrentRange;
+
     // Support placeholder attribute on the DIV
     var placeholder = $(this).attr('placeholder');
 
@@ -309,26 +332,24 @@ $.fn.wysiwyg = function(userOptions) {
     return this;
 };
 $.fn.wysiwyg.defaults = {
-    hotKeys: {
-        'Ctrl+b meta+b': 'bold',
-        'Ctrl+i meta+i': 'italic',
-        'Ctrl+u meta+u': 'underline',
-        'Ctrl+z': 'undo',
-        'Ctrl+y meta+y meta+shift+z': 'redo',
-        'Ctrl+l meta+l': 'justifyleft',
-        'Ctrl+r meta+r': 'justifyright',
-        'Ctrl+e meta+e': 'justifycenter',
-        'Ctrl+j meta+j': 'justifyfull',
-        'Shift+tab': 'outdent',
-        'tab': 'indent'
-    },
-    toolbarSelector: '[data-role=editor-toolbar]',
-    commandRole: 'edit',
-    selectionMarker: 'edit-focus-marker',
-    selectionColor: 'darkgrey',
-    dragAndDropImages: true,
-    keypressTimeout: 200,
-    fileUploadError: function(reason, detail) {
-        console.log("File upload error", reason, detail);
-    }
-};
+		hotKeys: {
+			'ctrl+b meta+b': 'bold',
+			'ctrl+i meta+i': 'italic',
+			'ctrl+u meta+u': 'underline',
+			'ctrl+z meta+z': 'undo',
+			'ctrl+y meta+y meta+shift+z': 'redo',
+			'ctrl+l meta+l': 'justifyleft',
+			'ctrl+r meta+r': 'justifyright',
+			'ctrl+e meta+e': 'justifycenter',
+			'ctrl+j meta+j': 'justifyfull',
+			'shift+tab': 'outdent',
+			'tab': 'indent'
+		},
+		toolbarSelector: '[data-role=editor-toolbar]',
+		commandRole: 'edit',
+		activeToolbarClass: 'btn-info',
+		selectionMarker: 'edit-focus-marker',
+		selectionColor: 'darkgrey',
+		dragAndDropImages: true,
+		fileUploadError: function (reason, detail) { console.log("File upload error", reason, detail); }
+	};
