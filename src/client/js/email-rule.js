@@ -32,6 +32,9 @@ var EmailRule = function() {
 
   // ***** privileged methods ***** //
 
+  /**
+   * @constructor
+   */
   this.init = function() {
     this.ruleType = this.RuleTypes.INSTANT;
   };
