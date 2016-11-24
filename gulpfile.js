@@ -102,22 +102,6 @@ function buildGAS() {
 
 
 /**
- * Replaces all script tags and css links.
- * Note: This is done relative to this gulpfile.
- * All swap tags are relative to this gulpfile.
- *
- * @return {stream} the stream as the completion hint to the gulp engine
- */
-function replaceTags() {
-    return gulp.src('./build/gas/html/*.html')
-        .pipe(htmlProcessor({
-            includeBase: './'
-        }))
-        .pipe(gulp.dest('./build/gas/html/'));
-}
-
-
-/**
  * Builds the project for the web.
  *
  * @return {stream} the stream as the completion hint to the gulp engine
