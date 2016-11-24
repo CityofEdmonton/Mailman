@@ -8,7 +8,6 @@ var Card = function(appendTo, options) {
 
   // Public Variables
 
-
   //***** Private Methods *****//
 
 

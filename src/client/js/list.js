@@ -39,6 +39,7 @@ List.prototype.add = function(value) {
   return node;
 };
 
+
 /**
  * Inserts a Node at the given index.
  *
@@ -57,7 +58,7 @@ List.prototype.insert = function(index, value) {
   else if (index == 0) {
     var oldNode = this.getNode(index);
 
-    this.head = newNode
+    this.head = newNode;
 
     newNode.next = oldNode;
     oldNode.previous = newNode;
@@ -76,6 +77,7 @@ List.prototype.insert = function(index, value) {
 
   return newNode;
 };
+
 
 /**
  * Gets a node at a specified 0-based position.
@@ -118,6 +120,7 @@ List.prototype.getPosition = function(node) {
 
   return null;
 };
+
 
 /**
  * This function removes a node from the List.

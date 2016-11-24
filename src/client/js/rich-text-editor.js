@@ -27,7 +27,7 @@ $(document).ready(function() {
   var button = $('#done').on('click', onSubmit);
   var linkButton = $('#link-btn').on('click', onLinkClick);
   var linkInsertButton = $('#link-insert-btn').on('click', onLinkInsertClick);
-  var linkInput = $('#link-url-value').on('click', wysiwyg.saveSelection)
+  var linkInput = $('#link-url-value').on('click', wysiwyg.saveSelection);
 
 
   // Sets up an interval to check-in with the server every few seconds, so we can tell

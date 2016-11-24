@@ -25,6 +25,7 @@ function launchRTE() {
   return 'dialog';
 }
 
+
 /**
  * Called from the client-side. Returns the current selection in A1 notation.
  *

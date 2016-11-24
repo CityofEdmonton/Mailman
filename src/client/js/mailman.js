@@ -10,13 +10,22 @@ var InputCard = require('./card-input.js');
 var TitledCard = require('./card-titled.js');
 var TextareaCard = require('./card-textarea.js');
 var List = require('./list.js');
+var EmailRule = require('./email-rule.js');
+var Database = require('./database.js');
 //var Intercom = require('./intercom.js');
 
 var MailMan = function() {
 
+  // ***** CONSTANTS ***** //
+  // This is mirrored server-side changes here must be reflected in global-variables.js
+  var RULE_KEY = 'MAILMAN_PROP_RULES';
+
   //***** LOCAL VARIABLES *****//
 
   var self;
+
+  // This handles all object reading/writing
+  var database;
 
   // This holds all the "cards".
   var contentArea;
@@ -45,10 +54,7 @@ var MailMan = function() {
   // The object used to communicate between the sidebar and the RTE (Rich Text Editor)
   var intercom;
 
-  /**
-	 * How long to wait for the dialog to check-in before assuming it's been
-	 * closed, in milliseconds.
-	 */
+	// How long to wait for the dialog to check-in before assuming it's been closed, in milliseconds.
 	var DIALOG_TIMEOUT_MS = 2000;
 
 	/**
@@ -57,6 +63,9 @@ var MailMan = function() {
 	 * the dialog is closed.
 	 */
 	var timeoutIds = {};
+
+  // This stores all the existing email rules.
+  var emailRule;
 
   //***** PUBLIC *****//
 
@@ -68,6 +77,14 @@ var MailMan = function() {
   this.init = function() {
     self = this;
 
+    // Data Config
+    database = new Database();
+
+    // Try to load an existing email rule.
+    emailRule = new EmailRule();
+    emailRule.ruleType = EmailRule.RuleTypes.INSTANT;
+    database.load(RULE_KEY, setEmailRules);
+
     sheets = [
       'Loading...'
     ];
@@ -76,12 +93,13 @@ var MailMan = function() {
       'Loading...'
     ];
 
-    // Configuration
+    // UI Configuration
     intercom = Intercom.getInstance();
     contentArea = $('#content-area');
     showingHelp = false;
     maxNavItems = 3;
     maxResults = 5;
+
     cards = new List();
 
     cards.add(new TitledCard(contentArea, {
@@ -145,7 +163,7 @@ var MailMan = function() {
       var headerNode = insertNode('Sheet', new InputCard(contentArea, {
         title: 'Which row contains your header titles?',
         help: 'By default, Mailman looks in row 1 for your header titles.' +
-        ' If your header is not in row 1, please input the row.',
+            ' If your header is not in row 1, please input the row.',
         label: 'Header row...'
       }));
       headerNode.name = 'Header Row';
@@ -218,8 +236,8 @@ var MailMan = function() {
       title: 'Send emails now?',
       paragraphs: [
         'This will send out an email blast right now. ' +
-          'If you\'d like, you can send the emails at a later time, or even based upon a value in a given column. ' +
-          'Just select the related option from the bottom right.'
+            'If you\'d like, you can send the emails at a later time, or even based upon a value in a given column. ' +
+            'Just select the related option from the bottom right.'
       ]
     }));
     cards.tail.name = 'Email';
@@ -232,12 +250,7 @@ var MailMan = function() {
       setHidden($('#done'), false);
     });
     cards.tail.data.addOption('send on trigger', function(e) {
-      //setHidden($('#step'), false);
-      //setHidden($('#done'), true);
-
-      // var emailNode = getNode('Email');
-      // emailNode.data.remove();
-      // cards.remove(cards.getPosition(emailNode)); // TODO Add a node-based way of removing. This is stupid inefficient.
+      emailRule.ruleType = EmailRule.RuleTypes.TRIGGER;
 
       var triggerNode = insertNode('Body', new TitledCard(contentArea, {
         title: 'Repeated emails.',
@@ -247,18 +260,18 @@ var MailMan = function() {
         ],
         help: 'If you\'d like to go back to a regular mail merge, use the options below.'
       }));
-      triggerNode.name = 'Trigger Setup';
+      triggerNode.name = 'Trigger';
 
-      var node = insertNode('Trigger Setup', new InputCard(contentArea, {
+      var node = insertNode('Trigger', new InputCard(contentArea, {
         title: 'Which column determines whether an email should be sent?',
         paragraphs: [
           'Mailman regularly checks whether an email needs to be sent. ' +
-            'Please specify a column that determines when an email should be sent.',
+              'Please specify a column that determines when an email should be sent.',
           'Note that Mailman looks for the value TRUE to determine when to send an email.'
         ],
         help: 'Mailman checks roughly every 15 minutes for new emails to send. ' +
-          'Keep in mind, this can lead to sending emails to someone every 15 minutes. ' +
-          'Continue on for some ideas about how to avoid this!',
+            'Keep in mind, this can lead to sending emails to someone every 15 minutes. ' +
+            'Continue on for some ideas about how to avoid this!',
         label: 'Send?',
         autocomplete: {
           results: columns,
@@ -268,18 +281,18 @@ var MailMan = function() {
           triggerOnFocus: true
         }
       }));
-      node.name = 'Send Confirmation';
+      node.name = 'Confirmation';
 
-      node = insertNode('Send Confirmation', new InputCard(contentArea, {
+      node = insertNode('Confirmation', new InputCard(contentArea, {
         title: 'Where should Mailman keep track of the previously sent email?',
         paragraphs: [
           'Every time Mailman sends an email, it records the time in a cell.',
           'Using the timestamp, you can determine whether you want to send another email.'
         ],
         help: 'This timestamp can be used for some interesting things! ' +
-          'Imagine you are interested in sending an email to someone every day (just to annoy them). ' +
-          'You could just set the formula in the previously mentioned column to '+
-          '"=TODAY() - {put the last sent here} > 1". Now an email will be sent every time TRUE pops up (every day).',
+            'Imagine you are interested in sending an email to someone every day (just to annoy them). ' +
+            'You could just set the formula in the previously mentioned column to ' +
+            '"=TODAY() - {put the last sent here} > 1". Now an email will be sent every time TRUE pops up (every day).',
         label: 'Last sent...',
         autocomplete: {
           results: columns,
@@ -290,6 +303,8 @@ var MailMan = function() {
         }
       }));
       node.name = 'Last Sent';
+
+      getNode('Email').data.removeOption('send on trigger');
 
       self.setHelp();
       jumpTo(triggerNode.data);
@@ -367,17 +382,23 @@ var MailMan = function() {
     var subject = getNode('Subject').data.getValue();
     var body = getNode('Body').data.getValue();
     var sheet = getNode('Sheet').data.getValue();
-    var options = null;
 
-    if (window.google !== undefined) {
-      google.script.run
-          .withSuccessHandler(ruleCreationSuccess)
-          .createRule(to, subject, body, options, sheet);
-    }
-    else {
-      console.log('Creating rule.');
+    emailRule.to = to;
+    emailRule.subject = subject;
+    emailRule.body = body;
+    emailRule.sheet = sheet;
+
+    if (emailRule.ruleType === EmailRule.RuleTypes.TRIGGER) {
+      var setup = getNode('Confirmation').data.getValue();
+      var lastSent = getNode('Last Sent').data.getValue();
+
+      emailRule.sendColumn = setup;
+      emailRule.timestampColumn = lastSent;
     }
 
+    database.save(RULE_KEY, emailRule, function() {
+      google.script.host.close();
+    });
   };
 
 
@@ -410,6 +431,29 @@ var MailMan = function() {
   };
 
   //***** PRIVATE *****//
+
+  var setEmailRules = function(value) {
+    if (value !== null) {
+      emailRule = value;
+      setCardValues();
+    }
+  };
+
+  var setCardValues = function() {
+
+    var card = getNode('Sheet').data;
+    card.setValue(emailRule.sheet);
+
+    card = getNode('To').data;
+    card.setValue(emailRule.to);
+
+    card = getNode('Subject').data;
+    card.setValue(emailRule.subject);
+
+    card = getNode('Body').data;
+    card.setValue(emailRule.body);
+
+  };
 
   /**
    * Adds a new nav link to the top navigation bar. Each content div (the card looking things) should have a related
@@ -520,7 +564,7 @@ var MailMan = function() {
 
     var index = cards.getPosition(beforeNode);
     return cards.insert(index + 1, card);
-  }
+  };
 
   /**
    * Hides all cards.
@@ -605,8 +649,8 @@ var MailMan = function() {
     });
   };
 
-  var setColumns = function(columns) {
-    columns = columns;
+  var setColumns = function(columnValues) {
+    columns = columnValues;
 
     getNode('To').data.setAutocomplete({
       results: columns,
@@ -642,17 +686,6 @@ var MailMan = function() {
 
               getNode('Body').data.setValue(data.message);
 
-              // Swap out the existing body card for a different one.
-              /*var rteBody = new TitledCard(contentArea, {
-                title: 'Welcome!',
-                help: 'Help will be displayed here normally. Since this is just the welcome page, there isn\'t much to know!',
-                paragraphs: [
-                  'Welcome to Mailman! This application helps users easily create mail merges. It aims to be easy to use, ' +
-                      'while also providing advanced options for power users.',
-                  'To get started, simply click NEXT down below.'
-                ]
-              });*/
-
               forget(dialogId);
               break;
             case 'checkIn':
@@ -666,28 +699,28 @@ var MailMan = function() {
               throw 'Unknown dialog state: ' + data.state;
           }
         });
-  }
+  };
 
   /**
    * Watch the given dialog, to detect when it's been X-ed out.
    *
    * @param {string} dialogId The ID of the dialog to watch.
    */
-  var watch = function (dialogId) {
+  var watch = function(dialogId) {
     timeoutIds[dialogId] = window.setTimeout(function() {
       intercom.emit(dialogId, 'lost');
     }, DIALOG_TIMEOUT_MS);
-  }
+  };
 
   /**
    * Stop watching the given dialog.
    * @param {string} dialogId The ID of the dialog to watch.
    */
-  var forget = function (dialogId) {
+  var forget = function(dialogId) {
     if (timeoutIds[dialogId]) {
       window.clearTimeout(timeoutIds[dialogId]);
     }
-  }
+  };
 
   this.init();
 };

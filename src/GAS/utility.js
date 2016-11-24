@@ -13,9 +13,10 @@ function getHeaderStrings(sheet) {
   if (!isNaN(temp) && temp !== null && temp > 0) {
     headerRow = temp;
   }
-  
+
   return getValues(sheet, headerRow - 1);
 }
+
 
 /**
  * Gets an array of the values in a specific sheets row.
