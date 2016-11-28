@@ -282,6 +282,9 @@ var MailMan = function() {
         }
       }));
       node.name = 'Confirmation';
+      if (emailRule.ruleType === EmailRule.RuleTypes.TRIGGER) {
+        node.data.setValue(emailRule.sendColumn);
+      }
 
       node = insertNode('Confirmation', new InputCard(contentArea, {
         title: 'Where should Mailman keep track of the previously sent email?',
@@ -303,6 +306,9 @@ var MailMan = function() {
         }
       }));
       node.name = 'Last Sent';
+      if (emailRule.ruleType === EmailRule.RuleTypes.TRIGGER) {
+        node.data.setValue(emailRule.timestampColumn);
+      }
 
       getNode('Email').data.removeOption('send on trigger');
 
@@ -397,6 +403,10 @@ var MailMan = function() {
     }
 
     database.save(RULE_KEY, emailRule, function() {
+      console.log('Send emails... (trigger)');
+      google.script.run
+          .sendManyEmails();
+
       google.script.host.close();
     });
   };
@@ -439,6 +449,11 @@ var MailMan = function() {
     }
   };
 
+  /**
+   * Sets all Card values based upon the values in emailRule.
+   * TODO Replace this with something more flexible.
+   *
+   */
   var setCardValues = function() {
 
     var card = getNode('Sheet').data;
@@ -452,7 +467,6 @@ var MailMan = function() {
 
     card = getNode('Body').data;
     card.setValue(emailRule.body);
-
   };
 
   /**
