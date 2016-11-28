@@ -7,14 +7,9 @@
  * @return {Array<string>} The array of values.
  */
 function getHeaderStrings(sheet) {
-  var temp = parseInt(getHeaderRow());
+  var row = parseInt(getHeaderRow());
 
-  var headerRow = 1;
-  if (!isNaN(temp) && temp !== null && temp > 0) {
-    headerRow = temp;
-  }
-
-  return getValues(sheet, headerRow - 1);
+  return getValues(sheet, row - 1);
 }
 
 
@@ -28,10 +23,8 @@ function getHeaderStrings(sheet) {
 function getValues(sheet, rowIndex) {
   var range = sheet.getDataRange();
 
-  // Find the header row
   var row = range.offset(rowIndex, 0, 1, range.getNumColumns());
 
-  // Make an array of header names
   var values = [];
   for (var i = 1; i <= row.getNumColumns(); i++) {
     values.push(row.getCell(1, i).getValue());
@@ -40,6 +33,45 @@ function getValues(sheet, rowIndex) {
   return values;
 }
 
+/**
+ * This function gets a value from a specific Sheet, column and row.
+ * The column is specified by header name. TODO Test me
+ *
+ * @param {Sheet} sheet The Sheet to find the value in.
+ * @param {String} headerName The name of the header. This determines the column to look in.
+ * @param {Number} row The 0-based row index. 0 is the very top row in the Sheet.
+ * @return {String} The string value found in the given row/column/Sheet.
+ */
+function getValue(sheet, headerName, row) {
+  var headerStrings = getHeaderStrings(sheet);
+  var column = headerStrings.indexOf(headerName);
+
+  if (column === -1) {
+    return null;
+  }
+
+  return getValues(sheet, row)[column];
+}
+
+/**
+ * This function gets a value from a specific Sheet, column and row.
+ * The column is specified by header name. TODO Test me
+ *
+ * @param {Sheet} sheet The Sheet to find the value in.
+ * @param {String} headerName The name of the header. This determines the column to look in.
+ * @param {Number} row The 0-based row index. 0 is the very top row in the Sheet.
+ * @return {String} The string value found in the given row/column/Sheet.
+ */
+function getCell(sheet, headerName, row) {
+  var headerStrings = getHeaderStrings(sheet);
+  var column = headerStrings.indexOf(headerName);
+
+  if (column === -1) {
+    return null;
+  }
+
+  return sheet.getDataRange().getCell(row + 1, column + 1);
+}
 
 /**
  * This function replaces  all instances of <<tags>> with the data in headerToData.
@@ -60,38 +92,12 @@ function replaceTags(text, headerToData) {
 
 
 /**
- * Given a range in A1 notation, this function extracts the sheet name.
- * Example: TestSheet1!A4:D10 returns TestSheet1.
- *
- * @param {string} a1Notation A range in A1 notation.
- * @return {string} The sheet name.
- */
-function extractSheetName(a1Notation) {
-  return a1Notation.substr(0, a1Notation.search('!'));
-}
-
-
-/**
- * Given a range in A1 notation, this function extracts the range.
- * Example: TestSheet1!A4:D10 returns A4:D10.
- * Note: This does not validate the range. It could be just gibberish.
- * All this does is return some text after a !.
- *
- * @param {string} a1Notation A range in A1 notation.
- * @return {string} The range in A1 notation (no sheet name).
- */
-function extractRange(a1Notation) {
-  return a1Notation.substr(a1Notation.search('!') + 1, a1Notation.length);
-}
-
-
-/**
  * Get the rule for this document.
  *
  * @return {object} The rule in object form.
  */
 function getRule() {
-  return JSON.parse(PropertiesService.getDocumentProperties().getProperty(PROPERTY_RULE));
+  return JSON.parse(load(RULE_KEY));
 }
 
 

@@ -23,9 +23,6 @@ function onOpen(e) {
   menu.addItem('Set Up Email List', 'openSidebar')
       .addToUi();
 
-  menu.addItem('Build Email', 'openModalDialog')
-      .addToUi();
-
   PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, SpreadsheetApp.getActiveSpreadsheet().getId());
 }
 
@@ -55,42 +52,4 @@ function openModalDialog() {
       .setWidth(750);
 
   SpreadsheetApp.getUi().showModalDialog(ui, ' ');
-}
-
-
-/**
- * Runs the email sending program. Can be triggered.
- */
-function onTrigger() {
-  Logger.log('Running trigger function...');
-
-  var headers = 1;
-
-  // Get all rules (TODO Multiple rules)
-  var rule = getRule();
-  SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
-
-  // Validate each rule for each row
-  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  var sheet = ss.getSheetByName(rule.sheet);
-  var range = sheet.getDataRange();
-  var header = getHeaderStrings(sheet);
-
-  for (var i = 1; i < range.getNumRows(); i++) {
-    var row = getValues(sheet, i);
-
-    var combinedObj = {};
-    for (var j = 0; j < header.length; j++) {
-      combinedObj[header[j]] = row[j];
-    }
-
-    // Convert <<>> tags to actual text.
-    var to = replaceTags(rule.to, combinedObj);
-    var subject = replaceTags(rule.subject, combinedObj);
-    var body = replaceTags(rule.body, combinedObj);
-
-    Logger.log('Sending email to ' + to);
-    MailApp.sendEmail(to, subject, body);
-  }
-
 }
