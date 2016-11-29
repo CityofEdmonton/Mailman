@@ -6,50 +6,17 @@
  */
 
 var Util = require('./util.js');
-var InputCard = require('./card-input.js');
-var TitledCard = require('./card-titled.js');
-var TextareaCard = require('./card-textarea.js');
-var List = require('./list.js');
-var EmailRule = require('./email-rule.js');
-var Database = require('./database.js');
+var Cards = require('./cards-handler.js');
+var NavBar = require('./navigation-bar.js');
 //var Intercom = require('./intercom.js');
 
 var MailMan = function() {
 
   // ***** CONSTANTS ***** //
-  // This is mirrored server-side changes here must be reflected in global-variables.js
-  var RULE_KEY = 'MAILMAN_PROP_RULES';
 
   //***** LOCAL VARIABLES *****//
 
   var self;
-
-  // This handles all object reading/writing
-  var database;
-
-  // This holds all the "cards".
-  var contentArea;
-
-  // This tracks whether help is being displayed currently.
-  var showingHelp;
-
-  // The currently shown Card.
-  var activeCard;
-
-  // This alters how many Card links will be shown in the nav bar.
-  var maxNavItems;
-
-  // All the different sheet names.
-  var sheets;
-
-  // All the columns of the selected sheet.
-  var columns;
-
-  // The maximum number of results to display in the autocompletes.
-  var maxResults;
-
-  // The list containing all the Cards.
-  var cards;
 
   // The object used to communicate between the sidebar and the RTE (Rich Text Editor)
   var intercom;
@@ -57,15 +24,18 @@ var MailMan = function() {
 	// How long to wait for the dialog to check-in before assuming it's been closed, in milliseconds.
 	var DIALOG_TIMEOUT_MS = 2000;
 
+  // This handles much of the configuration of the Cards.
+  var cards;
+
+  // This handles all the nav-bar navigation.
+  var navBar;
+
 	/**
 	 * Holds a mapping from dialog ID to the ID of the timeout that is used to
 	 * check if it was lost. This is needed so we can cancel the timeout when
 	 * the dialog is closed.
 	 */
 	var timeoutIds = {};
-
-  // This stores all the existing email rules.
-  var emailRule;
 
   //***** PUBLIC *****//
 
@@ -77,257 +47,28 @@ var MailMan = function() {
   this.init = function() {
     self = this;
 
-    // Data Config
-    database = new Database();
-
-    // Try to load an existing email rule.
-    emailRule = new EmailRule();
-    emailRule.ruleType = EmailRule.RuleTypes.INSTANT;
-    database.load(RULE_KEY, setEmailRules);
-
-    sheets = [
-      'Loading...'
-    ];
-
-    columns = [
-      'Loading...'
-    ];
-
     // UI Configuration
     intercom = Intercom.getInstance();
     contentArea = $('#content-area');
-    showingHelp = false;
-    maxNavItems = 3;
-    maxResults = 5;
 
-    cards = new List();
+    cards = new Cards(contentArea);
+    setButtonState();
 
-    cards.add(new TitledCard(contentArea, {
-      title: 'Welcome!',
-      help: 'Help will be displayed here normally. Since this is just the welcome page, there isn\'t much to know!',
-      paragraphs: [
-        'Welcome to Mailman! This application helps users easily create mail merges. It aims to be easy to use, ' +
-            'while also providing advanced options for power users.',
-        'To get started, simply click NEXT down below.'
-      ]
-    }));
-    cards.tail.name = 'Welcome';
-    cards.tail.data.attachEvent('card.hide', function(event) {
-      setHidden($('#back'), false);
+    navBar = new NavBar($('#nav-row'), 3, function(e) {
+      var node = e.data;
+
+      cards.jumpTo(node.name);
+      navBar.buildNavTree(node);
+      setButtonState();
     });
-    cards.tail.data.attachEvent('card.show', function(event) {
-      setHidden($('#back'), true);
-    });
-
-    cards.add(new InputCard(contentArea, {
-      title: 'Which Sheet are we sending from?',
-      help: 'This Sheet must contain all the information you may want to send in an email.',
-      label: 'Sheet...',
-      autocomplete: {
-        results: sheets,
-        maxResults: maxResults,
-        triggerOnFocus: true
-      }
-    }));
-    cards.tail.name = 'Sheet';
-    // We hide the card before applying the event. This stops the initial trigger from happening.
-    cards.tail.data.hide();
-    cards.tail.data.attachEvent('card.hide', function(event) {
-      if (window.google !== undefined) {
-        var sheet = getNode('Sheet').data.getValue(); // TODO use attached event data to make this smoother
-        google.script.run
-            .withSuccessHandler(setColumns)
-            .getHeaderNames(sheet);
-      }
-      else {
-        console.log('Setting columns based on sheet.');
-      }
-    });
-
-    cards.add(new InputCard(contentArea, {
-      title: 'Who are you sending to?',
-      help: 'This is the column filled with the email addresses of the recipients.',
-      label: 'To...',
-      autocomplete: {
-        results: columns,
-        prepend: '<<',
-        append: '>>',
-        maxResults: maxResults,
-        triggerOnFocus: true
-      }
-    })).name = 'To';
-    cards.tail.data.addOption('change header row', function(e) {
-
-      // Add another card before this one, but after Sheet
-
-      var headerNode = insertNode('Sheet', new InputCard(contentArea, {
-        title: 'Which row contains your header titles?',
-        help: 'By default, Mailman looks in row 1 for your header titles.' +
-            ' If your header is not in row 1, please input the row.',
-        label: 'Header row...'
-      }));
-      headerNode.name = 'Header Row';
-      headerNode.data.attachEvent('card.hide', function(event, card) {
-
-        // Set the header row
-        if (window.google !== undefined) {
-          var row = card.getValue();
-          var sheet = getNode('Sheet').data.getValue();
-
-          // Verify the row data.
-          var numTest = parseInt(row);
-          if (!isNaN(numTest) && numTest > 0) {
-            google.script.run
-                .withSuccessHandler(setColumns)
-                .setHeaderRow(row, sheet);
-          }
-        }
-
-      });
-
-      self.setHelp();
-
-      jumpTo(headerNode.data);
-      buildNavTree(headerNode);
-
-      // Remove the option
-      getNode('To').data.removeOption('change header row');
-    });
-
-    cards.add(new InputCard(contentArea, {
-      title: 'What\'s your subject?',
-      help: 'Recipients will see this as the subject line of the email. Type "<<" to see a list of column names. ' +
-          'These tags will be swapped out with the associated values in the Sheet.',
-      label: 'Subject...',
-      autocomplete: {
-        results: columns,
-        trigger: '<<',
-        prepend: '<<',
-        append: '>>',
-        maxResults: maxResults
-      }
-    })).name = 'Subject';
-
-    cards.add(new TextareaCard(contentArea, {
-      title: 'What\'s in the body?',
-      help: 'Recipients will see this as the body of the email. Type "<<" to see a list of column names. These tags ' +
-          'will be swapped out with the associated values in the Sheet.',
-      label: 'Body...',
-      autocomplete: {
-        results: columns,
-        trigger: '<<',
-        prepend: '<<',
-        append: '>>',
-        maxResults: maxResults
-      }
-    }));
-    cards.tail.name = 'Body';
-    /*cards.tail.data.addOption('Rich Text Editor', function(e) {
-
-      // Launch the RTE.
-      if (window.google !== undefined) {
-        google.script.run
-            .withSuccessHandler(onRTEOpened)
-            .launchRTE();
-      }
-    });*/
-
-    cards.add(new TitledCard(contentArea, {
-      title: 'Send emails now?',
-      paragraphs: [
-        'This will send out an email blast right now. ' +
-            'If you\'d like, you can send the emails at a later time, or even based upon a value in a given column. ' +
-            'Just select the related option from the bottom right.'
-      ]
-    }));
-    cards.tail.name = 'Email';
-    cards.tail.data.attachEvent('card.hide', function(event) {
-      setHidden($('#step'), false);
-      setHidden($('#done'), true);
-    });
-    cards.tail.data.attachEvent('card.show', function(event) {
-      setHidden($('#step'), true);
-      setHidden($('#done'), false);
-    });
-    cards.tail.data.addOption('send on trigger', function(e) {
-      emailRule.ruleType = EmailRule.RuleTypes.TRIGGER;
-
-      var triggerNode = insertNode('Body', new TitledCard(contentArea, {
-        title: 'Repeated emails.',
-        paragraphs: [
-          'Mailman will now guide you through the process of creating your own repeated mail merge.',
-          'This feature can be used to set up an email-based reminder system.'
-        ],
-        help: 'If you\'d like to go back to a regular mail merge, use the options below.'
-      }));
-      triggerNode.name = 'Trigger';
-
-      var node = insertNode('Trigger', new InputCard(contentArea, {
-        title: 'Which column determines whether an email should be sent?',
-        paragraphs: [
-          'Mailman regularly checks whether an email needs to be sent. ' +
-              'Please specify a column that determines when an email should be sent.',
-          'Note that Mailman looks for the value TRUE to determine when to send an email.'
-        ],
-        help: 'Mailman checks roughly every 15 minutes for new emails to send. ' +
-            'Keep in mind, this can lead to sending emails to someone every 15 minutes. ' +
-            'Continue on for some ideas about how to avoid this!',
-        label: 'Send?',
-        autocomplete: {
-          results: columns,
-          prepend: '<<',
-          append: '>>',
-          maxResults: maxResults,
-          triggerOnFocus: true
-        }
-      }));
-      node.name = 'Confirmation';
-      if (emailRule.ruleType === EmailRule.RuleTypes.TRIGGER) {
-        node.data.setValue(emailRule.sendColumn);
-      }
-
-      node = insertNode('Confirmation', new InputCard(contentArea, {
-        title: 'Where should Mailman keep track of the previously sent email?',
-        paragraphs: [
-          'Every time Mailman sends an email, it records the time in a cell.',
-          'Using the timestamp, you can determine whether you want to send another email.'
-        ],
-        help: 'This timestamp can be used for some interesting things! ' +
-            'Imagine you are interested in sending an email to someone every day (just to annoy them). ' +
-            'You could just set the formula in the previously mentioned column to ' +
-            '"=TODAY() - {put the last sent here} > 1". Now an email will be sent every time TRUE pops up (every day).',
-        label: 'Last sent...',
-        autocomplete: {
-          results: columns,
-          prepend: '<<',
-          append: '>>',
-          maxResults: maxResults,
-          triggerOnFocus: true
-        }
-      }));
-      node.name = 'Last Sent';
-      if (emailRule.ruleType === EmailRule.RuleTypes.TRIGGER) {
-        node.data.setValue(emailRule.timestampColumn);
-      }
-
-      getNode('Email').data.removeOption('send on trigger');
-
-      self.setHelp();
-      jumpTo(triggerNode.data);
-      buildNavTree(triggerNode);
-    });
-
-    activeCard = cards.head;
-    jumpTo(activeCard.data);
-
-    buildNavTree(activeCard);
-    $('.help').addClass('hidden');
+    
+    navBar.buildNavTree(cards.getActiveNode());
 
     // All UI Bindings
     $('#step').on('click', self.next);
     $('#done').on('click', self.done);
     $('#back').on('click', self.back);
-    $('#help').on('click', self.toggleHelp);
+    $('#help').on('click', self.onHelpClick);
 
     // Load information from GAS
     if (window.google !== undefined) {
@@ -344,16 +85,10 @@ var MailMan = function() {
    * @param {event} event The event that triggered the function call.
    */
   this.next = function(event) {
-    if (activeCard.next === null) {
-      return;
-    }
+    var active = cards.next();
+    setButtonState();
 
-    activeCard.data.hide();
-    activeCard = activeCard.next;
-    activeCard.data.show();
-
-    // After changing the card layout, the nav tree needs to be rebuilt.
-    buildNavTree(activeCard);
+    navBar.buildNavTree(active);
   };
 
   /**
@@ -363,16 +98,10 @@ var MailMan = function() {
    * @param {event} event The event that triggered the function call.
    */
   this.back = function(event) {
-    if (activeCard.previous === null) {
-      return;
-    }
+    var active = cards.back();
+    setButtonState();
 
-    activeCard.data.hide();
-    activeCard = activeCard.previous;
-    activeCard.data.show();
-
-    // After changing the card layout, the nav tree needs to be rebuilt.
-    buildNavTree(activeCard);
+    navBar.buildNavTree(active);
   };
 
   /**
@@ -383,11 +112,14 @@ var MailMan = function() {
    */
   this.done = function(event) {
     // SUBMIT THE INFO BACK TO SHEETS
-
-    var to = getNode('To').data.getValue();
-    var subject = getNode('Subject').data.getValue();
-    var body = getNode('Body').data.getValue();
-    var sheet = getNode('Sheet').data.getValue();
+    console.log('To');
+    var to = cards.getCard('To').getValue();
+    console.log('Subject');
+    var subject = cards.getCard('Subject').getValue();
+    console.log('Body');
+    var body = cards.getCard('Body').getValue();
+    console.log('Sheet');
+    var sheet = cards.getCard('Sheet').getValue();
 
     emailRule.to = to;
     emailRule.subject = subject;
@@ -395,8 +127,10 @@ var MailMan = function() {
     emailRule.sheet = sheet;
 
     if (emailRule.ruleType === EmailRule.RuleTypes.TRIGGER) {
-      var setup = getNode('Confirmation').data.getValue();
-      var lastSent = getNode('Last Sent').data.getValue();
+      console.log('Confirmation');
+      var setup = cards.getCard('Confirmation').getValue();
+      console.log('Last Sent');
+      var lastSent = cards.getCard('Last Sent').getValue();
 
       emailRule.sendColumn = setup;
       emailRule.timestampColumn = lastSent;
@@ -411,283 +145,34 @@ var MailMan = function() {
     });
   };
 
-
-
   /**
    * This function toggles the state of the help <p> tags.
    *
-   * @param {event} event The event that triggered this function.
    */
-  this.toggleHelp = function(event) {
-    if (showingHelp) {
-      hideHelp();
-    }
-    else {
-      showHelp();
-    }
-  };
-
-  /**
-   * This function sets the state of the help <p> tags based upon a global value.
-   *
-   */
-  this.setHelp = function() {
-    if (showingHelp) {
-      showHelp();
-    }
-    else {
-      hideHelp();
-    }
+  this.onHelpClick = function() {
+    cards.toggleHelp();
   };
 
   //***** PRIVATE *****//
 
-  var setEmailRules = function(value) {
-    if (value !== null) {
-      emailRule = value;
-      setCardValues();
+  /**
+   * Using the Cards handler, this sets the state of the buttons.
+   * Depending on the active Card, different buttons may be shown.
+   *
+   */
+  var setButtonState = function() {
+    // Default state
+    Util.setHidden($('#done'), true);
+    Util.setHidden($('#step'), false);
+    Util.setHidden($('#back'), false);
+
+    if (cards.isFirst()) {
+      Util.setHidden($('#back'), true);
     }
-  };
-
-  /**
-   * Sets all Card values based upon the values in emailRule.
-   * TODO Replace this with something more flexible.
-   *
-   */
-  var setCardValues = function() {
-
-    var card = getNode('Sheet').data;
-    card.setValue(emailRule.sheet);
-
-    card = getNode('To').data;
-    card.setValue(emailRule.to);
-
-    card = getNode('Subject').data;
-    card.setValue(emailRule.subject);
-
-    card = getNode('Body').data;
-    card.setValue(emailRule.body);
-  };
-
-  /**
-   * Adds a new nav link to the top navigation bar. Each content div (the card looking things) should have a related
-   * nav item.
-   *
-   * @private
-   * @param {Node} node The node to add to the nav bar. This node contains a related Card.
-   */
-  var addNavLink = function(node) {
-    var newLink = $('<a>' + node.name + '</a>')
-        .on('click', node, navigate);
-
-    $('#nav-bar')
-        .prepend(newLink)
-        .prepend('&nbsp;&gt;&nbsp;');
-  };
-
-  /**
-   * Builds the navigation tree from scratch. Removes the previous tree.
-   * TODO rebuild the link limit code
-   * @private
-   * @param {Node} node The Node to build the tree to.
-   */
-  var buildNavTree = function(node) {
-    $('#nav-bar').empty();
-
-    var current = node;
-    for (var i = 0; i < maxNavItems; i++) {
-      if (current !== null) {
-        addNavLink(current);
-        current = current.previous;
-      }
+    else if (cards.isLast()) {
+      Util.setHidden($('#done'), false);
+      Util.setHidden($('#step'), true);
     }
-  };
-
-  /**
-   * The event triggered by any of the anchors in the nav bar. The related content div is shown and all others are
-   * hidden.
-   * Note that 'this' will be the HTMLElement that fired this request.
-   *
-   * @private
-   * @param {event} e The event that triggerred this function.
-   */
-  var navigate = function(e) {
-    activeCard = e.data;
-
-    jumpTo(e.data.data);
-    buildNavTree(e.data);
-  };
-
-  /**
-   * Hides all the primary content divs. There are spacing divs, so those ones aren't hidden. Then shows the parameter
-   * div.
-   *
-   * @private
-   * @param {Card} card The div to leave visible. All other are 'display:none'ed
-   */
-  var jumpTo = function(card) {
-    hideAll();
-
-    var node = cards.head;
-    while (node !== null) {
-
-      if (node.data === card) {
-        node.data.show();
-        activeCard = node;
-        return;
-      }
-
-      node = node.next;
-    }
-  };
-
-  /**
-   * Gets the node with a given name. It's worth noting that the name of a node isn't something
-   * inherant to the Node object. This file adds them as an alternative way of discovery.
-   *
-   * @param {string} name The name of the Node.
-   * @return {Node} The node with the given name.
-   */
-  var getNode = function(name) {
-    var current = cards.head;
-    while (current !== null) {
-      if (current.name === name) {
-        return current;
-      }
-
-      current = current.next;
-    }
-
-    return null;
-  };
-
-  /**
-   * Inserts a Node after the Node with the given name.
-   * Note: This cannot be used to insert a Node at the start of a list.
-   *
-   * @param {String} before The name of the Node before the Node to be inserted.
-   * @param {Card} card The Card to be inserted.
-   * @return {Node} The newly inserted Node.
-   */
-  var insertNode = function(before, card) {
-    var beforeNode = getNode(before);
-
-    if (beforeNode === null) {
-      return null;
-    }
-
-    var index = cards.getPosition(beforeNode);
-    return cards.insert(index + 1, card);
-  };
-
-  /**
-   * Hides all cards.
-   *
-   * @private
-   */
-  var hideAll = function() {
-    var node = cards.head;
-
-    while (node !== null) {
-
-      node.data.hide();
-      node = node.next;
-    }
-  };
-
-  /**
-   * A generic UI element hider. Doesn't remove the object from the flow of the document.
-   *
-   * @private
-   * @param {jquery} object The object to apply the change to.
-   * @param {boolean} state True for visible, false for invisible.
-   */
-  var setVisibility = function(object, state) {
-    if (state) {
-      object.removeClass('invisible');
-    }
-    else {
-      object.addClass('invisible');
-    }
-  };
-
-  /**
-   * A generic UI element hider. Removes the object from the flow of the document.
-   *
-   * @private
-   * @param {jquery} object The object to apply the change to.
-   * @param {boolean} state True for display:none, false for default.
-   */
-  var setHidden = function(object, state) {
-    if (state) {
-      object.addClass('hidden');
-    }
-    else {
-      object.removeClass('hidden');
-    }
-  };
-
-  /**
-   * This function hides the help <p> tags.
-   *
-   */
-  var hideHelp = function() {
-    showingHelp = false;
-    $('.help').addClass('hidden');
-  };
-
-  /**
-   * This function shows the help <p> tags.
-   *
-   */
-  var showHelp = function() {
-    showingHelp = true;
-    $('.help').removeClass('hidden');
-  };
-
-  /**
-   * Called when a rule is successfully created.
-   *
-   * @param {boolean} serverReturn A boolean indicating not much.
-   */
-  var ruleCreationSuccess = function(serverReturn) {
-    google.script.host.close();
-  };
-
-  var setSheets = function(sheets) {
-    sheets = sheets;
-    getNode('Sheet').data.setAutocomplete({
-      results: sheets,
-      maxResults: maxResults,
-      triggerOnFocus: true
-    });
-  };
-
-  var setColumns = function(columnValues) {
-    columns = columnValues;
-
-    getNode('To').data.setAutocomplete({
-      results: columns,
-      prepend: '<<',
-      append: '>>',
-      maxResults: maxResults,
-      triggerOnFocus: true
-    });
-
-    getNode('Subject').data.setAutocomplete({
-      results: columns,
-      trigger: '<<',
-      prepend: '<<',
-      append: '>>',
-      maxResults: maxResults
-    });
-    getNode('Body').data.setAutocomplete({
-      results: columns,
-      trigger: '<<',
-      prepend: '<<',
-      append: '>>',
-      maxResults: maxResults
-    });
   };
 
   var onRTEOpened = function(dialogId) {
