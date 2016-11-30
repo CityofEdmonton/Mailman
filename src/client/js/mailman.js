@@ -8,6 +8,7 @@
 var Util = require('./util.js');
 var Cards = require('./cards-handler.js');
 var NavBar = require('./navigation-bar.js');
+var PubSub = require('pubsub-js');
 //var Intercom = require('./intercom.js');
 
 var MailMan = function() {
@@ -58,10 +59,8 @@ var MailMan = function() {
       var node = e.data;
 
       cards.jumpTo(node.name);
-      navBar.buildNavTree(node);
-      setButtonState();
     });
-    
+
     navBar.buildNavTree(cards.getActiveNode());
 
     // All UI Bindings
@@ -70,12 +69,16 @@ var MailMan = function() {
     $('#back').on('click', self.back);
     $('#help').on('click', self.onHelpClick);
 
-    // Load information from GAS
-    if (window.google !== undefined) {
-      google.script.run
-          .withSuccessHandler(setSheets)
-          .getSheets();
-    }
+    // PubSub bindings
+
+    // It's important to note the flow of the program here.
+    // When cards.jumpTo is called, this pubsub function is called.
+    // jump to a card > rebuild the nav tree
+    PubSub.subscribe('Cards.jumpTo', function(msg, data) {
+      var activeNode = cards.getActiveNode();
+      navBar.buildNavTree(cards.getActiveNode());
+      setButtonState();
+    });    
   };
 
   /**
