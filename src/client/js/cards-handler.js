@@ -3,8 +3,8 @@ var InputCard = require('./card/card-input.js');
 var TitledCard = require('./card/card-titled.js');
 var TextareaCard = require('./card/card-textarea.js');
 var List = require('./list/list.js');
-var EmailRule = require('./email-rule.js');
-var Database = require('./database.js');
+var EmailRule = require('./data/email-rule.js');
+var Database = require('./data/database.js');
 var Util = require('./util.js');
 var PubSub = require('pubsub-js');
 
