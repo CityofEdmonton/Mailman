@@ -125,7 +125,7 @@ var TextareaCard = function(appendTo, options) {
    */
   this.setValue = function(value) {
     innerBase.find('textarea').val(value);
-    innerBase.find('.mdl-textfield').addClass('is-dirty');
+    innerBase.addClass('is-dirty');
   };
 
   /**
@@ -149,7 +149,7 @@ var TextareaCard = function(appendTo, options) {
     }
   }
 
-  componentHandler.upgradeElement(innerBase.find('.mdl-js-textfield')[0], 'MaterialTextfield');
+  componentHandler.upgradeElement(innerBase[0], 'MaterialTextfield');
 };
 
 

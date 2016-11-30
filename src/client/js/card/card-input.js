@@ -124,7 +124,7 @@ var InputCard = function(appendTo, options) {
    */
   this.setValue = function(value) {
     innerBase.find('input').val(value);
-    innerBase.find('.mdl-textfield').addClass('is-dirty');
+    innerBase.addClass('is-dirty');
   };
 
   /**
@@ -148,7 +148,7 @@ var InputCard = function(appendTo, options) {
     }
   }
 
-  componentHandler.upgradeElement(innerBase.find('.mdl-js-textfield')[0], 'MaterialTextfield');
+  componentHandler.upgradeElement(innerBase[0], 'MaterialTextfield');
 };
 
 
