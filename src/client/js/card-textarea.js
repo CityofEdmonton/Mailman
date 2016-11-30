@@ -125,6 +125,7 @@ var TextareaCard = function(appendTo, options) {
    */
   this.setValue = function(value) {
     innerBase.find('textarea').val(value);
+    innerBase.find('.mdl-textfield').addClass('is-dirty');
   };
 
   /**

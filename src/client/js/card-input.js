@@ -124,6 +124,7 @@ var InputCard = function(appendTo, options) {
    */
   this.setValue = function(value) {
     innerBase.find('input').val(value);
+    innerBase.find('.mdl-textfield').addClass('is-dirty');
   };
 
   /**
