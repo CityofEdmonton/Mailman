@@ -144,6 +144,7 @@ var Card = function(appendTo, options) {
     }
   }
 
+  this.hide();
   componentHandler.upgradeElement(base.find('.mdl-js-menu')[0], 'MaterialMenu');
 };
 
