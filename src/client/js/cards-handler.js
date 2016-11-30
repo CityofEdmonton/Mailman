@@ -1,7 +1,7 @@
 
-var InputCard = require('./card-input.js');
-var TitledCard = require('./card-titled.js');
-var TextareaCard = require('./card-textarea.js');
+var InputCard = require('./card/card-input.js');
+var TitledCard = require('./card/card-titled.js');
+var TextareaCard = require('./card/card-textarea.js');
 var List = require('./list.js');
 var EmailRule = require('./email-rule.js');
 var Database = require('./database.js');

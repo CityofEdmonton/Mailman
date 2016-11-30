@@ -1,6 +1,6 @@
 var Card = require('./card.js');
 
-var titleHTML = require('../html/card-titled.html');
+var titleHTML = require('./card-titled.html');
 
 var TitledCard = function(appendTo, options) {
   Card.call(this, appendTo, options);

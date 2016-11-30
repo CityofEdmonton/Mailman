@@ -1,5 +1,5 @@
 var TitledCard = require('./card-titled.js');
-var textareaHTML = require('../html/card-textarea.html');
+var textareaHTML = require('./card-textarea.html');
 
 
 

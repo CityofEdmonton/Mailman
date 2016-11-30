@@ -1,5 +1,5 @@
 
-var baseHTML = require('../html/card-base.html');
+var baseHTML = require('./card-base.html');
 
 var Card = function(appendTo, options) {
   // Private variables
