@@ -48,6 +48,7 @@ var Cards = function(parent) {
     subject: 'Subject',
     body: 'Body',
     sendNow: 'Email',
+    triggerConfirmation: 'Schedule',
     triggerSetup: 'Trigger',
     shouldSend: 'Confirmation',
     lastSent: 'Last Sent'
@@ -316,6 +317,30 @@ var Cards = function(parent) {
   };
 
   /**
+   * Removes a node from the linked list by name.
+   *
+   * @param  {String} name The unique identifier of the Node.
+   * @return {Node} The removed node.
+   */
+  var removeNode = function(name) {
+    var current = cards.head;
+
+    while (current !== null) {
+
+      if (current.name === name) {
+        current.data.hide();
+        var pos = cards.getPosition(current);
+        cards.remove(pos);
+        return current;
+      }
+
+      current = current.next;
+    }
+
+    return null;
+  };
+
+  /**
    * Inserts a Node after the Node with the given name.
    * Note: This cannot be used to insert a Node at the start of a list.
    *
@@ -558,21 +583,7 @@ var Cards = function(parent) {
             'Just select the related option from the bottom right.'
       ]
     });
-    repo[cardNames.sendNow].addOption('send on trigger', function(e) {
-      emailRule.ruleType = EmailRule.RuleTypes.TRIGGER;
-
-      var trigger = insertNode('Body', cardRepository[cardNames.triggerSetup]);
-      trigger.name = cardNames.triggerSetup;
-
-      var shouldSend = insertNode('Trigger', cardRepository[cardNames.shouldSend]);
-      shouldSend.name = cardNames.shouldSend;
-
-      var confirm = insertNode('Confirmation', cardRepository[cardNames.lastSent]);
-      confirm.name = cardNames.lastSent;
-
-      self.jumpTo(cardNames.triggerSetup);
-      repo[cardNames.sendNow].removeOption('send on trigger');
-    });
+    repo[cardNames.sendNow].addOption('send on trigger', optionSendOnTrigger);
 
     repo[cardNames.triggerSetup] = new TitledCard(contentArea, {
       title: 'Repeated emails.',
@@ -623,7 +634,53 @@ var Cards = function(parent) {
         }
       });
 
+      repo[cardNames.triggerConfirmation] = new TitledCard(contentArea, {
+        title: 'Submit the trigger?',
+        paragraphs: [
+          'This will regularly check the previously mentioned column for the value TRUE. ' +
+              'When TRUE is found in the column, an email is sent out with that row\'s information. ',
+              'If you\'d like to send now, just select the related option from the bottom right.'
+        ]
+      });
+      repo[cardNames.triggerConfirmation].addOption('send now', optionSendNow);
+
       return repo;
+  };
+
+  var optionSendOnTrigger = function(e) {
+
+    emailRule.ruleType = EmailRule.RuleTypes.TRIGGER;
+
+    removeNode(cardNames.sendNow);
+
+    var trigger = insertNode(cardNames.body, cardRepository[cardNames.triggerSetup]);
+    trigger.name = cardNames.triggerSetup;
+
+    var shouldSend = insertNode(cardNames.triggerSetup, cardRepository[cardNames.shouldSend]);
+    shouldSend.name = cardNames.shouldSend;
+
+    var timestamp = insertNode(cardNames.shouldSend, cardRepository[cardNames.lastSent]);
+    timestamp.name = cardNames.lastSent;
+
+    var confirm = insertNode(cardNames.lastSent, cardRepository[cardNames.triggerConfirmation]);
+    confirm.name = cardNames.triggerConfirmation;
+
+    self.jumpTo(cardNames.triggerSetup);
+  };
+
+  var optionSendNow = function(e) {
+
+    emailRule.ruleType = EmailRule.RuleTypes.INSTANT;
+
+    removeNode(cardNames.triggerSetup);
+    removeNode(cardNames.shouldSend);
+    removeNode(cardNames.lastSent);
+    removeNode(cardNames.triggerConfirmation);
+
+    cards.add(cardRepository[cardNames.sendNow]);
+    cards.tail.name = cardNames.sendNow;
+
+    self.jumpTo(cardNames.sendNow);
   };
 
   this.init(contentArea);
