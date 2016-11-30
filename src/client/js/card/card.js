@@ -88,7 +88,12 @@ var Card = function(appendTo, options) {
    */
   this.addOption = function(title, callback, icon) {
     var menu = base.find('ul');
-    var item = menu.append('<li class="mdl-menu__item">' + title + '</li>');
+    menu.append('<li class="mdl-menu__item">' + title + '</li>');
+
+    var item = menu.children().filter(function() {
+      return $(this).text() === title;
+    });
+
     item.on('click', callback);
 
     var button = base.find('button');
@@ -107,6 +112,7 @@ var Card = function(appendTo, options) {
       return $(this).text() === title;
     });
 
+    item.off();
     item.remove();
 
     if (menu.children().length === 0) {
