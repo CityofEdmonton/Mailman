@@ -53,3 +53,33 @@ Util.reverseObject = function(map) {
 
   return reverseMap;
 };
+
+/**
+ * A generic UI element hider. Removes the object from the flow of the document.
+ *
+ * @param {jquery} object The object to apply the change to.
+ * @param {boolean} state True for display:none, false for default.
+ */
+Util.setHidden = function(object, state) {
+  if (state) {
+    object.addClass('hidden');
+  }
+  else {
+    object.removeClass('hidden');
+  }
+};
+
+/**
+ * A generic UI element hider. Doesn't remove the object from the flow of the document.
+ *
+ * @param {jquery} object The object to apply the change to.
+ * @param {boolean} state True for visible, false for invisible.
+ */
+Util.setVisibility = function(object, state) {
+  if (state) {
+    object.removeClass('invisible');
+  }
+  else {
+    object.addClass('invisible');
+  }
+};
