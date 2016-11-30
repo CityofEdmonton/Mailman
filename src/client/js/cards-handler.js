@@ -82,6 +82,10 @@ var Cards = function(parent) {
     database.load(RULE_KEY, function(value) {
       emailRule = value;
       setCardValues(value);
+
+      if (value.ruleType === EmailRule.RuleTypes.TRIGGER) {
+        nowToTrigger();
+      }
     });
 
     cardRepository = buildCardRepo();
@@ -505,7 +509,7 @@ var Cards = function(parent) {
 
       // Add another card before this one, but after Sheet
 
-      var headerNode = insertNode('Sheet', cardRepository[cardNames.row]);
+      var headerNode = insertNode(cardNames.sheet, cardRepository[cardNames.row]);
       headerNode.name = cardNames.row;
 
       self.jumpTo(cardNames.row);
@@ -525,7 +529,7 @@ var Cards = function(parent) {
       // Set the header row
       if (window.google !== undefined) {
         var row = card.getValue();
-        var sheet = getNode('Sheet').data.getValue();
+        var sheet = cardRepository[cardNames.sheet].getValue();
 
         // Verify the row data.
         var numTest = parseInt(row);
@@ -639,23 +643,8 @@ var Cards = function(parent) {
   };
 
   var optionSendOnTrigger = function(e) {
-
     emailRule.ruleType = EmailRule.RuleTypes.TRIGGER;
-
-    removeNode(cardNames.sendNow);
-
-    var trigger = insertNode(cardNames.body, cardRepository[cardNames.triggerSetup]);
-    trigger.name = cardNames.triggerSetup;
-
-    var shouldSend = insertNode(cardNames.triggerSetup, cardRepository[cardNames.shouldSend]);
-    shouldSend.name = cardNames.shouldSend;
-
-    var timestamp = insertNode(cardNames.shouldSend, cardRepository[cardNames.lastSent]);
-    timestamp.name = cardNames.lastSent;
-
-    var confirm = insertNode(cardNames.lastSent, cardRepository[cardNames.triggerConfirmation]);
-    confirm.name = cardNames.triggerConfirmation;
-
+    nowToTrigger();
     self.jumpTo(cardNames.triggerSetup);
   };
 
@@ -673,6 +662,22 @@ var Cards = function(parent) {
 
     self.jumpTo(cardNames.sendNow);
   };
+
+  var nowToTrigger = function() {
+    removeNode(cardNames.sendNow);
+
+    var trigger = insertNode(cardNames.body, cardRepository[cardNames.triggerSetup]);
+    trigger.name = cardNames.triggerSetup;
+
+    var shouldSend = insertNode(cardNames.triggerSetup, cardRepository[cardNames.shouldSend]);
+    shouldSend.name = cardNames.shouldSend;
+
+    var timestamp = insertNode(cardNames.shouldSend, cardRepository[cardNames.lastSent]);
+    timestamp.name = cardNames.lastSent;
+
+    var confirm = insertNode(cardNames.lastSent, cardRepository[cardNames.triggerConfirmation]);
+    confirm.name = cardNames.triggerConfirmation;
+  }
 
   this.init(contentArea);
 };
