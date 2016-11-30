@@ -570,12 +570,6 @@ var Cards = function(parent) {
       var confirm = insertNode('Confirmation', cardRepository[cardNames.lastSent]);
       confirm.name = cardNames.lastSent;
 
-      // Set the value of these cards if needed
-      if (emailRule.ruleType === EmailRule.RuleTypes.TRIGGER) {
-        cardRepository[cardNames.shouldSend].setValue(emailRule.sendColumn);
-        cardRepository[cardNames.lastSent].setValue(emailRule.timestampColumn);
-      }
-
       self.jumpTo(cardNames.triggerSetup);
       repo[cardNames.sendNow].removeOption('send on trigger');
     });
