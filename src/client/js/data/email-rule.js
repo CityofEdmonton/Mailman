@@ -10,7 +10,7 @@ var EmailRule = function() {
     TRIGGER: 'TRIGGER'
   };
 
-  this.ruleType = null;
+  this.ruleType = this.RuleTypes.INSTANT;
 
   // The type is needed in a static and object context. There may be better ways to do this.
   this.TYPE = 'EmailRule';

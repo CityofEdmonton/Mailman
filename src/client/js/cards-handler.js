@@ -79,7 +79,6 @@ var Cards = function(parent) {
     });
 
     // Try to load an existing email rule.
-    emailRule.ruleType = EmailRule.RuleTypes.INSTANT; // TODO
     database.load(RULE_KEY, function(value) {
       emailRule = value;
       setCardValues(value);
@@ -257,14 +256,6 @@ var Cards = function(parent) {
     }
     else {
       hideHelp();
-    }
-  };
-
-  // TODO delete this
-  var setEmailRules = function(value) {
-    if (value !== null) {
-      emailRule = value;
-      setCardValues();
     }
   };
 
