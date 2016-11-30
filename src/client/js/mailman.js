@@ -7,7 +7,7 @@
 
 var Util = require('./util.js');
 var Cards = require('./cards-handler.js');
-var NavBar = require('./navigation-bar.js');
+var NavBar = require('./nav/navigation-bar.js');
 var PubSub = require('pubsub-js');
 //var Intercom = require('./intercom.js');
 
@@ -78,7 +78,7 @@ var MailMan = function() {
       var activeNode = cards.getActiveNode();
       navBar.buildNavTree(cards.getActiveNode());
       setButtonState();
-    });    
+    });
   };
 
   /**

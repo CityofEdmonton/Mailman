@@ -1,5 +1,5 @@
 
-var html = require('../html/nav-bar.html');
+var html = require('./nav-bar.html');
 
 var NavigationBar = function(appendTo, maxNavItems, onClick) {
   // Private variables
