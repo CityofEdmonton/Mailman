@@ -9,6 +9,7 @@ var Util = require('./util.js');
 var Cards = require('./cards-handler.js');
 var NavBar = require('./nav/navigation-bar.js');
 var PubSub = require('pubsub-js');
+var EmailRule = require('./data/email-rule.js');
 //var Intercom = require('./intercom.js');
 
 var MailMan = function() {
@@ -114,38 +115,7 @@ var MailMan = function() {
    * @param {event} event The event that triggered the function call.
    */
   this.done = function(event) {
-    // SUBMIT THE INFO BACK TO SHEETS
-    console.log('To');
-    var to = cards.getCard('To').getValue();
-    console.log('Subject');
-    var subject = cards.getCard('Subject').getValue();
-    console.log('Body');
-    var body = cards.getCard('Body').getValue();
-    console.log('Sheet');
-    var sheet = cards.getCard('Sheet').getValue();
-
-    emailRule.to = to;
-    emailRule.subject = subject;
-    emailRule.body = body;
-    emailRule.sheet = sheet;
-
-    if (emailRule.ruleType === EmailRule.RuleTypes.TRIGGER) {
-      console.log('Confirmation');
-      var setup = cards.getCard('Confirmation').getValue();
-      console.log('Last Sent');
-      var lastSent = cards.getCard('Last Sent').getValue();
-
-      emailRule.sendColumn = setup;
-      emailRule.timestampColumn = lastSent;
-    }
-
-    database.save(RULE_KEY, emailRule, function() {
-      console.log('Send emails... (trigger)');
-      google.script.run
-          .sendManyEmails();
-
-      google.script.host.close();
-    });
+    cards.submit();
   };
 
   /**

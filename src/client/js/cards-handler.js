@@ -154,6 +154,35 @@ var Cards = function(parent) {
     return activeCard;
   };
 
+  this.submit = function() {
+    var to = self.getCard(cardNames.to).getValue();
+    var subject = self.getCard(cardNames.subject).getValue();
+    var body = self.getCard(cardNames.body).getValue();
+    var sheet = self.getCard(cardNames.sheet).getValue();
+
+    var newRule = new EmailRule();
+    newRule.to = to;
+    newRule.subject = subject;
+    newRule.body = body;
+    newRule.sheet = sheet;
+
+    if (self.getRuleType() === EmailRule.RuleTypes.TRIGGER) {
+      var setup = self.getCard(cardNames.shouldSend).getValue();
+      var lastSent = self.getCard(cardNames.lastSent).getValue();
+
+      newRule.sendColumn = setup;
+      newRule.timestampColumn = lastSent;
+      newRule.ruleType = EmailRule.RuleTypes.TRIGGER;
+    }
+
+    database.save(RULE_KEY, newRule, function() {
+      google.script.run
+          .sendManyEmails();
+
+      google.script.host.close();
+    });
+  }
+
   /**
    * Returns the Node of the active Card.
    *
@@ -226,6 +255,15 @@ var Cards = function(parent) {
       showHelp();
     }
   };
+
+  /**
+   * Gets the active rules email type.
+   *
+   * @return {String} The current ruleType.
+   */
+  this.getRuleType = function() {
+    return emailRule.ruleType;
+  }
 
   //***** PRIVATE *****//
 

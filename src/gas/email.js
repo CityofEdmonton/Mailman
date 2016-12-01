@@ -28,7 +28,7 @@ function sendBasicEmail(headerRow, row, rule) {
   var body = replaceTags(rule.body, combinedObj);
 
   log('Sending email to ' + to);
-  MailApp.sendEmail(to, subject, body);
+  GmailApp.sendEmail(to, subject, body);
 
   return true;
 }
@@ -59,7 +59,7 @@ function sendConditionalEmail(headerRow, row, rule) {
   if (sendColumn.toLowerCase() === 'true') {
     log('Sending email to ' + to);
 
-    MailApp.sendEmail(to, subject, body);
+    GmailApp.sendEmail(to, subject, body);
 
     return true;
   }
@@ -76,7 +76,6 @@ function sendManyEmails() {
   var sheet = ss.getSheetByName(rule.sheet);
   var range = sheet.getDataRange();
   var header = getHeaderStrings(sheet);
-  var dateColumn = rule.timestampColumn.replace(/(<<|>>)/g, '');
 
   log('Starting...');
   log(rule);
@@ -87,6 +86,7 @@ function sendManyEmails() {
     if (rule.ruleType === RuleTypes.TRIGGER) {
       // We only timestamp when the email successfully sends.
       if (sendConditionalEmail(header, row, rule)) {
+        var dateColumn = rule.timestampColumn.replace(/(<<|>>)/g, '');
         var currentdate = new Date();
         var datetime = (currentdate.getMonth()+1) + '/'
                 + currentdate.getDate() + '/'
