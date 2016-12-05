@@ -14,19 +14,23 @@ var Database = function() {
    * @param {Function} callback The function to call after parsing is successful.
    */
   var handleJSONParsing = function(jsonString, callback) {
+    if (jsonString === undefined) {
+      return;
+    }
+
     var obj;
 
     try {
       obj = JSON.parse(jsonString);
     }
     catch (e) {
-      console.log('Failed when parsing JSON.');
+      console.log('Failed when parsing JSON: ' + jsonString);
       throw e;
     }
 
     var actualObj = factory.build(obj);
 
-    callback(obj);
+    callback(actualObj);
   };
 
   // ***** privileged methods ***** //
