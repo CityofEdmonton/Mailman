@@ -42,16 +42,14 @@ var Database = function() {
   this.save = function(key, obj, success) {
     var jsonString = JSON.stringify(obj);
 
-    if (window.google !== undefined) {
-      if (success === undefined) {
-        google.script.run
-            .save(key, jsonString);
-      }
-      else {
-        google.script.run
-            .withSuccessHandler(success)
-            .save(key, jsonString);
-      }
+    if (success === undefined) {
+      google.script.run
+          .save(key, jsonString);
+    }
+    else {
+      google.script.run
+          .withSuccessHandler(success)
+          .save(key, jsonString);
     }
   };
 
@@ -62,12 +60,10 @@ var Database = function() {
    * @param {Function} callback The function to call on success
    */
   this.load = function(key, callback) {
-    if (window.google !== undefined) {
-      google.script.run
-          .withUserObject(callback)
-          .withSuccessHandler(handleJSONParsing)
-          .load(key);
-    }
+    google.script.run
+        .withUserObject(callback)
+        .withSuccessHandler(handleJSONParsing)
+        .load(key);
   };
 };
 
