@@ -529,14 +529,12 @@ var Cards = function(parent) {
       }
     });
     repo[cardNames.sheet].attachEvent('card.hide', function(event) {
-      if (window.google !== undefined) {
-        var sheet = cardRepository[cardNames.sheet].getValue();
+      var sheet = cardRepository[cardNames.sheet].getValue();
+
+      if (sheet !== '') {
         google.script.run
             .withSuccessHandler(setColumns)
             .getHeaderNames(sheet);
-      }
-      else {
-        console.log('Setting columns based on sheet.');
       }
     });
 
