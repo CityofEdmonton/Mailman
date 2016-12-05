@@ -180,8 +180,14 @@ var Cards = function(parent) {
     }
 
     database.save(RULE_KEY, newRule, function() {
-      google.script.run
-          .createTriggerBasedEmail();
+      if (self.getRuleType() === EmailRule.RuleTypes.TRIGGER) {
+        google.script.run
+            .createTriggerBasedEmail();
+      }
+      else {
+        google.script.run
+            .sendManyEmails();
+      }
 
       setTimeout(function() {
         google.script.host.close();
