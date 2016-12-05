@@ -5,9 +5,6 @@
  * @param {object} e The event object https://developers.google.com/apps-script/guides/triggers/events
  */
 function onInstall(e) {
-  //Install triggers
-  PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, SpreadsheetApp.getActiveSpreadsheet().getId());
-
   onOpen(e);
 }
 
@@ -20,8 +17,9 @@ function onInstall(e) {
 function onOpen(e) {
   var menu = SpreadsheetApp.getUi().createAddonMenu();
 
-  menu.addItem('Set Up Email List', 'openSidebar')
-      .addToUi();
+  menu.addItem('Setup', 'openSidebar')
+    .addItem('Feedback', 'openFeedbackDialog')
+    .addToUi();
 
   PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, SpreadsheetApp.getActiveSpreadsheet().getId());
 }
@@ -39,6 +37,18 @@ function openSidebar() {
   SpreadsheetApp.getUi().showSidebar(ui);
 }
 
+
+/**
+ * Opens the feedback to dialog which directs users to the form.
+ *
+ */
+function openFeedbackDialog() {
+  var ui = HtmlService.createHtmlOutputFromFile('feedback-dialog')
+      .setTitle('Feedback')
+      .setSandboxMode(HtmlService.SandboxMode.IFRAME);
+
+  SpreadsheetApp.getUi().showModalDialog(ui, 'Feedback');
+}
 
 /**
  * Creates an HTML modal for creating/viewing Mailman email templates.
