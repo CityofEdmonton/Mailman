@@ -118,6 +118,18 @@ function columnToLetter(column) {
   return letter;
 }
 
+/**
+ * Deletes all triggers associated with the given Sheet.
+ * 
+ * @param  {Sheet} sheet The Sheet to remove triggers from.
+ */
+function deleteAllTriggers(sheet) {
+  var triggers = ScriptApp.getUserTriggers(sheet);
+
+  for (var i = 0; i < triggers.length; i++) {
+    ScriptApp.deleteTrigger(triggers[i]);
+  }
+}
 
 /**
  * Logs the Documents properties. Used for testing purposes.

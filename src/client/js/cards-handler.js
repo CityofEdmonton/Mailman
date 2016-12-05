@@ -154,6 +154,10 @@ var Cards = function(parent) {
     return activeCard;
   };
 
+  /**
+   * Submits the data back to server side.
+   *
+   */
   this.submit = function() {
     var to = self.getCard(cardNames.to).getValue();
     var subject = self.getCard(cardNames.subject).getValue();
@@ -177,11 +181,13 @@ var Cards = function(parent) {
 
     database.save(RULE_KEY, newRule, function() {
       google.script.run
-          .sendManyEmails();
+          .createTriggerBasedEmail();
 
-      google.script.host.close();
+      setTimeout(function() {
+        google.script.host.close();
+      }, 1000);
     });
-  }
+  };
 
   /**
    * Returns the Node of the active Card.
@@ -470,24 +476,21 @@ var Cards = function(parent) {
       maxResults: maxResults
     });
 
-    if (emailRule.ruleType === EmailRule.RuleTypes.TRIGGER) {
-      console.log('Setting trigger autocomplete');
-      cardRepository[cardNames.shouldSend].setAutocomplete({
-        results: columns,
-        prepend: '<<',
-        append: '>>',
-        maxResults: maxResults,
-        triggerOnFocus: true
-      });
+    cardRepository[cardNames.shouldSend].setAutocomplete({
+      results: columns,
+      prepend: '<<',
+      append: '>>',
+      maxResults: maxResults,
+      triggerOnFocus: true
+    });
 
-      cardRepository[cardNames.shouldSend].setAutocomplete({
-        results: columns,
-        prepend: '<<',
-        append: '>>',
-        maxResults: maxResults,
-        triggerOnFocus: true
-      });
-    }
+    cardRepository[cardNames.lastSent].setAutocomplete({
+      results: columns,
+      prepend: '<<',
+      append: '>>',
+      maxResults: maxResults,
+      triggerOnFocus: true
+    });
   };
 
   /**
