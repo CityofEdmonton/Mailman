@@ -1,9 +1,11 @@
+'use strict';
 
 var InputCard = require('./card/card-input.js');
 var TitledCard = require('./card/card-titled.js');
 var TextareaCard = require('./card/card-textarea.js');
 var List = require('./list/list.js');
 var EmailRule = require('./data/email-rule.js');
+var RuleTypes = require('./data/rule-types.js');
 var Database = require('./data/database.js');
 var Util = require('./util.js');
 var PubSub = require('pubsub-js');
@@ -36,9 +38,6 @@ var Cards = function(parent) {
   // The list containing all the Cards.
   var cards = new List();
 
-  // This stores all the existing email rules.
-  var emailRule = new EmailRule();
-
   // This allows for changing Card names without major code changes.
   var cardNames = {
     welcome: 'Welcome',
@@ -63,6 +62,9 @@ var Cards = function(parent) {
   // The currently shown Card.
   var activeCard;
 
+  // This stores all the existing email rules.
+  var emailRule;
+
   //***** PUBLIC *****//
 
   /**
@@ -79,12 +81,18 @@ var Cards = function(parent) {
     });
 
     // Try to load an existing email rule.
-    database.load(RULE_KEY, function(value) {
-      emailRule = value;
-      setCardValues(value);
+    database.load(RULE_KEY, function(config) {
+      try {
+        emailRule = new EmailRule(config);
+        setCardValues(emailRule);
 
-      if (value.ruleType === EmailRule.RuleTypes.TRIGGER) {
-        nowToTrigger();
+        if (emailRule.ruleType === RuleTypes.TRIGGER) {
+          nowToTrigger();
+        }
+      }
+      catch (e) {
+        // We don't need to fail if the rule isn't properly formatted. Just log and continue on.
+        console.log(e);
       }
     });
 
@@ -164,23 +172,25 @@ var Cards = function(parent) {
     var body = self.getCard(cardNames.body).getValue();
     var sheet = self.getCard(cardNames.sheet).getValue();
 
-    var newRule = new EmailRule();
-    newRule.to = to;
-    newRule.subject = subject;
-    newRule.body = body;
-    newRule.sheet = sheet;
+    var newRule = new EmailRule({
+      ruleType: RuleTypes.INSTANT,
+      to: to,
+      subject: subject,
+      body: body,
+      sheet: sheet
+    });
 
-    if (self.getRuleType() === EmailRule.RuleTypes.TRIGGER) {
+    if (self.getRuleType() === RuleTypes.TRIGGER) {
       var setup = self.getCard(cardNames.shouldSend).getValue();
       var lastSent = self.getCard(cardNames.lastSent).getValue();
 
       newRule.sendColumn = setup;
       newRule.timestampColumn = lastSent;
-      newRule.ruleType = EmailRule.RuleTypes.TRIGGER;
+      newRule.ruleType = RuleTypes.TRIGGER;
     }
 
     database.save(RULE_KEY, newRule, function() {
-      if (self.getRuleType() === EmailRule.RuleTypes.TRIGGER) {
+      if (self.getRuleType() === RuleTypes.TRIGGER) {
         google.script.run
             .createTriggerBasedEmail();
       }
@@ -688,14 +698,14 @@ var Cards = function(parent) {
   };
 
   var optionSendOnTrigger = function(e) {
-    emailRule.ruleType = EmailRule.RuleTypes.TRIGGER;
+    emailRule.ruleType = RuleTypes.TRIGGER;
     nowToTrigger();
     self.jumpTo(cardNames.triggerSetup);
   };
 
   var optionSendNow = function(e) {
 
-    emailRule.ruleType = EmailRule.RuleTypes.INSTANT;
+    emailRule.ruleType = RuleTypes.INSTANT;
 
     removeNode(cardNames.triggerSetup);
     removeNode(cardNames.shouldSend);

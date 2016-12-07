@@ -1,4 +1,3 @@
-var factory = require('./serializable-factory.js');
 
 var Database = function() {
   // private variables
@@ -28,9 +27,7 @@ var Database = function() {
       throw e;
     }
 
-    var actualObj = factory.build(obj);
-
-    callback(actualObj);
+    callback(obj);
   };
 
   // ***** privileged methods ***** //
