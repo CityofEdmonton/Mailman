@@ -70,6 +70,15 @@ var Card = function(appendTo, options) {
   };
 
   /**
+   * Determines whether the Card is visible or not.
+   *
+   * @return {Boolean} True for shown, false for hidden.
+   */
+  this.isShown = function() {
+    return base.hasClass('hidden') === false;
+  };
+
+  /**
    * Attaches an event handler to this card.
    *
    * @param {string} name The event to watch for.
