@@ -9,7 +9,10 @@ var Util = require('./util.js');
 var Cards = require('./cards-handler.js');
 var NavBar = require('./nav/navigation-bar.js');
 var PubSub = require('pubsub-js');
+var Rules = require('./data/rule-container.js');
 var EmailRule = require('./data/email-rule.js');
+var Database = require('./data/database.js');
+var Keys = require('./data/prop-keys.js');
 //var Intercom = require('./intercom.js');
 
 var MailMan = function() {
@@ -32,12 +35,16 @@ var MailMan = function() {
   // This handles all the nav-bar navigation.
   var navBar;
 
+  var database = new Database();
+
 	/**
 	 * Holds a mapping from dialog ID to the ID of the timeout that is used to
 	 * check if it was lost. This is needed so we can cancel the timeout when
 	 * the dialog is closed.
 	 */
 	var timeoutIds = {};
+
+  var rules;
 
   //***** PUBLIC *****//
 
@@ -53,22 +60,34 @@ var MailMan = function() {
     intercom = Intercom.getInstance();
     contentArea = $('#content-area');
 
-    cards = new Cards(contentArea);
-    setButtonState();
+    database.load(Keys.RULE_KEY, function(config) {
+      console.log(config);
+      try {
+        rules = new Rules(config);
+      }
+      catch (e) {
+        // We don't need to fail if the rule isn't properly formatted. Just log and continue on.
+        console.log(e);
+      }
 
-    navBar = new NavBar($('#nav-row'), 3, function(e) {
-      var node = e.data;
+      cards = new Cards(contentArea, rules.get(0));
+      setButtonState();
 
-      cards.jumpTo(node.name);
+      navBar = new NavBar($('#nav-row'), 3, function(e) {
+        var node = e.data;
+
+        cards.jumpTo(node.name);
+      });
+
+      navBar.buildNavTree(cards.getActiveNode());
+
+      // All UI Bindings
+      $('#step').on('click', self.next);
+      $('#done').on('click', self.done);
+      $('#back').on('click', self.back);
+      $('#help').on('click', self.onHelpClick);
+
     });
-
-    navBar.buildNavTree(cards.getActiveNode());
-
-    // All UI Bindings
-    $('#step').on('click', self.next);
-    $('#done').on('click', self.done);
-    $('#back').on('click', self.back);
-    $('#help').on('click', self.onHelpClick);
 
     // PubSub bindings
 
@@ -110,12 +129,28 @@ var MailMan = function() {
 
   /**
    * Submits data back to google.
-   * NOTE: GAS only
    *
    * @param {event} event The event that triggered the function call.
    */
   this.done = function(event) {
-    cards.submit();
+
+    var rule = cards.getRule();
+    rules.add(rule.toConfig());
+
+    database.save(Keys.RULE_KEY, rules.toConfig(), function() {
+      // if (self.getRuleType() === RuleTypes.TRIGGER) {
+      //   google.script.run
+      //       .createTriggerBasedEmail();
+      // }
+      // else {
+      //   google.script.run
+      //       .sendManyEmails();
+      // }
+
+      setTimeout(function() {
+        google.script.host.close();
+      }, 1000);
+    });
   };
 
   /**

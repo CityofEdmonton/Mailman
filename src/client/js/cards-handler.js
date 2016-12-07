@@ -9,12 +9,9 @@ var RuleTypes = require('./data/rule-types.js');
 var Database = require('./data/database.js');
 var Util = require('./util.js');
 var PubSub = require('pubsub-js');
+var Keys = require('./data/prop-keys.js');
 
-var Cards = function(parent) {
-
-  // ***** CONSTANTS ***** //
-  // This is mirrored server-side changes here must be reflected in global-variables.js
-  var RULE_KEY = 'MAILMAN_PROP_RULES';
+var Cards = function(parent, rule) {
 
   //***** LOCAL VARIABLES *****//
 
@@ -62,9 +59,6 @@ var Cards = function(parent) {
   // The currently shown Card.
   var activeCard;
 
-  // This stores all the existing email rules.
-  var emailRule;
-
   //***** PUBLIC *****//
 
   /**
@@ -73,7 +67,7 @@ var Cards = function(parent) {
    * @constructor
    * @param {jQuery} contentArea The area where Cards are meant to be added.
    */
-  this.init = function(contentArea) {
+  this.init = function(contentArea, rule) {
 
     // Set the help any time a new Card is inserted.
     PubSub.subscribe('Cards.insertNode', function(msg, data) {
@@ -81,7 +75,7 @@ var Cards = function(parent) {
     });
 
     // Try to load an existing email rule.
-    database.load(RULE_KEY, function(config) {
+    /*database.load(RULE_KEY, function(config) {
       try {
         emailRule = new EmailRule(config);
         setCardValues(emailRule);
@@ -94,7 +88,7 @@ var Cards = function(parent) {
         // We don't need to fail if the rule isn't properly formatted. Just log and continue on.
         console.log(e);
       }
-    });
+    });*/
 
     cardRepository = buildCardRepo();
 
@@ -119,6 +113,12 @@ var Cards = function(parent) {
     hideHelp();
     activeCard = cards.head;
     self.jumpTo(activeCard.name);
+
+    setCardValues(rule);
+
+    if (rule.ruleType === RuleTypes.TRIGGER) {
+      nowToTrigger();
+    }
 
     // Load information from GAS
     if (window.google !== undefined) {
@@ -189,14 +189,14 @@ var Cards = function(parent) {
       newRule.ruleType = RuleTypes.TRIGGER;
     }
 
-    database.save(RULE_KEY, newRule, function() {
-      if (self.getRuleType() === RuleTypes.TRIGGER) {
-        google.script.run
-            .createTriggerBasedEmail();
+    database.save(Keys.RULE_KEY, newRule, function() {
+      if (rule.ruleType === RuleTypes.TRIGGER) {
+        /*google.script.run
+            .createTriggerBasedEmail();*/
       }
       else {
-        google.script.run
-            .sendManyEmails();
+        /*google.script.run
+            .sendManyEmails();*/
       }
 
       setTimeout(function() {
@@ -284,8 +284,53 @@ var Cards = function(parent) {
    * @return {String} The current ruleType.
    */
   this.getRuleType = function() {
-    return emailRule.ruleType;
+    var trigger = self.getCard(cardNames.triggerSetup);
+
+    var current = cards.head;
+    while (current !== null) {
+      if (current.data === trigger) {
+        return RuleTypes.TRIGGER;
+      }
+
+      current = current.next;
+    }
+
+    return RuleTypes.INSTANT;
   }
+
+  /**
+   * Gets an EmailRule associated with this series of Cards.
+   *
+   * @return {EmailRule} Created from the various Cards this handler is supervising.
+   */
+  this.getRule = function() {
+
+    if (self.getRuleType() === RuleTypes.TRIGGER) {
+
+      return new EmailRule({
+        ruleType: RuleTypes.TRIGGER,
+        to: self.getCard(cardNames.to).getValue(),
+        subject: self.getCard(cardNames.subject).getValue(),
+        body: self.getCard(cardNames.body).getValue(),
+        sheet: self.getCard(cardNames.sheet).getValue(),
+        sendColumn: self.getCard(cardNames.shouldSend).getValue(),
+        timestampColumn: self.getCard(cardNames.lastSent).getValue()
+      });
+    }
+    else if (self.getRuleType() === RuleTypes.INSTANT) {
+
+      return new EmailRule({
+        ruleType: RuleTypes.INSTANT,
+        to: self.getCard(cardNames.to).getValue(),
+        subject: self.getCard(cardNames.subject).getValue(),
+        body: self.getCard(cardNames.body).getValue(),
+        sheet: self.getCard(cardNames.sheet).getValue()
+      });
+    }
+    else {
+      throw new Error('Unknown ruletype: ' + self.getRuleType());
+    }
+  };
 
   //***** PRIVATE *****//
 
@@ -698,15 +743,11 @@ var Cards = function(parent) {
   };
 
   var optionSendOnTrigger = function(e) {
-    emailRule.ruleType = RuleTypes.TRIGGER;
     nowToTrigger();
     self.jumpTo(cardNames.triggerSetup);
   };
 
   var optionSendNow = function(e) {
-
-    emailRule.ruleType = RuleTypes.INSTANT;
-
     removeNode(cardNames.triggerSetup);
     removeNode(cardNames.shouldSend);
     removeNode(cardNames.lastSent);
@@ -734,7 +775,7 @@ var Cards = function(parent) {
     confirm.name = cardNames.triggerConfirmation;
   }
 
-  this.init(contentArea);
+  this.init(contentArea, rule);
 };
 
 /***** GAS Response Functions *****/
