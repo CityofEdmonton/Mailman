@@ -56,7 +56,7 @@ f.removeItem(k)};var q=null;d.getInstance=function(){q||(q=new d);return q};var 
 </head>
 
 <body>
-    <div class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
+    <div id="layout-container" class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
         <header class="demo-header mdl-layout__header mdl-layout__header--scroll mdl-color--grey-100 mdl-color-text--grey-800">
             <div id="nav-row" class="mdl-layout__header-row">
                 <div class="mdl-layout-spacer"></div>
@@ -67,7 +67,7 @@ f.removeItem(k)};var q=null;d.getInstance=function(){q||(q=new d);return q};var 
         <div class="demo-ribbon"></div>
 
 
-        <main class="demo-main mdl-layout__content">
+        <main class="demo-main mdl-layout__content hidden">
             <div id="content-area" class="demo-container mdl-grid">
                 <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
             </div>
@@ -84,6 +84,7 @@ f.removeItem(k)};var q=null;d.getInstance=function(){q||(q=new d);return q};var 
             </footer>
 
         </main>
+
     </div>
 </body>
 

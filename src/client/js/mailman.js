@@ -13,6 +13,7 @@ var Rules = require('./data/rule-container.js');
 var EmailRule = require('./data/email-rule.js');
 var Database = require('./data/database.js');
 var Keys = require('./data/prop-keys.js');
+var RulesListView = require('./rules/rules-list-view.js');
 //var Intercom = require('./intercom.js');
 
 var MailMan = function() {
@@ -46,6 +47,8 @@ var MailMan = function() {
 
   var rules;
 
+  var rulesListView;
+
   //***** PUBLIC *****//
 
   /**
@@ -59,6 +62,7 @@ var MailMan = function() {
     // UI Configuration
     intercom = Intercom.getInstance();
     contentArea = $('#content-area');
+    rulesListView = new RulesListView($('#layout-container'));
 
     database.load(Keys.RULE_KEY, function(config) {
       console.log(config);
@@ -70,7 +74,11 @@ var MailMan = function() {
         console.log(e);
       }
 
-      cards = new Cards(contentArea, rules.get(0));
+      console.log('Adding rules to lv');
+      rulesListView.addRule(rules.get(0));
+      rulesListView.addRule(rules.get(1));
+
+      /*cards = new Cards(contentArea, rules.get(0));
       setButtonState();
 
       navBar = new NavBar($('#nav-row'), 3, function(e) {
@@ -85,7 +93,7 @@ var MailMan = function() {
       $('#step').on('click', self.next);
       $('#done').on('click', self.done);
       $('#back').on('click', self.back);
-      $('#help').on('click', self.onHelpClick);
+      $('#help').on('click', self.onHelpClick);*/
 
     });
 
