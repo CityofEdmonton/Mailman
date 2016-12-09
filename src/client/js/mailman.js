@@ -79,6 +79,14 @@ var MailMan = function() {
         rulesListView.addRule(rules.get(i));
       }
 
+      rulesListView.setDeleteHandler(function(rule) {
+        console.log('SHE GONE');
+      });
+
+      rulesListView.setEditHandler(function(rule) {
+        console.log('EDIT OCCURRED');
+      });
+
       /*cards = new Cards(contentArea, rules.get(0));
       setButtonState();
 

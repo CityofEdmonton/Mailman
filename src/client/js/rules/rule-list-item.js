@@ -9,12 +9,16 @@ var RuleListItem = function(appendTo, rule) {
   // private variables
   var self = this;
   var base = $(baseHTML);
+
   var to = base.find('[data-id="to"]');
   var toTooltip = base.find('[data-id="to-tooltip"]');
   var subject = base.find('[data-id="subject"]');
   var subjectTooltip = base.find('[data-id="subject-tooltip"]');
   var triggerIcon = base.find('[data-id="trigger-icon"]');
   var instantIcon = base.find('[data-id="instant-icon"]');
+  var deleteIcon = base.find('[data-id="delete"]');
+
+  var rule;
 
   // public variables
 
@@ -22,6 +26,8 @@ var RuleListItem = function(appendTo, rule) {
   //***** private methods *****//
 
   this.init_ = function(appendTo, rule) {
+    rule = rule;
+
     to.text(rule.to);
     subject.text(rule.subject);
 
@@ -54,6 +60,15 @@ var RuleListItem = function(appendTo, rule) {
   };
 
   //***** privileged methods *****//
+
+  this.setDeleteHandler = function(callback) {
+    deleteIcon.on('click', rule, callback);
+  }
+
+  this.setEditHandler = function(callback) {
+    triggerIcon.on('click', rule, callback);
+    instantIcon.on('click', rule, callback);
+  }
 
   this.init_(appendTo, rule);
 };
