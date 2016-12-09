@@ -1,0 +1,38 @@
+@import "_colors";
+
+.rli-list-item {
+  background: #ffffff;
+  margin: 10px 0px;
+}
+
+.rli-list-avatar {
+  margin-right: 16px;
+  float: left;
+  height: 40px;
+  width: 40px;
+  font-size: 40px;
+  color: $grey-flannel;
+  cursor: pointer;
+}
+
+.rli-hide-overflow-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: block;
+  outline: none;
+}
+
+.rli-list-alt-icon {
+  color: $white;
+  height: 20px;
+  width: 20px;
+  font-size: 20px;
+  left: 18px;
+  bottom: 2px;
+  position: absolute;
+}
+
+.rli-stacked-icon {
+  position:absolute;
+}

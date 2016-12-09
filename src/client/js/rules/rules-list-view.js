@@ -21,7 +21,6 @@ var RulesListView = function(appendTo) {
   //***** privileged methods *****//
 
   this.addRule = function(rule) {
-    console.log('test');
     var item = new RuleListItem(list, rule);
   };
 
