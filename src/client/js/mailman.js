@@ -75,8 +75,9 @@ var MailMan = function() {
       }
 
       console.log('Adding rules to lv');
-      rulesListView.addRule(rules.get(0));
-      rulesListView.addRule(rules.get(1));
+      for (var i = 0; i < rules.length(); i++) {
+        rulesListView.addRule(rules.get(i));
+      }
 
       /*cards = new Cards(contentArea, rules.get(0));
       setButtonState();

@@ -54,6 +54,10 @@ var RuleContainer = function(config) {
     return rules[index];
   };
 
+  this.length = function() {
+    return rules.length;
+  }
+
   /**
    * Converts this RuleContainer to a serializeable form.
    *
