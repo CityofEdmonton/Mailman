@@ -1,3 +1,4 @@
+
 .rlv-list {
   width: 100%;
 }
@@ -7,4 +8,29 @@
 	-webkit-flex-shrink: 0;
 	-ms-flex-negative: 0;
 	flex-shrink: 0;
+}
+
+.rlv-new-item {
+  border: gray;
+  border-style: dashed;
+  cursor: pointer;
+}
+
+.rlv-primary-button {
+  margin: 12px;
+
+}
+
+.rlv-second-button {
+  display: none;
+}
+
+.rlv-button-bar {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+
+  &:hover>.rlv-second-button {
+    display: block;
+  }
 }

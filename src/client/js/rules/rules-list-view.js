@@ -3,6 +3,7 @@ var baseHTML = require('./rules-list-view.html');
 
 var EmailRule = require('../data/email-rule.js');
 var RuleListItem = require('./rule-list-item.js');
+var Util = require('../util.js');
 
 var RulesListView = function(appendTo) {
   // private variables
@@ -57,6 +58,14 @@ var RulesListView = function(appendTo) {
     item.setEditHandler(itemEdit);
 
     ruleItems.push(item);
+  };
+
+  this.hide = function() {
+    Util.setHidden(base, true);
+  };
+
+  this.show = function() {
+    Util.setHidden(base, false);
   };
 
   this.setDeleteHandler = function(callback) {
