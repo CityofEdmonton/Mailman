@@ -10,6 +10,7 @@ var Database = require('./data/database.js');
 var Util = require('./util.js');
 var PubSub = require('pubsub-js');
 var Keys = require('./data/prop-keys.js');
+var CardsConfig = require('./cards/cards-config.js');
 
 var Cards = function(parent, rule) {
 
@@ -51,7 +52,7 @@ var Cards = function(parent, rule) {
   };
 
   // This stores the configured Cards. These are only meant for easily adding/removing Cards without losing the data.
-  var cardRepository = {};
+  var cardRepository = CardsConfig.buildCardRepo();
 
   // Whether to show the Card help or not
   var showingHelp;
@@ -74,24 +75,6 @@ var Cards = function(parent, rule) {
       setHelp();
     });
 
-    // Try to load an existing email rule.
-    /*database.load(RULE_KEY, function(config) {
-      try {
-        emailRule = new EmailRule(config);
-        setCardValues(emailRule);
-
-        if (emailRule.ruleType === RuleTypes.TRIGGER) {
-          nowToTrigger();
-        }
-      }
-      catch (e) {
-        // We don't need to fail if the rule isn't properly formatted. Just log and continue on.
-        console.log(e);
-      }
-    });*/
-
-    cardRepository = buildCardRepo();
-
     cards.add(cardRepository[cardNames.welcome]);
     cards.tail.name = cardNames.welcome;
 
@@ -110,15 +93,11 @@ var Cards = function(parent, rule) {
     cards.add(cardRepository[cardNames.sendNow]);
     cards.tail.name = cardNames.sendNow;
 
+    setupCards();
+
     hideHelp();
     activeCard = cards.head;
     self.jumpTo(activeCard.name);
-
-    setCardValues(rule);
-
-    if (rule.ruleType === RuleTypes.TRIGGER) {
-      nowToTrigger();
-    }
 
     // Load information from GAS
     if (window.google !== undefined) {
@@ -279,6 +258,33 @@ var Cards = function(parent, rule) {
   };
 
   /**
+   * Sets all Card values based upon the values in emailRule.
+   * TODO Replace this with something more flexible.
+   *
+   * @private
+   */
+  this.setRule = function(rule) {
+    if (rule.sheet) {
+      cardRepository[cardNames.sheet].setValue(rule.sheet);
+    }
+    if (rule.to) {
+      cardRepository[cardNames.to].setValue(rule.to);
+    }
+    if (rule.subject) {
+      cardRepository[cardNames.subject].setValue(rule.subject);
+    }
+    if (rule.body) {
+      cardRepository[cardNames.body].setValue(rule.body);
+    }
+    if (rule.sendColumn) {
+      cardRepository[cardNames.shouldSend].setValue(rule.sendColumn);
+    }
+    if (rule.timestampColumn) {
+      cardRepository[cardNames.lastSent].setValue(rule.timestampColumn);
+    }
+  };
+
+  /**
    * Gets the active rules email type.
    *
    * @return {String} The current ruleType.
@@ -334,6 +340,49 @@ var Cards = function(parent, rule) {
 
   //***** PRIVATE *****//
 
+  var setupCards = function() {
+    cardRepository[cardNames.sheet].attachEvent('card.hide', function(event) {
+      var sheet = cardRepository[cardNames.sheet].getValue();
+
+      if (sheet !== '') {
+        google.script.run
+            .withSuccessHandler(setColumns)
+            .getHeaderNames(sheet);
+      }
+    });
+
+    cardRepository[cardNames.to].addOption('change header row', function(e) {
+
+      // Add another card before this one, but after Sheet
+
+      var headerNode = insertNode(cardNames.sheet, cardRepository[cardNames.row]);
+      headerNode.name = cardNames.row;
+
+      self.jumpTo(cardNames.row);
+
+      // Remove the option
+      cardRepository[cardNames.to].removeOption('change header row');
+    });
+
+    cardRepository[cardNames.row].attachEvent('card.hide', function(event, card) {
+
+      // Set the header row
+      if (window.google !== undefined) {
+        var row = card.getValue();
+        var sheet = cardRepository[cardNames.sheet].getValue();
+
+        // Verify the row data.
+        var numTest = parseInt(row);
+        if (!isNaN(numTest) && numTest > 0) {
+          google.script.run
+              .withSuccessHandler(setColumns)
+              .setHeaderRow(row, sheet);
+        }
+      }
+
+    });
+  };
+
   /**
    * This function hides the help <p> tags.
    *
@@ -365,33 +414,6 @@ var Cards = function(parent, rule) {
     }
     else {
       hideHelp();
-    }
-  };
-
-  /**
-   * Sets all Card values based upon the values in emailRule.
-   * TODO Replace this with something more flexible.
-   *
-   * @private
-   */
-  var setCardValues = function(rule) {
-    if (rule.sheet) {
-      cardRepository[cardNames.sheet].setValue(rule.sheet);
-    }
-    if (rule.to) {
-      cardRepository[cardNames.to].setValue(rule.to);
-    }
-    if (rule.subject) {
-      cardRepository[cardNames.subject].setValue(rule.subject);
-    }
-    if (rule.body) {
-      cardRepository[cardNames.body].setValue(rule.body);
-    }
-    if (rule.sendColumn) {
-      cardRepository[cardNames.shouldSend].setValue(rule.sendColumn);
-    }
-    if (rule.timestampColumn) {
-      cardRepository[cardNames.lastSent].setValue(rule.timestampColumn);
     }
   };
 
@@ -511,6 +533,7 @@ var Cards = function(parent, rule) {
    * @param {Array<String>} values The values to use for autocomplete.
    */
   var setColumns = function(values) {
+    console.log('test');
     columns = values;
 
     cardRepository[cardNames.to].setAutocomplete({
@@ -552,211 +575,6 @@ var Cards = function(parent, rule) {
       maxResults: maxResults,
       triggerOnFocus: true
     });
-  };
-
-  /**
-   * Initializes a Card repository.
-   *
-   * @private
-   * @return {Object<String, Card>} The repository used for storing Cards. These may not be in the program flow.
-   */
-  var buildCardRepo = function() {
-    var repo = {};
-
-    repo[cardNames.welcome] = new TitledCard(contentArea, {
-      title: 'Welcome!',
-      help: 'Help will be displayed here normally. Since this is just the welcome page, there isn\'t much to know!',
-      paragraphs: [
-        'Welcome to Mailman! This application helps users easily create mail merges. It aims to be easy to use, ' +
-            'while also providing advanced options for power users.',
-        'To get started, simply click NEXT down below.'
-      ]
-    });
-
-    repo[cardNames.sheet] = new InputCard(contentArea, {
-      title: 'Which Sheet are we sending from?',
-      help: 'This Sheet must contain all the information you may want to send in an email.',
-      label: 'Sheet...',
-      autocomplete: {
-        results: sheets,
-        maxResults: maxResults,
-        triggerOnFocus: true
-      }
-    });
-    repo[cardNames.sheet].attachEvent('card.hide', function(event) {
-      var sheet = cardRepository[cardNames.sheet].getValue();
-
-      if (sheet !== '') {
-        google.script.run
-            .withSuccessHandler(setColumns)
-            .getHeaderNames(sheet);
-      }
-    });
-
-    repo[cardNames.to] = new InputCard(contentArea, {
-      title: 'Who are you sending to?',
-      help: 'This is the column filled with the email addresses of the recipients.',
-      label: 'To...',
-      autocomplete: {
-        results: columns,
-        prepend: '<<',
-        append: '>>',
-        maxResults: maxResults,
-        triggerOnFocus: true
-      }
-    });
-    repo[cardNames.to].addOption('change header row', function(e) {
-
-      // Add another card before this one, but after Sheet
-
-      var headerNode = insertNode(cardNames.sheet, cardRepository[cardNames.row]);
-      headerNode.name = cardNames.row;
-
-      self.jumpTo(cardNames.row);
-
-      // Remove the option
-      repo[cardNames.to].removeOption('change header row');
-    });
-
-    repo[cardNames.row] = new InputCard(contentArea, {
-      title: 'Which row contains your header titles?',
-      help: 'By default, Mailman looks in row 1 for your header titles.' +
-          ' If your header is not in row 1, please input the row.',
-      label: 'Header row...'
-    });
-    repo[cardNames.row].attachEvent('card.hide', function(event, card) {
-
-      // Set the header row
-      if (window.google !== undefined) {
-        var row = card.getValue();
-        var sheet = cardRepository[cardNames.sheet].getValue();
-
-        // Verify the row data.
-        var numTest = parseInt(row);
-        if (!isNaN(numTest) && numTest > 0) {
-          google.script.run
-              .withSuccessHandler(setColumns)
-              .setHeaderRow(row, sheet);
-        }
-      }
-
-    });
-
-    repo[cardNames.subject] = new InputCard(contentArea, {
-      title: 'What\'s your subject?',
-      help: 'Recipients will see this as the subject line of the email. Type "<<" to see a list of column names. ' +
-          'These tags will be swapped out with the associated values in the Sheet.',
-      label: 'Subject...',
-      autocomplete: {
-        results: columns,
-        trigger: '<<',
-        prepend: '<<',
-        append: '>>',
-        maxResults: maxResults
-      }
-    });
-
-    repo[cardNames.body] = new TextareaCard(contentArea, {
-      title: 'What\'s in the body?',
-      help: 'Recipients will see this as the body of the email. Type "<<" to see a list of column names. These tags ' +
-          'will be swapped out with the associated values in the Sheet.',
-      label: 'Body...',
-      autocomplete: {
-        results: columns,
-        trigger: '<<',
-        prepend: '<<',
-        append: '>>',
-        maxResults: maxResults
-      }
-    });
-
-    repo[cardNames.sendNow] = new TitledCard(contentArea, {
-      title: 'Send emails now?',
-      paragraphs: [
-        'This will send out an email blast right now. ' +
-            'If you\'d like, you can send the emails at a later time, or even based upon a value in a given column. ' +
-            'Just select the related option from the bottom right.'
-      ]
-    });
-    repo[cardNames.sendNow].addOption('send on trigger', optionSendOnTrigger);
-
-    repo[cardNames.triggerSetup] = new TitledCard(contentArea, {
-      title: 'Repeated emails.',
-      paragraphs: [
-        'Mailman will now guide you through the process of creating your own repeated mail merge.',
-        'This feature can be used to set up an email-based reminder system.'
-      ],
-      help: 'If you\'d like to go back to a regular mail merge, use the options below.'
-    });
-
-    repo[cardNames.shouldSend] = new InputCard(contentArea, {
-      title: 'Which column determines whether an email should be sent?',
-      paragraphs: [
-        'Mailman regularly checks whether an email needs to be sent. ' +
-            'Please specify a column that determines when an email should be sent.',
-        'Note that Mailman looks for the value TRUE to determine when to send an email.'
-      ],
-      help: 'Mailman checks roughly every 15 minutes for new emails to send. ' +
-          'Keep in mind, this can lead to sending emails to someone every 15 minutes. ' +
-          'Continue on for some ideas about how to avoid this!',
-      label: 'Send?',
-      autocomplete: {
-        results: columns,
-        prepend: '<<',
-        append: '>>',
-        maxResults: maxResults,
-        triggerOnFocus: true
-      }
-    });
-
-    repo[cardNames.lastSent] = new InputCard(contentArea, {
-        title: 'Where should Mailman keep track of the previously sent email?',
-        paragraphs: [
-          'Every time Mailman sends an email, it records the time in a cell.',
-          'Using the timestamp, you can determine whether you want to send another email.'
-        ],
-        help: 'This timestamp can be used for some interesting things! ' +
-            'Imagine you are interested in sending an email to someone every day (just to annoy them). ' +
-            'You could just set the formula in the previously mentioned column to ' +
-            '"=TODAY() - {put the last sent here} > 1". Now an email will be sent every time TRUE pops up (every day).',
-        label: 'Last sent...',
-        autocomplete: {
-          results: columns,
-          prepend: '<<',
-          append: '>>',
-          maxResults: maxResults,
-          triggerOnFocus: true
-        }
-      });
-
-      repo[cardNames.triggerConfirmation] = new TitledCard(contentArea, {
-        title: 'Submit the trigger?',
-        paragraphs: [
-          'This will regularly check the previously mentioned column for the value TRUE. ' +
-              'When TRUE is found in the column, an email is sent out with that row\'s information. ',
-              'If you\'d like to send now, just select the related option from the bottom right.'
-        ]
-      });
-      repo[cardNames.triggerConfirmation].addOption('send now', optionSendNow);
-
-      return repo;
-  };
-
-  var optionSendOnTrigger = function(e) {
-    nowToTrigger();
-    self.jumpTo(cardNames.triggerSetup);
-  };
-
-  var optionSendNow = function(e) {
-    removeNode(cardNames.triggerSetup);
-    removeNode(cardNames.shouldSend);
-    removeNode(cardNames.lastSent);
-    removeNode(cardNames.triggerConfirmation);
-
-    cards.add(cardRepository[cardNames.sendNow]);
-    cards.tail.name = cardNames.sendNow;
-
-    self.jumpTo(cardNames.sendNow);
   };
 
   var nowToTrigger = function() {

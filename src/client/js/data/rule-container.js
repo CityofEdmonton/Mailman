@@ -1,5 +1,7 @@
 var EmailRule = require('./email-rule.js');
 var RuleTypes = require('./rule-types.js');
+var Database = require('./database.js');
+var Keys = require('./prop-keys.js');
 
 /**
  * This model holds all EmailRules. It is built to make serialization and deserialization easy.
@@ -12,6 +14,7 @@ var RuleContainer = function(config) {
   // private variables
   var self = this;
   var rules = [];
+  var database = new Database();
 
   // public variables
 
@@ -40,10 +43,16 @@ var RuleContainer = function(config) {
   };
 
   // TODO Test
-  this.remove = function(id) {
+  this.remove = function(rule) {
+    console.log('REMOVE');
     rules.forEach(function(element, index, array) {
-      if (element.isEqual(id)) {
+
+      if (element.isEqual(rule)) {
         array.splice(index);
+
+        // Push rule update
+        database.save(Keys.RULE_KEY, rules);
+
         return;
       }
     });

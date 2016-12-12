@@ -48,6 +48,7 @@ var MailMan = function() {
   var rules;
 
   var rulesListView;
+  var cardsView = $('#cards-view');
 
   //***** PUBLIC *****//
 
@@ -63,6 +64,35 @@ var MailMan = function() {
     intercom = Intercom.getInstance();
     contentArea = $('#content-area');
     rulesListView = new RulesListView($('#layout-container'));
+
+    rulesListView.setTriggerHandler(function(e) {
+      console.log('TRIGGER');
+    });
+
+    rulesListView.setInstantHandler(function(e) {
+      //console.log('INSTANT');
+
+      // Hide the list, show the Cards
+      cards = new Cards(contentArea, null);
+      setButtonState();
+
+      navBar = new NavBar($('#nav-row'), 3, function(e) {
+        var node = e.data;
+
+        cards.jumpTo(node.name);
+      });
+
+      navBar.buildNavTree(cards.getActiveNode());
+
+      // All UI Bindings
+      $('#step').on('click', self.next);
+      $('#done').on('click', self.done);
+      $('#back').on('click', self.back);
+      $('#help').on('click', self.onHelpClick);
+
+      rulesListView.hide();
+      Util.setHidden(cardsView, false);
+    });
 
     database.load(Keys.RULE_KEY, function(config) {
       console.log(config);
@@ -86,23 +116,6 @@ var MailMan = function() {
       rulesListView.setEditHandler(function(rule) {
         console.log('EDIT OCCURRED');
       });
-
-      /*cards = new Cards(contentArea, rules.get(0));
-      setButtonState();
-
-      navBar = new NavBar($('#nav-row'), 3, function(e) {
-        var node = e.data;
-
-        cards.jumpTo(node.name);
-      });
-
-      navBar.buildNavTree(cards.getActiveNode());
-
-      // All UI Bindings
-      $('#step').on('click', self.next);
-      $('#done').on('click', self.done);
-      $('#back').on('click', self.back);
-      $('#help').on('click', self.onHelpClick);*/
 
     });
 
@@ -155,7 +168,7 @@ var MailMan = function() {
     rules.add(rule.toConfig());
 
     database.save(Keys.RULE_KEY, rules.toConfig(), function() {
-      // if (self.getRuleType() === RuleTypes.TRIGGER) {
+      // if (cards.getRuleType() === RuleTypes.TRIGGER) {
       //   google.script.run
       //       .createTriggerBasedEmail();
       // }
