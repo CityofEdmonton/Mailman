@@ -73,18 +73,16 @@ var MailMan = function() {
     rulesListView = new RulesListView($('#layout-container'));
     cards = new Cards(contentArea, null);
 
-    navBar = new NavBar($('#nav-row'), 3, function(e) {
-      var node = e.data;
-
-      cards.jumpTo(node.name);
-    });
-
-
     rulesListView.setTriggerHandler(function(e) {
       cards.setType(RuleTypes.TRIGGER);
 
       setButtonState();
 
+      navBar = new NavBar($('#nav-row'), 3, function(e) {
+        var node = e.data;
+
+        cards.jumpTo(node.name);
+      });
       navBar.buildNavTree(cards.getActiveNode());
 
       rulesListView.hide();
@@ -96,6 +94,11 @@ var MailMan = function() {
 
       setButtonState();
 
+      navBar = new NavBar($('#nav-row'), 3, function(e) {
+        var node = e.data;
+
+        cards.jumpTo(node.name);
+      });
       navBar.buildNavTree(cards.getActiveNode());
 
       rulesListView.hide();
@@ -188,6 +191,9 @@ var MailMan = function() {
       setTimeout(function() {
         rulesListView.show();
         Util.setHidden(cardsView, true);
+
+        navBar.cleanup();
+        cards.cleanup();
 
         // TODO reload rules
       }, 1000);

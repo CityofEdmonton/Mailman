@@ -40,6 +40,10 @@ var NavigationBar = function(appendTo, maxNavItems, onClick) {
     }
   };
 
+  this.cleanup = function() {
+    base.remove();
+  };
+
   this.init(appendTo);
 };
 

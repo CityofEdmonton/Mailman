@@ -82,6 +82,16 @@ var Cards = function(parent, rule) {
     }
   };
 
+  this.cleanup = function() {
+
+    for (var property in cardRepository) {
+
+      if (cardRepository.hasOwnProperty(property) && cardRepository[property].setValue) {
+        cardRepository[property].setValue('');        
+      }
+    }
+  };
+
   /**
    * This function goes to the next card.
    *
