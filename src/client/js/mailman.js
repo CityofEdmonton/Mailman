@@ -10,6 +10,7 @@ var Cards = require('./cards-handler.js');
 var NavBar = require('./nav/navigation-bar.js');
 var PubSub = require('pubsub-js');
 var Rules = require('./data/rule-container.js');
+var RuleTypes = require('./data/rule-types.js');
 var EmailRule = require('./data/email-rule.js');
 var Database = require('./data/database.js');
 var Keys = require('./data/prop-keys.js');
@@ -61,34 +62,41 @@ var MailMan = function() {
     self = this;
 
     // UI Configuration
+    // All UI Bindings
+    $('#step').on('click', self.next);
+    $('#done').on('click', self.done);
+    $('#back').on('click', self.back);
+    $('#help').on('click', self.onHelpClick);
+
     intercom = Intercom.getInstance();
     contentArea = $('#content-area');
     rulesListView = new RulesListView($('#layout-container'));
+    cards = new Cards(contentArea, null);
 
-    rulesListView.setTriggerHandler(function(e) {
-      console.log('TRIGGER');
+    navBar = new NavBar($('#nav-row'), 3, function(e) {
+      var node = e.data;
+
+      cards.jumpTo(node.name);
     });
 
-    rulesListView.setInstantHandler(function(e) {
-      //console.log('INSTANT');
 
-      // Hide the list, show the Cards
-      cards = new Cards(contentArea, null);
+    rulesListView.setTriggerHandler(function(e) {
+      cards.setType(RuleTypes.TRIGGER);
+
       setButtonState();
-
-      navBar = new NavBar($('#nav-row'), 3, function(e) {
-        var node = e.data;
-
-        cards.jumpTo(node.name);
-      });
 
       navBar.buildNavTree(cards.getActiveNode());
 
-      // All UI Bindings
-      $('#step').on('click', self.next);
-      $('#done').on('click', self.done);
-      $('#back').on('click', self.back);
-      $('#help').on('click', self.onHelpClick);
+      rulesListView.hide();
+      Util.setHidden(cardsView, false);
+    });
+
+    rulesListView.setInstantHandler(function(e) {
+      cards.setType(RuleTypes.INSTANT);
+
+      setButtonState();
+
+      navBar.buildNavTree(cards.getActiveNode());
 
       rulesListView.hide();
       Util.setHidden(cardsView, false);
@@ -178,7 +186,10 @@ var MailMan = function() {
       // }
 
       setTimeout(function() {
-        google.script.host.close();
+        rulesListView.show();
+        Util.setHidden(cardsView, true);
+
+        // TODO reload rules
       }, 1000);
     });
   };

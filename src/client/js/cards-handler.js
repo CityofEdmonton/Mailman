@@ -27,9 +27,6 @@ var Cards = function(parent, rule) {
   // All the different sheet names.
   var sheets = ['Loading...'];
 
-  // All the columns of the selected sheet.
-  var columns = ['Loading...'];
-
   // The maximum number of results to display in the autocompletes.
   var maxResults = 5;
 
@@ -75,29 +72,7 @@ var Cards = function(parent, rule) {
       setHelp();
     });
 
-    cards.add(cardRepository[cardNames.welcome]);
-    cards.tail.name = cardNames.welcome;
-
-    cards.add(cardRepository[cardNames.sheet]);
-    cards.tail.name = cardNames.sheet;
-
-    cards.add(cardRepository[cardNames.to]);
-    cards.tail.name = cardNames.to;
-
-    cards.add(cardRepository[cardNames.subject]);
-    cards.tail.name = cardNames.subject;
-
-    cards.add(cardRepository[cardNames.body]);
-    cards.tail.name = cardNames.body;
-
-    cards.add(cardRepository[cardNames.sendNow]);
-    cards.tail.name = cardNames.sendNow;
-
     setupCards();
-
-    hideHelp();
-    activeCard = cards.head;
-    self.jumpTo(activeCard.name);
 
     // Load information from GAS
     if (window.google !== undefined) {
@@ -282,7 +257,22 @@ var Cards = function(parent, rule) {
     if (rule.timestampColumn) {
       cardRepository[cardNames.lastSent].setValue(rule.timestampColumn);
     }
+
+    self.setType(rule.ruleType);
   };
+
+  this.setType = function(type) {
+    if (type === RuleTypes.INSTANT) {
+      cards = createInstantList();
+    }
+    else if (type === RuleTypes.TRIGGER) {
+      cards = createTriggerList();
+    }
+
+    hideHelp();
+    activeCard = cards.head;
+    self.jumpTo(activeCard.name);
+  }
 
   /**
    * Gets the active rules email type.
@@ -439,30 +429,6 @@ var Cards = function(parent, rule) {
   };
 
   /**
-   * Removes a node from the linked list by name.
-   *
-   * @param  {String} name The unique identifier of the Node.
-   * @return {Node} The removed node.
-   */
-  var removeNode = function(name) {
-    var current = cards.head;
-
-    while (current !== null) {
-
-      if (current.name === name) {
-        current.data.hide();
-        var pos = cards.getPosition(current);
-        cards.remove(pos);
-        return current;
-      }
-
-      current = current.next;
-    }
-
-    return null;
-  };
-
-  /**
    * Inserts a Node after the Node with the given name.
    * Note: This cannot be used to insert a Node at the start of a list.
    *
@@ -533,11 +499,8 @@ var Cards = function(parent, rule) {
    * @param {Array<String>} values The values to use for autocomplete.
    */
   var setColumns = function(values) {
-    console.log('test');
-    columns = values;
-
     cardRepository[cardNames.to].setAutocomplete({
-      results: columns,
+      results: values,
       prepend: '<<',
       append: '>>',
       maxResults: maxResults,
@@ -545,7 +508,7 @@ var Cards = function(parent, rule) {
     });
 
     cardRepository[cardNames.subject].setAutocomplete({
-      results: columns,
+      results: values,
       trigger: '<<',
       prepend: '<<',
       append: '>>',
@@ -553,7 +516,7 @@ var Cards = function(parent, rule) {
     });
 
     cardRepository[cardNames.body].setAutocomplete({
-      results: columns,
+      results: values,
       trigger: '<<',
       prepend: '<<',
       append: '>>',
@@ -561,7 +524,7 @@ var Cards = function(parent, rule) {
     });
 
     cardRepository[cardNames.shouldSend].setAutocomplete({
-      results: columns,
+      results: values,
       prepend: '<<',
       append: '>>',
       maxResults: maxResults,
@@ -569,7 +532,7 @@ var Cards = function(parent, rule) {
     });
 
     cardRepository[cardNames.lastSent].setAutocomplete({
-      results: columns,
+      results: values,
       prepend: '<<',
       append: '>>',
       maxResults: maxResults,
@@ -577,21 +540,62 @@ var Cards = function(parent, rule) {
     });
   };
 
-  var nowToTrigger = function() {
-    removeNode(cardNames.sendNow);
+  var createInstantList = function() {
+    var list = new List();
 
-    var trigger = insertNode(cardNames.body, cardRepository[cardNames.triggerSetup]);
-    trigger.name = cardNames.triggerSetup;
+    list.add(cardRepository[cardNames.welcome]);
+    list.tail.name = cardNames.welcome;
 
-    var shouldSend = insertNode(cardNames.triggerSetup, cardRepository[cardNames.shouldSend]);
-    shouldSend.name = cardNames.shouldSend;
+    list.add(cardRepository[cardNames.sheet]);
+    list.tail.name = cardNames.sheet;
 
-    var timestamp = insertNode(cardNames.shouldSend, cardRepository[cardNames.lastSent]);
-    timestamp.name = cardNames.lastSent;
+    list.add(cardRepository[cardNames.to]);
+    list.tail.name = cardNames.to;
 
-    var confirm = insertNode(cardNames.lastSent, cardRepository[cardNames.triggerConfirmation]);
-    confirm.name = cardNames.triggerConfirmation;
-  }
+    list.add(cardRepository[cardNames.subject]);
+    list.tail.name = cardNames.subject;
+
+    list.add(cardRepository[cardNames.body]);
+    list.tail.name = cardNames.body;
+
+    list.add(cardRepository[cardNames.sendNow]);
+    list.tail.name = cardNames.sendNow;
+
+    return list;
+  };
+
+  var createTriggerList = function() {
+    var list = new List();
+
+    list.add(cardRepository[cardNames.welcome]);
+    list.tail.name = cardNames.welcome;
+
+    list.add(cardRepository[cardNames.sheet]);
+    list.tail.name = cardNames.sheet;
+
+    list.add(cardRepository[cardNames.to]);
+    list.tail.name = cardNames.to;
+
+    list.add(cardRepository[cardNames.subject]);
+    list.tail.name = cardNames.subject;
+
+    list.add(cardRepository[cardNames.body]);
+    list.tail.name = cardNames.body;
+
+    list.add(cardRepository[cardNames.triggerSetup]);
+    list.tail.name = cardNames.triggerSetup;
+
+    list.add(cardRepository[cardNames.shouldSend]);
+    list.tail.name = cardNames.shouldSend;
+
+    list.add(cardRepository[cardNames.lastSent]);
+    list.tail.name = cardNames.lastSent;
+
+    list.add(cardRepository[cardNames.triggerConfirmation]);
+    list.tail.name = cardNames.triggerConfirmation;
+
+    return list;
+  };
 
   this.init(contentArea, rule);
 };
