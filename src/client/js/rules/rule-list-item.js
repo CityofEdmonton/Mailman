@@ -63,12 +63,16 @@ var RuleListItem = function(appendTo, rule) {
 
   this.setDeleteHandler = function(callback) {
     deleteIcon.on('click', rule, callback);
-  }
+  };
 
   this.setEditHandler = function(callback) {
     triggerIcon.on('click', rule, callback);
     instantIcon.on('click', rule, callback);
-  }
+  };
+
+  this.cleanup = function() {
+    base.remove();
+  };
 
   this.init_(appendTo, rule);
 };

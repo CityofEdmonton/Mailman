@@ -105,8 +105,15 @@ var MailMan = function() {
       Util.setHidden(cardsView, false);
     });
 
+    rulesListView.setDeleteHandler(function(rule) {
+      rules.remove(rule);
+    });
+
+    rulesListView.setEditHandler(function(rule) {
+      console.log('EDIT OCCURRED');
+    });
+
     database.load(Keys.RULE_KEY, function(config) {
-      console.log(config);
       try {
         rules = new Rules(config);
       }
@@ -115,19 +122,7 @@ var MailMan = function() {
         console.log(e);
       }
 
-      console.log('Adding rules to lv');
-      for (var i = 0; i < rules.length(); i++) {
-        rulesListView.addRule(rules.get(i));
-      }
-
-      rulesListView.setDeleteHandler(function(rule) {
-        console.log('SHE GONE');
-      });
-
-      rulesListView.setEditHandler(function(rule) {
-        console.log('EDIT OCCURRED');
-      });
-
+      rulesListView.setRulesContainer(rules);
     });
 
     // PubSub bindings

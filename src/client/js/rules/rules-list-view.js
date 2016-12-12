@@ -4,6 +4,7 @@ var baseHTML = require('./rules-list-view.html');
 var EmailRule = require('../data/email-rule.js');
 var RuleListItem = require('./rule-list-item.js');
 var Util = require('../util.js');
+var PubSub = require('pubsub-js');
 
 var RulesListView = function(appendTo) {
   // private variables
@@ -13,6 +14,7 @@ var RulesListView = function(appendTo) {
   var triggerButton = base.find('[data-id="trigger-button"]');
   var instantButton = base.find('[data-id="instant-button"]');
   var ruleItems = [];
+  var ruleContainer;
 
   // Event callbacks
   var deletionCallback;
@@ -28,9 +30,18 @@ var RulesListView = function(appendTo) {
   this.init_ = function(appendTo) {
     appendTo.append(base);
 
-    //newItem.on('click', openRuleEditor)
     triggerButton.on('click', newTrigger);
     instantButton.on('click', newInstant);
+
+    PubSub.subscribe('Rules.delete', function(msg, data) {
+      console.log('RLV rebuild');
+      rebuild();
+    });
+
+    PubSub.subscribe('Rules.add', function(msg, data) {
+      console.log('RLV rebuild');
+      rebuild();
+    });
   };
 
   var itemDelete = function(e) {
@@ -49,7 +60,23 @@ var RulesListView = function(appendTo) {
     instantCB(e);
   };
 
+  var rebuild = function() {
+    for (var i = 0; i < ruleItems.length; i++) {
+      ruleItems[i].cleanup();
+    }
+
+    ruleItems = [];
+    for (var i = 0; i < ruleContainer.length(); i++) {
+      self.addRule(ruleContainer.get(i));
+    }
+  };
+
   //***** privileged methods *****//
+
+  this.setRulesContainer = function(container) {
+    ruleContainer = container;
+    rebuild();
+  }
 
   this.addRule = function(rule) {
 

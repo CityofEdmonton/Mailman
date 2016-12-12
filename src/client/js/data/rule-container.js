@@ -1,6 +1,7 @@
 var EmailRule = require('./email-rule.js');
 var RuleTypes = require('./rule-types.js');
 var Database = require('./database.js');
+var PubSub = require('pubsub-js');
 var Keys = require('./prop-keys.js');
 
 /**
@@ -20,13 +21,14 @@ var RuleContainer = function(config) {
 
   // ***** private methods ***** //
   this.init_ = function(config) {
+    console.log
     if (config.rules != null) {
 
       var ruleObjs = config.rules;
       for (var i = 0; i < ruleObjs.length; i++) {
 
         var ruleObj = ruleObjs[i];
-        this.add(ruleObj);
+        rules.push(new EmailRule(ruleObj));
       }
     }
   };
@@ -40,18 +42,23 @@ var RuleContainer = function(config) {
    */
   this.add = function(config) {
     rules.push(new EmailRule(config));
+
+    database.save(Keys.RULE_KEY, self.toConfig(), function() {
+      PubSub.publish('Rules.add');
+    });
   };
 
   // TODO Test
   this.remove = function(rule) {
-    console.log('REMOVE');
     rules.forEach(function(element, index, array) {
 
       if (element.isEqual(rule)) {
-        array.splice(index);
+        array.splice(index, 1);
 
         // Push rule update
-        database.save(Keys.RULE_KEY, rules);
+        database.save(Keys.RULE_KEY, self.toConfig(), function() {
+          PubSub.publish('Rules.delete');
+        });
 
         return;
       }
