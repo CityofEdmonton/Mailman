@@ -58,13 +58,23 @@ var EmailRule = function(config) {
    * @param  {number|EmailRule}  idOrObject Either the id of the EmailRule or the EmailRule.
    * @return {Boolean} True if the given value is equal to this EmailRule.
    */
-  this.isEqual = function(idOrObject) {
-    if (typeof idOrObject === 'number') {
-      return this.id === idOrObject;
-    }
-    else {
-      return this === idOrObject;
-    }
+  this.isEqual = function(rule) {
+    return rule.getID() === id;
+    // if (typeof idOrObject === 'number') {
+    //   return this.id === idOrObject;
+    // }
+    // else {
+    //   return this === idOrObject;
+    // }
+  }
+
+  /**
+   * Returns the unique id of this EmailRule.
+   *
+   * @return {string} The unique id of this EmailRule.
+   */
+  this.getID = function() {
+    return id;
   }
 
   /**

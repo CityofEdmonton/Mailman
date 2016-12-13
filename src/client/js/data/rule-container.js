@@ -7,7 +7,6 @@ var Keys = require('./prop-keys.js');
 /**
  * This model holds all EmailRules. It is built to make serialization and deserialization easy.
  *
- * @param {Array<EmailRule>} config.rules The array of EmailRules config objects.
  * @constructor
  */
 var RuleContainer = function(config) {
@@ -36,7 +35,7 @@ var RuleContainer = function(config) {
   // ***** privileged methods ***** //
 
   /**
-   * Appends a new EmailRule.
+   * Appends a new EmailRule. Notifies all listeners.
    *
    * @param {Object} config The config object for this EmailRule. Please see EmailRule for details.
    */
@@ -48,7 +47,11 @@ var RuleContainer = function(config) {
     });
   };
 
-  // TODO Test
+  /**
+   * Removes an EmailRule from the container and notifies any listeners.
+   *
+   * @param  {EmailRule} rule The rule to delete.
+   */
   this.remove = function(rule) {
     rules.forEach(function(element, index, array) {
 
@@ -63,13 +66,53 @@ var RuleContainer = function(config) {
         return;
       }
     });
-
   };
 
+  /**
+   * Updates the given EmailRule. Note that the id of the given EmailRule must be the same as the EmailRule stored
+   * in this RuleContainer.
+   *
+   * @param  {EmailRule} rule The new EmailRule. It's id must be the same as an existing EmailRule,
+   *                          or the update will fail.
+   */
+  this.update = function(rule) {
+    var index = self.indexOf(rule.getID());
+    if (index === -1) {
+      throw new Error('Error: EmailRule not found.');
+    }
+
+    rules[index] = rule;
+    database.save(Keys.RULE_KEY, self.toConfig(), function() {
+      PubSub.publish('Rules.update');
+    });
+  }
+
+  /**
+   * Gets an EmailRule by index.
+   * @param  {number} index The index of the EmailRule.
+   * @return {EmailRule} The EmailRule at the given index.
+   */
   this.get = function(index) {
     return rules[index];
   };
 
+  /**
+   * Gets the index of a given EmailRule by id.
+   *
+   * @param  {string} id The id of the rule to find.
+   * @return {number} The index of the EmailRule with the given ID. -1 if not found.
+   */
+  this.indexOf = function(id) {
+    return rules.findIndex(function(element) {
+      return element.getID() === id;
+    });
+  };
+
+  /**
+   * Gets the number of EmailRules.
+   *
+   * @return {number} The number of EmailRules.
+   */
   this.length = function() {
     return rules.length;
   }
