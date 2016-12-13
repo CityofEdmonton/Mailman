@@ -110,7 +110,19 @@ var MailMan = function() {
     });
 
     rulesListView.setEditHandler(function(rule) {
-      console.log('EDIT OCCURRED');
+      cards.setRule(rule);
+
+      setButtonState();
+
+      navBar = new NavBar($('#nav-row'), 3, function(e) {
+        var node = e.data;
+
+        cards.jumpTo(node.name);
+      });
+      navBar.buildNavTree(cards.getActiveNode());
+
+      rulesListView.hide();
+      Util.setHidden(cardsView, false);
     });
 
     database.load(Keys.RULE_KEY, function(config) {
@@ -139,8 +151,9 @@ var MailMan = function() {
 
   /**
    * This function goes to the next card.
-   * TODO There is non-DRY code between this function and this.back.
    *
+   * TODO There is non-DRY code between this function and this.back.
+   * TODO Move this into the CardHandler or a CardsView.
    * @param {event} event The event that triggered the function call.
    */
   this.next = function(event) {
@@ -152,8 +165,9 @@ var MailMan = function() {
 
   /**
    * This function goes to the previous card.
-   * TODO There is non-DRY code between this function and this.next.
    *
+   * TODO There is non-DRY code between this function and this.next.
+   * TODO Move this into the CardHandler or a CardsView.
    * @param {event} event The event that triggered the function call.
    */
   this.back = function(event) {
@@ -166,12 +180,19 @@ var MailMan = function() {
   /**
    * Submits data back to google.
    *
+   * TODO Move this into the CardHandler or a CardsView.
    * @param {event} event The event that triggered the function call.
    */
   this.done = function(event) {
-
     var rule = cards.getRule();
-    rules.add(rule.toConfig());
+    console.log(rule);
+
+    if (rules.indexOf(rule.getID()) !== -1) {
+      rules.update(rule);
+    }
+    else {
+      rules.add(rule.toConfig());
+    }
 
     database.save(Keys.RULE_KEY, rules.toConfig(), function() {
       // if (cards.getRuleType() === RuleTypes.TRIGGER) {

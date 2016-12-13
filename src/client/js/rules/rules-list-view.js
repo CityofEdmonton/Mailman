@@ -33,15 +33,9 @@ var RulesListView = function(appendTo) {
     triggerButton.on('click', newTrigger);
     instantButton.on('click', newInstant);
 
-    PubSub.subscribe('Rules.delete', function(msg, data) {
-      console.log('RLV rebuild');
-      rebuild();
-    });
-
-    PubSub.subscribe('Rules.add', function(msg, data) {
-      console.log('RLV rebuild');
-      rebuild();
-    });
+    PubSub.subscribe('Rules.delete', rebuild);
+    PubSub.subscribe('Rules.add', rebuild);
+    PubSub.subscribe('Rules.update', rebuild);
   };
 
   var itemDelete = function(e) {

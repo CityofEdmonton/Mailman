@@ -66,7 +66,7 @@ var EmailRule = function(config) {
     // else {
     //   return this === idOrObject;
     // }
-  }
+  };
 
   /**
    * Returns the unique id of this EmailRule.
@@ -75,7 +75,7 @@ var EmailRule = function(config) {
    */
   this.getID = function() {
     return id;
-  }
+  };
 
   /**
    * Converts this EmailRule to an easily serializeable form.

@@ -37,6 +37,7 @@ var RuleContainer = function(config) {
   /**
    * Appends a new EmailRule. Notifies all listeners.
    *
+   * TODO Make this take an EmailRule.
    * @param {Object} config The config object for this EmailRule. Please see EmailRule for details.
    */
   this.add = function(config) {
@@ -76,6 +77,7 @@ var RuleContainer = function(config) {
    *                          or the update will fail.
    */
   this.update = function(rule) {
+    console.log(rule);
     var index = self.indexOf(rule.getID());
     if (index === -1) {
       throw new Error('Error: EmailRule not found.');

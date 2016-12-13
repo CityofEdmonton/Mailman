@@ -12,7 +12,7 @@ var PubSub = require('pubsub-js');
 var Keys = require('./data/prop-keys.js');
 var CardsConfig = require('./cards/cards-config.js');
 
-var Cards = function(parent, rule) {
+var Cards = function(parent) {
 
   //***** LOCAL VARIABLES *****//
 
@@ -57,6 +57,9 @@ var Cards = function(parent, rule) {
   // The currently shown Card.
   var activeCard;
 
+  // The rule to update. This is only used when an existing EmailRule is being updated.
+  var updateRule = null;
+
   //***** PUBLIC *****//
 
   /**
@@ -65,7 +68,7 @@ var Cards = function(parent, rule) {
    * @constructor
    * @param {jQuery} contentArea The area where Cards are meant to be added.
    */
-  this.init = function(contentArea, rule) {
+  this.init = function(contentArea) {
 
     // Set the help any time a new Card is inserted.
     PubSub.subscribe('Cards.insertNode', function(msg, data) {
@@ -82,14 +85,20 @@ var Cards = function(parent, rule) {
     }
   };
 
+  /**
+   * Resets the view so it can handle a new EmailRule.
+   *
+   */
   this.cleanup = function() {
 
     for (var property in cardRepository) {
 
       if (cardRepository.hasOwnProperty(property) && cardRepository[property].setValue) {
-        cardRepository[property].setValue('');        
+        cardRepository[property].setValue('');
       }
     }
+
+    updateRule = null;
   };
 
   /**
@@ -249,6 +258,8 @@ var Cards = function(parent, rule) {
    * @private
    */
   this.setRule = function(rule) {
+    updateRule = rule;
+
     if (rule.sheet) {
       cardRepository[cardNames.sheet].setValue(rule.sheet);
     }
@@ -307,11 +318,23 @@ var Cards = function(parent, rule) {
   /**
    * Gets an EmailRule associated with this series of Cards.
    *
+   * TODO Refactor this. The multiple returns makes flow confusing.
    * @return {EmailRule} Created from the various Cards this handler is supervising.
    */
   this.getRule = function() {
 
     if (self.getRuleType() === RuleTypes.TRIGGER) {
+      if (updateRule !== null) {
+        updateRule.ruleType = RuleTypes.TRIGGER;
+        updateRule.to = self.getCard(cardNames.to).getValue();
+        updateRule.subject = self.getCard(cardNames.subject).getValue();
+        updateRule.body = self.getCard(cardNames.body).getValue();
+        updateRule.sheet = self.getCard(cardNames.sheet).getValue();
+        updateRule.sendColumn = self.getCard(cardNames.shouldSend).getValue();
+        updateRule.timestampColumn = self.getCard(cardNames.lastSent).getValue();
+
+        return updateRule;
+      }
 
       return new EmailRule({
         ruleType: RuleTypes.TRIGGER,
@@ -324,6 +347,17 @@ var Cards = function(parent, rule) {
       });
     }
     else if (self.getRuleType() === RuleTypes.INSTANT) {
+      if (updateRule !== null) {
+        updateRule.ruleType = RuleTypes.INSTANT;
+        updateRule.to = self.getCard(cardNames.to).getValue();
+        updateRule.subject = self.getCard(cardNames.subject).getValue();
+        updateRule.body = self.getCard(cardNames.body).getValue();
+        updateRule.sheet = self.getCard(cardNames.sheet).getValue();
+        updateRule.sendColumn = null;
+        updateRule.timestampColumn = null;
+
+        return updateRule;
+      }
 
       return new EmailRule({
         ruleType: RuleTypes.INSTANT,
@@ -607,7 +641,7 @@ var Cards = function(parent, rule) {
     return list;
   };
 
-  this.init(contentArea, rule);
+  this.init(contentArea);
 };
 
 /***** GAS Response Functions *****/
