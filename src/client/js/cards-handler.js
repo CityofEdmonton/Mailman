@@ -11,6 +11,7 @@ var Util = require('./util.js');
 var PubSub = require('pubsub-js');
 var Keys = require('./data/prop-keys.js');
 var CardsConfig = require('./cards/cards-config.js');
+var CardNames = require('./cards/card-names.js');
 
 var Cards = function(parent) {
 
@@ -32,21 +33,6 @@ var Cards = function(parent) {
 
   // The list containing all the Cards.
   var cards = new List();
-
-  // This allows for changing Card names without major code changes.
-  var cardNames = {
-    welcome: 'Welcome',
-    sheet: 'Sheet',
-    to: 'To',
-    row: 'Header Row',
-    subject: 'Subject',
-    body: 'Body',
-    sendNow: 'Email',
-    triggerConfirmation: 'Schedule',
-    triggerSetup: 'Trigger',
-    shouldSend: 'Confirmation',
-    lastSent: 'Last Sent'
-  };
 
   // This stores the configured Cards. These are only meant for easily adding/removing Cards without losing the data.
   var cardRepository = CardsConfig.buildCardRepo();
@@ -218,22 +204,22 @@ var Cards = function(parent) {
     updateRule = rule;
 
     if (rule.sheet) {
-      cardRepository[cardNames.sheet].setValue(rule.sheet);
+      cardRepository[CardNames.sheet].setValue(rule.sheet);
     }
     if (rule.to) {
-      cardRepository[cardNames.to].setValue(rule.to);
+      cardRepository[CardNames.to].setValue(rule.to);
     }
     if (rule.subject) {
-      cardRepository[cardNames.subject].setValue(rule.subject);
+      cardRepository[CardNames.subject].setValue(rule.subject);
     }
     if (rule.body) {
-      cardRepository[cardNames.body].setValue(rule.body);
+      cardRepository[CardNames.body].setValue(rule.body);
     }
     if (rule.sendColumn) {
-      cardRepository[cardNames.shouldSend].setValue(rule.sendColumn);
+      cardRepository[CardNames.shouldSend].setValue(rule.sendColumn);
     }
     if (rule.timestampColumn) {
-      cardRepository[cardNames.lastSent].setValue(rule.timestampColumn);
+      cardRepository[CardNames.lastSent].setValue(rule.timestampColumn);
     }
 
     self.setType(rule.ruleType);
@@ -263,7 +249,7 @@ var Cards = function(parent) {
    * @return {String} The current ruleType.
    */
   this.getRuleType = function() {
-    var trigger = self.getCard(cardNames.triggerSetup);
+    var trigger = self.getCard(CardNames.triggerSetup);
 
     var current = cards.head;
     while (current !== null) {
@@ -288,33 +274,33 @@ var Cards = function(parent) {
     if (self.getRuleType() === RuleTypes.TRIGGER) {
       if (updateRule !== null) {
         updateRule.ruleType = RuleTypes.TRIGGER;
-        updateRule.to = self.getCard(cardNames.to).getValue();
-        updateRule.subject = self.getCard(cardNames.subject).getValue();
-        updateRule.body = self.getCard(cardNames.body).getValue();
-        updateRule.sheet = self.getCard(cardNames.sheet).getValue();
-        updateRule.sendColumn = self.getCard(cardNames.shouldSend).getValue();
-        updateRule.timestampColumn = self.getCard(cardNames.lastSent).getValue();
+        updateRule.to = self.getCard(CardNames.to).getValue();
+        updateRule.subject = self.getCard(CardNames.subject).getValue();
+        updateRule.body = self.getCard(CardNames.body).getValue();
+        updateRule.sheet = self.getCard(CardNames.sheet).getValue();
+        updateRule.sendColumn = self.getCard(CardNames.shouldSend).getValue();
+        updateRule.timestampColumn = self.getCard(CardNames.lastSent).getValue();
 
         return updateRule;
       }
 
       return new EmailRule({
         ruleType: RuleTypes.TRIGGER,
-        to: self.getCard(cardNames.to).getValue(),
-        subject: self.getCard(cardNames.subject).getValue(),
-        body: self.getCard(cardNames.body).getValue(),
-        sheet: self.getCard(cardNames.sheet).getValue(),
-        sendColumn: self.getCard(cardNames.shouldSend).getValue(),
-        timestampColumn: self.getCard(cardNames.lastSent).getValue()
+        to: self.getCard(CardNames.to).getValue(),
+        subject: self.getCard(CardNames.subject).getValue(),
+        body: self.getCard(CardNames.body).getValue(),
+        sheet: self.getCard(CardNames.sheet).getValue(),
+        sendColumn: self.getCard(CardNames.shouldSend).getValue(),
+        timestampColumn: self.getCard(CardNames.lastSent).getValue()
       });
     }
     else if (self.getRuleType() === RuleTypes.INSTANT) {
       if (updateRule !== null) {
         updateRule.ruleType = RuleTypes.INSTANT;
-        updateRule.to = self.getCard(cardNames.to).getValue();
-        updateRule.subject = self.getCard(cardNames.subject).getValue();
-        updateRule.body = self.getCard(cardNames.body).getValue();
-        updateRule.sheet = self.getCard(cardNames.sheet).getValue();
+        updateRule.to = self.getCard(CardNames.to).getValue();
+        updateRule.subject = self.getCard(CardNames.subject).getValue();
+        updateRule.body = self.getCard(CardNames.body).getValue();
+        updateRule.sheet = self.getCard(CardNames.sheet).getValue();
         updateRule.sendColumn = null;
         updateRule.timestampColumn = null;
 
@@ -323,10 +309,10 @@ var Cards = function(parent) {
 
       return new EmailRule({
         ruleType: RuleTypes.INSTANT,
-        to: self.getCard(cardNames.to).getValue(),
-        subject: self.getCard(cardNames.subject).getValue(),
-        body: self.getCard(cardNames.body).getValue(),
-        sheet: self.getCard(cardNames.sheet).getValue()
+        to: self.getCard(CardNames.to).getValue(),
+        subject: self.getCard(CardNames.subject).getValue(),
+        body: self.getCard(CardNames.body).getValue(),
+        sheet: self.getCard(CardNames.sheet).getValue()
       });
     }
     else {
@@ -342,8 +328,8 @@ var Cards = function(parent) {
    * @private
    */
   var setupCards = function() {
-    cardRepository[cardNames.sheet].attachEvent('card.hide', function(event) {
-      var sheet = cardRepository[cardNames.sheet].getValue();
+    cardRepository[CardNames.sheet].attachEvent('card.hide', function(event) {
+      var sheet = cardRepository[CardNames.sheet].getValue();
 
       if (sheet !== '') {
         google.script.run
@@ -352,25 +338,25 @@ var Cards = function(parent) {
       }
     });
 
-    cardRepository[cardNames.to].addOption('change header row', function(e) {
+    cardRepository[CardNames.to].addOption('change header row', function(e) {
 
       // Add another card before this one, but after Sheet
 
-      var headerNode = insertNode(cardNames.sheet, cardRepository[cardNames.row]);
-      headerNode.name = cardNames.row;
+      var headerNode = insertNode(CardNames.sheet, cardRepository[CardNames.row]);
+      headerNode.name = CardNames.row;
 
-      self.jumpTo(cardNames.row);
+      self.jumpTo(CardNames.row);
 
       // Remove the option
-      cardRepository[cardNames.to].removeOption('change header row');
+      cardRepository[CardNames.to].removeOption('change header row');
     });
 
-    cardRepository[cardNames.row].attachEvent('card.hide', function(event, card) {
+    cardRepository[CardNames.row].attachEvent('card.hide', function(event, card) {
 
       // Set the header row
       if (window.google !== undefined) {
         var row = card.getValue();
-        var sheet = cardRepository[cardNames.sheet].getValue();
+        var sheet = cardRepository[CardNames.sheet].getValue();
 
         // Verify the row data.
         var numTest = parseInt(row);
@@ -496,7 +482,7 @@ var Cards = function(parent) {
    */
   var setSheets = function(values) {
     sheets = values;
-    cardRepository[cardNames.sheet].setAutocomplete({
+    cardRepository[CardNames.sheet].setAutocomplete({
       results: sheets,
       maxResults: maxResults,
       triggerOnFocus: true
@@ -510,7 +496,7 @@ var Cards = function(parent) {
    * @param {Array<String>} values The values to use for autocomplete.
    */
   var setColumns = function(values) {
-    cardRepository[cardNames.to].setAutocomplete({
+    cardRepository[CardNames.to].setAutocomplete({
       results: values,
       prepend: '<<',
       append: '>>',
@@ -518,7 +504,7 @@ var Cards = function(parent) {
       triggerOnFocus: true
     });
 
-    cardRepository[cardNames.subject].setAutocomplete({
+    cardRepository[CardNames.subject].setAutocomplete({
       results: values,
       trigger: '<<',
       prepend: '<<',
@@ -526,7 +512,7 @@ var Cards = function(parent) {
       maxResults: maxResults
     });
 
-    cardRepository[cardNames.body].setAutocomplete({
+    cardRepository[CardNames.body].setAutocomplete({
       results: values,
       trigger: '<<',
       prepend: '<<',
@@ -534,7 +520,7 @@ var Cards = function(parent) {
       maxResults: maxResults
     });
 
-    cardRepository[cardNames.shouldSend].setAutocomplete({
+    cardRepository[CardNames.shouldSend].setAutocomplete({
       results: values,
       prepend: '<<',
       append: '>>',
@@ -542,7 +528,7 @@ var Cards = function(parent) {
       triggerOnFocus: true
     });
 
-    cardRepository[cardNames.lastSent].setAutocomplete({
+    cardRepository[CardNames.lastSent].setAutocomplete({
       results: values,
       prepend: '<<',
       append: '>>',
@@ -560,23 +546,23 @@ var Cards = function(parent) {
   var createInstantList = function() {
     var list = new List();
 
-    list.add(cardRepository[cardNames.welcome]);
-    list.tail.name = cardNames.welcome;
+    list.add(cardRepository[CardNames.welcome]);
+    list.tail.name = CardNames.welcome;
 
-    list.add(cardRepository[cardNames.sheet]);
-    list.tail.name = cardNames.sheet;
+    list.add(cardRepository[CardNames.sheet]);
+    list.tail.name = CardNames.sheet;
 
-    list.add(cardRepository[cardNames.to]);
-    list.tail.name = cardNames.to;
+    list.add(cardRepository[CardNames.to]);
+    list.tail.name = CardNames.to;
 
-    list.add(cardRepository[cardNames.subject]);
-    list.tail.name = cardNames.subject;
+    list.add(cardRepository[CardNames.subject]);
+    list.tail.name = CardNames.subject;
 
-    list.add(cardRepository[cardNames.body]);
-    list.tail.name = cardNames.body;
+    list.add(cardRepository[CardNames.body]);
+    list.tail.name = CardNames.body;
 
-    list.add(cardRepository[cardNames.sendNow]);
-    list.tail.name = cardNames.sendNow;
+    list.add(cardRepository[CardNames.sendNow]);
+    list.tail.name = CardNames.sendNow;
 
     return list;
   };
@@ -590,32 +576,32 @@ var Cards = function(parent) {
   var createTriggerList = function() {
     var list = new List();
 
-    list.add(cardRepository[cardNames.welcome]);
-    list.tail.name = cardNames.welcome;
+    list.add(cardRepository[CardNames.welcome]);
+    list.tail.name = CardNames.welcome;
 
-    list.add(cardRepository[cardNames.sheet]);
-    list.tail.name = cardNames.sheet;
+    list.add(cardRepository[CardNames.sheet]);
+    list.tail.name = CardNames.sheet;
 
-    list.add(cardRepository[cardNames.to]);
-    list.tail.name = cardNames.to;
+    list.add(cardRepository[CardNames.to]);
+    list.tail.name = CardNames.to;
 
-    list.add(cardRepository[cardNames.subject]);
-    list.tail.name = cardNames.subject;
+    list.add(cardRepository[CardNames.subject]);
+    list.tail.name = CardNames.subject;
 
-    list.add(cardRepository[cardNames.body]);
-    list.tail.name = cardNames.body;
+    list.add(cardRepository[CardNames.body]);
+    list.tail.name = CardNames.body;
 
-    list.add(cardRepository[cardNames.triggerSetup]);
-    list.tail.name = cardNames.triggerSetup;
+    list.add(cardRepository[CardNames.triggerSetup]);
+    list.tail.name = CardNames.triggerSetup;
 
-    list.add(cardRepository[cardNames.shouldSend]);
-    list.tail.name = cardNames.shouldSend;
+    list.add(cardRepository[CardNames.shouldSend]);
+    list.tail.name = CardNames.shouldSend;
 
-    list.add(cardRepository[cardNames.lastSent]);
-    list.tail.name = cardNames.lastSent;
+    list.add(cardRepository[CardNames.lastSent]);
+    list.tail.name = CardNames.lastSent;
 
-    list.add(cardRepository[cardNames.triggerConfirmation]);
-    list.tail.name = cardNames.triggerConfirmation;
+    list.add(cardRepository[CardNames.triggerConfirmation]);
+    list.tail.name = CardNames.triggerConfirmation;
 
     return list;
   };
