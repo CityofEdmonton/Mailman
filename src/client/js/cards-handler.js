@@ -136,49 +136,6 @@ var Cards = function(parent) {
   };
 
   /**
-   * Submits the data back to server side.
-   *
-   */
-  this.submit = function() {
-    var to = self.getCard(cardNames.to).getValue();
-    var subject = self.getCard(cardNames.subject).getValue();
-    var body = self.getCard(cardNames.body).getValue();
-    var sheet = self.getCard(cardNames.sheet).getValue();
-
-    var newRule = new EmailRule({
-      ruleType: RuleTypes.INSTANT,
-      to: to,
-      subject: subject,
-      body: body,
-      sheet: sheet
-    });
-
-    if (self.getRuleType() === RuleTypes.TRIGGER) {
-      var setup = self.getCard(cardNames.shouldSend).getValue();
-      var lastSent = self.getCard(cardNames.lastSent).getValue();
-
-      newRule.sendColumn = setup;
-      newRule.timestampColumn = lastSent;
-      newRule.ruleType = RuleTypes.TRIGGER;
-    }
-
-    database.save(Keys.RULE_KEY, newRule, function() {
-      if (rule.ruleType === RuleTypes.TRIGGER) {
-        /*google.script.run
-            .createTriggerBasedEmail();*/
-      }
-      else {
-        /*google.script.run
-            .sendManyEmails();*/
-      }
-
-      setTimeout(function() {
-        google.script.host.close();
-      }, 1000);
-    });
-  };
-
-  /**
    * Returns the Node of the active Card.
    *
    * @return {Node} The active Node.
@@ -255,7 +212,7 @@ var Cards = function(parent) {
    * Sets all Card values based upon the values in emailRule.
    * TODO Replace this with something more flexible.
    *
-   * @private
+   * @param {EmailRule} rule The EmailRule to set the Cards to. This is used for editing an existing EmailRule.
    */
   this.setRule = function(rule) {
     updateRule = rule;
@@ -282,6 +239,11 @@ var Cards = function(parent) {
     self.setType(rule.ruleType);
   };
 
+  /**
+   * This is used to prepare the CardsHandler for a new INSTANT or TRIGGER EmailRule creation.
+   *
+   * @param {RuleTypes} type One of the EmailRule RuleTypes.
+   */
   this.setType = function(type) {
     if (type === RuleTypes.INSTANT) {
       cards = createInstantList();
@@ -374,6 +336,11 @@ var Cards = function(parent) {
 
   //***** PRIVATE *****//
 
+  /**
+   * Sets the event handlers on the various Cards.
+   *
+   * @private
+   */
   var setupCards = function() {
     cardRepository[cardNames.sheet].attachEvent('card.hide', function(event) {
       var sheet = cardRepository[cardNames.sheet].getValue();
@@ -584,6 +551,12 @@ var Cards = function(parent) {
     });
   };
 
+  /**
+   * Creates the Card flow for Instant emails.
+   *
+   * @private
+   * @return {List} A List of Cards that can be used to create an INSTANT EmailRule.
+   */
   var createInstantList = function() {
     var list = new List();
 
@@ -608,6 +581,12 @@ var Cards = function(parent) {
     return list;
   };
 
+  /**
+   * Creates the Card flow for TRIGGER emails.
+   *
+   * @private
+   * @return {List} A List of Cards that can be used to create a TRIGGER EmailRule.
+   */
   var createTriggerList = function() {
     var list = new List();
 

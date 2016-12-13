@@ -185,7 +185,6 @@ var MailMan = function() {
    */
   this.done = function(event) {
     var rule = cards.getRule();
-    console.log(rule);
 
     if (rules.indexOf(rule.getID()) !== -1) {
       rules.update(rule);
@@ -195,14 +194,10 @@ var MailMan = function() {
     }
 
     database.save(Keys.RULE_KEY, rules.toConfig(), function() {
-      // if (cards.getRuleType() === RuleTypes.TRIGGER) {
-      //   google.script.run
-      //       .createTriggerBasedEmail();
-      // }
-      // else {
-      //   google.script.run
-      //       .sendManyEmails();
-      // }
+      if (cards.getRuleType() === RuleTypes.INSTANT) {
+        google.script.run
+            .sendManyEmails();
+      }
 
       setTimeout(function() {
         rulesListView.show();
