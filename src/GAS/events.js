@@ -34,6 +34,12 @@ function openSidebar() {
       .setTitle('Mailman')
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 
+  if (!validateTriggers()) {
+    // Rebuild all triggers.
+    log('Triggers should be rebuilt.');
+    createTriggerBasedEmail(); // IMPORTANT
+  }
+
   SpreadsheetApp.getUi().showSidebar(ui);
 }
 
@@ -49,6 +55,7 @@ function openFeedbackDialog() {
 
   SpreadsheetApp.getUi().showModalDialog(ui, 'Feedback');
 }
+
 
 /**
  * Creates an HTML modal for creating/viewing Mailman email templates.
