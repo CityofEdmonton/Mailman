@@ -20,7 +20,7 @@ var RuleContainer = function(config) {
 
   // ***** private methods ***** //
   this.init_ = function(config) {
-    console.log
+
     if (config.rules != null) {
 
       var ruleObjs = config.rules;
@@ -77,7 +77,7 @@ var RuleContainer = function(config) {
    *                          or the update will fail.
    */
   this.update = function(rule) {
-    console.log(rule);
+    
     var index = self.indexOf(rule.getID());
     if (index === -1) {
       throw new Error('Error: EmailRule not found.');
@@ -126,8 +126,13 @@ var RuleContainer = function(config) {
    *     See RuleContainer for a detailed description of all object members.
    */
   this.toConfig = function() {
+    var ruleConfigs = [];
+    for (var i = 0; i < rules.length; i++) {
+      ruleConfigs.push(rules[i].toConfig())
+    }
+
     return {
-      rules: rules
+      rules: ruleConfigs
     };
   };
 

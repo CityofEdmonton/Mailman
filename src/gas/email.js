@@ -88,7 +88,7 @@ function sendManyEmails() {
       if (sendConditionalEmail(header, row, rule)) {
         var dateColumn = rule.timestampColumn.replace(/(<<|>>)/g, '');
         var currentdate = new Date();
-        var datetime = (currentdate.getMonth()+1) + '/'
+        var datetime = (currentdate.getMonth() + 1) + '/'
                 + currentdate.getDate() + '/'
                 + currentdate.getFullYear() + ' '
                 + currentdate.getHours() + ':'
@@ -102,6 +102,24 @@ function sendManyEmails() {
     else if (rule.ruleType === RuleTypes.INSTANT) {
       sendBasicEmail(header, row, rule);
     }
+  }
+  log('Ending...');
+}
+
+function instantEmail(rule) {
+  // Validate each rule for each row
+  var ss = SpreadsheetApp.openById(load(PROPERTY_SS_ID));
+  var sheet = ss.getSheetByName(rule.sheet);
+  var range = sheet.getDataRange();
+  var header = getHeaderStrings(sheet);
+
+  log('Starting instant email...');
+  log(rule);
+
+  for (var i = 1; i < range.getNumRows(); i++) {
+    var row = getValues(sheet, i);
+
+    sendBasicEmail(header, row, rule);
   }
   log('Ending...');
 }

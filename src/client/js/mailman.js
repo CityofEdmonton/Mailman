@@ -196,7 +196,7 @@ var MailMan = function() {
     database.save(Keys.RULE_KEY, rules.toConfig(), function() {
       if (cards.getRuleType() === RuleTypes.INSTANT) {
         google.script.run
-            .sendManyEmails();
+            .instantEmail(rule.toConfig());
       }
 
       setTimeout(function() {
