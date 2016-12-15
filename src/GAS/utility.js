@@ -139,7 +139,7 @@ function replaceTags(text, headerToData) {
  *
  * @return {object} The rule in object form.
  */
-function getRule() {
+function getRules() {
   return JSON.parse(load(RULE_KEY));
 }
 

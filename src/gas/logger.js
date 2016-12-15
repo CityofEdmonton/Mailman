@@ -12,5 +12,5 @@ function log(text) {
     logSheet.deleteRows(2, logSheet.getLastRow() - 1);
   }
 
-  logSheet.appendRow([new Date().toString().slice(0, -15), text, Session.getActiveUser().getEmail()]);
+  logSheet.appendRow([new Date().toString().slice(0, -15), text, Session.getActiveUser().getEmail(), MAILMAN_VERSION]);
 }

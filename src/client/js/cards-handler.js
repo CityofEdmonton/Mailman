@@ -82,6 +82,10 @@ var Cards = function(parent) {
       if (cardRepository.hasOwnProperty(property) && cardRepository[property].setValue) {
         cardRepository[property].setValue('');
       }
+      if (cardRepository.hasOwnProperty(property) && cardRepository[property].hide) {
+        console.log('HIDE');
+        cardRepository[property].hide();
+      }
     }
 
     updateRule = null;
