@@ -29,12 +29,18 @@
   width: 20px;
   font-size: 20px;
   left: 18px;
-  bottom: 2px;
-  position: absolute;
+  bottom: 22px;
+  position: relative;
+}
+
+.rli-icon-container {
+  overflow: hidden;
+  cursor: pointer;
+  width: 60px;
 }
 
 .rli-stacked-icon {
-  position:absolute;
+  position:relative;
 }
 
 .rli-clickable {
