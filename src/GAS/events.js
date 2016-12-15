@@ -35,7 +35,7 @@ function openSidebar() {
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 
   if (!validateTriggers()) {
-    // Rebuild all triggers.
+    deleteForThisSheet();
     log('Triggers should be rebuilt.');
     //createTriggerBasedEmail(); // IMPORTANT
   }
