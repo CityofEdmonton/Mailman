@@ -1,6 +1,46 @@
 
 
 /**
+ * Ensures the assigned trigger is valid.
+ *
+ * @param  {Trigger} trigger The Trigger to test.
+ * @return {boolean} True if the Trigger is valid, false otherwise.
+ */
+function validateTrigger(trigger) {
+  if (trigger.getEventType() !== ScriptApp.EventType.CLOCK) {
+    log('Invalid trigger event type');
+    return false;
+  }
+  if (trigger.getHandlerFunction() !== 'sendManyEmails') {
+    log('Invalid trigger function');
+    return false;
+  }
+
+  return true;
+}
+
+
+/**
+ * Validates all of Mailman's triggers. Logs any issues for debug purposes.
+ *
+ * @return {boolean} True if the triggers are set up properly, false if they are set up incorrectly.
+ */
+function validateTriggers() {
+  SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+
+  var triggers = ScriptApp.getUserTriggers(ss);
+  log('Triggers:' + triggers.length);
+  if (triggers.length !== 1) {
+    log('Incorrect number of triggers: ' + triggers.length);
+    return false;
+  }
+
+  return validateTrigger(triggers[0]);
+}
+
+
+/**
  * This gets the values of the top-most row.
  *
  * @param {Sheet} sheet The sheet to find the headers in.
@@ -33,6 +73,7 @@ function getValues(sheet, rowIndex) {
   return values;
 }
 
+
 /**
  * This function gets a value from a specific Sheet, column and row.
  * The column is specified by header name. TODO Test me
@@ -53,6 +94,7 @@ function getValue(sheet, headerName, row) {
   return getValues(sheet, row)[column];
 }
 
+
 /**
  * This function gets a value from a specific Sheet, column and row.
  * The column is specified by header name. TODO Test me
@@ -72,6 +114,7 @@ function getCell(sheet, headerName, row) {
 
   return sheet.getDataRange().getCell(row + 1, column + 1);
 }
+
 
 /**
  * This function replaces  all instances of <<tags>> with the data in headerToData.
@@ -96,7 +139,7 @@ function replaceTags(text, headerToData) {
  *
  * @return {object} The rule in object form.
  */
-function getRule() {
+function getRules() {
   return JSON.parse(load(RULE_KEY));
 }
 
@@ -118,9 +161,10 @@ function columnToLetter(column) {
   return letter;
 }
 
+
 /**
  * Deletes all triggers associated with the given Sheet.
- * 
+ *
  * @param  {Sheet} sheet The Sheet to remove triggers from.
  */
 function deleteAllTriggers(sheet) {
@@ -130,6 +174,19 @@ function deleteAllTriggers(sheet) {
     ScriptApp.deleteTrigger(triggers[i]);
   }
 }
+
+
+/**
+ * Removes the triggers for the Sheet the add on is installed in.
+ * 
+ */
+function deleteForThisSheet() {
+  SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+
+  deleteAllTriggers(ss);
+}
+
 
 /**
  * Logs the Documents properties. Used for testing purposes.

@@ -13,9 +13,9 @@ function createTriggerBasedEmail() {
 
     log('Creating trigger.');
     ScriptApp.newTrigger('sendManyEmails')
-      .timeBased()
-      .everyHours(1)
-      .create();
+        .timeBased()
+        .everyHours(1)
+        .create();
   }
   catch (e) {
     log('Error: ' + e);

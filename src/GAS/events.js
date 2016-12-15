@@ -18,8 +18,8 @@ function onOpen(e) {
   var menu = SpreadsheetApp.getUi().createAddonMenu();
 
   menu.addItem('Setup', 'openSidebar')
-    .addItem('Feedback', 'openFeedbackDialog')
-    .addToUi();
+      .addItem('Feedback', 'openFeedbackDialog')
+      .addToUi();
 
   PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, SpreadsheetApp.getActiveSpreadsheet().getId());
 }
@@ -30,9 +30,15 @@ function onOpen(e) {
  *
  */
 function openSidebar() {
-  var ui = HtmlService.createHtmlOutputFromFile('new-email-dialog')
+  var ui = HtmlService.createHtmlOutputFromFile('mailman')
       .setTitle('Mailman')
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
+
+  if (!validateTriggers()) {
+    deleteForThisSheet();
+    log('Triggers should be rebuilt.');
+    //createTriggerBasedEmail(); // IMPORTANT
+  }
 
   SpreadsheetApp.getUi().showSidebar(ui);
 }
@@ -49,6 +55,7 @@ function openFeedbackDialog() {
 
   SpreadsheetApp.getUi().showModalDialog(ui, 'Feedback');
 }
+
 
 /**
  * Creates an HTML modal for creating/viewing Mailman email templates.

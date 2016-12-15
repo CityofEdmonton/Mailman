@@ -9,7 +9,12 @@ var Util = require('./util.js');
 var Cards = require('./cards-handler.js');
 var NavBar = require('./nav/navigation-bar.js');
 var PubSub = require('pubsub-js');
+var Rules = require('./data/rule-container.js');
+var RuleTypes = require('./data/rule-types.js');
 var EmailRule = require('./data/email-rule.js');
+var Database = require('./data/database.js');
+var Keys = require('./data/prop-keys.js');
+var RulesListView = require('./rules/rules-list-view.js');
 //var Intercom = require('./intercom.js');
 
 var MailMan = function() {
@@ -32,12 +37,19 @@ var MailMan = function() {
   // This handles all the nav-bar navigation.
   var navBar;
 
+  var database = new Database();
+
 	/**
 	 * Holds a mapping from dialog ID to the ID of the timeout that is used to
 	 * check if it was lost. This is needed so we can cancel the timeout when
 	 * the dialog is closed.
 	 */
 	var timeoutIds = {};
+
+  var rules;
+
+  var rulesListView;
+  var cardsView = $('#cards-view');
 
   //***** PUBLIC *****//
 
@@ -50,25 +62,80 @@ var MailMan = function() {
     self = this;
 
     // UI Configuration
-    intercom = Intercom.getInstance();
-    contentArea = $('#content-area');
-
-    cards = new Cards(contentArea);
-    setButtonState();
-
-    navBar = new NavBar($('#nav-row'), 3, function(e) {
-      var node = e.data;
-
-      cards.jumpTo(node.name);
-    });
-
-    navBar.buildNavTree(cards.getActiveNode());
-
     // All UI Bindings
     $('#step').on('click', self.next);
     $('#done').on('click', self.done);
     $('#back').on('click', self.back);
     $('#help').on('click', self.onHelpClick);
+
+    intercom = Intercom.getInstance();
+    contentArea = $('#content-area');
+    rulesListView = new RulesListView($('#layout-container'));
+    cards = new Cards(contentArea, null);
+
+    rulesListView.setTriggerHandler(function(e) {
+      cards.setType(RuleTypes.TRIGGER);
+
+      setButtonState();
+
+      navBar = new NavBar($('#nav-row'), 3, function(e) {
+        var node = e.data;
+
+        cards.jumpTo(node.name);
+      });
+      navBar.buildNavTree(cards.getActiveNode());
+
+      rulesListView.hide();
+      Util.setHidden(cardsView, false);
+    });
+
+    rulesListView.setInstantHandler(function(e) {
+      cards.setType(RuleTypes.INSTANT);
+
+      setButtonState();
+
+      navBar = new NavBar($('#nav-row'), 3, function(e) {
+        var node = e.data;
+
+        cards.jumpTo(node.name);
+      });
+      navBar.buildNavTree(cards.getActiveNode());
+
+      rulesListView.hide();
+      Util.setHidden(cardsView, false);
+    });
+
+    rulesListView.setDeleteHandler(function(rule) {
+      rules.remove(rule);
+    });
+
+    rulesListView.setEditHandler(function(rule) {
+      cards.setRule(rule);
+
+      setButtonState();
+
+      navBar = new NavBar($('#nav-row'), 3, function(e) {
+        var node = e.data;
+
+        cards.jumpTo(node.name);
+      });
+      navBar.buildNavTree(cards.getActiveNode());
+
+      rulesListView.hide();
+      Util.setHidden(cardsView, false);
+    });
+
+    database.load(Keys.RULE_KEY, function(config) {
+      try {
+        rules = new Rules(config);
+      }
+      catch (e) {
+        // We don't need to fail if the rule isn't properly formatted. Just log and continue on.
+        console.log(e);
+      }
+
+      rulesListView.setRulesContainer(rules);
+    });
 
     // PubSub bindings
 
@@ -84,8 +151,9 @@ var MailMan = function() {
 
   /**
    * This function goes to the next card.
-   * TODO There is non-DRY code between this function and this.back.
    *
+   * TODO There is non-DRY code between this function and this.back.
+   * TODO Move this into the CardHandler or a CardsView.
    * @param {event} event The event that triggered the function call.
    */
   this.next = function(event) {
@@ -97,8 +165,9 @@ var MailMan = function() {
 
   /**
    * This function goes to the previous card.
-   * TODO There is non-DRY code between this function and this.next.
    *
+   * TODO There is non-DRY code between this function and this.next.
+   * TODO Move this into the CardHandler or a CardsView.
    * @param {event} event The event that triggered the function call.
    */
   this.back = function(event) {
@@ -110,12 +179,36 @@ var MailMan = function() {
 
   /**
    * Submits data back to google.
-   * NOTE: GAS only
    *
+   * TODO Move this into the CardHandler or a CardsView.
    * @param {event} event The event that triggered the function call.
    */
   this.done = function(event) {
-    cards.submit();
+    var rule = cards.getRule();
+
+    if (rules.indexOf(rule.getID()) !== -1) {
+      rules.update(rule);
+    }
+    else {
+      rules.add(rule.toConfig());
+    }
+
+    database.save(Keys.RULE_KEY, rules.toConfig(), function() {
+      if (cards.getRuleType() === RuleTypes.INSTANT) {
+        google.script.run
+            .instantEmail(rule.toConfig());
+      }
+
+      setTimeout(function() {
+        rulesListView.show();
+        Util.setHidden(cardsView, true);
+
+        navBar.cleanup();
+        cards.cleanup();
+
+        // TODO reload rules
+      }, 1000);
+    });
   };
 
   /**

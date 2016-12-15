@@ -104,6 +104,12 @@ List.prototype.getNode = function(position) {
 };
 
 
+/**
+ * Gets the index of the supplied Node.
+ *
+ * @param  {Node} node The Node to find the index of.
+ * @return {number} The index of the supplied Node.
+ */
 List.prototype.getPosition = function(node) {
   var currentNode = this.head;
   var position = -1;
