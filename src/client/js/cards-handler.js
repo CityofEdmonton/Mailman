@@ -83,7 +83,6 @@ var Cards = function(parent) {
         cardRepository[property].setValue('');
       }
       if (cardRepository.hasOwnProperty(property) && cardRepository[property].hide) {
-        console.log('HIDE');
         cardRepository[property].hide();
       }
     }
