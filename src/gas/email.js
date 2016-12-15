@@ -101,7 +101,7 @@ function sendManyEmails() {
 function triggerEmail(ss, rule) {
   log('Starting trigger rule...');
   log(rule);
-  if (validateRule(rule)) {
+  if (!validateRule(rule)) {
     return;
   }
 
