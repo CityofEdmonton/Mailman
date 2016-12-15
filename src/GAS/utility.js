@@ -177,6 +177,18 @@ function deleteAllTriggers(sheet) {
 
 
 /**
+ * Removes the triggers for the Sheet the add on is installed in.
+ * 
+ */
+function deleteForThisSheet() {
+  SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+
+  deleteAllTriggers(ss);
+}
+
+
+/**
  * Logs the Documents properties. Used for testing purposes.
  *
  */
