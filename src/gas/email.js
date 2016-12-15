@@ -57,9 +57,9 @@ function sendConditionalEmail(headerRow, row, rule) {
 
   if (sendColumn.toLowerCase() === 'true') {
     log('Email info: \nto: ' + to +
-      '\nsubject: ' + subject +
-      '\nbody: ' + body +
-      '\nsendColumn: ' + sendColumn
+        '\nsubject: ' + subject +
+        '\nbody: ' + body +
+        '\nsendColumn: ' + sendColumn
     );
 
     GmailApp.sendEmail(to, subject, body);
@@ -116,12 +116,12 @@ function triggerEmail(ss, rule) {
     if (sendConditionalEmail(header, row, rule)) {
       var dateColumn = rule.timestampColumn.replace(/(<<|>>)/g, '');
       var currentDate = new Date();
-      var datetime = (currentDate.getMonth() + 1) + '/'
-              + currentDate.getDate() + '/'
-              + currentDate.getFullYear() + ' '
-              + currentDate.getHours() + ':'
-              + currentDate.getMinutes() + ':'
-              + currentDate.getSeconds();
+      var datetime = (currentDate.getMonth() + 1) + '/' +
+              currentDate.getDate() + '/' +
+              currentDate.getFullYear() + ' ' +
+              currentDate.getHours() + ':' +
+              currentDate.getMinutes() + ':' +
+              currentDate.getSeconds();
 
       var cell = getCell(sheet, dateColumn, i);
       cell.setValue(datetime);
@@ -187,12 +187,12 @@ function validateRule(rule) {
     return false;
   }
   if (rule.ruleType === RuleTypes.TRIGGER &&
-    rule.sendColumn == null) {
+      rule.sendColumn == null) {
     log('EmailRule config is missing "sendColumn".');
     return false;
   }
   if (rule.ruleType === RuleTypes.TRIGGER &&
-    rule.timestampColumn == null) {
+      rule.timestampColumn == null) {
     log('EmailRule config is missing "timestampColumn".');
     return false;
   }

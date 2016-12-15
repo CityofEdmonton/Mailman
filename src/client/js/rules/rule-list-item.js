@@ -5,6 +5,15 @@ var ID = require('../data/id.js');
 var Util = require('../util.js');
 var RuleTypes = require('../data/rule-types.js');
 
+
+
+/**
+ * Used to display an EmailRule. It has icons for editing and deleting the rule.
+ *
+ * @constructor
+ * @param {jquery} appendTo The object to append this component to.
+ * @param {EmailRule} rule The rule to display.
+ */
 var RuleListItem = function(appendTo, rule) {
   // private variables
   var self = this;
@@ -21,7 +30,6 @@ var RuleListItem = function(appendTo, rule) {
   var rule;
 
   // public variables
-
 
   //***** private methods *****//
 
@@ -61,15 +69,29 @@ var RuleListItem = function(appendTo, rule) {
 
   //***** privileged methods *****//
 
+  /**
+   * Sets the handler for when the delete icon is clicked.
+   *
+   * @param {Function} callback The function to call.
+   */
   this.setDeleteHandler = function(callback) {
     deleteIcon.on('click', rule, callback);
   };
 
+  /**
+   * Sets the handler for when the edit icon is clicked.
+   *
+   * @param {Function} callback The function to call.
+   */
   this.setEditHandler = function(callback) {
     triggerIcon.on('click', rule, callback);
     instantIcon.on('click', rule, callback);
   };
 
+  /**
+   * Cleans up this component. This involves removing the HTML from the DOM.
+   *
+   */
   this.cleanup = function() {
     base.remove();
   };
@@ -77,4 +99,6 @@ var RuleListItem = function(appendTo, rule) {
   this.init_(appendTo, rule);
 };
 
+
+/** */
 module.exports = RuleListItem;

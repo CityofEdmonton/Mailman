@@ -54,6 +54,7 @@ Util.reverseObject = function(map) {
   return reverseMap;
 };
 
+
 /**
  * A generic UI element hider. Removes the object from the flow of the document.
  *
@@ -68,6 +69,7 @@ Util.setHidden = function(object, state) {
     object.removeClass('hidden');
   }
 };
+
 
 /**
  * A generic UI element hider. Doesn't remove the object from the flow of the document.

@@ -4,9 +4,13 @@ var Database = require('./database.js');
 var PubSub = require('pubsub-js');
 var Keys = require('./prop-keys.js');
 
+
+
 /**
  * This model holds all EmailRules. It is built to make serialization and deserialization easy.
  *
+ * @param {Object} config The Object used to rebuild the RuleContainer.
+ * @param {Array<EmailRule>} config.rules The EmailRules that this container holds.
  * @constructor
  */
 var RuleContainer = function(config) {
@@ -77,7 +81,7 @@ var RuleContainer = function(config) {
    *                          or the update will fail.
    */
   this.update = function(rule) {
-    
+
     var index = self.indexOf(rule.getID());
     if (index === -1) {
       throw new Error('Error: EmailRule not found.');
@@ -87,7 +91,7 @@ var RuleContainer = function(config) {
     database.save(Keys.RULE_KEY, self.toConfig(), function() {
       PubSub.publish('Rules.update');
     });
-  }
+  };
 
   /**
    * Gets an EmailRule by index.
@@ -117,7 +121,7 @@ var RuleContainer = function(config) {
    */
   this.length = function() {
     return rules.length;
-  }
+  };
 
   /**
    * Converts this RuleContainer to a serializeable form.
@@ -128,7 +132,7 @@ var RuleContainer = function(config) {
   this.toConfig = function() {
     var ruleConfigs = [];
     for (var i = 0; i < rules.length; i++) {
-      ruleConfigs.push(rules[i].toConfig())
+      ruleConfigs.push(rules[i].toConfig());
     }
 
     return {
@@ -139,4 +143,6 @@ var RuleContainer = function(config) {
   this.init_(config);
 };
 
+
+/** */
 module.exports = RuleContainer;

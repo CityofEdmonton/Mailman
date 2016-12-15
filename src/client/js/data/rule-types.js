@@ -3,4 +3,6 @@ var RuleTypes = {
   TRIGGER: 'TRIGGER'
 };
 
+
+/** */
 module.exports = RuleTypes;

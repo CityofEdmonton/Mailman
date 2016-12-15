@@ -5,6 +5,7 @@ var TextareaCard = require('../card/card-textarea.js');
 
 var CardsConfig = {};
 
+
 /**
  * Initializes a Card repository.
  *
@@ -89,28 +90,30 @@ CardsConfig.buildCardRepo = function() {
   });
 
   repo[CardNames.lastSent] = new InputCard(contentArea, {
-      title: 'Where should Mailman keep track of the previously sent email?',
-      paragraphs: [
-        'Every time Mailman sends an email, it records the time in a cell.',
-        'Using the timestamp, you can determine whether you want to send another email.'
-      ],
-      help: 'This timestamp can be used for some interesting things! ' +
-          'Imagine you are interested in sending an email to someone every day (just to annoy them). ' +
-          'You could just set the formula in the previously mentioned column to ' +
-          '"=TODAY() - {put the last sent here} > 1". Now an email will be sent every time TRUE pops up (every day).',
-      label: 'Last sent...'
-    });
+    title: 'Where should Mailman keep track of the previously sent email?',
+    paragraphs: [
+      'Every time Mailman sends an email, it records the time in a cell.',
+      'Using the timestamp, you can determine whether you want to send another email.'
+    ],
+    help: 'This timestamp can be used for some interesting things! ' +
+        'Imagine you are interested in sending an email to someone every day (just to annoy them). ' +
+        'You could just set the formula in the previously mentioned column to ' +
+        '"=TODAY() - {put the last sent here} > 1". Now an email will be sent every time TRUE pops up (every day).',
+    label: 'Last sent...'
+  });
 
-    repo[CardNames.triggerConfirmation] = new TitledCard(contentArea, {
-      title: 'Submit the trigger?',
-      paragraphs: [
-        'This will regularly check the previously mentioned column for the value TRUE. ' +
-            'When TRUE is found in the column, an email is sent out with that row\'s information. ',
-            'If you\'d like to send now, just select the related option from the bottom right.'
-      ]
-    });
+  repo[CardNames.triggerConfirmation] = new TitledCard(contentArea, {
+    title: 'Submit the trigger?',
+    paragraphs: [
+      'This will regularly check the previously mentioned column for the value TRUE. ' +
+          'When TRUE is found in the column, an email is sent out with that row\'s information. ',
+      'If you\'d like to send now, just select the related option from the bottom right.'
+    ]
+  });
 
-    return repo;
+  return repo;
 };
 
+
+/** */
 module.exports = CardsConfig;

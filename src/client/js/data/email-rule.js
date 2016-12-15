@@ -3,6 +3,24 @@
 var ID = require('./id.js');
 var RuleTypes = require('./rule-types.js');
 
+
+
+/**
+ * This resource represents an email blast. They can be one time, or recurring (TRIGGER)
+ * emails.
+ *
+ * @constructor
+ * @param {Object} config The config Object used to initialize this EmailRule.
+ * @param {string} config.ruleType The type of EmailRule. Can be INSTANT (one time) or TRIGGER (reoccurring).
+ * @param {string} config.to The tagged column that contains the username of the recipient.
+ * @param {string} config.sheet The name of the Sheet that contains all the needed columns.
+ *                              Mailman requires all columns to be in the same sheet.
+ * @param {string} config.subject The tagged subject of the EmailRule. This can contain tags and normal strings.
+ * @param {string} config.body The tagged body of the EmailRule. It can contain text and tags together.
+ *                             TODO support HTML.
+ * @param {string} config.sendColumn The tagged column that contains the truthy value.
+ * @param {string} config.timestampColumn The tagged column that Mailman will edit when an email is sent.
+ */
 var EmailRule = function(config) {
   if (config.ruleType == null) {
     throw new Error('EmailRule config is missing "ruleType".');
@@ -20,11 +38,11 @@ var EmailRule = function(config) {
     throw new Error('EmailRule config is missing "body".');
   }
   if (config.ruleType === RuleTypes.TRIGGER &&
-    config.sendColumn == null) {
+      config.sendColumn == null) {
     throw new Error('EmailRule config is missing "sendColumn".');
   }
   if (config.ruleType === RuleTypes.TRIGGER &&
-    config.timestampColumn == null) {
+      config.timestampColumn == null) {
     throw new Error('EmailRule config is missing "timestampColumn".');
   }
 
@@ -32,6 +50,7 @@ var EmailRule = function(config) {
 
   // This id is only used client-side. It allows each rule to be distinguished from the next.
   var id = ID();
+  var self = this;
 
   // public variables
 
@@ -55,17 +74,11 @@ var EmailRule = function(config) {
   /**
    * Checks whether a given email object is equal to either the supplied object or the supplied id.
    *
-   * @param  {number|EmailRule}  idOrObject Either the id of the EmailRule or the EmailRule.
-   * @return {Boolean} True if the given value is equal to this EmailRule.
+   * @param  {EmailRule} rule Either the id of the EmailRule or the EmailRule.
+   * @return {boolean} True if the given value is equal to this EmailRule.
    */
   this.isEqual = function(rule) {
     return rule.getID() === id;
-    // if (typeof idOrObject === 'number') {
-    //   return this.id === idOrObject;
-    // }
-    // else {
-    //   return this === idOrObject;
-    // }
   };
 
   /**
@@ -85,13 +98,13 @@ var EmailRule = function(config) {
    */
   this.toConfig = function() {
     return {
-      ruleType: this.ruleType,
-      to: this.to,
-      sheet: this.sheet,
-      subject: this.subject,
-      body: this.body,
-      sendColumn: this.sendColumn,
-      timestampColumn: this.timestampColumn
+      ruleType: self.ruleType,
+      to: self.to,
+      sheet: self.sheet,
+      subject: self.subject,
+      body: self.body,
+      sendColumn: self.sendColumn,
+      timestampColumn: self.timestampColumn
     };
   };
 

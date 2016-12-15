@@ -6,6 +6,8 @@ var RuleListItem = require('./rule-list-item.js');
 var Util = require('../util.js');
 var PubSub = require('pubsub-js');
 
+
+
 /**
  * This view displays all of the EmailRules. Each EmailRule corresponds to a RuleListItem.
  * This view responds to the following PubSub events: Rules.delete, Rules.add, Rules.update.
@@ -82,7 +84,7 @@ var RulesListView = function(appendTo) {
   this.setRulesContainer = function(container) {
     ruleContainer = container;
     rebuild();
-  }
+  };
 
   /**
    * Adds a new RuleListItem to this view.
@@ -153,4 +155,6 @@ var RulesListView = function(appendTo) {
   this.init_(appendTo);
 };
 
+
+/** */
 module.exports = RulesListView;

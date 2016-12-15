@@ -1,3 +1,10 @@
+
+
+/**
+ * Exports an Object containing all the Card names.
+ *
+ * @type {Object}
+ */
 module.exports = {
   welcome: 'Welcome',
   sheet: 'Sheet',

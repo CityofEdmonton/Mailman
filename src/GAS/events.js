@@ -18,8 +18,8 @@ function onOpen(e) {
   var menu = SpreadsheetApp.getUi().createAddonMenu();
 
   menu.addItem('Setup', 'openSidebar')
-    .addItem('Feedback', 'openFeedbackDialog')
-    .addToUi();
+      .addItem('Feedback', 'openFeedbackDialog')
+      .addToUi();
 
   PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, SpreadsheetApp.getActiveSpreadsheet().getId());
 }

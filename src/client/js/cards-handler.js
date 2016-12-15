@@ -131,7 +131,7 @@ var Cards = function(parent) {
    */
   this.getActiveNode = function() {
     return activeCard;
-  }
+  };
 
   /**
    * Checks to see if the card handler is at the first Card.
@@ -244,7 +244,7 @@ var Cards = function(parent) {
     hideHelp();
     activeCard = cards.head;
     self.jumpTo(activeCard.name);
-  }
+  };
 
   /**
    * Gets the active rules email type.
@@ -264,7 +264,7 @@ var Cards = function(parent) {
     }
 
     return RuleTypes.INSTANT;
-  }
+  };
 
   /**
    * Gets an EmailRule associated with this series of Cards.
@@ -613,6 +613,7 @@ var Cards = function(parent) {
 };
 
 /***** GAS Response Functions *****/
+
 
 /**  */
 module.exports = Cards;
