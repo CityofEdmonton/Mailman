@@ -135,6 +135,9 @@ var MailMan = function() {
       }
 
       rulesListView.setRulesContainer(rules);
+    }, function() {
+      rules = new Rules({});
+      rulesListView.setRulesContainer(rules);
     });
 
     // PubSub bindings

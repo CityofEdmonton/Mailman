@@ -20,8 +20,6 @@ function onOpen(e) {
   menu.addItem('Setup', 'openSidebar')
       .addItem('Feedback', 'openFeedbackDialog')
       .addToUi();
-
-  PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, SpreadsheetApp.getActiveSpreadsheet().getId());
 }
 
 
@@ -30,6 +28,8 @@ function onOpen(e) {
  *
  */
 function openSidebar() {
+  PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, SpreadsheetApp.getActiveSpreadsheet().getId());
+  
   var ui = HtmlService.createHtmlOutputFromFile('mailman')
       .setTitle('Mailman')
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
