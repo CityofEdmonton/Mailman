@@ -29,7 +29,7 @@ function onOpen(e) {
  */
 function openSidebar() {
   PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, SpreadsheetApp.getActiveSpreadsheet().getId());
-  
+
   var ui = HtmlService.createHtmlOutputFromFile('mailman')
       .setTitle('Mailman')
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
@@ -37,7 +37,7 @@ function openSidebar() {
   if (!validateTriggers()) {
     deleteForThisSheet();
     log('Triggers should be rebuilt.');
-    //createTriggerBasedEmail(); // IMPORTANT
+    createTriggerBasedEmail(); // IMPORTANT
   }
 
   SpreadsheetApp.getUi().showSidebar(ui);

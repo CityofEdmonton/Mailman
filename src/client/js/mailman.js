@@ -216,7 +216,7 @@ var MailMan = function() {
 
   /**
    * This function toggles the state of the help <p> tags.
-   *
+   *TODO
    */
   this.onHelpClick = function() {
     cards.toggleHelp();

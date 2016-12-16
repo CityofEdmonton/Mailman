@@ -56,12 +56,7 @@ function sendConditionalEmail(headerRow, row, rule) {
   var sendColumn = replaceTags(rule.sendColumn, combinedObj);
 
   if (sendColumn.toLowerCase() === 'true') {
-    log('Email info: \nto: ' + to +
-        '\nsubject: ' + subject +
-        '\nbody: ' + body +
-        '\nsendColumn: ' + sendColumn
-    );
-
+    log('Sending email to ' + to);
     GmailApp.sendEmail(to, subject, body);
 
     return true;
@@ -82,15 +77,12 @@ function sendManyEmails() {
 
   // Validate each rule for each row
   var ss = SpreadsheetApp.openById(load(PROPERTY_SS_ID));
-  var sheet = ss.getSheetByName(rule.sheet);
-  var range = sheet.getDataRange();
-  var header = getHeaderStrings(sheet);
 
+  log(rules.rules);
   for (var i = 0; i < rules.rules.length; i++) {
     var rule = rules.rules[i];
 
     if (rule.ruleType === RuleTypes.TRIGGER) {
-      // We only timestamp when the email successfully sends.
       triggerEmail(ss, rule);
     }
   }
@@ -125,9 +117,6 @@ function triggerEmail(ss, rule) {
 
       var cell = getCell(sheet, dateColumn, i);
       cell.setValue(datetime);
-    }
-    else {
-      log('Email failed for row ' + i);
     }
   }
 
