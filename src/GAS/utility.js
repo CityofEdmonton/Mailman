@@ -41,15 +41,23 @@ function validateTriggers() {
 
 
 /**
- * This gets the values of the top-most row.
+ * This gets the values of the header row for the given EmailRule. It's worth noting that
+ * the parameter object isn't actually an EmailRule, it just needs to have the sheet and headerRow
+ * properties.
  *
- * @param {Sheet} sheet The sheet to find the headers in.
+ * @param {Object} rule The EmailRule to find header values for.
+ * @param {string} rule.sheet The sheet name.
+ * @param {string} rule.headerRow The 1-indexed row of the header.
  * @return {Array<string>} The array of values.
  */
-function getHeaderStrings(sheet) {
-  var row = parseInt(getHeaderRow());
+function getHeaderStrings(rule) {
+  SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName(rule.sheet);
 
-  return getValues(sheet, row - 1);
+  var value = getValues(sheet, parseInt(rule.headerRow) - 1);
+  log(JSON.stringify(value));
+  return value;
 }
 
 
@@ -67,7 +75,7 @@ function getValues(sheet, rowIndex) {
 
   var values = [];
   for (var i = 1; i <= row.getNumColumns(); i++) {
-    values.push(row.getCell(1, i).getValue());
+    values.push(row.getCell(1, i).getDisplayValue());
   }
 
   return values;
@@ -178,7 +186,7 @@ function deleteAllTriggers(sheet) {
 
 /**
  * Removes the triggers for the Sheet the add on is installed in.
- * 
+ *
  */
 function deleteForThisSheet() {
   SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);

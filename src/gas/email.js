@@ -99,7 +99,7 @@ function triggerEmail(ss, rule) {
 
   var sheet = ss.getSheetByName(rule.sheet);
   var range = sheet.getDataRange();
-  var header = getHeaderStrings(sheet);
+  var header = getHeaderStrings(rule);
 
   for (var i = 1; i < range.getNumRows(); i++) {
     var row = getValues(sheet, i);
@@ -136,11 +136,11 @@ function instantEmail(rule) {
   var ss = SpreadsheetApp.openById(load(PROPERTY_SS_ID));
   var sheet = ss.getSheetByName(rule.sheet);
   var range = sheet.getDataRange();
-  var header = getHeaderStrings(sheet);
+  var header = getHeaderStrings(rule);
 
   for (var i = 1; i < range.getNumRows(); i++) {
     var row = getValues(sheet, i);
-
+    log(row);
     try {
       sendBasicEmail(header, row, rule);
     }

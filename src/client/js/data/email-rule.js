@@ -55,6 +55,7 @@ var EmailRule = function(config) {
   // public variables
 
   this.ruleType = config.ruleType;
+  this.headerRow = config.headerRow | '1';
 
   // INSTANT
   this.to = config.to;
@@ -99,6 +100,7 @@ var EmailRule = function(config) {
   this.toConfig = function() {
     return {
       ruleType: self.ruleType,
+      headerRow: self.headerRow,
       to: self.to,
       sheet: self.sheet,
       subject: self.subject,
