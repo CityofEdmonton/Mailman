@@ -41,15 +41,23 @@ function validateTriggers() {
 
 
 /**
- * This gets the values of the top-most row.
+ * This gets the values of the header row for the given EmailRule. It's worth noting that
+ * the parameter object isn't actually an EmailRule, it just needs to have the sheet and headerRow
+ * properties.
  *
- * @param {Sheet} sheet The sheet to find the headers in.
+ * @param {Object} rule The EmailRule to find header values for.
+ * @param {string} rule.sheet The sheet name.
+ * @param {string} rule.headerRow The 1-indexed row of the header.
  * @return {Array<string>} The array of values.
  */
-function getHeaderStrings(sheet) {
-  var row = parseInt(getHeaderRow());
+function getHeaderStrings(rule) {
+  SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName(rule.sheet);
 
-  return getValues(sheet, row - 1);
+  var value = getValues(sheet, parseInt(rule.headerRow) - 1);
+
+  return value;
 }
 
 
@@ -67,52 +75,10 @@ function getValues(sheet, rowIndex) {
 
   var values = [];
   for (var i = 1; i <= row.getNumColumns(); i++) {
-    values.push(row.getCell(1, i).getValue());
+    values.push(row.getCell(1, i).getDisplayValue());
   }
 
   return values;
-}
-
-
-/**
- * This function gets a value from a specific Sheet, column and row.
- * The column is specified by header name. TODO Test me
- *
- * @param {Sheet} sheet The Sheet to find the value in.
- * @param {String} headerName The name of the header. This determines the column to look in.
- * @param {Number} row The 0-based row index. 0 is the very top row in the Sheet.
- * @return {String} The string value found in the given row/column/Sheet.
- */
-function getValue(sheet, headerName, row) {
-  var headerStrings = getHeaderStrings(sheet);
-  var column = headerStrings.indexOf(headerName);
-
-  if (column === -1) {
-    return null;
-  }
-
-  return getValues(sheet, row)[column];
-}
-
-
-/**
- * This function gets a value from a specific Sheet, column and row.
- * The column is specified by header name. TODO Test me
- *
- * @param {Sheet} sheet The Sheet to find the value in.
- * @param {String} headerName The name of the header. This determines the column to look in.
- * @param {Number} row The 0-based row index. 0 is the very top row in the Sheet.
- * @return {String} The string value found in the given row/column/Sheet.
- */
-function getCell(sheet, headerName, row) {
-  var headerStrings = getHeaderStrings(sheet);
-  var column = headerStrings.indexOf(headerName);
-
-  if (column === -1) {
-    return null;
-  }
-
-  return sheet.getDataRange().getCell(row + 1, column + 1);
 }
 
 
@@ -131,16 +97,6 @@ function replaceTags(text, headerToData) {
   });
 
   return dataText;
-}
-
-
-/**
- * Get the rule for this document.
- *
- * @return {object} The rule in object form.
- */
-function getRules() {
-  return JSON.parse(load(RULE_KEY));
 }
 
 
@@ -178,7 +134,7 @@ function deleteAllTriggers(sheet) {
 
 /**
  * Removes the triggers for the Sheet the add on is installed in.
- * 
+ *
  */
 function deleteForThisSheet() {
   SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);

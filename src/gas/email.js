@@ -56,12 +56,7 @@ function sendConditionalEmail(headerRow, row, rule) {
   var sendColumn = replaceTags(rule.sendColumn, combinedObj);
 
   if (sendColumn.toLowerCase() === 'true') {
-    log('Email info: \nto: ' + to +
-        '\nsubject: ' + subject +
-        '\nbody: ' + body +
-        '\nsendColumn: ' + sendColumn
-    );
-
+    log('Sending email to ' + to);
     GmailApp.sendEmail(to, subject, body);
 
     return true;
@@ -78,22 +73,21 @@ function sendConditionalEmail(headerRow, row, rule) {
 function sendManyEmails() {
   log('Starting rules...');
   var rules = getRules();
-  log(rules);
 
   // Validate each rule for each row
   var ss = SpreadsheetApp.openById(load(PROPERTY_SS_ID));
-  var sheet = ss.getSheetByName(rule.sheet);
-  var range = sheet.getDataRange();
-  var header = getHeaderStrings(sheet);
+
+  log(JSON.stringify(rules));
+  log('For sheet: ' + ss.getUrl());
 
   for (var i = 0; i < rules.rules.length; i++) {
     var rule = rules.rules[i];
 
     if (rule.ruleType === RuleTypes.TRIGGER) {
-      // We only timestamp when the email successfully sends.
       triggerEmail(ss, rule);
     }
   }
+
   log('Ending rules...');
 }
 
@@ -107,9 +101,9 @@ function triggerEmail(ss, rule) {
 
   var sheet = ss.getSheetByName(rule.sheet);
   var range = sheet.getDataRange();
-  var header = getHeaderStrings(sheet);
+  var header = getHeaderStrings(rule);
 
-  for (var i = 1; i < range.getNumRows(); i++) {
+  for (var i = parseInt(rule.headerRow); i < range.getNumRows(); i++) {
     var row = getValues(sheet, i);
 
     // We only timestamp when the email successfully sends.
@@ -125,9 +119,6 @@ function triggerEmail(ss, rule) {
 
       var cell = getCell(sheet, dateColumn, i);
       cell.setValue(datetime);
-    }
-    else {
-      log('Email failed for row ' + i);
     }
   }
 
@@ -147,9 +138,11 @@ function instantEmail(rule) {
   var ss = SpreadsheetApp.openById(load(PROPERTY_SS_ID));
   var sheet = ss.getSheetByName(rule.sheet);
   var range = sheet.getDataRange();
-  var header = getHeaderStrings(sheet);
+  var header = getHeaderStrings(rule);
 
-  for (var i = 1; i < range.getNumRows(); i++) {
+  log('For sheet: ' + ss.getUrl());
+
+  for (var i = parseInt(rule.headerRow); i < range.getNumRows(); i++) {
     var row = getValues(sheet, i);
 
     try {
@@ -172,6 +165,10 @@ function validateRule(rule) {
   }
   if (rule.to == null) {
     log('EmailRule config is missing "to".');
+    return false;
+  }
+  if (rule.headerRow == null) {
+    log('EmailRule config is missing "headerRow".');
     return false;
   }
   if (rule.sheet == null) {

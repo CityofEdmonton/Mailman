@@ -209,6 +209,9 @@ var Cards = function(parent) {
     if (rule.sheet) {
       cardRepository[CardNames.sheet].setValue(rule.sheet);
     }
+    if (rule.headerRow) {
+      cardRepository[CardNames.row].setValue(rule.headerRow);
+    }
     if (rule.to) {
       cardRepository[CardNames.to].setValue(rule.to);
     }
@@ -267,60 +270,40 @@ var Cards = function(parent) {
   };
 
   /**
-   * Gets an EmailRule associated with this series of Cards.
+   * Gets an EmailRule associated with this series of Cards. The interaction of the update/create portion
+   * makes this way more confusing than it need be.
    *
-   * TODO Refactor this. The multiple returns makes flow confusing.
+   * TODO Refactor this. The multiple returns makes flow confusing. It still sucks.
    * @return {EmailRule} Created from the various Cards this handler is supervising.
    */
   this.getRule = function() {
-
-    if (self.getRuleType() === RuleTypes.TRIGGER) {
-      if (updateRule !== null) {
-        updateRule.ruleType = RuleTypes.TRIGGER;
-        updateRule.to = self.getCard(CardNames.to).getValue();
-        updateRule.subject = self.getCard(CardNames.subject).getValue();
-        updateRule.body = self.getCard(CardNames.body).getValue();
-        updateRule.sheet = self.getCard(CardNames.sheet).getValue();
-        updateRule.sendColumn = self.getCard(CardNames.shouldSend).getValue();
-        updateRule.timestampColumn = self.getCard(CardNames.lastSent).getValue();
-
-        return updateRule;
-      }
-
-      return new EmailRule({
-        ruleType: RuleTypes.TRIGGER,
-        to: self.getCard(CardNames.to).getValue(),
-        subject: self.getCard(CardNames.subject).getValue(),
-        body: self.getCard(CardNames.body).getValue(),
-        sheet: self.getCard(CardNames.sheet).getValue(),
-        sendColumn: self.getCard(CardNames.shouldSend).getValue(),
-        timestampColumn: self.getCard(CardNames.lastSent).getValue()
-      });
+    var config = {};
+    if (updateRule !== null) {
+      config = updateRule;
     }
-    else if (self.getRuleType() === RuleTypes.INSTANT) {
-      if (updateRule !== null) {
-        updateRule.ruleType = RuleTypes.INSTANT;
-        updateRule.to = self.getCard(CardNames.to).getValue();
-        updateRule.subject = self.getCard(CardNames.subject).getValue();
-        updateRule.body = self.getCard(CardNames.body).getValue();
-        updateRule.sheet = self.getCard(CardNames.sheet).getValue();
-        updateRule.sendColumn = null;
-        updateRule.timestampColumn = null;
 
-        return updateRule;
-      }
-
-      return new EmailRule({
-        ruleType: RuleTypes.INSTANT,
-        to: self.getCard(CardNames.to).getValue(),
-        subject: self.getCard(CardNames.subject).getValue(),
-        body: self.getCard(CardNames.body).getValue(),
-        sheet: self.getCard(CardNames.sheet).getValue()
-      });
+    config.to = self.getCard(CardNames.to).getValue();
+    config.subject = self.getCard(CardNames.subject).getValue();
+    config.body = self.getCard(CardNames.body).getValue();
+    config.sheet = self.getCard(CardNames.sheet).getValue();
+    if (self.getRuleType() === RuleTypes.TRIGGER) {
+      config.sendColumn = self.getCard(CardNames.shouldSend).getValue();
+      config.timestampColumn = self.getCard(CardNames.lastSent).getValue();
+      config.ruleType = RuleTypes.TRIGGER;
     }
     else {
-      throw new Error('Unknown ruletype: ' + self.getRuleType());
+      config.ruleType = RuleTypes.INSTANT;
     }
+
+    if (self.getCard(CardNames.row).getValue() !== '') {
+      config.headerRow = self.getCard(CardNames.row).getValue();
+    }
+
+    if (updateRule !== null) {
+      return updateRule;
+    }
+
+    return new EmailRule(config);
   };
 
   //***** PRIVATE *****//
@@ -335,24 +318,21 @@ var Cards = function(parent) {
       var sheet = cardRepository[CardNames.sheet].getValue();
 
       if (sheet !== '') {
+        var row = '1';
+        if (updateRule) {
+          row = updateRule.headerRow;
+        }
+
         google.script.run
             .withSuccessHandler(setColumns)
-            .getHeaderNames(sheet);
+            .getHeaderStrings({
+              sheet: sheet,
+              headerRow: row
+            });
       }
     });
 
-    cardRepository[CardNames.to].addOption('change header row', function(e) {
-
-      // Add another card before this one, but after Sheet
-
-      var headerNode = insertNode(CardNames.sheet, cardRepository[CardNames.row]);
-      headerNode.name = CardNames.row;
-
-      self.jumpTo(CardNames.row);
-
-      // Remove the option
-      cardRepository[CardNames.to].removeOption('change header row');
-    });
+    cardRepository[CardNames.to].addOption('change header row', changeHeaderRow);
 
     cardRepository[CardNames.row].attachEvent('card.hide', function(event, card) {
 
@@ -365,12 +345,29 @@ var Cards = function(parent) {
         var numTest = parseInt(row);
         if (!isNaN(numTest) && numTest > 0) {
           google.script.run
-              .withSuccessHandler(setColumns)
-              .setHeaderRow(row, sheet);
+            .withSuccessHandler(setColumns)
+            .getHeaderStrings({
+              sheet: sheet,
+              headerRow: row
+            });
         }
       }
 
     });
+  };
+
+  var changeHeaderRow = function(e) {
+    // Add another card before this one, but after Sheet
+
+    if (getNode(CardNames.row) === null) {
+      var headerNode = insertNode(CardNames.sheet, cardRepository[CardNames.row]);
+      headerNode.name = CardNames.row;
+    }
+
+    self.jumpTo(CardNames.row);
+
+    // Remove the option
+    //cardRepository[CardNames.to].removeOption('change header row');
   };
 
   /**
@@ -465,16 +462,6 @@ var Cards = function(parent) {
       node.data.hide();
       node = node.next;
     }
-  };
-
-  /**
-   * Called when a rule is successfully created.
-   *
-   * @private
-   * @param {boolean} serverReturn A boolean indicating not much.
-   */
-  var ruleCreationSuccess = function(serverReturn) {
-    google.script.host.close();
   };
 
   /**

@@ -135,6 +135,9 @@ var MailMan = function() {
       }
 
       rulesListView.setRulesContainer(rules);
+    }, function() {
+      rules = new Rules({});
+      rulesListView.setRulesContainer(rules);
     });
 
     // PubSub bindings
@@ -213,7 +216,7 @@ var MailMan = function() {
 
   /**
    * This function toggles the state of the help <p> tags.
-   *
+   *TODO
    */
   this.onHelpClick = function() {
     cards.toggleHelp();

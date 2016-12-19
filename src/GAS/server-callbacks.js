@@ -23,36 +23,6 @@ function createTriggerBasedEmail() {
 
 
 /**
- * Gets the property PROPERTY_HEADER_ROW. This is the value used as a header row.
- *
- * @return {string} The header row to look in for header information.
- */
-function getHeaderRow() {
-  var hRow = load(PROPERTY_HEADER_ROW);
-
-  if (hRow === null) {
-    hRow = '1';
-  }
-
-  return hRow;
-}
-
-
-/**
- * Sets the PROPERTY_HEADER_ROW value. This is used for determining which row to look in for headers.
- *
- * @param {string} row The 1-based row-value corresponding to the header row.
- * @param {string} sheet The name of the Sheet we are interested in.
- * @return {Array<string>} The header names.
- */
-function setHeaderRow(row, sheet) {
-  save(PROPERTY_HEADER_ROW, row);
-
-  return getHeaderNames(sheet);
-}
-
-
-/**
  * Launches the Rich Text Editor.
  *
  * @return {string} The id of the newly created dialog.
@@ -91,19 +61,4 @@ function getSheets() {
   }
 
   return names;
-}
-
-
-/**
- * Gets the headers from a specified sheet.
- *
- * @param {string} sheetName The name of the sheet.
- * @return {Array<string>} The names of all the headers.
- */
-function getHeaderNames(sheetName) {
-  SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
-  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  var sheet = ss.getSheetByName(sheetName);
-
-  return getHeaderStrings(sheet);
 }
