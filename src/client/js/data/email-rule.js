@@ -53,10 +53,9 @@ var EmailRule = function(config) {
   var self = this;
 
   // public variables
-
   this.ruleType = config.ruleType;
-  this.headerRow = config.headerRow | '1';
-
+  this.headerRow = config.headerRow == null ? '1' : config.headerRow.toString();
+  
   // INSTANT
   this.to = config.to;
   this.sheet = config.sheet;
