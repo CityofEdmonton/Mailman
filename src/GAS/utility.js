@@ -118,6 +118,16 @@ function columnToLetter(column) {
 }
 
 
+  /**
+   * Get the rule for this document.
+   *
+   * @return {object} The rule in object form.
+   */
+  function getRules() {
+    return JSON.parse(load(RULE_KEY));
+  }
+
+
 /**
  * Deletes all triggers associated with the given Sheet.
  *
