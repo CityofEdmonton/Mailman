@@ -11,7 +11,8 @@ function log(text) {
       logSheet = SpreadsheetApp.openById(logSheetID);
     }
     if (logSheet.getLastRow() > maxRows) {
-      logSheet.deleteRows(2, logSheet.getLastRow() - 1);
+      var sheet = logSheet.getSheets()[0];
+      sheet.getRange(2, 1, logSheet.getLastRow() - 1, logSheet.getLastColumn()).clear();
     }
 
     logSheet.appendRow([new Date().toString().slice(0, -15), text, Session.getActiveUser().getEmail(), MAILMAN_VERSION]);
