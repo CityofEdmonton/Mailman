@@ -56,7 +56,7 @@ function getHeaderStrings(rule) {
   var sheet = ss.getSheetByName(rule.sheet);
 
   var value = getValues(sheet, parseInt(rule.headerRow) - 1);
-  log(JSON.stringify(value));
+
   return value;
 }
 
@@ -83,48 +83,6 @@ function getValues(sheet, rowIndex) {
 
 
 /**
- * This function gets a value from a specific Sheet, column and row.
- * The column is specified by header name. TODO Test me
- *
- * @param {Sheet} sheet The Sheet to find the value in.
- * @param {String} headerName The name of the header. This determines the column to look in.
- * @param {Number} row The 0-based row index. 0 is the very top row in the Sheet.
- * @return {String} The string value found in the given row/column/Sheet.
- */
-function getValue(sheet, headerName, row) {
-  var headerStrings = getHeaderStrings(sheet);
-  var column = headerStrings.indexOf(headerName);
-
-  if (column === -1) {
-    return null;
-  }
-
-  return getValues(sheet, row)[column];
-}
-
-
-/**
- * This function gets a value from a specific Sheet, column and row.
- * The column is specified by header name. TODO Test me
- *
- * @param {Sheet} sheet The Sheet to find the value in.
- * @param {String} headerName The name of the header. This determines the column to look in.
- * @param {Number} row The 0-based row index. 0 is the very top row in the Sheet.
- * @return {String} The string value found in the given row/column/Sheet.
- */
-function getCell(sheet, headerName, row) {
-  var headerStrings = getHeaderStrings(sheet);
-  var column = headerStrings.indexOf(headerName);
-
-  if (column === -1) {
-    return null;
-  }
-
-  return sheet.getDataRange().getCell(row + 1, column + 1);
-}
-
-
-/**
  * This function replaces  all instances of <<tags>> with the data in headerToData.
  *
  * @param {string} text The string that contains the tags.
@@ -139,16 +97,6 @@ function replaceTags(text, headerToData) {
   });
 
   return dataText;
-}
-
-
-/**
- * Get the rule for this document.
- *
- * @return {object} The rule in object form.
- */
-function getRules() {
-  return JSON.parse(load(RULE_KEY));
 }
 
 

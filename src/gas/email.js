@@ -97,6 +97,8 @@ function triggerEmail(ss, rule) {
     return;
   }
 
+  log('For sheet: ' + ss.getUrl());
+
   var sheet = ss.getSheetByName(rule.sheet);
   var range = sheet.getDataRange();
   var header = getHeaderStrings(rule);
@@ -138,9 +140,11 @@ function instantEmail(rule) {
   var range = sheet.getDataRange();
   var header = getHeaderStrings(rule);
 
+  log('For sheet: ' + ss.getUrl());
+
   for (var i = 1; i < range.getNumRows(); i++) {
     var row = getValues(sheet, i);
-    log(row);
+
     try {
       sendBasicEmail(header, row, rule);
     }
