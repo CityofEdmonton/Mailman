@@ -73,12 +73,13 @@ function sendConditionalEmail(headerRow, row, rule) {
 function sendManyEmails() {
   log('Starting rules...');
   var rules = getRules();
-  log(rules);
 
   // Validate each rule for each row
   var ss = SpreadsheetApp.openById(load(PROPERTY_SS_ID));
 
-  log(rules.rules);
+  log(JSON.stringify(rules));
+  log('For sheet: ' + ss.getUrl());
+
   for (var i = 0; i < rules.rules.length; i++) {
     var rule = rules.rules[i];
 
@@ -86,6 +87,7 @@ function sendManyEmails() {
       triggerEmail(ss, rule);
     }
   }
+
   log('Ending rules...');
 }
 
@@ -97,13 +99,11 @@ function triggerEmail(ss, rule) {
     return;
   }
 
-  log('For sheet: ' + ss.getUrl());
-
   var sheet = ss.getSheetByName(rule.sheet);
   var range = sheet.getDataRange();
   var header = getHeaderStrings(rule);
 
-  for (var i = 1; i < range.getNumRows(); i++) {
+  for (var i = parseInt(rule.headerRow); i < range.getNumRows(); i++) {
     var row = getValues(sheet, i);
 
     // We only timestamp when the email successfully sends.
@@ -142,7 +142,7 @@ function instantEmail(rule) {
 
   log('For sheet: ' + ss.getUrl());
 
-  for (var i = 1; i < range.getNumRows(); i++) {
+  for (var i = parseInt(rule.headerRow); i < range.getNumRows(); i++) {
     var row = getValues(sheet, i);
 
     try {
@@ -165,6 +165,10 @@ function validateRule(rule) {
   }
   if (rule.to == null) {
     log('EmailRule config is missing "to".');
+    return false;
+  }
+  if (rule.headerRow == null) {
+    log('EmailRule config is missing "headerRow".');
     return false;
   }
   if (rule.sheet == null) {
