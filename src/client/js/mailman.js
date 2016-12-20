@@ -1,234 +1,298 @@
-var $ = require('jquery');
+/**
+ * Intercom: https://github.com/diy/intercom.js/
+ * Tips on using intercom with GAS: https://github.com/googlesamples/apps-script-dialog2sidebar
+ *
+ *
+ */
+
+var Util = require('./util.js');
+var Cards = require('./cards-handler.js');
+var NavBar = require('./nav/navigation-bar.js');
+var PubSub = require('pubsub-js');
+var Rules = require('./data/rule-container.js');
+var RuleTypes = require('./data/rule-types.js');
+var EmailRule = require('./data/email-rule.js');
+var Database = require('./data/database.js');
+var Keys = require('./data/prop-keys.js');
+var RulesListView = require('./rules/rules-list-view.js');
+//var Intercom = require('./intercom.js');
 
 var MailMan = function() {
 
-  // *** GLOBAL VARIABLES *** //
-  var self = null;
-  var state = null;
-  var maxState = null;
-  var slideWidth = null;
-  var duration = 400;
+  // ***** CONSTANTS ***** //
 
-  // ********** PUBLIC **********//
+  //***** LOCAL VARIABLES *****//
 
+  var self;
+
+  // The object used to communicate between the sidebar and the RTE (Rich Text Editor)
+  var intercom;
+
+	// How long to wait for the dialog to check-in before assuming it's been closed, in milliseconds.
+	var DIALOG_TIMEOUT_MS = 2000;
+
+  // This handles much of the configuration of the Cards.
+  var cards;
+
+  // This handles all the nav-bar navigation.
+  var navBar;
+
+  var database = new Database();
+
+	/**
+	 * Holds a mapping from dialog ID to the ID of the timeout that is used to
+	 * check if it was lost. This is needed so we can cancel the timeout when
+	 * the dialog is closed.
+	 */
+	var timeoutIds = {};
+
+  var rules;
+
+  var rulesListView;
+  var cardsView = $('#cards-view');
+
+  //***** PUBLIC *****//
+
+  /**
+   * Performs basic set up of the Mailman environment.
+   *
+   * @constructor
+   */
   this.init = function() {
     self = this;
-    state = 0;
-    maxState = 1;
-    slideWidth = $('.slide').width();
 
-    $('#toButton').fadeTo(0, 0);
-    setFadeCharacteristics($('#toLine'), $('#toLine').children('.rest-right'));
+    // UI Configuration
+    // All UI Bindings
+    $('#step').on('click', self.next);
+    $('#done').on('click', self.done);
+    $('#back').on('click', self.back);
+    $('#help').on('click', self.onHelpClick);
 
-    $('#subjectButton').fadeTo(0, 0);
-    setFadeCharacteristics($('#subjectLine'), $('#subjectLine').children('.rest-right'));
+    intercom = Intercom.getInstance();
+    contentArea = $('#content-area');
+    rulesListView = new RulesListView($('#layout-container'));
+    cards = new Cards(contentArea, null);
 
-    $('#back').fadeTo(0, 0);
-    $('#back').prop('disabled', true);
+    rulesListView.setTriggerHandler(function(e) {
+      cards.setType(RuleTypes.TRIGGER);
 
-    $('#back').on('click', back);
-    $('#next').on('click', next);
-    $('#ccSpan').on('click', ccClick);
-    $('#bccSpan').on('click', bccClick);
-    $('.docs-icon').on('click', getSelection);
+      setButtonState();
 
-    $('.waffle-range-selection-container').on('focusin', function() {
-      $(this).addClass('waffle-range-selection-container-focus');
-    }).on('focusout', function() {
-      $(this).removeClass('waffle-range-selection-container-focus');
-    });
+      navBar = new NavBar($('#nav-row'), 3, function(e) {
+        var node = e.data;
 
-    // Close the DDL on click outside the DDL
-    // http://stackoverflow.com/questions/485453/best-way-to-get-the-original-target/11298886#11298886
-    $(document).on('click', function(event) {
-      // The DDL is not yet visible
-      if (!$('#select-ddl').is(':visible')) {
-        return;
-      }
-      // The clicked element is a child of the DDL
-      if ($(event.target).parents('#select-ddl').length > 0) {
-        return;
-      }
-      // The clicked element is a child of the DDL button.
-      if ($(event.target).parents('#select-ddl-button').length > 0) {
-        return;
-      }
-
-      $('#select-ddl').css({
-        'display': 'none'
+        cards.jumpTo(node.name);
       });
+      navBar.buildNavTree(cards.getActiveNode());
+
+      rulesListView.hide();
+      Util.setHidden(cardsView, false);
     });
 
-    // Open the DDL on click
-    $('#select-ddl-button').on('click', function() {
-      $('#select-ddl').css({
-        'display': 'initial'
+    rulesListView.setInstantHandler(function(e) {
+      cards.setType(RuleTypes.INSTANT);
+
+      setButtonState();
+
+      navBar = new NavBar($('#nav-row'), 3, function(e) {
+        var node = e.data;
+
+        cards.jumpTo(node.name);
       });
+      navBar.buildNavTree(cards.getActiveNode());
+
+      rulesListView.hide();
+      Util.setHidden(cardsView, false);
     });
 
-    $('body').width(window.innerWidth)
-        .height(window.innerHeight);
-    window.onresize = function() {
-      $('body').width(window.innerWidth)
-          .height(window.innerHeight);
-    };
-  };
+    rulesListView.setDeleteHandler(function(rule) {
+      rules.remove(rule);
+    });
 
-  // ********** PRIVATE **********//
+    rulesListView.setEditHandler(function(rule) {
+      cards.setRule(rule);
 
-  var getSelection = function() {
-    // I always pass the input's parent in. I know this function is awful.
-    // TODO adjust HTML to allow consistant input/button relationship
-    if ($(this).siblings('input').length > 0) {
-      google.script.run
-          .withSuccessHandler(insertSelection)
-          .withUserObject($(this).parent())
-          .getSheetSelection();
-    } else if ($(this).parent().parent().parent().children('input').length > 0) {
-      google.script.run
-          .withSuccessHandler(insertSelection)
-          .withUserObject($(this).parent().parent().parent())
-          .getSheetSelection();
-    } else if ($(this).parent().parent().siblings('.waffle-row').length > 0) {
-      google.script.run
-          .withSuccessHandler(insertSelection)
-          .withUserObject($(this).parent().parent().siblings('.waffle-row'))
-          .getSheetSelection();
-    }
-  };
+      setButtonState();
 
+      navBar = new NavBar($('#nav-row'), 3, function(e) {
+        var node = e.data;
 
-  var insertSelection = function(selection, uObj) {
-    var input = $(uObj).children('input');
-    input.insertAtCaret(selection);
-  };
+        cards.jumpTo(node.name);
+      });
+      navBar.buildNavTree(cards.getActiveNode());
 
-  var submitData = function() {
-    console.log('IMPLEMENT ME');
-    google.script.host.close();
-  };
+      rulesListView.hide();
+      Util.setHidden(cardsView, false);
+    });
 
-  var ccClick = function() {
-    $('#ccSpan').remove();
-    $('#ccLine').append('<input name="cc" class="input-full" placeholder="Cc" />');
-    $('#ccLine').append(
-        getIconButton()
-        .prop('id', 'ccButton')
-        .fadeTo(100, 0)
-        .on('click', getSelection));
-    setFadeCharacteristics($('#ccLine'), $('#ccLine'));
-  };
-
-  var bccClick = function() {
-    $('#bccSpan').remove();
-    $('#bccLine').append('<input name="bcc" class="input-full" placeholder="Bcc" />');
-    $('#bccLine').append(
-        getIconButton()
-        .prop('id', 'bccButton')
-        .fadeTo(100, 0)
-        .on('click', getSelection));
-    setFadeCharacteristics($('#bccLine'), $('#bccLine'));
-  };
-
-  var back = function() {
-    if (state > 0) {
-      state--;
-
-      $('#slider').animate({
-        left: '+=' + slideWidth
-      }, this.duration);
-
-      // Fade out the button if we are at the base state.
-      if (state === 0) {
-        $('#back').fadeTo(400, 0);
-        $('#back').prop('disabled', true);
+    database.load(Keys.RULE_KEY, function(config) {
+      try {
+        rules = new Rules(config);
+      }
+      catch (e) {
+        // We don't need to fail if the rule isn't properly formatted. Just log and continue on.
+        console.log(e);
       }
 
-      $('#next').html('Next');
-      $('#next').off().on('click', next);
-    }
-  };
+      rulesListView.setRulesContainer(rules);
+    }, function() {
+      rules = new Rules({});
+      rulesListView.setRulesContainer(rules);
+    });
 
-  var next = function(event) {
-    if (state < maxState) {
-      state++;
+    // PubSub bindings
 
-      $('#back').fadeTo(400, 1);
-      $('#back').prop('disabled', false);
-
-      $('#slider').animate({
-        left: '-=' + slideWidth
-      }, this.duration);
-
-      $('#next').html('Done');
-      $('#next').off().on('click', done);
-    }
-  };
-
-  var done = function() {
-    // SUBMIT THE INFO BACK TO SHEETS
-    var container;
-    var to = $('#toLine').children('input').val();
-    var cc = $('#ccLine').children('input').val() == null || $('#ccLine').children('input').val() === '' ? null : $('#ccLine').children('input').val();
-    var bcc = $('#bccLine').children('input').val() == null || $('#bccLine').children('input').val() === '' ? null : $('#bccLine').children('input').val();
-    var subject = $('#subject').val();
-    var body = $('#body').val();
-    var range = $('#range').val();
-    var comparison = $('#comparison').html();
-    var value = $('#value-to-watch').val();
-    var lastSent = $('#last-sent').val();
-
-    // TODO Must have to, subject, body, range (could just default to whole sheet) comparison and value
-
-    console.log('to: ' + to +
-        '\ncc: ' + cc +
-        '\nbcc: ' + bcc +
-        '\nsubject: ' + subject +
-        '\nbody: ' + body +
-        '\nrange: ' + range +
-        '\ncomparison: ' + comparison +
-        '\nvalue: ' + value +
-        '\nlast: ' + lastSent
-
-    );
-
-    google.script.run
-        .withSuccessHandler(submitData)
-        .createRule(to, cc, bcc, subject, body, range, comparison, value, lastSent);
-  };
-
-  var getIconButton = function() {
-    return $('#toButton').clone().prop('class', function() {
-      return $(this).prop('class') + ' rest-right';
+    // It's important to note the flow of the program here.
+    // When cards.jumpTo is called, this pubsub function is called.
+    // jump to a card > rebuild the nav tree
+    PubSub.subscribe('Cards.jumpTo', function(msg, data) {
+      var activeNode = cards.getActiveNode();
+      navBar.buildNavTree(cards.getActiveNode());
+      setButtonState();
     });
   };
 
   /**
-   * Searches for a .jfk-button in search and applies fading effects to it
-   * based upon the mouse state over line
+   * This function goes to the next card.
    *
-   * @param {jQuery} line The object to watch for events (hoverin, hoverout, focusin, focusout).
-   * @param {jQuery} search The object to look for button in.
+   * TODO There is non-DRY code between this function and this.back.
+   * TODO Move this into the CardHandler or a CardsView.
+   * @param {event} event The event that triggered the function call.
+   */
+  this.next = function(event) {
+    var active = cards.next();
+    setButtonState();
+
+    navBar.buildNavTree(active);
+  };
+
+  /**
+   * This function goes to the previous card.
+   *
+   * TODO There is non-DRY code between this function and this.next.
+   * TODO Move this into the CardHandler or a CardsView.
+   * @param {event} event The event that triggered the function call.
+   */
+  this.back = function(event) {
+    var active = cards.back();
+    setButtonState();
+
+    navBar.buildNavTree(active);
+  };
+
+  /**
+   * Submits data back to google.
+   *
+   * TODO Move this into the CardHandler or a CardsView.
+   * @param {event} event The event that triggered the function call.
+   */
+  this.done = function(event) {
+    var rule = cards.getRule();
+
+    if (rules.indexOf(rule.getID()) !== -1) {
+      rules.update(rule);
+    }
+    else {
+      rules.add(rule.toConfig());
+    }
+
+    database.save(Keys.RULE_KEY, rules.toConfig(), function() {
+      if (cards.getRuleType() === RuleTypes.INSTANT) {
+        google.script.run
+            .instantEmail(rule.toConfig());
+      }
+
+      setTimeout(function() {
+        rulesListView.show();
+        Util.setHidden(cardsView, true);
+
+        navBar.cleanup();
+        cards.cleanup();
+
+        // TODO reload rules
+      }, 1000);
+    });
+  };
+
+  /**
+   * This function toggles the state of the help <p> tags.
+   *TODO
+   */
+  this.onHelpClick = function() {
+    cards.toggleHelp();
+  };
+
+  //***** PRIVATE *****//
+
+  /**
+   * Using the Cards handler, this sets the state of the buttons.
+   * Depending on the active Card, different buttons may be shown.
    *
    */
-  var setFadeCharacteristics = function(line, search) {
-    var button = search.children('.jfk-button');
+  var setButtonState = function() {
+    // Default state
+    Util.setHidden($('#done'), true);
+    Util.setHidden($('#step'), false);
+    Util.setHidden($('#back'), false);
 
-    line.hover(function(e) {
-      button.fadeTo(100, 1);
-    }, function(e) {
-      var input = line.children('.input-full');
-      if (!input.is(':focus')) {
-        button.fadeTo(100, 0);
-      }
-    })
-        .on('focusin', function() {
-          button.fadeTo(100, 1);
-        })
-        .on('focusout', function() {
-          button.fadeTo(100, 0);
+    if (cards.isFirst()) {
+      Util.setHidden($('#back'), true);
+    }
+    else if (cards.isLast()) {
+      Util.setHidden($('#done'), false);
+      Util.setHidden($('#step'), true);
+    }
+  };
+
+  var onRTEOpened = function(dialogId) {
+
+    intercom.on(dialogId, function(data) {
+
+          switch (data.state) {
+            case 'done':
+              console.log('Dialog submitted.\n');
+
+              getNode('Body').data.setValue(data.message);
+
+              forget(dialogId);
+              break;
+            case 'checkIn':
+              forget(dialogId);
+              watch(dialogId);
+              break;
+            case 'lost':
+              console.log('Dialog lost.\n');
+              break;
+            default:
+              throw 'Unknown dialog state: ' + data.state;
+          }
         });
   };
+
+  /**
+   * Watch the given dialog, to detect when it's been X-ed out.
+   *
+   * @param {string} dialogId The ID of the dialog to watch.
+   */
+  var watch = function(dialogId) {
+    timeoutIds[dialogId] = window.setTimeout(function() {
+      intercom.emit(dialogId, 'lost');
+    }, DIALOG_TIMEOUT_MS);
+  };
+
+  /**
+   * Stop watching the given dialog.
+   * @param {string} dialogId The ID of the dialog to watch.
+   */
+  var forget = function(dialogId) {
+    if (timeoutIds[dialogId]) {
+      window.clearTimeout(timeoutIds[dialogId]);
+    }
+  };
+
+  this.init();
 };
 
+
+/**  */
 module.exports = MailMan;

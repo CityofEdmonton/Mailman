@@ -1,0 +1,49 @@
+@import "_colors";
+
+.rli-list-item {
+  background: #ffffff;
+  margin: 10px 0px;
+}
+
+.rli-list-avatar {
+  margin-right: 16px;
+  float: left;
+  height: 40px;
+  width: 40px;
+  font-size: 40px;
+  color: $grey-flannel;
+  cursor: pointer;
+}
+
+.rli-hide-overflow-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: block;
+  outline: none;
+  max-width: 150px;
+}
+
+.rli-list-alt-icon {
+  color: $white;
+  height: 20px;
+  width: 20px;
+  font-size: 20px;
+  left: 18px;
+  bottom: 22px;
+  position: relative;
+}
+
+.rli-icon-container {
+  overflow: hidden;
+  cursor: pointer;
+  width: 60px;
+}
+
+.rli-stacked-icon {
+  position:relative;
+}
+
+.rli-clickable {
+  cursor: pointer;
+}

@@ -3,9 +3,17 @@ var browserify = require('browserify');
 var gjslint = require('gulp-gjslint');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
-var source = require('vinyl-source-stream');
 var htmlProcessor = require('gulp-htmlprocessor');
+var open = require('gulp-open');
+var os = require('os');
 var sass = require('gulp-sass');
+var source = require('vinyl-source-stream');
+var stringify = require('stringify');
+var del = require('del');
+
+// Used for our new bundle system
+var rename = require('gulp-rename');
+var es = require('event-stream');
 
 // Node modules
 var exec = require('child_process').exec;
@@ -20,29 +28,54 @@ gulp.task('lint-all', closureLint);
 gulp.task('fix-all', closureFix);
 gulp.task('browserify', browserifyBundle);
 gulp.task('compile-sass', compileSASS);
+gulp.task('clean', clean);
 
 // Web specific
 gulp.task('build-web', ['browserify', 'compile-sass'], buildWeb);
 
 // GAS specific
-gulp.task('deploy-gas', ['swap-tags'], deployGAS);
-gulp.task('swap-tags', ['build-gas'], replaceTags);
+gulp.task('deploy-gas', ['build-gas'], deployGAS);
 gulp.task('build-gas', ['browserify', 'compile-sass'], buildGAS);
-
 
 /**
  * Bundles up client.js (and all required functionality) and places it in a build directory.
+ * We apply a stringify transform. This package finds requires that require .html files. It swaps them out for the actual text.
+ * This is great for breaking up html and can be used as a templating tool.
  *
  * @return {stream} the stream as the completion hint to the gulp engine
  */
 function browserifyBundle() {
-  return browserify('./src/client/js/client.js')
-      .bundle()
-      .on('error', function(e) {
-        gutil.log(e);
-      })
-      .pipe(source('bundle.js'))
-      .pipe(gulp.dest('./build/common'));
+    // we define our input files, which we want to have bundled:
+    var files = [
+        './src/client/js/client.js',
+		'./src/client/js/rich-text-editor.js'
+    ];
+
+    // map them to our stream function
+    var tasks = files.map(function(entry) {
+		    var path = entry.split('/');
+
+        return browserify(entry)
+            .transform(stringify, {
+                appliesTo: {
+                    includeExtensions: ['.html']
+                },
+                minify: false
+            })
+            .bundle()
+            .on('error', function(e) {
+                gutil.log(e);
+            })
+            .pipe(source(path[path.length - 1]))
+            // rename them to have "bundle as postfix"
+            .pipe(rename({
+                extname: '.bundle.js'
+            }))
+            .pipe(gulp.dest('./build/common'));
+    });
+
+    // create a merged stream
+    return es.merge.apply(null, tasks);
 }
 
 
@@ -54,30 +87,17 @@ function browserifyBundle() {
  */
 function buildGAS() {
 
-  gulp.src('./src/client/html/**', {
-    base: './src/client'
-  })
-      .pipe(gulp.dest('./build/gas'));
+    gulp.src('./src/client/html/**', {
+            base: './src/client'
+        })
+        .pipe(htmlProcessor({
+            includeBase: './'
+        }))
+        .pipe(gulp.dest('./build/gas'));
 
-  // GAS
-  return gulp.src('./src/GAS/*')
-      .pipe(gulp.dest('./build/gas/GAS'));
-}
-
-
-/**
- * Replaces all script tags and css links.
- * Note: This is done relative to this gulpfile.
- * All swap tags are relative to this gulpfile.
- *
- * @return {stream} the stream as the completion hint to the gulp engine
- */
-function replaceTags() {
-  return gulp.src('./build/gas/html/*.html')
-      .pipe(htmlProcessor({
-        includeBase: './'
-      }))
-      .pipe(gulp.dest('./build/gas/html/'));
+    // GAS
+    return gulp.src('./src/gas/*')
+        .pipe(gulp.dest('./build/gas/gas'));
 }
 
 
@@ -87,23 +107,23 @@ function replaceTags() {
  * @return {stream} the stream as the completion hint to the gulp engine
  */
 function buildWeb() {
-  gulp.src('./build/common/bundle.js')
-      .pipe(gulp.dest('./build/web/client/js'));
+    gulp.src('./build/common/*.bundle.js')
+        .pipe(gulp.dest('./build/web/client/js'));
 
-  gulp.src('./src/client/css/*')
-      .pipe(gulp.dest('./build/web/client/css'));
+    gulp.src('./src/client/css/*')
+        .pipe(gulp.dest('./build/web/client/css'));
 
-  gulp.src('./src/client/html/*')
-      .pipe(gulp.dest('./build/web/client/html'));
+    gulp.src('./src/client/html/*')
+        .pipe(gulp.dest('./build/web/client/html'));
 
-  gulp.src('./src/client/images/*')
-      .pipe(gulp.dest('./build/web/client/images'));
+    gulp.src('./src/client/images/*')
+        .pipe(gulp.dest('./build/web/client/images'));
 
-  gulp.src('./build/common/css/*')
-      .pipe(gulp.dest('./build/web/client/css'));
+    gulp.src('./build/common/css/*')
+        .pipe(gulp.dest('./build/web/client/css'));
 
-  return gulp.src('./src/GAS/*')
-      .pipe(gulp.dest('./build/web/GAS'));
+    return gulp.src('./src/gas/*')
+        .pipe(gulp.dest('./build/web/gas'));
 }
 
 
@@ -115,48 +135,53 @@ function buildWeb() {
  * @return {stream} the stream as the completion hint to the gulp engine
  */
 function deployGAS(cb) {
-  return exec('gapps push', function(err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
-  });
+    return exec('gapps push', function(err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb(err);
+    });
 }
 
 
 /**
- * Opens up the project in GAS in chrome.
+ * Opens up the project in GAS in Google Chrome.
  * Calls browserifyBundle, then buildGAS, then deployGAS.
  *
- * @param  {callback} cb - a callback so the engine knows when it'll be done
  * @return {stream} the stream as the completion hint to the gulp engine
  */
-function openGAS(cb) {
-  // Open the project in chrome
-  var key = JSON.parse(fs.readFileSync('gapps.config.json', 'utf8')).fileId;
+function openGAS() {
+    var key = JSON.parse(fs.readFileSync('gapps.config.json', 'utf8')).fileId;
+    var url = 'https://script.google.com/a/edmonton.ca/d/' + key + '/edit';
 
-  var chrome = 'start chrome https://script.google.com/a/edmonton.ca/d/' + key + '/edit';
-  return exec(chrome, function(err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
-  });
+    var browser = os.platform() === 'win32' ? 'chrome' : (
+        os.platform() === 'linux' ? 'google-chrome' : (
+            os.platform() === 'darwin' ? 'google chrome' : 'firefox'));
+
+    var options = {
+        uri: url,
+        app: browser
+    };
+
+    return gulp.src(__filename)
+        .pipe(open(options));
 }
 
 
 /**
- * Opens up the project in chrome.
+ * Opens up the project in Google Chrome.
  * Calls browserifyBundle, then buildWeb.
  *
- * @param  {callback} cb - a callback so the engine knows when it'll be done
  * @return {stream} the stream as the completion hint to the gulp engine
  */
-function openWeb(cb) {
-  var chrome = 'start chrome ./build/web/client/html/ListSetupSidebar.html';
-  return exec(chrome, function(err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
-  });
+function openWeb() {
+    var browser = os.platform() === 'win32' ? 'chrome' : (
+        os.platform() === 'linux' ? 'google-chrome' : (
+            os.platform() === 'darwin' ? 'google chrome' : 'firefox'));
+
+    return gulp.src('./build/web/client/html/mailman.html')
+        .pipe(open({
+            app: browser
+        }));
 }
 
 
@@ -166,15 +191,15 @@ function openWeb(cb) {
  * @return {stream} the stream as the completion hint to the gulp engine
  */
 function closureLint() {
-  // flags: https://github.com/jmendiara/node-closure-linter-wrapper#flags
-  var lintOptions = {
-    flags: ['--max_line_length 120', '--strict']
-  };
+    // flags: https://github.com/jmendiara/node-closure-linter-wrapper#flags
+    var lintOptions = {
+        flags: ['--max_line_length 120', '--strict']
+    };
 
-  // Output all failures to the console, and \then fail.
-  return gulp.src(['./src/**/*.js'])
-      .pipe(gjslint(lintOptions))
-      .pipe(gjslint.reporter('console'));
+    // Output all failures to the console, and then fail.
+    return gulp.src(['./src/**/*.js'])
+        .pipe(gjslint(lintOptions))
+        .pipe(gjslint.reporter('console'));
 }
 
 
@@ -187,27 +212,38 @@ function closureLint() {
  */
 function closureFix(cb) {
 
-  var fixJS = 'fixjsstyle --strict --max_line_length 120 -r ./src';
+    var fixJS = 'fixjsstyle --strict --max_line_length 120 -r ./src';
 
-  return exec(fixJS, function(err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
-  });
+    return exec(fixJS, function(err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb(err);
+    });
 }
 
 
 /**
- * Compiles SASS (?) ¯\_(ツ)_/¯
+ * Compiles SASS into CSS.
  *
  * @return {stream} the stream as the completion hint to the gulp engine
  */
 function compileSASS() {
-  return gulp.src('./src/client/sass/*.scss')
-      .pipe(sass().on('error', function(error) {
-        var message = new gutil.PluginError('sass', error.messageFormatted).toString();
-        process.stderr.write(message + '\n');
-        process.exit(1);
-      }))
-      .pipe(gulp.dest('./build/common/css'));
+    return gulp.src('./src/client/sass/*.scss')
+        .pipe(sass().on('error', function(error) {
+            var message = new gutil.PluginError('sass', error.messageFormatted).toString();
+            process.stderr.write(message + '\n');
+            process.exit(1);
+        }))
+        .pipe(gulp.dest('./build/common/css'));
+}
+
+/**
+ * Removes all builds.
+ *
+ * @return {stream} the stream as the completion hint to the gulp engine
+ */
+function clean() {
+    return del([
+        'build/**/*'
+    ]);
 }
