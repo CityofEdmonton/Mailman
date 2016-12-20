@@ -6,7 +6,7 @@ A Sheets add on that helps you send emails when you want to!
 
 1. Sending bulk, personalized emails
 
-   Tag swapping using the <<tag>>. Each tag is swapped out with the data in the tag column. 
+   Tag swapping using the <<>> tag. Each tag is swapped out with the data in the tag column. 
 
 2. Instant email blasts
 
@@ -14,7 +14,7 @@ A Sheets add on that helps you send emails when you want to!
 
 3. Triggered email blasts
 
-   ⋅Use Google Sheets functions to determine when to send a given email.
+   Use Google Sheets functions to determine when to send a given email.
 
 4. Rich text emails
 
