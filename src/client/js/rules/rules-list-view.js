@@ -1,8 +1,8 @@
 
 var baseHTML = require('./rules-list-view.html');
-
 var EmailRule = require('../data/email-rule.js');
 var RuleListItem = require('./rule-list-item.js');
+var TitledCard = require('../card/card-titled.js');
 var Util = require('../util.js');
 var PubSub = require('pubsub-js');
 
@@ -19,11 +19,15 @@ var RulesListView = function(appendTo) {
   // private variables
   var self = this;
   var base = $(baseHTML);
-  var list = base.find('ul');
-  var triggerButton = base.find('[data-id="trigger-button"]');
-  var instantButton = base.find('[data-id="instant-button"]');
   var ruleItems = [];
   var ruleContainer;
+  var card;
+
+  // jQuery Objects
+  var list = base.find('[data-id="list"]');
+  var emptyContainer = base.find('[data-id="empty-container"]');
+  var triggerButton = base.find('[data-id="trigger-button"]');
+  var instantButton = base.find('[data-id="instant-button"]');
 
   // Event callbacks
   var deletionCallback;
@@ -38,6 +42,14 @@ var RulesListView = function(appendTo) {
 
   this.init_ = function(appendTo) {
     appendTo.append(base);
+
+    card = new TitledCard(emptyContainer, {
+      title: 'Get started',
+      paragraphs: [
+        'Click one of the buttons in the bottom right corner to begin.'
+      ]
+    });
+    card.show();
 
     triggerButton.on('click', newTrigger);
     instantButton.on('click', newInstant);
@@ -71,6 +83,19 @@ var RulesListView = function(appendTo) {
     ruleItems = [];
     for (var i = 0; i < ruleContainer.length(); i++) {
       self.addRule(ruleContainer.get(i));
+    }
+
+    setEmptyDisplay();
+  };
+
+  var setEmptyDisplay = function() {
+    if (ruleItems.length === 0) {
+      Util.setHidden(list, true);
+      Util.setHidden(emptyContainer, false);
+    }
+    else {
+      Util.setHidden(list, false);
+      Util.setHidden(emptyContainer, true);
     }
   };
 
