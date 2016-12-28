@@ -19,7 +19,7 @@ var Config = function(inputEl) {
     return {
       minLength: 0,
       source: function(request, response) {
-        console.log('Auto trigger');
+
         if (trigger === undefined) {
           response($.ui.autocomplete.filter(results, request.term.split(/,\s*/).pop()).slice(0, maxResults));
         }
@@ -27,8 +27,6 @@ var Config = function(inputEl) {
           var cursor = input[0].selectionStart;
           var startOfTerm = request.term.substring(0, cursor);
           var last = startOfTerm.split(trigger).pop();
-
-          console.log(startOfTerm);
 
           // Fixes weird bug that doesn't force the DDL to hide if you trigger it with nothing.
           if (trigger !== '' && request.term === '') {
@@ -44,6 +42,7 @@ var Config = function(inputEl) {
         return false;
       },
       select: function(event, ui) {
+
         if (trigger === undefined) {
           var terms = this.value.split(/,\s*/);
           terms.pop();
@@ -53,12 +52,18 @@ var Config = function(inputEl) {
           this.value = terms.join('');
         }
         else {
-          var terms = [this.value.substring(0, this.value.lastIndexOf(trigger))];
+          var cursor = input[0].selectionStart;
+          var startOfTerm = this.value.substring(0, cursor);
+          var triggerPos = startOfTerm.lastIndexOf(trigger);
+          var newStart = this.value.substring(0, triggerPos) + prepend + ui.item.value + append;
+          var newValue = newStart + this.value.substring(cursor);
 
-          terms.push(prepend);
-          terms.push(ui.item.value);
-          terms.push(append);
-          this.value = terms.join('');
+          var newCursorPos = newStart.length;
+
+          this.value = newValue;
+          input[0].focus();
+          input[0].selectionStart = newCursorPos;
+          input[0].selectionEnd = newCursorPos;
         }
 
         // We have to manually mark the text field as dirty. If we don't, MDL text fields act weird.
@@ -72,5 +77,5 @@ var Config = function(inputEl) {
 };
 
 
-
+/** */
 module.exports = Config;
