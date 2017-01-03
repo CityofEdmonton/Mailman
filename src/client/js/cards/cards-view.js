@@ -116,6 +116,14 @@ var CardsView = function(appendTo) {
   }
 
   /**
+   * Toggles the state of the help information.
+   * 
+   */
+  this.toggleHelp = function() {
+    cards.toggleHelp();
+  }
+
+  /**
    * Sets the function to call when the done button is clicked.
    *
    * @param {Function} cb The function that will be called when the done button is clicked.
