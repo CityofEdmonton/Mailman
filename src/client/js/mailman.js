@@ -6,7 +6,6 @@
  */
 
 var Util = require('./util.js');
-var Cards = require('./cards-handler.js');
 var NavBar = require('./nav/navigation-bar.js');
 var PubSub = require('pubsub-js');
 var Rules = require('./data/rule-container.js');
@@ -15,6 +14,7 @@ var EmailRule = require('./data/email-rule.js');
 var Database = require('./data/database.js');
 var Keys = require('./data/prop-keys.js');
 var RulesListView = require('./rules/rules-list-view.js');
+var CardsView = require('./cards/cards-view.js');
 //var Intercom = require('./intercom.js');
 
 var MailMan = function() {
@@ -31,9 +31,6 @@ var MailMan = function() {
 	// How long to wait for the dialog to check-in before assuming it's been closed, in milliseconds.
 	var DIALOG_TIMEOUT_MS = 2000;
 
-  // This handles much of the configuration of the Cards.
-  var cards;
-
   // This handles all the nav-bar navigation.
   var navBar;
 
@@ -49,7 +46,7 @@ var MailMan = function() {
   var rules;
 
   var rulesListView;
-  var cardsView = $('#cards-view');
+  var cardsView;
 
   //***** PUBLIC *****//
 
@@ -63,46 +60,44 @@ var MailMan = function() {
 
     // UI Configuration
     // All UI Bindings
-    $('#step').on('click', self.next);
-    $('#done').on('click', self.done);
-    $('#back').on('click', self.back);
     $('#help').on('click', self.onHelpClick);
 
     intercom = Intercom.getInstance();
-    contentArea = $('#content-area');
     rulesListView = new RulesListView($('#layout-container'));
-    cards = new Cards(contentArea, null);
+    cardsView = new CardsView($('#layout-container'));
 
     rulesListView.setTriggerHandler(function(e) {
-      cards.setType(RuleTypes.TRIGGER);
+      cardsView.newRule(RuleTypes.TRIGGER);
+      //cards.setType(RuleTypes.TRIGGER);
 
-      setButtonState();
+      //setButtonState();
 
       navBar = new NavBar($('#nav-row'), 3, function(e) {
         var node = e.data;
 
         cards.jumpTo(node.name);
       });
-      navBar.buildNavTree(cards.getActiveNode());
+      //navBar.buildNavTree(cards.getActiveNode());
 
       rulesListView.hide();
-      Util.setHidden(cardsView, false);
+      cardsView.show();
     });
 
     rulesListView.setInstantHandler(function(e) {
-      cards.setType(RuleTypes.INSTANT);
+      // cards.setType(RuleTypes.INSTANT);
+      cardsView.newRule(RuleTypes.INSTANT);
 
-      setButtonState();
+      //setButtonState();
 
       navBar = new NavBar($('#nav-row'), 3, function(e) {
         var node = e.data;
 
         cards.jumpTo(node.name);
       });
-      navBar.buildNavTree(cards.getActiveNode());
+      //navBar.buildNavTree(cards.getActiveNode());
 
       rulesListView.hide();
-      Util.setHidden(cardsView, false);
+      cardsView.show();
     });
 
     rulesListView.setDeleteHandler(function(rule) {
@@ -110,19 +105,40 @@ var MailMan = function() {
     });
 
     rulesListView.setEditHandler(function(rule) {
-      cards.setRule(rule);
-
-      setButtonState();
+      cardsView.setRule(rule);
 
       navBar = new NavBar($('#nav-row'), 3, function(e) {
         var node = e.data;
 
         cards.jumpTo(node.name);
       });
-      navBar.buildNavTree(cards.getActiveNode());
+      //navBar.buildNavTree(cards.getActiveNode());
 
       rulesListView.hide();
-      Util.setHidden(cardsView, false);
+      cardsView.show();
+    });
+
+    cardsView.setDoneCallback(function(rule) {
+      if (rules.indexOf(rule.getID()) !== -1) {
+        rules.update(rule);
+      }
+      else {
+        rules.add(rule.toConfig());
+      }
+
+      database.save(Keys.RULE_KEY, rules.toConfig(), function() {
+        if (rule.ruleType === RuleTypes.INSTANT) {
+          google.script.run
+              .instantEmail(rule.toConfig());
+        }
+
+        setTimeout(function() {
+          rulesListView.show();
+          cardsView.hide();
+
+          // cards.cleanup();
+        }, 1000);
+      });
     });
 
     database.load(Keys.RULE_KEY, function(config) {
@@ -138,79 +154,6 @@ var MailMan = function() {
     }, function() {
       rules = new Rules({});
       rulesListView.setRulesContainer(rules);
-    });
-
-    // PubSub bindings
-
-    // It's important to note the flow of the program here.
-    // When cards.jumpTo is called, this pubsub function is called.
-    // jump to a card > rebuild the nav tree
-    PubSub.subscribe('Cards.jumpTo', function(msg, data) {
-      var activeNode = cards.getActiveNode();
-      navBar.buildNavTree(cards.getActiveNode());
-      setButtonState();
-    });
-  };
-
-  /**
-   * This function goes to the next card.
-   *
-   * TODO There is non-DRY code between this function and this.back.
-   * TODO Move this into the CardHandler or a CardsView.
-   * @param {event} event The event that triggered the function call.
-   */
-  this.next = function(event) {
-    var active = cards.next();
-    setButtonState();
-
-    navBar.buildNavTree(active);
-  };
-
-  /**
-   * This function goes to the previous card.
-   *
-   * TODO There is non-DRY code between this function and this.next.
-   * TODO Move this into the CardHandler or a CardsView.
-   * @param {event} event The event that triggered the function call.
-   */
-  this.back = function(event) {
-    var active = cards.back();
-    setButtonState();
-
-    navBar.buildNavTree(active);
-  };
-
-  /**
-   * Submits data back to google.
-   *
-   * TODO Move this into the CardHandler or a CardsView.
-   * @param {event} event The event that triggered the function call.
-   */
-  this.done = function(event) {
-    var rule = cards.getRule();
-
-    if (rules.indexOf(rule.getID()) !== -1) {
-      rules.update(rule);
-    }
-    else {
-      rules.add(rule.toConfig());
-    }
-
-    database.save(Keys.RULE_KEY, rules.toConfig(), function() {
-      if (cards.getRuleType() === RuleTypes.INSTANT) {
-        google.script.run
-            .instantEmail(rule.toConfig());
-      }
-
-      setTimeout(function() {
-        rulesListView.show();
-        Util.setHidden(cardsView, true);
-
-        navBar.cleanup();
-        cards.cleanup();
-
-        // TODO reload rules
-      }, 1000);
     });
   };
 

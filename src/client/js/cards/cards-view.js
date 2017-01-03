@@ -3,14 +3,22 @@ var Cards = require('../cards-handler.js');
 var Util = require('../util.js');
 var PubSub = require('pubsub-js');
 
+
+
+/**
+ * This view displays all the information needed to create a new EmailRule.
+ *
+ * @constructor
+ * @param {jquery} appendTo The element this view should be appended to.
+ */
 var CardsView = function(appendTo) {
   // private variables
   var self = this;
   var base = $(baseHTML);
   var cards;
+  var doneCB;
 
   // jQuery Objects
-  var cardsView = base.find('[data-id="cards-view"]'); // cardsView in Mailman.js Should now use base
   var contentArea = base.find('[data-id="content-area"]');
   var back = base.find('[data-id="back"]');
   var step = base.find('[data-id="step"]');
@@ -25,15 +33,6 @@ var CardsView = function(appendTo) {
     step.on('click', self.next);
     done.on('click', self.done);
     back.on('click', self.back);
-
-    // It's important to note the flow of the program here.
-    // When cards.jumpTo is called, this pubsub function is called.
-    // jump to a card > rebuild the nav tree
-    PubSub.subscribe('Cards.jumpTo', function(msg, data) {
-      var activeNode = cards.getActiveNode();
-      navBar.buildNavTree(cards.getActiveNode());
-      setButtonState();
-    });
   };
 
   //***** public methods *****//
@@ -48,8 +47,6 @@ var CardsView = function(appendTo) {
   this.next = function(event) {
     var active = cards.next();
     setButtonState();
-
-    navBar.buildNavTree(active);
   };
 
   /**
@@ -62,43 +59,66 @@ var CardsView = function(appendTo) {
   this.back = function(event) {
     var active = cards.back();
     setButtonState();
-
-    navBar.buildNavTree(active);
   };
 
   /**
-   * Submits data back to google.
+   * Passes the EmailRule to the previously set callback.
    *
-   * TODO Move this into the CardHandler or a CardsView.
    * @param {event} event The event that triggered the function call.
    */
   this.done = function(event) {
-    var rule = cards.getRule();
-
-    if (rules.indexOf(rule.getID()) !== -1) {
-      rules.update(rule);
-    }
-    else {
-      rules.add(rule.toConfig());
+    if (doneCB == undefined) {
+      throw new Error('CardsView has no done callback. Please set with setDoneCallback.')
     }
 
-    database.save(Keys.RULE_KEY, rules.toConfig(), function() {
-      if (cards.getRuleType() === RuleTypes.INSTANT) {
-        google.script.run
-            .instantEmail(rule.toConfig());
-      }
-
-      setTimeout(function() {
-        rulesListView.show();
-        Util.setHidden(cardsView, true);
-
-        navBar.cleanup();
-        cards.cleanup();
-
-        // TODO reload rules
-      }, 1000);
-    });
+    doneCB(cards.getRule());
   };
+
+  /**
+   * Sets the EmailRule this view should display. This is typically used when editing an existing EmailRule.
+   *
+   * @param {EmailRule} rule The rule contains all the information that should be displayed in this view.
+   */
+  this.setRule = function(rule) {
+    cards.setRule(rule);
+    setButtonState();
+  };
+
+  /**
+   * Creates a fresh instance of this view for creating a new EmailRule.
+   *
+   * @param  {RuleTypes} type The RuleType of the new EmailRule. This view knows nothing about these.
+   * It just passes the type through to the CardsHandler.
+   */
+  this.newRule = function(type) {
+    cards.setType(type);
+    setButtonState();
+  };
+
+  /**
+   * Shows this view.
+   *
+   */
+  this.show = function() {
+    Util.setHidden(base, false);
+  };
+
+  /**
+   * Hides this view.
+   *
+   */
+  this.hide = function() {
+    Util.setHidden(base, true);
+  }
+
+  /**
+   * Sets the function to call when the done button is clicked.
+   *
+   * @param {Function} cb The function that will be called when the done button is clicked.
+   */
+  this.setDoneCallback = function(cb) {
+    doneCB = cb;
+  }
 
   //***** private methods *****//
 
@@ -109,20 +129,20 @@ var CardsView = function(appendTo) {
    */
   var setButtonState = function() {
     // Default state
-    Util.setHidden($('#done'), true);
-    Util.setHidden($('#step'), false);
-    Util.setHidden($('#back'), false);
+    Util.setHidden(done, true);
+    Util.setHidden(step, false);
+    Util.setHidden(back, false);
 
     if (cards.isFirst()) {
-      Util.setHidden($('#back'), true);
+      Util.setHidden(back, true);
     }
     else if (cards.isLast()) {
-      Util.setHidden($('#done'), false);
-      Util.setHidden($('#step'), true);
+      Util.setHidden(done, false);
+      Util.setHidden(step, true);
     }
   };
 
-  this.init_();
+  this.init_(appendTo);
 };
 
 

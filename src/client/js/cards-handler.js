@@ -35,7 +35,7 @@ var Cards = function(parent) {
   var cards = new List();
 
   // This stores the configured Cards. These are only meant for easily adding/removing Cards without losing the data.
-  var cardRepository = CardsConfig.buildCardRepo();
+  var cardRepository = CardsConfig.buildCardRepo(contentArea);
 
   // Whether to show the Card help or not
   var showingHelp;
@@ -175,7 +175,7 @@ var Cards = function(parent) {
       if (node.name === cardId) {
         node.data.show();
         activeCard = node;
-        PubSub.publish('Cards.jumpTo', cardId);
+        //PubSub.publish('Cards.jumpTo', cardId);
 
         return;
       }
