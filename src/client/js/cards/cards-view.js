@@ -37,6 +37,10 @@ var CardsView = function(appendTo) {
 
   //***** public methods *****//
 
+  this.cleanup = function() {
+    cards.cleanup();
+  };
+
   /**
    * This function goes to the next card.
    *

@@ -133,10 +133,10 @@ var MailMan = function() {
         }
 
         setTimeout(function() {
+          cardsView.cleanup();
+
           rulesListView.show();
           cardsView.hide();
-
-          // cards.cleanup();
         }, 1000);
       });
     });
