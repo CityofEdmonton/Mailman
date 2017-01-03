@@ -6,7 +6,6 @@
  */
 
 var Util = require('./util.js');
-var NavBar = require('./nav/navigation-bar.js');
 var PubSub = require('pubsub-js');
 var Rules = require('./data/rule-container.js');
 var RuleTypes = require('./data/rule-types.js');
@@ -30,9 +29,6 @@ var MailMan = function() {
 
 	// How long to wait for the dialog to check-in before assuming it's been closed, in milliseconds.
 	var DIALOG_TIMEOUT_MS = 2000;
-
-  // This handles all the nav-bar navigation.
-  var navBar;
 
   var database = new Database();
 
@@ -68,33 +64,13 @@ var MailMan = function() {
 
     rulesListView.setTriggerHandler(function(e) {
       cardsView.newRule(RuleTypes.TRIGGER);
-      //cards.setType(RuleTypes.TRIGGER);
-
-      //setButtonState();
-
-      navBar = new NavBar($('#nav-row'), 3, function(e) {
-        var node = e.data;
-
-        cards.jumpTo(node.name);
-      });
-      //navBar.buildNavTree(cards.getActiveNode());
 
       rulesListView.hide();
       cardsView.show();
     });
 
     rulesListView.setInstantHandler(function(e) {
-      // cards.setType(RuleTypes.INSTANT);
       cardsView.newRule(RuleTypes.INSTANT);
-
-      //setButtonState();
-
-      navBar = new NavBar($('#nav-row'), 3, function(e) {
-        var node = e.data;
-
-        cards.jumpTo(node.name);
-      });
-      //navBar.buildNavTree(cards.getActiveNode());
 
       rulesListView.hide();
       cardsView.show();
@@ -106,13 +82,6 @@ var MailMan = function() {
 
     rulesListView.setEditHandler(function(rule) {
       cardsView.setRule(rule);
-
-      navBar = new NavBar($('#nav-row'), 3, function(e) {
-        var node = e.data;
-
-        cards.jumpTo(node.name);
-      });
-      //navBar.buildNavTree(cards.getActiveNode());
 
       rulesListView.hide();
       cardsView.show();
