@@ -7,6 +7,7 @@ var PubSub = require('pubsub-js');
 
 /**
  * This view displays all the information needed to create a new EmailRule.
+ * This view publishes the following events: Mailman.CardsView.show.
  *
  * @constructor
  * @param {jquery} appendTo The element this view should be appended to.
@@ -105,6 +106,7 @@ var CardsView = function(appendTo) {
    */
   this.show = function() {
     Util.setHidden(base, false);
+    PubSub.publish('Mailman.CardsView.show');
   };
 
   /**
@@ -117,7 +119,7 @@ var CardsView = function(appendTo) {
 
   /**
    * Toggles the state of the help information.
-   * 
+   *
    */
   this.toggleHelp = function() {
     cards.toggleHelp();

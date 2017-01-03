@@ -1,5 +1,4 @@
 
-var PubSub = require('pubsub-js');
 var Rules = require('./data/rule-container.js');
 var RuleTypes = require('./data/rule-types.js');
 var EmailRule = require('./data/email-rule.js');
@@ -7,6 +6,7 @@ var Database = require('./data/database.js');
 var Keys = require('./data/prop-keys.js');
 var RulesListView = require('./rules/rules-list-view.js');
 var CardsView = require('./cards/cards-view.js');
+var ActionBar = require('./action-bar/action-bar.js');
 
 
 
@@ -25,6 +25,9 @@ var MailMan = function() {
   var rulesListView;
   var cardsView;
 
+  var header = $('#layout-container').find('[data-id="header"]');
+  var actionBar = new ActionBar(header);
+
   //***** PUBLIC *****//
 
   /**
@@ -35,10 +38,12 @@ var MailMan = function() {
   this.init = function() {
     self = this;
 
-    $('#help').on('click', self.onHelpClick);
-
     rulesListView = new RulesListView($('#layout-container'));
     cardsView = new CardsView($('#layout-container'));
+
+    actionBar.setHelpHandler(function() {
+      cardsView.toggleHelp();
+    });
 
     rulesListView.setTriggerHandler(function(e) {
       cardsView.newRule(RuleTypes.TRIGGER);
@@ -102,14 +107,8 @@ var MailMan = function() {
       rules = new Rules({});
       rulesListView.setRulesContainer(rules);
     });
-  };
 
-  /**
-   * This function toggles the state of the help <p> tags.
-   *
-   */
-  this.onHelpClick = function() {
-    cardsView.toggleHelp();
+    rulesListView.show();
   };
 
   //***** PRIVATE *****//

@@ -11,7 +11,7 @@ var PubSub = require('pubsub-js');
 /**
  * This view displays all of the EmailRules. Each EmailRule corresponds to a RuleListItem.
  * This view responds to the following PubSub events: Rules.delete, Rules.add, Rules.update.
- *
+ * This view publishes the following events: Mailman.RulesListView.show.
  * @constructor
  * @param {jquery} appendTo The element this view should be appended to.
  */
@@ -139,6 +139,7 @@ var RulesListView = function(appendTo) {
    */
   this.show = function() {
     Util.setHidden(base, false);
+    PubSub.publish('Mailman.RulesListView.show');
   };
 
   /**
