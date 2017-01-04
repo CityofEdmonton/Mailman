@@ -112,19 +112,14 @@
 .mailman-button {
     background: $pantone-2945;
     color: $white;
-
-    &:hover {
-      background: $pantone-2945;
-      color: $white;
-    }
 }
 
 .mailman-button-success {
   background: $success-green;
   color: $white;
+}
 
-  &:hover {
-    background: $success-green;
-    color: $white;
-  }
+.mailman-button-quit {
+  background: $failure-red;
+  color: $white;
 }

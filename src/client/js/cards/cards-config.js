@@ -11,7 +11,7 @@ var CardsConfig = {};
  *
  * @return {Object<string, Card>} The repository used for storing Cards. These may not be in the program flow.
  */
-CardsConfig.buildCardRepo = function() {
+CardsConfig.buildCardRepo = function(contentArea) {
 
   var repo = {};
 
