@@ -18,12 +18,14 @@ var CardsView = function(appendTo) {
   var base = $(baseHTML);
   var cards;
   var doneCB;
+  var cancelCB;
 
   // jQuery Objects
   var contentArea = base.find('[data-id="content-area"]');
   var back = base.find('[data-id="back"]');
   var step = base.find('[data-id="step"]');
   var done = base.find('[data-id="done"]');
+  var cancel = base.find('[data-id="cancel"]');
 
   //***** private methods *****//
   this.init_ = function(appendTo) {
@@ -34,6 +36,14 @@ var CardsView = function(appendTo) {
     step.on('click', self.next);
     done.on('click', self.done);
     back.on('click', self.back);
+    cancel.on('click', self.cancel);
+
+    console.log('upgrading');
+
+    componentHandler.upgradeElement(step[0], 'MaterialButton');
+    componentHandler.upgradeElement(done[0], 'MaterialButton');
+    componentHandler.upgradeElement(back[0], 'MaterialButton');
+    componentHandler.upgradeElement(cancel[0], 'MaterialButton');
   };
 
   //***** public methods *****//
@@ -77,6 +87,19 @@ var CardsView = function(appendTo) {
     }
 
     doneCB(cards.getRule());
+  };
+
+  /**
+   * Cancels the EmailRule creation process.
+   *
+   * @param {event} event The event that triggered the function call.
+   */
+  this.cancel = function(event) {
+    if (cancelCB == undefined) {
+      throw new Error('CardsView has no cancel callback. Please set with setDCancelCallback.')
+    }
+
+    cancelCB();
   };
 
   /**
@@ -134,6 +157,15 @@ var CardsView = function(appendTo) {
     doneCB = cb;
   }
 
+  /**
+   * Sets the function to call when the cancel button is clicked.
+   *
+   * @param {Function} cb The function that will be called when the cancel button is clicked.
+   */
+  this.setCancelCallback = function(cb) {
+    cancelCB = cb;
+  }
+
   //***** private methods *****//
 
   /**
@@ -146,9 +178,11 @@ var CardsView = function(appendTo) {
     Util.setHidden(done, true);
     Util.setHidden(step, false);
     Util.setHidden(back, false);
+    Util.setHidden(cancel, true);
 
     if (cards.isFirst()) {
       Util.setHidden(back, true);
+      Util.setHidden(cancel, false);
     }
     else if (cards.isLast()) {
       Util.setHidden(done, false);

@@ -93,6 +93,13 @@ var MailMan = function() {
       });
     });
 
+    cardsView.setCancelCallback(function() {
+      cardsView.cleanup();
+
+      rulesListView.show();
+      cardsView.hide();
+    });
+
     database.load(Keys.RULE_KEY, function(config) {
       try {
         rules = new Rules(config);
