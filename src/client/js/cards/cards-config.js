@@ -39,8 +39,6 @@ CardsConfig.buildCardRepo = function(contentArea) {
 
   repo[CardNames.row] = new InputCard(contentArea, {
     title: 'Which row contains your header titles?',
-    help: 'By default, Mailman looks in row 1 for your header titles.' +
-        ' If your header is not in row 1, please input the row.',
     label: 'Header row...'
   });
 
@@ -72,8 +70,7 @@ CardsConfig.buildCardRepo = function(contentArea) {
     paragraphs: [
       'Mailman will now guide you through the process of creating your own repeated mail merge.',
       'This feature can be used to set up an email-based reminder system.'
-    ],
-    help: 'If you\'d like to go back to a regular mail merge, use the options below.'
+    ]
   });
 
   repo[CardNames.shouldSend] = new InputCard(contentArea, {
@@ -83,9 +80,6 @@ CardsConfig.buildCardRepo = function(contentArea) {
           'Please specify a column that determines when an email should be sent.',
       'Note that Mailman looks for the value TRUE to determine when to send an email.'
     ],
-    help: 'Mailman checks roughly every 15 minutes for new emails to send. ' +
-        'Keep in mind, this can lead to sending emails to someone every 15 minutes. ' +
-        'Continue on for some ideas about how to avoid this!',
     label: 'Send?'
   });
 
@@ -95,10 +89,6 @@ CardsConfig.buildCardRepo = function(contentArea) {
       'Every time Mailman sends an email, it records the time in a cell.',
       'Using the timestamp, you can determine whether you want to send another email.'
     ],
-    help: 'This timestamp can be used for some interesting things! ' +
-        'Imagine you are interested in sending an email to someone every day (just to annoy them). ' +
-        'You could just set the formula in the previously mentioned column to ' +
-        '"=TODAY() - {put the last sent here} > 1". Now an email will be sent every time TRUE pops up (every day).',
     label: 'Last sent...'
   });
 
@@ -106,8 +96,7 @@ CardsConfig.buildCardRepo = function(contentArea) {
     title: 'Submit the trigger?',
     paragraphs: [
       'This will regularly check the previously mentioned column for the value TRUE. ' +
-          'When TRUE is found in the column, an email is sent out with that row\'s information. ',
-      'If you\'d like to send now, just select the related option from the bottom right.'
+          'When TRUE is found in the column, an email is sent out with that row\'s information.'
     ]
   });
 

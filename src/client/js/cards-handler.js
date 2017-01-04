@@ -255,7 +255,7 @@ var Cards = function(parent) {
    * @return {String} The current ruleType.
    */
   this.getRuleType = function() {
-    var trigger = self.getCard(CardNames.triggerSetup);
+    var trigger = self.getCard(CardNames.triggerConfirmation);
 
     var current = cards.head;
     while (current !== null) {
@@ -314,23 +314,6 @@ var Cards = function(parent) {
    * @private
    */
   var setupCards = function() {
-    cardRepository[CardNames.sheet].attachEvent('card.hide', function(event) {
-      var sheet = cardRepository[CardNames.sheet].getValue();
-
-      if (sheet !== '') {
-        var row = '1';
-        if (updateRule) {
-          row = updateRule.headerRow;
-        }
-
-        google.script.run
-            .withSuccessHandler(setColumns)
-            .getHeaderStrings({
-              sheet: sheet,
-              headerRow: row
-            });
-      }
-    });
 
     cardRepository[CardNames.row].attachEvent('card.hide', function(event, card) {
 
@@ -520,9 +503,6 @@ var Cards = function(parent) {
   var createInstantList = function() {
     var list = new List();
 
-    list.add(cardRepository[CardNames.welcome]);
-    list.tail.name = CardNames.welcome;
-
     list.add(cardRepository[CardNames.sheet]);
     list.tail.name = CardNames.sheet;
 
@@ -553,9 +533,6 @@ var Cards = function(parent) {
   var createTriggerList = function() {
     var list = new List();
 
-    list.add(cardRepository[CardNames.welcome]);
-    list.tail.name = CardNames.welcome;
-
     list.add(cardRepository[CardNames.sheet]);
     list.tail.name = CardNames.sheet;
 
@@ -570,9 +547,6 @@ var Cards = function(parent) {
 
     list.add(cardRepository[CardNames.body]);
     list.tail.name = CardNames.body;
-
-    list.add(cardRepository[CardNames.triggerSetup]);
-    list.tail.name = CardNames.triggerSetup;
 
     list.add(cardRepository[CardNames.shouldSend]);
     list.tail.name = CardNames.shouldSend;
