@@ -106,19 +106,24 @@ function triggerEmail(ss, rule) {
   for (var i = parseInt(rule.headerRow); i < range.getNumRows(); i++) {
     var row = getValues(sheet, i);
 
-    // We only timestamp when the email successfully sends.
-    if (sendConditionalEmail(header, row, rule)) {
-      var dateColumn = rule.timestampColumn.replace(/(<<|>>)/g, '');
-      var currentDate = new Date();
-      var datetime = (currentDate.getMonth() + 1) + '/' +
-              currentDate.getDate() + '/' +
-              currentDate.getFullYear() + ' ' +
-              currentDate.getHours() + ':' +
-              currentDate.getMinutes() + ':' +
-              currentDate.getSeconds();
+    try {
+      // We only timestamp when the email successfully sends.
+      if (sendConditionalEmail(header, row, rule)) {
+        var dateColumn = rule.timestampColumn.replace(/(<<|>>)/g, '');
+        var currentDate = new Date();
+        var datetime = (currentDate.getMonth() + 1) + '/' +
+                currentDate.getDate() + '/' +
+                currentDate.getFullYear() + ' ' +
+                currentDate.getHours() + ':' +
+                currentDate.getMinutes() + ':' +
+                currentDate.getSeconds();
 
-      var cell = getCell(sheet, dateColumn, i);
-      cell.setValue(datetime);
+        var cell = getCell(sheet, dateColumn, i);
+        cell.setValue(datetime);
+      }
+    }
+    catch (e) {
+      log(e);
     }
   }
 
