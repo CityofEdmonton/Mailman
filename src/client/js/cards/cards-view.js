@@ -38,8 +38,6 @@ var CardsView = function(appendTo) {
     back.on('click', self.back);
     cancel.on('click', self.cancel);
 
-    console.log('upgrading');
-
     componentHandler.upgradeElement(step[0], 'MaterialButton');
     componentHandler.upgradeElement(done[0], 'MaterialButton');
     componentHandler.upgradeElement(back[0], 'MaterialButton');
