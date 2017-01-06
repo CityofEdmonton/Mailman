@@ -335,6 +335,14 @@ var Cards = function(parent) {
       }
 
     });
+
+    cardRepository[CardNames.sendNow].addOption('send test email', function() {
+      console.log('Sending test email...');
+    });
+
+    cardRepository[CardNames.triggerConfirmation].addOption('send test email', function() {
+      console.log('Sending test email...');
+    });
   };
 
   /**
