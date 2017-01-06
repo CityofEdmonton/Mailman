@@ -118,8 +118,14 @@ function triggerEmail(ss, rule) {
                 currentDate.getMinutes() + ':' +
                 currentDate.getSeconds();
 
-        var cell = getCell(sheet, dateColumn, i);
-        cell.setValue(datetime);
+        var cell = getCell(rule, dateColumn, i);
+
+        if (cell === null) {
+          log('Column: ' + dateColumn + ' couldn\'t be found. Timestamping failed.');
+        }
+        else {
+          cell.setValue(datetime);
+        }
       }
     }
     catch (e) {

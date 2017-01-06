@@ -82,6 +82,31 @@ function getValues(sheet, rowIndex) {
 }
 
 
+ /**
+  * This function gets a value from a specific Sheet, column and row.
+  * The column is specified by header name.
+  *
+  * @param {EmailRule} rule The EmailRule to use for getting a given cell.
+  * @param {String} headerName The name of the header. This determines the column to look in.
+  * @param {Number} row The 0-based row index. 0 is the very top row in the Sheet.
+  * @return {String} The string value found in the given row/column/Sheet.
+  */
+ function getCell(rule, headerName, row) {
+   SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
+   var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+   var sheet = ss.getSheetByName(rule.sheet);
+
+   var headerStrings = getHeaderStrings(rule);
+   var column = headerStrings.indexOf(headerName);
+
+   if (column === -1) {
+     return null;
+   }
+
+   return sheet.getDataRange().getCell(row + 1, column + 1);
+ }
+
+
 /**
  * This function replaces  all instances of <<tags>> with the data in headerToData.
  *
