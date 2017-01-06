@@ -6,7 +6,6 @@ var TextareaCard = require('./card/card-textarea.js');
 var List = require('./list/list.js');
 var EmailRule = require('./data/email-rule.js');
 var RuleTypes = require('./data/rule-types.js');
-var Database = require('./data/database.js');
 var Util = require('./util.js');
 var PubSub = require('pubsub-js');
 var Keys = require('./data/prop-keys.js');
@@ -18,9 +17,6 @@ var Cards = function(parent) {
   //***** LOCAL VARIABLES *****//
 
   var self = this;
-
-  // This handles all object reading/writing
-  var database = new Database();
 
   // This holds all the "cards".
   var contentArea = parent;
@@ -334,6 +330,18 @@ var Cards = function(parent) {
         }
       }
 
+    });
+
+    cardRepository[CardNames.sendNow].addOption('send test email', function() {
+      console.log('Sending test email...');
+      google.script.run
+          .sendTestEmail(self.getRule().toConfig());
+    });
+
+    cardRepository[CardNames.triggerConfirmation].addOption('send test email', function() {
+      console.log('Sending test email...');
+      google.script.run
+          .sendTestEmail(self.getRule().toConfig());
     });
   };
 

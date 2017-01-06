@@ -169,6 +169,35 @@ function instantEmail(rule) {
 }
 
 
+function sendTestEmail(rule) {
+  log('Starting test email...');
+  log(rule);
+  if (!validateRule(rule)) {
+    return;
+  }
+
+  var ss = SpreadsheetApp.openById(load(PROPERTY_SS_ID));
+  var sheet = ss.getSheetByName(rule.sheet);
+  var range = sheet.getDataRange();
+  var header = getHeaderStrings(rule);
+  var user = Session.getActiveUser().getEmail();
+  rule.to = user;
+
+  log('For sheet: ' + ss.getUrl());
+
+  var row = getValues(sheet, parseInt(rule.headerRow));
+
+  try {
+    sendBasicEmail(header, row, rule);
+  }
+  catch (e) {
+    log(e);
+  }
+
+  log('Ending test email...');
+}
+
+
 function validateRule(rule) {
   if (rule.ruleType == null) {
     log('EmailRule config is missing "ruleType".');
