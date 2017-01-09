@@ -2,7 +2,6 @@
 var baseHTML = require('./rules-list-view.html');
 var EmailRule = require('../data/email-rule.js');
 var RuleListItem = require('./rule-list-item.js');
-var TitledCard = require('../card/card-titled.js');
 var Util = require('../util.js');
 var PubSub = require('pubsub-js');
 
@@ -21,7 +20,6 @@ var RulesListView = function(appendTo) {
   var base = $(baseHTML);
   var ruleItems = [];
   var ruleContainer;
-  var card;
 
   // jQuery Objects
   var list = base.find('[data-id="list"]');
@@ -42,14 +40,6 @@ var RulesListView = function(appendTo) {
 
   this.init_ = function(appendTo) {
     appendTo.append(base);
-
-    card = new TitledCard(emptyContainer, {
-      title: 'Get started',
-      paragraphs: [
-        'Click one of the buttons in the bottom right corner to begin.'
-      ]
-    });
-    card.show();
 
     triggerButton.on('click', newTrigger);
     instantButton.on('click', newInstant);

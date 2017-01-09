@@ -1,3 +1,4 @@
+@import "_colors";
 
 .rlv-list {
   width: 100%;
@@ -19,7 +20,8 @@
 
 .rlv-primary-button {
   margin: 12px;
-
+  background: $watermelon;
+  color: $white;
 }
 
 .rlv-second-button {
@@ -34,4 +36,20 @@
   &:hover>.rlv-second-button {
     display: block;
   }
+}
+
+
+.demo-card-wide {
+  margin-top: 28px;
+}
+.demo-card-wide > .mdl-card__title {
+  color: #fff;
+  height: 176px;
+  background: url('http://drive.google.com/uc?export=view&id=0B7CO9MICkOKgM05EeGdmdExLYkE');
+  background-repeat: no-repeat;
+  background-position: right;
+  background-color: $watermelon;
+}
+.demo-card-wide > .mdl-card__menu {
+  color: #fff;
 }
