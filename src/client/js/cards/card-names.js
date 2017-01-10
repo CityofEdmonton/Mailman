@@ -16,5 +16,6 @@ module.exports = {
   triggerConfirmation: 'Schedule',
   triggerSetup: 'Trigger',
   shouldSend: 'Confirmation',
-  lastSent: 'Last Sent'
+  lastSent: 'Last Sent',
+  title: 'Title'
 };

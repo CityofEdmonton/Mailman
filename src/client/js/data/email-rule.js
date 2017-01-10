@@ -89,11 +89,11 @@ var EmailRule = function(config) {
     }
 
     // header
-    if (config.header == null) {
-      self.header = '1';
+    if (config.headerRow == null) {
+      self.headerRow = '1';
     }
     else {
-      self.header = config.headerRow.toString();
+      self.headerRow = config.headerRow.toString();
     }
   };
 
