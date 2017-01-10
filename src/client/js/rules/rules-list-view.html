@@ -17,16 +17,23 @@
   </div>
 
   <div class="rlv-button-bar">
-    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab rlv-second-button"
-    data-id="trigger-button">
-    <i class="material-icons">add</i>
-    <i class="material-icons">loop</i>
-  </button>
-  <button class="mdl-button mdl-js-button mdl-button--fab rlv-primary-button"
-  data-id="instant-button">
-  <i class="material-icons">add</i>
-</button>
+    <button id="trigger-button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab rlv-second-button"
+      data-id="trigger-button">
+      <i class="material-icons">add</i>
+      <i class="material-icons">loop</i>
+    </button>
+    <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="trigger-button">
+      Repeated Emails
+    </div>
 
-</div>
+    <button id="instant-button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect rlv-primary-button"
+      data-id="instant-button">
+      <i class="material-icons">add</i>
+    </button>
+    <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="instant-button">
+      Instant Emails
+    </div>
+
+  </div>
 
 </main>
