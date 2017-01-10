@@ -5,6 +5,14 @@
   margin: 10px 0px;
 }
 
+.mdl-list__item--three-line {
+  
+  .rli-primary {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
 .rli-list-avatar {
   margin-right: 16px;
   float: left;
@@ -20,7 +28,7 @@
   white-space: nowrap;
   display: block;
   outline: none;
-  max-width: 150px;
+  max-width: 140px;
 }
 
 .rli-list-alt-icon {
@@ -35,7 +43,9 @@
 
 .rli-icon-container {
   overflow: hidden;
-  width: 60px;
+  width: 40px;
+  margin: 8px;
+  height: 40px;
 }
 
 .rli-stacked-icon {

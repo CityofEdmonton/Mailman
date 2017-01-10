@@ -117,6 +117,7 @@ var MailMan = function() {
         rules = new Rules(config);
       }
       catch (e) {
+        rules = new Rules({});
         // We don't need to fail if the rule isn't properly formatted. Just log and continue on.
         console.log(e);
       }
