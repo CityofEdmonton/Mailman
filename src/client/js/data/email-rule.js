@@ -149,7 +149,8 @@ var EmailRule = function(config) {
       body: self.body,
       sendColumn: self.sendColumn,
       timestampColumn: self.timestampColumn,
-      createdDatetime: self.createdDatetime
+      createdDatetime: self.createdDatetime,
+      title: self.title
     };
   };
 
