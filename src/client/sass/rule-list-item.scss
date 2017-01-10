@@ -1,7 +1,7 @@
 @import "_colors";
 
 .rli-list-item {
-  background: #ffffff;
+  background: $white;
   margin: 10px 0px;
 }
 
@@ -11,7 +11,7 @@
   height: 40px;
   width: 40px;
   font-size: 40px;
-  color: $grey-flannel;
+  color: $icon-gray;
   cursor: pointer;
 }
 
@@ -44,6 +44,34 @@
   position:relative;
 }
 
+.rli-edit {
+  color: $icon-gray !important;
+}
+
+.rli-run {
+  color: $success-green !important;
+}
+
+.rli-delete {
+  color: $watermelon !important;
+}
+
 .rli-clickable {
   cursor: pointer;
+
+  &:hover {
+    background-color: rgba(158,158,158,.2);
+  }
+}
+
+// MDL override
+
+.mdl-list__item-primary-content {
+    height: inherit !important;
+}
+.mdl-list__item-secondary-content {
+    height: inherit !important;
+}
+.mdl-list__item--three-line {
+    height: inherit !important;
 }

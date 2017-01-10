@@ -26,6 +26,8 @@ var RuleListItem = function(appendTo, rule) {
   var triggerIcon = base.find('[data-id="trigger-icon"]');
   var instantIcon = base.find('[data-id="instant-icon"]');
   var deleteIcon = base.find('[data-id="delete"]');
+  var runIcon = base.find('[data-id="run"]');
+  var editIcon = base.find('[data-id="edit"]');
 
   var rule;
 
@@ -55,6 +57,10 @@ var RuleListItem = function(appendTo, rule) {
 
     upgradeTooltip(toTooltip, to);
     upgradeTooltip(subjectTooltip, subject);
+
+    componentHandler.upgradeElement(deleteIcon[0], 'MaterialButton');
+    componentHandler.upgradeElement(runIcon[0], 'MaterialButton');
+    componentHandler.upgradeElement(editIcon[0], 'MaterialButton');
   };
 
   var upgradeTooltip = function(tooltip, item) {
@@ -84,8 +90,16 @@ var RuleListItem = function(appendTo, rule) {
    * @param {Function} callback The function to call.
    */
   this.setEditHandler = function(callback) {
-    triggerIcon.on('click', rule, callback);
-    instantIcon.on('click', rule, callback);
+    editIcon.on('click', rule, callback);
+  };
+
+  /**
+   * Sets the handler for when the run icon is clicked.
+   *
+   * @param {Function} callback The function to call.
+   */
+  this.setRunHandler = function(callback) {
+    runIcon.on('click', rule, callback);
   };
 
   /**

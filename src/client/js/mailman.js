@@ -70,6 +70,18 @@ var MailMan = function() {
       cardsView.show();
     });
 
+    rulesListView.setRunHandler(function(rule) {
+
+      if (rule.ruleType === RuleTypes.INSTANT) {
+        google.script.run
+            .instantEmail(rule.toConfig());
+      }
+      else if (rule.ruleType === RuleTypes.TRIGGER) {
+        google.script.run
+          .triggerEmailNoSS(rule.toConfig());
+      }
+    });
+
     cardsView.setDoneCallback(function(rule) {
       if (rules.indexOf(rule.getID()) !== -1) {
         rules.update(rule);

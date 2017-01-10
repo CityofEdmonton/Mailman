@@ -30,6 +30,7 @@ var RulesListView = function(appendTo) {
   // Event callbacks
   var deletionCallback;
   var editCallback;
+  var runCallback;
   var triggerCB;
   var instantCB;
 
@@ -55,6 +56,10 @@ var RulesListView = function(appendTo) {
 
   var itemEdit = function(e) {
     editCallback(e.data);
+  };
+
+  var itemRun = function(e) {
+    runCallback(e.data);
   };
 
   var newTrigger = function(e) {
@@ -111,6 +116,7 @@ var RulesListView = function(appendTo) {
     var item = new RuleListItem(list, rule);
     item.setDeleteHandler(itemDelete);
     item.setEditHandler(itemEdit);
+    item.setRunHandler(itemRun);
 
     ruleItems.push(item);
   };
@@ -148,6 +154,15 @@ var RulesListView = function(appendTo) {
    */
   this.setEditHandler = function(callback) {
     editCallback = callback;
+  };
+
+  /**
+   * Sets the handler for each RuleListItem run.
+   *
+   * @param {Function} callback Called when the run icon is clicked.
+   */
+  this.setRunHandler = function(callback) {
+    runCallback = callback;
   };
 
   /**

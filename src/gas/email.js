@@ -92,6 +92,14 @@ function sendManyEmails() {
 }
 
 
+function triggerEmailNoSS(rule) {
+  var ss = SpreadsheetApp.openById(load(PROPERTY_SS_ID));
+  log('For sheet: ' + ss.getUrl());
+
+  triggerEmail(ss, rule);
+}
+
+
 function triggerEmail(ss, rule) {
   log('Starting trigger rule...');
   log(rule);
