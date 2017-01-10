@@ -195,32 +195,36 @@ var Cards = function(parent) {
 
   /**
    * Sets all Card values based upon the values in emailRule.
-   * TODO Replace this with something more flexible.
+   * TODO Replace this with something more flexible. It could use a match up between EmailRule properties and
+   *  the CardNames.
    *
    * @param {EmailRule} rule The EmailRule to set the Cards to. This is used for editing an existing EmailRule.
    */
   this.setRule = function(rule) {
     updateRule = rule;
 
-    if (rule.sheet) {
+    if (rule.sheet != null) {
       cardRepository[CardNames.sheet].setValue(rule.sheet);
     }
-    if (rule.headerRow) {
+    if (rule.title != null) {
+      cardRepository[CardNames.title].setValue(rule.title);
+    }
+    if (rule.headerRow != null) {
       cardRepository[CardNames.row].setValue(rule.headerRow);
     }
-    if (rule.to) {
+    if (rule.to != null) {
       cardRepository[CardNames.to].setValue(rule.to);
     }
-    if (rule.subject) {
+    if (rule.subject != null) {
       cardRepository[CardNames.subject].setValue(rule.subject);
     }
-    if (rule.body) {
+    if (rule.body != null) {
       cardRepository[CardNames.body].setValue(rule.body);
     }
-    if (rule.sendColumn) {
+    if (rule.sendColumn != null) {
       cardRepository[CardNames.shouldSend].setValue(rule.sendColumn);
     }
-    if (rule.timestampColumn) {
+    if (rule.timestampColumn != null) {
       cardRepository[CardNames.lastSent].setValue(rule.timestampColumn);
     }
 
@@ -282,6 +286,7 @@ var Cards = function(parent) {
     config.subject = self.getCard(CardNames.subject).getValue();
     config.body = self.getCard(CardNames.body).getValue();
     config.sheet = self.getCard(CardNames.sheet).getValue();
+    config.title = self.getCard(CardNames.title).getValue();
     if (self.getRuleType() === RuleTypes.TRIGGER) {
       config.sendColumn = self.getCard(CardNames.shouldSend).getValue();
       config.timestampColumn = self.getCard(CardNames.lastSent).getValue();
@@ -511,6 +516,9 @@ var Cards = function(parent) {
   var createInstantList = function() {
     var list = new List();
 
+    list.add(cardRepository[CardNames.title]);
+    list.tail.name = CardNames.title;
+
     list.add(cardRepository[CardNames.sheet]);
     list.tail.name = CardNames.sheet;
 
@@ -540,6 +548,9 @@ var Cards = function(parent) {
    */
   var createTriggerList = function() {
     var list = new List();
+
+    list.add(cardRepository[CardNames.title]);
+    list.tail.name = CardNames.title;
 
     list.add(cardRepository[CardNames.sheet]);
     list.tail.name = CardNames.sheet;

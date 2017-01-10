@@ -1,8 +1,16 @@
 @import "_colors";
 
 .rli-list-item {
-  background: #ffffff;
+  background: $white;
   margin: 10px 0px;
+}
+
+.mdl-list__item--three-line {
+  
+  .rli-primary {
+    display: flex;
+    flex-direction: row;
+  }
 }
 
 .rli-list-avatar {
@@ -11,8 +19,7 @@
   height: 40px;
   width: 40px;
   font-size: 40px;
-  color: $grey-flannel;
-  cursor: pointer;
+  color: $icon-gray;
 }
 
 .rli-hide-overflow-text {
@@ -21,7 +28,7 @@
   white-space: nowrap;
   display: block;
   outline: none;
-  max-width: 150px;
+  max-width: 140px;
 }
 
 .rli-list-alt-icon {
@@ -36,14 +43,43 @@
 
 .rli-icon-container {
   overflow: hidden;
-  cursor: pointer;
-  width: 60px;
+  width: 40px;
+  margin: 8px;
+  height: 40px;
 }
 
 .rli-stacked-icon {
   position:relative;
 }
 
+.rli-edit {
+  color: $icon-gray !important;
+}
+
+.rli-run {
+  color: $success-green !important;
+}
+
+.rli-delete {
+  color: $watermelon !important;
+}
+
 .rli-clickable {
   cursor: pointer;
+
+  &:hover {
+    background-color: rgba(158,158,158,.2);
+  }
+}
+
+// MDL override
+
+.mdl-list__item-primary-content {
+    height: inherit !important;
+}
+.mdl-list__item-secondary-content {
+    height: inherit !important;
+}
+.mdl-list__item--three-line {
+    height: inherit !important;
 }

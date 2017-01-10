@@ -6,7 +6,7 @@
 }
 
 .rlv-main {
-  margin-top: -41vh;
+  margin-top: -21vh;
 	-webkit-flex-shrink: 0;
 	-ms-flex-negative: 0;
 	flex-shrink: 0;
@@ -20,12 +20,23 @@
 
 .rlv-primary-button {
   margin: 12px;
-  background: $watermelon;
+  background-color: $watermelon;
   color: $white;
+
+  &:hover {
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24);
+  }
+  &:active {
+    background-color: $watermelon;
+  }
 }
 
 .rlv-second-button {
   display: none;
+
+  &:hover {
+    background-color: rgba(158,158,158,.2);
+  }
 }
 
 .rlv-button-bar {

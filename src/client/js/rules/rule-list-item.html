@@ -1,28 +1,28 @@
 <li class="mdl-list__item mdl-list__item--three-line mdl-shadow--2dp rli-list-item">
-  <span class="rli-icon-container">
-    <span data-id="trigger-icon">
-      <i class="material-icons rli-list-avatar">mail</i>
-      <i class="material-icons rli-list-alt-icon">keyboard_return</i>
+
+  <span class="mdl-list__item-primary-content rli-primary">
+    <span class="rli-icon-container">
+      <span data-id="trigger-icon">
+        <i class="material-icons rli-list-avatar">mail</i>
+        <i class="material-icons rli-list-alt-icon">keyboard_return</i>
+      </span>
+      <span data-id="instant-icon">
+        <i class="material-icons rli-list-avatar">mail_outline</i>
+      </span>
     </span>
-    <span data-id="instant-icon">
-      <i class="material-icons rli-list-avatar">mail_outline</i>
-    </span>
+
+    <span data-id="title" class="mdl-typography--title mdl-color-text--grey-600 rli-hide-overflow-text"></span>
   </span>
-  <span class="mdl-list__item-primary-content">
 
-
-    <span class="rli-hide-overflow-text" data-id="to">To</span>
-    <div data-id="to-tooltip">
-      To
-    </div>
-
-    <span class="mdl-list__item-text-body rli-hide-overflow-text" data-id="subject">Subject</span>
-    <div data-id="subject-tooltip">
-      Subject
-    </div>
-
-  </span>
   <span class="mdl-list__item-secondary-content">
-    <a class="mdl-list__item-secondary-action rli-clickable" data-id="delete" ><i class="material-icons">delete</i></a>
+    <button class="mdl-button mdl-js-button mdl-button--icon rli-clickable rli-delete" data-id="delete" >
+      <i class="material-icons">delete</i>
+    </button>
+    <button class="mdl-button mdl-js-button mdl-button--icon rli-clickable rli-run" data-id="run" >
+      <i class="material-icons">play_arrow</i>
+    </button>
+    <button class="mdl-button mdl-js-button mdl-button--icon rli-clickable rli-edit" data-id="edit" >
+      <i class="material-icons">edit</i>
+    </button>
   </span>
 </li>

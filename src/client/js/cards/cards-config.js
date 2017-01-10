@@ -25,6 +25,12 @@ CardsConfig.buildCardRepo = function(contentArea) {
     ]
   });
 
+  repo[CardNames.title] = new InputCard(contentArea, {
+    title: 'What should this merge be called?',
+    help: 'This title will help you differentiate this merge from others.',
+    label: 'Title...'
+  });
+
   repo[CardNames.sheet] = new InputCard(contentArea, {
     title: 'Which Sheet are we sending from?',
     help: 'This Sheet must contain all the information you may want to send in an email.',
