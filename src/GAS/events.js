@@ -31,7 +31,7 @@ function openSidebar() {
   PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, SpreadsheetApp.getActiveSpreadsheet().getId());
 
   var ui = HtmlService.createHtmlOutputFromFile('mailman')
-      .setTitle('Mailman')
+      .setTitle(' ')
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 
   if (!validateTriggers()) {
