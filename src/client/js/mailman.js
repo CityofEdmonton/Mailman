@@ -7,7 +7,7 @@ var Keys = require('./data/prop-keys.js');
 var RulesListView = require('./rules/rules-list-view.js');
 var CardsView = require('./cards/cards-view.js');
 var ActionBar = require('./action-bar/action-bar.js');
-
+var LoadingScreen = require('./loading/loading-screen.js');
 
 
 var MailMan = function() {
@@ -28,6 +28,8 @@ var MailMan = function() {
   var header = $('#layout-container').find('[data-id="header"]');
   var actionBar = ActionBar;
 
+  var ls = LoadingScreen;
+
   //***** PUBLIC *****//
 
   /**
@@ -37,6 +39,8 @@ var MailMan = function() {
    */
   this.init = function() {
     self = this;
+
+    setTimeout(function() { ls.show(); }, 1000);
 
     actionBar.init(header);
     rulesListView = new RulesListView($('#layout-container'));
