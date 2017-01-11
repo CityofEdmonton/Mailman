@@ -4,6 +4,7 @@ var EmailRule = require('../data/email-rule.js');
 var RuleListItem = require('./rule-list-item.js');
 var Util = require('../util.js');
 var PubSub = require('pubsub-js');
+var ActionBar = require('../action-bar/action-bar.js');
 
 
 
@@ -20,6 +21,7 @@ var RulesListView = function(appendTo) {
   var base = $(baseHTML);
   var ruleItems = [];
   var ruleContainer;
+  var actionBar = ActionBar;
 
   // jQuery Objects
   var list = base.find('[data-id="list"]');
@@ -90,10 +92,12 @@ var RulesListView = function(appendTo) {
     if (ruleItems.length === 0) {
       Util.setHidden(list, true);
       Util.setHidden(emptyContainer, false);
+      actionBar.hideBranding();
     }
     else {
       Util.setHidden(list, false);
       Util.setHidden(emptyContainer, true);
+      actionBar.showBranding();
     }
   };
 
@@ -130,6 +134,7 @@ var RulesListView = function(appendTo) {
    */
   this.hide = function() {
     Util.setHidden(base, true);
+    actionBar.showBranding();
   };
 
   /**
@@ -137,6 +142,7 @@ var RulesListView = function(appendTo) {
    *
    */
   this.show = function() {
+    setEmptyDisplay();
     Util.setHidden(base, false);
     PubSub.publish('Mailman.RulesListView.show');
   };

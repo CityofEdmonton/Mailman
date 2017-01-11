@@ -26,7 +26,7 @@ var MailMan = function() {
   var cardsView;
 
   var header = $('#layout-container').find('[data-id="header"]');
-  var actionBar = new ActionBar(header);
+  var actionBar = ActionBar;
 
   //***** PUBLIC *****//
 
@@ -38,6 +38,7 @@ var MailMan = function() {
   this.init = function() {
     self = this;
 
+    actionBar.init(header);
     rulesListView = new RulesListView($('#layout-container'));
     cardsView = new CardsView($('#layout-container'));
 
