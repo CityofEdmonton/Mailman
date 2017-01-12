@@ -29,35 +29,36 @@
     // animation-direction: alternate;
 
     .anim-square {
-      width: 150px;
-      height: 150px;
+      width: 175px;
+      height: 175px;
       background-color: coral;
 
       animation-name: square-to-circle;
-      animation-duration: 8s;
-      animation-delay: 1s;
+      animation-duration: 4s;
+      animation-delay: 0s;
       animation-iteration-count: infinite;
       animation-timing-function: cubic-bezier(1,.015,.295,1.225);
       animation-direction: alternate;
     }
 
-    .bouncy {
-      width: 20px;
-      height: 20px;
-      position: relative;
-      right: 50px;
+    .positioned-text {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -55%);
       color: $background;
+      display: flex;
 
-      animation-name: bounce;
-      animation-duration: 8s;
-      animation-delay: 0.5s;
-      animation-iteration-count: infinite;
-      // animation-timing-function: cubic-bezier(1,.015,.295,1.225);
-      animation-direction: alternate;
+      .bouncy {
 
-      &.offset {
-        //animation-delay: 2.25s;
-        animation-name: bounce-offset;
+        animation-name: bounce;
+        animation-duration: 8s;
+        animation-delay: 3.5s;
+        animation-iteration-count: infinite;
+
+        &.offset {
+          animation-delay: 3.6s;
+        }
       }
     }
 
@@ -138,58 +139,13 @@
   0% {
     transform: translateY(0px);
   }
-  13% {
-    transform: translateY(0px);
-  }
-  25%  {
+  3% {
     transform: translateY(-20px);
   }
-  38% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(0px);
-  }
-  63% {
-    transform: translateY(0px);
-  }
-  75% {
-    transform: translateY(-20px);
-  }
-  88% {
+  6% {
     transform: translateY(0px);
   }
   100% {
     transform: translateY(0px);
-  }
-}
-
-@keyframes bounce-offset {
-  0% {
-    transform: translateY(-20px);
-  }
-  13% {
-    transform: translateY(0px);
-  }
-  25%  {
-    transform: translateY(0px);
-  }
-  38% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-  63% {
-    transform: translateY(0px);
-  }
-  75% {
-    transform: translateY(0px);
-  }
-  88% {
-    transform: translateY(0px);
-  }
-  100% {
-    transform: translateY(-20px);
   }
 }
