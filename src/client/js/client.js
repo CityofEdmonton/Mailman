@@ -7,6 +7,9 @@ $(document).ready(function() {
   var body = $(document).find('[data-id="body"]');
   var ls = LoadingScreen;
   ls.init(body);
+  ls.show();
 
-  var mailman = new MailMan();
+  console.log('Loading screen');
+
+  var mailman = new MailMan(body);
 });
