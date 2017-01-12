@@ -7,6 +7,8 @@ var LoadingScreen = function() {
   // private variables
   var initialized = false;
   var self = this;
+  var MIN_DISPLAY = 5000;
+  var elapsed = false;
 
   // jQuery objects
   var base = $(baseHTML);
@@ -34,7 +36,16 @@ var LoadingScreen = function() {
    *
    */
   this.hide = function() {
-    Util.setHidden(base, true);
+
+    if (elapsed) {
+      base.hide('fade', {}, 1000);
+      elapsed = false;
+    }
+    else {
+      setTimeout(function() {
+        self.hide();
+      }, 1000);
+    }
   };
 
   /**
@@ -43,6 +54,10 @@ var LoadingScreen = function() {
    */
   this.show = function() {
     Util.setHidden(base, false);
+
+    setTimeout(function() {
+      elapsed = true;
+    }, MIN_DISPLAY);
   };
 
 };

@@ -8,24 +8,33 @@ var RulesListView = require('./rules/rules-list-view.js');
 var CardsView = require('./cards/cards-view.js');
 var ActionBar = require('./action-bar/action-bar.js');
 var LoadingScreen = require('./loading/loading-screen.js');
+var baseHTML = require('./main.html');
 
 
-var MailMan = function() {
+
+var MailMan = function(appendTo) {
 
   // ***** CONSTANTS ***** //
 
   //***** LOCAL VARIABLES *****//
 
-  var self;
+  var self = this;
+  var base = $(baseHTML);
 
   var database = new Database();
+
+  var state = {
+    loadedSheets: true,
+    loadedColumns: true,
+    loadedRules: false
+  };
 
   var rules;
 
   var rulesListView;
   var cardsView;
 
-  var header = $('#layout-container').find('[data-id="header"]');
+  var header = base.find('[data-id="header"]');
   var actionBar = ActionBar;
 
   var ls = LoadingScreen;
@@ -37,10 +46,8 @@ var MailMan = function() {
    *
    * @constructor
    */
-  this.init = function() {
-    self = this;
-
-    setTimeout(function() { ls.show(); }, 1000);
+  this.init = function(appendTo) {
+    appendTo.append(base);
 
     actionBar.init(header);
     rulesListView = new RulesListView($('#layout-container'));
@@ -128,9 +135,11 @@ var MailMan = function() {
       }
 
       rulesListView.setRulesContainer(rules);
+      ls.hide();
     }, function() {
       rules = new Rules({});
       rulesListView.setRulesContainer(rules);
+      ls.hide();
     });
 
     rulesListView.show();
@@ -138,7 +147,7 @@ var MailMan = function() {
 
   //***** PRIVATE *****//
 
-  this.init();
+  this.init(appendTo);
 };
 
 
