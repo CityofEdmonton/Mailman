@@ -58,13 +58,6 @@ var Cards = function(parent) {
     });
 
     setupCards();
-
-    // Load information from GAS
-    if (window.google !== undefined) {
-      google.script.run
-          .withSuccessHandler(setSheets)
-          .getSheets();
-    }
   };
 
   /**
@@ -237,6 +230,13 @@ var Cards = function(parent) {
    * @param {RuleTypes} type One of the EmailRule RuleTypes.
    */
   this.setType = function(type) {
+    // Load information from GAS
+    if (window.google !== undefined) {
+      google.script.run
+          .withSuccessHandler(setSheets)
+          .getSheets();
+    }
+
     if (type === RuleTypes.INSTANT) {
       cards = createInstantList();
     }
