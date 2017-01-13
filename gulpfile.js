@@ -25,7 +25,6 @@ gulp.task('test-web', ['build-web'], openWeb);
 
 // General
 gulp.task('lint-all', closureLint);
-gulp.task('fix-all', closureFix);
 gulp.task('browserify', browserifyBundle);
 gulp.task('compile-sass', compileSASS);
 gulp.task('clean', clean);
@@ -200,25 +199,6 @@ function closureLint() {
     return gulp.src(['./src/**/*.js'])
         .pipe(gjslint(lintOptions))
         .pipe(gjslint.reporter('console'));
-}
-
-
-/**
- * Attempts to automatically fix many of the errors that gjslint checks for.
- * Runs a shell command.
- *
- * @param  {callback} cb - a callback so the engine knows when it'll be done
- * @return {stream} the stream as the completion hint to the gulp engine
- */
-function closureFix(cb) {
-
-    var fixJS = 'fixjsstyle --strict --max_line_length 120 -r ./src';
-
-    return exec(fixJS, function(err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        cb(err);
-    });
 }
 
 
