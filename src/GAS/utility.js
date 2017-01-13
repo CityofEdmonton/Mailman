@@ -1,4 +1,15 @@
+function getSpreadsheet() {
+  try {
+    SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  }
+  catch (e) {
+    log(e);
+    throw e;
+  }
 
+  return ss;
+}
 
 /**
  * Ensures the assigned trigger is valid.
