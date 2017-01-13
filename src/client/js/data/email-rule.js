@@ -20,13 +20,16 @@ var RuleTypes = require('./rule-types.js');
  *                             TODO support HTML.
  * @param {string} config.sendColumn The tagged column that contains the truthy value.
  * @param {string} config.timestampColumn The tagged column that Mailman will edit when an email is sent.
+ * @param {string=} config.headerRow The row these emails should start sending from.
+ * @param {string=} config.title The title of this EmailRule.
+ * @param {string=} config.createdDatetime The time this EmailRule was created.
+ * @param {string=} config.id The id for this EmailRule.
  */
 var EmailRule = function(config) {
 
   // private variables
 
-  // This id is only used client-side. It allows each rule to be distinguished from the next.
-  var id = ID();
+  var id;
   var self = this;
 
   // public variables
@@ -70,6 +73,14 @@ var EmailRule = function(config) {
     if (config.ruleType === RuleTypes.TRIGGER &&
         config.timestampColumn == null) {
       throw new Error('EmailRule config is missing "timestampColumn".');
+    }
+
+    // id
+    if (config.id == null) {
+      id = ID();
+    }
+    else {
+      id = config.id;
     }
 
     // createdDatetime
@@ -141,6 +152,7 @@ var EmailRule = function(config) {
    */
   this.toConfig = function() {
     return {
+      id: id,
       ruleType: self.ruleType,
       headerRow: self.headerRow,
       to: self.to,
