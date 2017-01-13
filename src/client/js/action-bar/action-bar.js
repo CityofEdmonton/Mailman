@@ -3,7 +3,6 @@ var Util = require('../util.js');
 var PubSub = require('pubsub-js');
 
 
-
 /**
  * The ActionBar is responsible for the display on the very top of Mailman. It has a logo, a title and some controls.
  * This object is a singleton.
@@ -71,7 +70,7 @@ var ActionBar = function() {
     });
 
     initialized = true;
-  }
+  };
 
   /**
    * Sets the callback for the settings icon.

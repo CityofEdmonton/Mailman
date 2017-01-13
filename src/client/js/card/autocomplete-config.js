@@ -72,7 +72,7 @@ var Config = function(inputEl) {
         return false;
       }
     };
-  }
+  };
 
 };
 

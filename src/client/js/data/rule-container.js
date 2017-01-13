@@ -1,13 +1,14 @@
 var EmailRule = require('./email-rule.js');
 var RuleTypes = require('./rule-types.js');
-var Database = require('./database.js');
 var PubSub = require('pubsub-js');
 var Keys = require('./prop-keys.js');
+var RulesService = require('./rules-service.js');
 
 
 
 /**
- * This model holds all EmailRules. It is built to make serialization and deserialization easy.
+ * This model holds all EmailRules. It is built to make serialization and deserialization easy. It also handles the
+ * saving/loading of EmailRules from the server.
  *
  * @param {Object} config The Object used to rebuild the RuleContainer.
  * @param {Array<EmailRule>} config.rules The EmailRules that this container holds.
@@ -18,7 +19,7 @@ var RuleContainer = function(config) {
   // private variables
   var self = this;
   var rules = [];
-  var database = new Database();
+  var rs = new RulesService();
 
   // public variables
 
@@ -45,11 +46,17 @@ var RuleContainer = function(config) {
    * @param {Object} config The config object for this EmailRule. Please see EmailRule for details.
    */
   this.add = function(config) {
-    rules.push(new EmailRule(config));
+    var rule = new EmailRule(config);
+    rules.push(rule);
 
-    database.save(Keys.RULE_KEY, self.toConfig(), function() {
-      PubSub.publish('Rules.add');
-    });
+    rs.createRule(rule,
+        function() {
+          PubSub.publish('Rules.add');
+        },
+        function(e) {
+          console.log(e);
+        }
+    );
   };
 
   /**
@@ -58,19 +65,21 @@ var RuleContainer = function(config) {
    * @param  {EmailRule} rule The rule to delete.
    */
   this.remove = function(rule) {
-    rules.forEach(function(element, index, array) {
+    var index = self.indexOf(rule.getID());
+    if (index === -1) {
+      throw new Error('Error: EmailRule not found.');
+    }
 
-      if (element.isEqual(rule)) {
-        array.splice(index, 1);
-
-        // Push rule update
-        database.save(Keys.RULE_KEY, self.toConfig(), function() {
+    rs.deleteRule(self.get(index),
+        function() {
           PubSub.publish('Rules.delete');
-        });
+        },
+        function(e) {
+          console.log(e);
+        }
+    );
 
-        return;
-      }
-    });
+    rules.splice(index, 1);
   };
 
   /**
@@ -86,11 +95,16 @@ var RuleContainer = function(config) {
     if (index === -1) {
       throw new Error('Error: EmailRule not found.');
     }
-
     rules[index] = rule;
-    database.save(Keys.RULE_KEY, self.toConfig(), function() {
-      PubSub.publish('Rules.update');
-    });
+
+    rs.updateRule(rule,
+        function() {
+          PubSub.publish('Rules.update');
+        },
+        function(e) {
+          console.log(e);
+        }
+    );
   };
 
   /**

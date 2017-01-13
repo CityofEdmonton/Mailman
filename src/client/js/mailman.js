@@ -1,14 +1,14 @@
-
 var Rules = require('./data/rule-container.js');
 var RuleTypes = require('./data/rule-types.js');
 var EmailRule = require('./data/email-rule.js');
-var Database = require('./data/database.js');
 var Keys = require('./data/prop-keys.js');
 var RulesListView = require('./rules/rules-list-view.js');
 var CardsView = require('./cards/cards-view.js');
 var ActionBar = require('./action-bar/action-bar.js');
 var LoadingScreen = require('./loading/loading-screen.js');
 var baseHTML = require('./main.html');
+var RulesService = require('./data/rules-service.js');
+var PubSub = require('pubsub-js');
 
 
 
@@ -21,13 +21,7 @@ var MailMan = function(appendTo) {
   var self = this;
   var base = $(baseHTML);
 
-  var database = new Database();
-
-  var state = {
-    loadedSheets: true,
-    loadedColumns: true,
-    loadedRules: false
-  };
+  var rulesService = new RulesService();
 
   var rules;
 
@@ -47,11 +41,25 @@ var MailMan = function(appendTo) {
    * @constructor
    */
   this.init = function(appendTo) {
+
     appendTo.append(base);
 
     actionBar.init(header);
     rulesListView = new RulesListView($('#layout-container'));
     cardsView = new CardsView($('#layout-container'));
+
+    // PubSub
+    PubSub.subscribe('Rules.add', function(msg, data) {
+      cardsView.cleanup();
+      rulesListView.show();
+      cardsView.hide();
+    });
+
+    PubSub.subscribe('Rules.update', function(msg, data) {
+      cardsView.cleanup();
+      rulesListView.show();
+      cardsView.hide();
+    });
 
     actionBar.setHelpHandler(function() {
       cardsView.toggleHelp();
@@ -90,7 +98,7 @@ var MailMan = function(appendTo) {
       }
       else if (rule.ruleType === RuleTypes.TRIGGER) {
         google.script.run
-          .triggerEmailNoSS(rule.toConfig());
+            .triggerEmailNoSS(rule.toConfig());
       }
     });
 
@@ -101,20 +109,6 @@ var MailMan = function(appendTo) {
       else {
         rules.add(rule.toConfig());
       }
-
-      database.save(Keys.RULE_KEY, rules.toConfig(), function() {
-        if (rule.ruleType === RuleTypes.INSTANT) {
-          google.script.run
-              .instantEmail(rule.toConfig());
-        }
-
-        setTimeout(function() {
-          cardsView.cleanup();
-
-          rulesListView.show();
-          cardsView.hide();
-        }, 1000);
-      });
     });
 
     cardsView.setCancelCallback(function() {
@@ -124,23 +118,28 @@ var MailMan = function(appendTo) {
       cardsView.hide();
     });
 
-    database.load(Keys.RULE_KEY, function(config) {
-      try {
-        rules = new Rules(config);
-      }
-      catch (e) {
-        rules = new Rules({});
-        // We don't need to fail if the rule isn't properly formatted. Just log and continue on.
-        console.log(e);
-      }
+    rulesService.getRules(
+        function(config) {
+          try {
+            rules = new Rules(config);
+          }
+          catch (e) {
+            rules = new Rules({});
+            // We don't need to fail if the rule isn't properly formatted. Just log and continue on.
+            console.log(e);
+          }
 
-      rulesListView.setRulesContainer(rules);
-      ls.hide();
-    }, function() {
-      rules = new Rules({});
-      rulesListView.setRulesContainer(rules);
-      ls.hide();
-    });
+          rulesListView.setRulesContainer(rules);
+          ls.hide();
+        },
+        function(e) {
+          console.log('failed loading rules');
+          console.log(e);
+
+          rules = new Rules({});
+          rulesListView.setRulesContainer(rules);
+          ls.hide();
+        });
 
     rulesListView.show();
   };
