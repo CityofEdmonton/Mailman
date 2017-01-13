@@ -81,7 +81,7 @@ var CardsView = function(appendTo) {
    */
   this.done = function(event) {
     if (doneCB == undefined) {
-      throw new Error('CardsView has no done callback. Please set with setDoneCallback.')
+      throw new Error('CardsView has no done callback. Please set with setDoneCallback.');
     }
 
     doneCB(cards.getRule());
@@ -94,7 +94,7 @@ var CardsView = function(appendTo) {
    */
   this.cancel = function(event) {
     if (cancelCB == undefined) {
-      throw new Error('CardsView has no cancel callback. Please set with setDCancelCallback.')
+      throw new Error('CardsView has no cancel callback. Please set with setDCancelCallback.');
     }
 
     cancelCB();
@@ -136,7 +136,7 @@ var CardsView = function(appendTo) {
    */
   this.hide = function() {
     Util.setHidden(base, true);
-  }
+  };
 
   /**
    * Toggles the state of the help information.
@@ -144,7 +144,7 @@ var CardsView = function(appendTo) {
    */
   this.toggleHelp = function() {
     cards.toggleHelp();
-  }
+  };
 
   /**
    * Sets the function to call when the done button is clicked.
@@ -153,7 +153,7 @@ var CardsView = function(appendTo) {
    */
   this.setDoneCallback = function(cb) {
     doneCB = cb;
-  }
+  };
 
   /**
    * Sets the function to call when the cancel button is clicked.
@@ -162,7 +162,7 @@ var CardsView = function(appendTo) {
    */
   this.setCancelCallback = function(cb) {
     cancelCB = cb;
-  }
+  };
 
   //***** private methods *****//
 

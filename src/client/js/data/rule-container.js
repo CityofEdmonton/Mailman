@@ -50,12 +50,12 @@ var RuleContainer = function(config) {
     rules.push(rule);
 
     rs.createRule(rule,
-      function() {
-        PubSub.publish('Rules.add');
-      },
-      function(e) {
-        console.log(e);
-      }
+        function() {
+          PubSub.publish('Rules.add');
+        },
+        function(e) {
+          console.log(e);
+        }
     );
   };
 
@@ -71,12 +71,12 @@ var RuleContainer = function(config) {
     }
 
     rs.deleteRule(self.get(index),
-      function() {
-        PubSub.publish('Rules.delete');
-      },
-      function(e) {
-        console.log(e)
-      }
+        function() {
+          PubSub.publish('Rules.delete');
+        },
+        function(e) {
+          console.log(e);
+        }
     );
 
     rules.splice(index, 1);
@@ -98,12 +98,12 @@ var RuleContainer = function(config) {
     rules[index] = rule;
 
     rs.updateRule(rule,
-      function() {
-        PubSub.publish('Rules.update');
-      },
-      function(e) {
-        console.log(e);
-      }
+        function() {
+          PubSub.publish('Rules.update');
+        },
+        function(e) {
+          console.log(e);
+        }
     );
   };
 

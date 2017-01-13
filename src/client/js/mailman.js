@@ -98,7 +98,7 @@ var MailMan = function(appendTo) {
       }
       else if (rule.ruleType === RuleTypes.TRIGGER) {
         google.script.run
-          .triggerEmailNoSS(rule.toConfig());
+            .triggerEmailNoSS(rule.toConfig());
       }
     });
 
@@ -119,27 +119,27 @@ var MailMan = function(appendTo) {
     });
 
     rulesService.getRules(
-      function(config) {
-        try {
-          rules = new Rules(config);
-        }
-        catch (e) {
-          rules = new Rules({});
-          // We don't need to fail if the rule isn't properly formatted. Just log and continue on.
+        function(config) {
+          try {
+            rules = new Rules(config);
+          }
+          catch (e) {
+            rules = new Rules({});
+            // We don't need to fail if the rule isn't properly formatted. Just log and continue on.
+            console.log(e);
+          }
+
+          rulesListView.setRulesContainer(rules);
+          ls.hide();
+        },
+        function(e) {
+          console.log('failed loading rules');
           console.log(e);
-        }
 
-        rulesListView.setRulesContainer(rules);
-        ls.hide();
-      },
-      function(e) {
-        console.log('failed loading rules');
-        console.log(e);
-
-        rules = new Rules({});
-        rulesListView.setRulesContainer(rules);
-        ls.hide();
-    });
+          rules = new Rules({});
+          rulesListView.setRulesContainer(rules);
+          ls.hide();
+        });
 
     rulesListView.show();
   };

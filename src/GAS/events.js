@@ -37,8 +37,10 @@ function openSidebar() {
   if (!validateTriggers()) {
     deleteForThisSheet();
     log('Triggers should be rebuilt.');
-    // createTriggerBasedEmail(); // IMPORTANT
+    createTriggerBasedEmail(); // IMPORTANT
   }
+
+  setupSheet();
 
   SpreadsheetApp.getUi().showSidebar(ui);
 }

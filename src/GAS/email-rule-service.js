@@ -3,7 +3,6 @@ var ID_INDEX = 1;
 var RULE_INDEX = 2;
 
 
-
 /**
  * Gets all EmailRules.
  *
@@ -37,6 +36,7 @@ function getAllRules() {
   }
 }
 
+
 /**
  * Gets an EmailRule by id. Note that the returned object is just a string.
  * Use JSON.parse if you want the actual object.
@@ -56,6 +56,7 @@ function getRuleByID(id) {
     throw e;
   }
 }
+
 
 /**
  * Deletes an EmailRule by id.
@@ -77,6 +78,7 @@ function deleteByID(id) {
   }
 }
 
+
 /**
  * Creates a new EmailRule.
  *
@@ -93,6 +95,7 @@ function createRule(rule) {
     throw e;
   }
 }
+
 
 /**
  * Updates an existing EmailRule. EmailRule.id is used to do the comparison.

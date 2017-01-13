@@ -1,6 +1,5 @@
 
 
-
 /**
  * This service is made to get/handle all EmailRules from the server.
  *
@@ -15,19 +14,19 @@ var RulesService = function() {
     }
     else if (success != null && fail == null) {
       google.script.run
-        .withSuccessHandler(success)
-        [main](param);
+          .withSuccessHandler(success)
+          [main](param);
     }
     else if (success == null && fail != null) {
       google.script.run
-        .withFailureHandler(fail)
-        [main](param);
+          .withFailureHandler(fail)
+          [main](param);
     }
     else if (success != null && fail != null) {
       google.script.run
-        .withSuccessHandler(success)
-        .withFailureHandler(fail)
-        [main](param);
+          .withSuccessHandler(success)
+          .withFailureHandler(fail)
+          [main](param);
     }
     else {
       console.log('Failed calling RulesService.');

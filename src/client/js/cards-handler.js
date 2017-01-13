@@ -327,11 +327,11 @@ var Cards = function(parent) {
         var numTest = parseInt(row);
         if (!isNaN(numTest) && numTest > 0) {
           google.script.run
-            .withSuccessHandler(setColumns)
-            .getHeaderStrings({
-              sheet: sheet,
-              headerRow: row
-            });
+              .withSuccessHandler(setColumns)
+              .getHeaderStrings({
+                sheet: sheet,
+                headerRow: row
+              });
         }
       }
 
