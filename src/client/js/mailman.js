@@ -33,7 +33,6 @@ var MailMan = function(appendTo) {
   // jquery objects
   var base = $(baseHTML);
   var header = base.find('[data-id="header"]');
-  var layout = base.find('[data-id="layout-container"]');
 
 
   //***** PUBLIC *****//
@@ -48,9 +47,9 @@ var MailMan = function(appendTo) {
     appendTo.append(base);
 
     actionBar.init(header);
-    rulesListView = new RulesListView(layout);
-    cardsView = new CardsView(layout);
-    settingsView = new SettingsView(layout);
+    rulesListView = new RulesListView(base);
+    cardsView = new CardsView(base);
+    settingsView = new SettingsView(base);
 
     // PubSub
     PubSub.subscribe('Rules.add', function(msg, data) {
