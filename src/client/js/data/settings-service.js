@@ -46,11 +46,11 @@ var SettingsService = function() {
   };
 
   this.sendAsMe = function(success, fail) {
-    runGoogleFunction('turnOnLogging', null, success, fail);
+    runGoogleFunction('rebuildTrigger', null, success, fail);
   };
 
   this.clearData = function(success, fail) {
-    runGoogleFunction('turnOnLogging', null, success, fail);
+    runGoogleFunction('clearData', null, success, fail);
   };
 
 };

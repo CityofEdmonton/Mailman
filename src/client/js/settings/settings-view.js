@@ -48,11 +48,11 @@ var SettingsView = function(appendTo) {
     });
 
     send.on('click', function() {
-      console.log('send');
+      ss.sendAsMe(null, logError);
     });
 
     clear.on('click', function() {
-      console.log('clear');
+      ss.clearData(null, logError);
     });
   };
 
