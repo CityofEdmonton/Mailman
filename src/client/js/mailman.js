@@ -70,6 +70,8 @@ var MailMan = function(appendTo) {
 
     actionBar.setSettingsHandler(function() {
       settingsView.show();
+      rulesListView.hide();
+      cardsView.hide();
     });
 
     rulesListView.setTriggerHandler(function(e) {

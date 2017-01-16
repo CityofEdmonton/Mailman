@@ -1,6 +1,6 @@
 var baseHTML = require('./settings-view.html');
 var Util = require('../util.js');
-
+var PubSub = require('pubsub-js');
 
 
 /**
@@ -14,33 +14,49 @@ var Util = require('../util.js');
 var SettingsView = function(appendTo) {
   // private variables
   var self = this;
+  var visible = false;
 
   // jQuery objects
   var base = $(baseHTML);
   var list = base.find('[data-id="settings-list"]');
+  var back = base.find('[data-id="back"]');
 
   //***** private methods *****//
 
   this.init_ = function(appendTo) {
     appendTo.append(base);
+
+    back.on('click', function() {
+      self.hide();
+    });
   };
 
   //***** public methods *****//
 
   /**
    * Hides the SettingsView.
+   * Publishes the event Mailman.SettingsView.hide.
    *
    */
   this.hide = function() {
-    Util.setHidden(base, true);
+    if (visible) {
+      Util.setHidden(base, true);
+      visible = false;
+      PubSub.publish('Mailman.SettingsView.hide');
+    }
   };
 
   /**
    * Shows the SettingsView.
+   * Publishes the event Mailman.SettingsView.show.
    *
    */
   this.show = function() {
-    Util.setHidden(base, false);
+    if (!visible) {
+      Util.setHidden(base, false);
+      visible = true;
+      PubSub.publish('Mailman.SettingsView.show');
+    }
   };
 
   this.init_(appendTo);

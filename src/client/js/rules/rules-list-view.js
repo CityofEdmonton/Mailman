@@ -50,6 +50,7 @@ var RulesListView = function(appendTo) {
     PubSub.subscribe('Rules.delete', rebuild);
     PubSub.subscribe('Rules.add', rebuild);
     PubSub.subscribe('Rules.update', rebuild);
+    PubSub.subscribe('Mailman.SettingsView.hide', self.show);
 
     componentHandler.upgradeElement(triggerButton[0], 'MaterialButton');
     componentHandler.upgradeElement(instantButton[0], 'MaterialButton');
