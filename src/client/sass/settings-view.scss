@@ -18,13 +18,16 @@
   }
 }
 
-.sv-list-avatar {
+.sv-icon-container {
   margin-right: 16px;
-  float: left;
-  height: 40px;
-  width: 40px;
-  font-size: 40px;
-  color: $icon-gray;
+
+  .sv-list-avatar {
+    float: left;
+    height: 40px;
+    width: 40px;
+    font-size: 40px;
+    color: $icon-gray;
+  }
 }
 
 .sv-clickable {
@@ -32,6 +35,10 @@
 
   &:hover {
     background-color: rgba(158,158,158,.2);
+  }
+
+  .sv-list-avatar {
+    color: $weird-green;
   }
 }
 
