@@ -66,7 +66,7 @@ var ActionBar = function() {
 
     PubSub.subscribe('Mailman.RulesListView.show', function() {
       hideHelp();
-      //self.showSettings();
+      showSettings();
     });
 
     initialized = true;

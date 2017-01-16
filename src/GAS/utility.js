@@ -52,6 +52,10 @@ function validateTriggers() {
 }
 
 
+/**
+ * Creates the sheet used for storing mailman's data.
+ *
+ */
 function setupSheet() {
   var ss = getSpreadsheet();
   var sheet = ss.getSheetByName(RULE_SHEET_NAME);
@@ -62,6 +66,17 @@ function setupSheet() {
   }
 
   sheet.hideSheet();
+}
+
+
+/**
+ * Clears the data storage sheet.
+ *
+ */
+function clearSheet() {
+  var ss = getSpreadsheet();
+  var sheet = ss.getSheetByName(RULE_SHEET_NAME);
+  sheet.clear();
 }
 
 

@@ -1,0 +1,47 @@
+@import "_colors";
+
+.sv-list {
+  width: 100%;
+  margin: 0px;
+}
+
+.sv-list-item {
+  background: $white;
+  margin: 10px 0px;
+}
+
+.mdl-list__item--three-line {
+
+  .sv-primary {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.sv-icon-container {
+  margin-right: 16px;
+
+  .sv-list-avatar {
+    float: left;
+    height: 40px;
+    width: 40px;
+    font-size: 40px;
+    color: $icon-gray;
+  }
+}
+
+.sv-clickable {
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(158,158,158,.2);
+  }
+
+  .sv-list-avatar {
+    color: $weird-green;
+  }
+}
+
+.sv-run {
+  color: $success-green !important;
+}

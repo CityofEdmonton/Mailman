@@ -6,9 +6,6 @@
  */
 function createTriggerBasedEmail() {
   try {
-    SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
-    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-
     log('Creating trigger.');
     ScriptApp.newTrigger('sendManyEmails')
         .timeBased()
@@ -19,6 +16,17 @@ function createTriggerBasedEmail() {
     log('Error: ' + e);
     throw e;
   }
+}
+
+
+function rebuildTrigger() {
+  deleteForThisSheet();
+  createTriggerBasedEmail();
+}
+
+
+function clearData() {
+  clearSheet();
 }
 
 
