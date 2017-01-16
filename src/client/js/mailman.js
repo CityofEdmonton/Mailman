@@ -4,6 +4,7 @@ var EmailRule = require('./data/email-rule.js');
 var Keys = require('./data/prop-keys.js');
 var RulesListView = require('./rules/rules-list-view.js');
 var CardsView = require('./cards/cards-view.js');
+var SettingsView = require('./settings/settings-view.js');
 var ActionBar = require('./action-bar/action-bar.js');
 var LoadingScreen = require('./loading/loading-screen.js');
 var baseHTML = require('./main.html');
@@ -19,19 +20,21 @@ var MailMan = function(appendTo) {
   //***** LOCAL VARIABLES *****//
 
   var self = this;
-  var base = $(baseHTML);
-
   var rulesService = new RulesService();
+  var actionBar = ActionBar;
+  var ls = LoadingScreen;
 
   var rules;
-
   var rulesListView;
   var cardsView;
+  var settingsView;
 
+
+  // jquery objects
+  var base = $(baseHTML);
   var header = base.find('[data-id="header"]');
-  var actionBar = ActionBar;
+  var layout = base.find('[data-id="layout-container"]');
 
-  var ls = LoadingScreen;
 
   //***** PUBLIC *****//
 
@@ -45,8 +48,9 @@ var MailMan = function(appendTo) {
     appendTo.append(base);
 
     actionBar.init(header);
-    rulesListView = new RulesListView($('#layout-container'));
-    cardsView = new CardsView($('#layout-container'));
+    rulesListView = new RulesListView(layout);
+    cardsView = new CardsView(layout);
+    settingsView = new SettingsView(layout);
 
     // PubSub
     PubSub.subscribe('Rules.add', function(msg, data) {
@@ -63,6 +67,10 @@ var MailMan = function(appendTo) {
 
     actionBar.setHelpHandler(function() {
       cardsView.toggleHelp();
+    });
+
+    actionBar.setSettingsHandler(function() {
+      settingsView.show();
     });
 
     rulesListView.setTriggerHandler(function(e) {
