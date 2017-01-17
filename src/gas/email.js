@@ -26,8 +26,17 @@ function sendBasicEmail(headerRow, row, rule) {
   var subject = replaceTags(rule.subject, combinedObj);
   var body = replaceTags(rule.body, combinedObj);
 
+  var template = HtmlService.createTemplateFromFile('email-template');
+  template.id = getSpreadsheet().getId();
+  template.body = body;
+
   log('Sending email to ' + to);
-  GmailApp.sendEmail(to, subject, body);
+  log(body);
+  MailApp.sendEmail({
+    to: to,
+    subject: subject,
+    htmlBody: template.evaluate().getContent()
+  });
 
   return true;
 }
@@ -56,8 +65,16 @@ function sendConditionalEmail(headerRow, row, rule) {
   var sendColumn = replaceTags(rule.sendColumn, combinedObj);
 
   if (sendColumn.toLowerCase() === 'true') {
+    var template = HtmlService.createTemplateFromFile('email-template');
+    template.id = getSpreadsheet().getId();
+    template.body = body;
+
     log('Sending email to ' + to);
-    GmailApp.sendEmail(to, subject, body);
+    MailApp.sendEmail({
+      to: to,
+      subject: subject,
+      htmlBody: template.evaluate().getContent()
+    });
 
     return true;
   }
@@ -75,7 +92,7 @@ function sendManyEmails() {
   var rules = getRules();
 
   // Validate each rule for each row
-  var ss = SpreadsheetApp.openById(load(PROPERTY_SS_ID));
+  var ss = getSpreadsheet();
 
   log(JSON.stringify(rules));
   log('For sheet: ' + ss.getUrl());
@@ -93,7 +110,7 @@ function sendManyEmails() {
 
 
 function triggerEmailNoSS(rule) {
-  var ss = SpreadsheetApp.openById(load(PROPERTY_SS_ID));
+  var ss = getSpreadsheet();
   log('For sheet: ' + ss.getUrl());
 
   triggerEmail(ss, rule);
@@ -154,7 +171,7 @@ function instantEmail(rule) {
   }
 
   // Validate each rule for each row
-  var ss = SpreadsheetApp.openById(load(PROPERTY_SS_ID));
+  var ss = getSpreadsheet();
   var sheet = ss.getSheetByName(rule.sheet);
   var range = sheet.getDataRange();
   var header = getHeaderStrings(rule);
@@ -184,7 +201,7 @@ function sendTestEmail(rule) {
     return;
   }
 
-  var ss = SpreadsheetApp.openById(load(PROPERTY_SS_ID));
+  var ss = getSpreadsheet();
   var sheet = ss.getSheetByName(rule.sheet);
   var range = sheet.getDataRange();
   var header = getHeaderStrings(rule);
