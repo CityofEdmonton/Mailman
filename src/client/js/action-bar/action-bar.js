@@ -69,6 +69,11 @@ var ActionBar = function() {
       showSettings();
     });
 
+    PubSub.subscribe('Mailman.SettingsView.show', function() {
+      hideHelp();
+      hideSettings();
+    });
+
     initialized = true;
   };
 
