@@ -6,7 +6,7 @@
 }
 
 .mdl-list__item--three-line {
-  
+
   .rli-primary {
     display: flex;
     flex-direction: row;
@@ -68,7 +68,10 @@
   cursor: pointer;
 
   &:hover {
-    background-color: rgba(158,158,158,.2);
+    background-color: rgba(158, 158, 158, .2);
+  }
+  &:active {
+    background-color: rgba(158, 158, 158, .4);
   }
 }
 

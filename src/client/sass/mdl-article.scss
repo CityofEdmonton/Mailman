@@ -59,18 +59,16 @@
     height: 80px;
     background-color: $pantone-2945;
     color: $background;
-	}
 
-  .demo-crumbs {
-    a {
-      color: inherit;
-      cursor: pointer;
-
+    .mdl-button--icon {
       &:hover {
-        text-decoration: underline;
+        background-color: mix($pantone-2945, transparentize($fade-gray, 0.8), 0.5);
+      }
+      &:active {
+        background-color: mix($pantone-2945, transparentize($fade-gray, 0.6), 0.5);
       }
     }
-  }
+	}
 }
 
 .demo-container {
