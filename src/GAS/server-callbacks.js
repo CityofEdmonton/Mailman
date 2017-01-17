@@ -59,8 +59,7 @@ function launchRTE() {
  * @return {Array<string>} The names of all the sheets.
  */
 function getSheets() {
-  SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
-  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var ss = getSpreadsheet();
   var sheets = ss.getSheets();
 
   var names = [];

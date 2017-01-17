@@ -1,7 +1,7 @@
 function getSpreadsheet() {
   try {
-    SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
-    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var id = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
+    var ss = SpreadsheetApp.openById(id);
   }
   catch (e) {
     log(e);
@@ -38,8 +38,7 @@ function validateTrigger(trigger) {
  * @return {boolean} True if the triggers are set up properly, false if they are set up incorrectly.
  */
 function validateTriggers() {
-  SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
-  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var ss = getSpreadsheet();
 
   var triggers = ScriptApp.getUserTriggers(ss);
   log('Triggers:' + triggers.length);
@@ -91,8 +90,7 @@ function clearSheet() {
  * @return {Array<string>} The array of values.
  */
 function getHeaderStrings(rule) {
-  SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
-  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var ss = getSpreadsheet();
   var sheet = ss.getSheetByName(rule.sheet);
 
   var value = getValues(sheet, parseInt(rule.headerRow) - 1);
@@ -132,8 +130,7 @@ function getValues(sheet, rowIndex) {
   * @return {String} The string value found in the given row/column/Sheet.
   */
 function getCell(rule, headerName, row) {
-  SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
-  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var ss = getSpreadsheet();
   var sheet = ss.getSheetByName(rule.sheet);
 
   var headerStrings = getHeaderStrings(rule);
@@ -212,8 +209,7 @@ function deleteAllTriggers(sheet) {
  *
  */
 function deleteForThisSheet() {
-  SPREADSHEET_ID = PropertiesService.getDocumentProperties().getProperty(PROPERTY_SS_ID);
-  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var ss = getSpreadsheet();
 
   deleteAllTriggers(ss);
 }
