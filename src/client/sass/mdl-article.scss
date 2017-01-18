@@ -1,18 +1,18 @@
 /**
- * Copyright 2015 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright 2015 Google Inc. All Rights Reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 @import "_colors";
 
 .hidden {
@@ -24,9 +24,9 @@
 }
 
 .demo-main {
-	-webkit-flex-shrink: 0;
-	-ms-flex-negative: 0;
-	flex-shrink: 0;
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
 }
 
 .demo-layout {
@@ -54,8 +54,8 @@
 }
 
 .demo-header {
-	.mdl-layout__header-row {
-		padding-left: 12px;
+  .mdl-layout__header-row {
+    padding-left: 12px;
     height: 80px;
     background-color: $pantone-2945;
     color: $background;
@@ -68,23 +68,23 @@
         background-color: mix($pantone-2945, transparentize($fade-gray, 0.6), 0.5);
       }
     }
-	}
+  }
 }
 
 .demo-container {
-	max-width: 1600px;
-	width: calc(100% - 16px);
-	margin: 0 auto;
+  max-width: 1600px;
+  width: calc(100% - 16px);
+  margin: 0 auto;
 }
 
 .demo-content {
-	border-radius: 2px;
-	padding: 52px 26px;
+  border-radius: 2px;
+  padding: 52px 26px;
   position: relative;
 
-	h3 {
-		margin-top: 48px;
-	}
+  h3 {
+    margin-top: 48px;
+  }
 
   .help {
     margin-left: 24px;
@@ -99,24 +99,24 @@
 }
 
 .demo-layout.is-small-screen {
-	.demo-content {
-		padding: 40px 28px;
-	}
+  .demo-content {
+    padding: 40px 28px;
+  }
 }
 
 .demo-footer {
-	padding-left: 40px;
+  padding-left: 40px;
   position: fixed;
   bottom: 0px;
   // TODO Actually calculate this value using variables.
   width: calc(100% - 72px);
   background-color: transparent;
 
-	.mdl-mini-footer--link-list {
-		a {
-			font-size: 13px;
-		}
-	}
+  .mdl-mini-footer--link-list {
+    a {
+      font-size: 13px;
+    }
+  }
 }
 
 .mm-body-field {
@@ -125,8 +125,8 @@
 
 // MDL Changes
 .mailman-button {
-    background: $pantone-2945;
-    color: $white;
+  background: $pantone-2945;
+  color: $white;
 }
 
 .mailman-button-success {
@@ -137,4 +137,57 @@
 .mailman-button-quit {
   background: $failure-red;
   color: $white;
+}
+
+// jQuery UI classes
+// Mostly for Autocomplete
+
+.ui-widget-content {
+  border: 1px solid #aaaaaa;
+  background: #ffffff;
+  color: #222222;
+}
+
+.ui-widget {
+  font-family: Verdana,Arial,sans-serif;
+  font-size: 1.1em;
+}
+
+.ui-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: block;
+  outline: 0;
+
+  .ui-menu-item {
+    margin: 0;
+    cursor: pointer;
+    list-style-image: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
+  }
+
+  .ui-menu-item-wrapper {
+    position: relative;
+    padding: 3px 1em 3px .4em;
+
+    &:hover {
+    	border: 1px solid #aaaaaa;
+    	background: #ffffff url("images/ui-bg_glass_65_ffffff_1x400.png") 50% 50% repeat-x;
+    	font-weight: normal;
+    	color: #212121;
+      margin: -1px;
+    }
+  }
+
+}
+
+.ui-autocomplete {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: default;
+}
+
+.ui-front {
+  z-index: 100;
 }
