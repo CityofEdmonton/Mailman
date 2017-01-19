@@ -1,7 +1,7 @@
 var baseHTML = require('./action-bar.html');
 var Util = require('../util.js');
 var PubSub = require('pubsub-js');
-
+var $ = require('jquery');
 
 /**
  * The ActionBar is responsible for the display on the very top of Mailman. It has a logo, a title and some controls.

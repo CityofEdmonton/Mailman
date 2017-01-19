@@ -1,4 +1,4 @@
-require('jquery.hotkeys');
+//require('jquery.hotkeys');
 require('./wysiwyg-editor.js');
 
 //var Intercom = require('./intercom.js');
