@@ -22,6 +22,7 @@ var SettingsView = function(appendTo) {
   var base = $(baseHTML);
   var list = base.find('[data-id="settings-list"]');
   var back = base.find('[data-id="back"]');
+  var logSwitchIn = base.find('[data-id="log-switch-input"]');
   var logSwitch = base.find('[data-id="log-switch"]');
   var logIcon = base.find('[data-id="log-icon"]');
   var send = base.find('[data-id="as-me-button"]');
@@ -32,17 +33,32 @@ var SettingsView = function(appendTo) {
   this.init_ = function(appendTo) {
     appendTo.append(base);
 
-    ss.getLog(setURL, logError);
+    ss.getLog(
+      function(url) {
+        setURL(url);
+
+        if (url != null) {
+          logSwitch[0].MaterialSwitch.on();
+        }
+      },
+    logError);
 
     back.on('click', function() {
       self.hide();
     });
 
-    logSwitch.on('click', function(event) {
-      if (logSwitch[0].checked) {
+    logSwitchIn.on('change', function() {
+
+      // var enable = logSwitch[0].MaterialSwitch.enable.bind(logSwitch[0].MaterialSwitch);
+      // logSwitch[0].MaterialSwitch.disable();
+      // setTimeout(enable, 3000);
+
+      if (logSwitchIn[0].checked) {
+        console.log('turning on logging');
         ss.turnOnLogging(setURL, logError);
       }
       else {
+        console.log('turning off logging');
         ss.turnOffLogging(removeURL, logError);
       }
     });
@@ -57,8 +73,8 @@ var SettingsView = function(appendTo) {
   };
 
   var setURL = function(url) {
-
     if (url != null) {
+
       logIcon.addClass('sv-clickable');
 
       logIcon.off();
@@ -66,16 +82,11 @@ var SettingsView = function(appendTo) {
         console.log('opening: ' + url);
         window.open(url);
       });
-
-      if (!logSwitch[0].checked) {
-        logSwitch[0].checked = true;
-      }
     }
   };
 
   var removeURL = function() {
     logIcon.removeClass('sv-clickable');
-
     logIcon.off();
   };
 
