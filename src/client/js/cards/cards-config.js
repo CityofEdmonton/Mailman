@@ -63,11 +63,10 @@ CardsConfig.buildCardRepo = function(contentArea) {
   });
 
   repo[CardNames.sendNow] = new TitledCard(contentArea, {
-    title: 'Send emails now?',
+    title: 'Save this merge?',
     paragraphs: [
-      'This will send out an email blast right now. ' +
-          'If you\'d like, you can send the emails at a later time, or even based upon a value in a given column. ' +
-          'Just select the related option from the bottom right.'
+      'This will save the merge. It won\'t send any emails yet.',
+       'If you would like to send yourself a test email, click the option from the lower right.'
     ]
   });
 
