@@ -88,32 +88,46 @@ function sendConditionalEmail(headerRow, row, rule) {
  *
  */
 function sendManyEmails() {
-  log('Starting rules...');
-  var rules = getRules();
+  try {
+    log('Starting rules...');
+    var rules = getRules();
 
-  // Validate each rule for each row
-  var ss = getSpreadsheet();
+    // Validate each rule for each row
+    var ss = getSpreadsheet();
 
-  log(JSON.stringify(rules));
-  log('For sheet: ' + ss.getUrl());
+    log(JSON.stringify(rules));
+    log('For sheet: ' + ss.getUrl());
 
-  for (var i = 0; i < rules.rules.length; i++) {
-    var rule = rules.rules[i];
+    for (var i = 0; i < rules.rules.length; i++) {
+      var rule = rules.rules[i];
 
-    if (rule.ruleType === RuleTypes.TRIGGER) {
-      triggerEmail(ss, rule);
+      if (rule.ruleType === RuleTypes.TRIGGER) {
+        triggerEmail(ss, rule);
+      }
     }
+
+    log('Ending rules...');
+  }
+  catch (e) {
+    log(e);
+    throw e;
   }
 
-  log('Ending rules...');
 }
 
 
 function triggerEmailNoSS(rule) {
-  var ss = getSpreadsheet();
-  log('For sheet: ' + ss.getUrl());
+  try {
+    var ss = getSpreadsheet();
+    log('For sheet: ' + ss.getUrl());
 
-  triggerEmail(ss, rule);
+    triggerEmail(ss, rule);
+  }
+  catch (e) {
+    log(e);
+    throw e;
+  }
+
 }
 
 
