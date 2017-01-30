@@ -90,7 +90,7 @@ function sendConditionalEmail(headerRow, row, rule) {
 function sendManyEmails() {
   try {
     log('Starting rules...');
-    var rules = getRules();
+    var rules = getAllRules();
 
     // Validate each rule for each row
     var ss = getSpreadsheet();

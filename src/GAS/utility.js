@@ -181,16 +181,6 @@ function columnToLetter(column) {
 
 
 /**
-   * Get the rule for this document.
-   *
-   * @return {object} The rule in object form.
-   */
-function getRules() {
-  return JSON.parse(load(RULE_KEY));
-}
-
-
-/**
  * Deletes all triggers associated with the given Sheet.
  *
  * @param  {Sheet} sheet The Sheet to remove triggers from.
@@ -212,22 +202,4 @@ function deleteForThisSheet() {
   var ss = getSpreadsheet();
 
   deleteAllTriggers(ss);
-}
-
-
-/**
- * Logs the Documents properties. Used for testing purposes.
- *
- */
-function checkDocumentProperties() {
-  Logger.log(PropertiesService.getDocumentProperties().getProperties());
-}
-
-
-/**
- * Cleans all properties. We need the sheet id stored as a property. Remember to get this id again.
- *
- */
-function removeProperties() {
-  PropertiesService.getDocumentProperties().deleteAllProperties();
 }
