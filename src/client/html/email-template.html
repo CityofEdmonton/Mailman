@@ -2,7 +2,16 @@
 <body>
 
   <div>
-    <?= body ?>
+    
+    <?
+      for (var i = 0; i < bodyArray.length; i++) {
+    ?>
+
+      <span><?= bodyArray[i] ?></span> <br />
+
+    <?
+      }
+    ?>
   </div>
 
   <div style="display:none">

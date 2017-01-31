@@ -28,10 +28,10 @@ function sendBasicEmail(headerRow, row, rule) {
 
   var template = HtmlService.createTemplateFromFile('email-template');
   template.id = getSpreadsheet().getId();
-  template.body = body;
+  template.bodyArray = body.split('\n');
 
   log('Sending email to ' + to);
-  log(body);
+
   MailApp.sendEmail({
     to: to,
     subject: subject,
@@ -67,7 +67,7 @@ function sendConditionalEmail(headerRow, row, rule) {
   if (sendColumn.toLowerCase() === 'true') {
     var template = HtmlService.createTemplateFromFile('email-template');
     template.id = getSpreadsheet().getId();
-    template.body = body;
+    template.bodyArray = body.split('\n');
 
     log('Sending email to ' + to);
     MailApp.sendEmail({
