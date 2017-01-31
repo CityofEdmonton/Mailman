@@ -45,6 +45,20 @@
   }
 }
 
+.sv-main {
+  display: flex;
+  flex-direction: column;
+
+  .sv-spacer {
+    flex: 1;
+  }
+}
+
+.sv-footer {
+  margin: 16px 0px;
+  background-color: transparent;
+}
+
 .sv-run {
   color: $success-green !important;
 }
