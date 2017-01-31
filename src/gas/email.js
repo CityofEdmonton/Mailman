@@ -31,10 +31,7 @@ function sendBasicEmail(headerRow, row, rule) {
   template.bodyArray = body.split('\n');
 
   log('Sending email to ' + to);
-
-  MailApp.sendEmail({
-    to: to,
-    subject: subject,
+  GmailApp.sendEmail(to, subject, body, {
     htmlBody: template.evaluate().getContent()
   });
 
@@ -70,9 +67,7 @@ function sendConditionalEmail(headerRow, row, rule) {
     template.bodyArray = body.split('\n');
 
     log('Sending email to ' + to);
-    MailApp.sendEmail({
-      to: to,
-      subject: subject,
+    GmailApp.sendEmail(to, subject, body, {
       htmlBody: template.evaluate().getContent()
     });
 
