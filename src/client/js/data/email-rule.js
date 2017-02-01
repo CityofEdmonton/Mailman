@@ -17,7 +17,6 @@ var RuleTypes = require('./rule-types.js');
  *                              Mailman requires all columns to be in the same sheet.
  * @param {string} config.subject The tagged subject of the EmailRule. This can contain tags and normal strings.
  * @param {string} config.body The tagged body of the EmailRule. It can contain text and tags together.
- *                             TODO support HTML.
  * @param {string} config.sendColumn The tagged column that contains the truthy value.
  * @param {string} config.timestampColumn The tagged column that Mailman will edit when an email is sent.
  * @param {string=} config.headerRow The row these emails should start sending from.
