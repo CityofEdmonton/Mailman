@@ -1,6 +1,5 @@
 /**
  * Prepares the add on after a user has opted to install it.
- * TODO Test this
  *
  * @param {object} e The event object https://developers.google.com/apps-script/guides/triggers/events
  */
@@ -17,7 +16,7 @@ function onInstall(e) {
 function onOpen(e) {
   var menu = SpreadsheetApp.getUi().createAddonMenu();
 
-  menu.addItem('Setup', 'openSidebar')
+  menu.addItem('Start', 'openSidebar')
       .addItem('Feedback', 'openFeedbackDialog')
       .addToUi();
 }
