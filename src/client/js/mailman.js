@@ -64,6 +64,9 @@ var MailMan = function(appendTo) {
     PubSub.subscribe('Rules.update', function(msg, data) {
       snackbar.show('Merge template updated.');
     });
+    PubSub.subscribe('Rules.run', function(msg, data) {
+      snackbar.show('Running merge "' + data.title + '".');
+    });
 
     PubSub.subscribe('Rules.add', function(msg, data) {
       cardsView.cleanup();
@@ -122,6 +125,8 @@ var MailMan = function(appendTo) {
         google.script.run
             .triggerEmailNoSS(rule.toConfig());
       }
+
+      PubSub.publish('Rules.run', rule);
     });
 
     cardsView.setDoneCallback(function(rule) {
