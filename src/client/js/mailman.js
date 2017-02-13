@@ -6,6 +6,7 @@ var RulesListView = require('./rules/rules-list-view.js');
 var CardsView = require('./cards/cards-view.js');
 var SettingsView = require('./settings/settings-view.js');
 var ActionBar = require('./action-bar/action-bar.js');
+var Snackbar = require('./snackbar/snackbar.js');
 var LoadingScreen = require('./loading/loading-screen.js');
 var baseHTML = require('./main.html');
 var RulesService = require('./data/rules-service.js');
@@ -22,6 +23,7 @@ var MailMan = function(appendTo) {
   var self = this;
   var rulesService = new RulesService();
   var actionBar = ActionBar;
+  var snackbar = Snackbar;
   var ls = LoadingScreen;
 
   var rules;
@@ -47,11 +49,19 @@ var MailMan = function(appendTo) {
     appendTo.append(base);
 
     actionBar.init(header);
+    snackbar.init(base);
     rulesListView = new RulesListView(base);
     cardsView = new CardsView(base);
     settingsView = new SettingsView(base);
 
     // PubSub
+    PubSub.subscribe('Rules.delete', function(msg, data) {
+      snackbar.show('Merge deleted.');
+    });
+    PubSub.subscribe('Rules.add', function(msg, data) {
+      snackbar.show('Merge created.');
+    });
+
     PubSub.subscribe('Rules.add', function(msg, data) {
       cardsView.cleanup();
       rulesListView.show();
