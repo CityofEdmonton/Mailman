@@ -7,6 +7,7 @@ var CardsView = require('./cards/cards-view.js');
 var SettingsView = require('./settings/settings-view.js');
 var ActionBar = require('./action-bar/action-bar.js');
 var Snackbar = require('./snackbar/snackbar.js');
+var Dialog = require('./dialog/dialog.js');
 var LoadingScreen = require('./loading/loading-screen.js');
 var baseHTML = require('./main.html');
 var RulesService = require('./data/rules-service.js');
@@ -30,7 +31,8 @@ var MailMan = function(appendTo) {
   var rulesListView;
   var cardsView;
   var settingsView;
-
+  var runDialog;
+  var deleteDialog;
 
   // jquery objects
   var base = $(baseHTML);
@@ -53,6 +55,11 @@ var MailMan = function(appendTo) {
     rulesListView = new RulesListView(base);
     cardsView = new CardsView(base);
     settingsView = new SettingsView(base);
+    runDialog = new Dialog(appendTo, 'Run this merge?', 'This will run your merge template. ' +
+      'Emails will be sent to everyone in your specified sheet. Are you sure you want to merge?');
+
+    deleteDialog = new Dialog(appendTo, 'Delete this merge template?', 'This will remove this merge template. ' +
+      'You won\'t be able to send emails using it anymore. Are you sure you want to delete this merge template?');
 
     // PubSub
     PubSub.subscribe('Rules.delete', function(msg, data) {
@@ -105,7 +112,11 @@ var MailMan = function(appendTo) {
     });
 
     rulesListView.setDeleteHandler(function(rule) {
-      rules.remove(rule);
+      deleteDialog.show()
+        .then(function() {
+          // This only occurs when the user clicks OK.
+          rules.remove(rule);
+        });
     });
 
     rulesListView.setEditHandler(function(rule) {
@@ -116,17 +127,20 @@ var MailMan = function(appendTo) {
     });
 
     rulesListView.setRunHandler(function(rule) {
+      runDialog.show()
+        .then(function() {
+          // This only occurs when the user clicks OK.
+          if (rule.ruleType === RuleTypes.INSTANT) {
+            google.script.run
+                .instantEmail(rule.toConfig());
+          }
+          else if (rule.ruleType === RuleTypes.TRIGGER) {
+            google.script.run
+                .triggerEmailNoSS(rule.toConfig());
+          }
 
-      if (rule.ruleType === RuleTypes.INSTANT) {
-        google.script.run
-            .instantEmail(rule.toConfig());
-      }
-      else if (rule.ruleType === RuleTypes.TRIGGER) {
-        google.script.run
-            .triggerEmailNoSS(rule.toConfig());
-      }
-
-      PubSub.publish('Rules.run', rule);
+          PubSub.publish('Rules.run', rule);
+        });
     });
 
     cardsView.setDoneCallback(function(rule) {
