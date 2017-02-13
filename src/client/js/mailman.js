@@ -56,10 +56,13 @@ var MailMan = function(appendTo) {
 
     // PubSub
     PubSub.subscribe('Rules.delete', function(msg, data) {
-      snackbar.show('Merge deleted.');
+      snackbar.show('Merge template deleted.');
     });
     PubSub.subscribe('Rules.add', function(msg, data) {
-      snackbar.show('Merge created.');
+      snackbar.show('Merge template created.');
+    });
+    PubSub.subscribe('Rules.update', function(msg, data) {
+      snackbar.show('Merge template updated.');
     });
 
     PubSub.subscribe('Rules.add', function(msg, data) {
