@@ -14,7 +14,6 @@ var Snackbar = function() {
 
   // private variables
   var self = this;
-  var defaultDuration = 2000;
   var initialized = false;
 
   // jQuery objects
