@@ -8,6 +8,7 @@
     "browserify": "^13.1.0",
     "browserify-shim": "^3.8.12",
     "del": "^2.2.2",
+    "dialog-polyfill": "^0.4.6",
     "event-stream": "^3.3.4",
     "gulp": "^3.9.1",
     "gulp-gjslint": "^0.1.5",
@@ -18,6 +19,7 @@
     "gulp-sass": "^2.3.2",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
+    "promise": "^7.1.1",
     "pubsub-js": "^1.5.4",
     "stringify": "^5.1.0",
     "uglify-js": "^1.3.5",
@@ -38,7 +40,7 @@
   "homepage": "https://github.com/coe-google-apps-support/Mailman#readme",
   "browser": {
     "jquery": "./lib/jquery.js",
-    "jquery-ui":  "./lib/jquery-ui.js",
+    "jquery-ui": "./lib/jquery-ui.js",
     "mdl": "./lib/material.js"
   },
   "browserify": {
@@ -46,7 +48,11 @@
   },
   "browserify-shim": {
     "jquery": "$",
-    "jquery-ui": {"depends": ["jquery"]},
+    "jquery-ui": {
+      "depends": [
+        "jquery"
+      ]
+    },
     "mdl": "componentHandler"
   }
 }
