@@ -1,7 +1,20 @@
-var Config = function(inputEl) {
+
+
+
+/**
+ * This config object prepares a jqueryUI autocomplete object. I've added some notable features to the base jquery
+ * implementation, such as:
+ *  - pre and post tags. These surround a search term. (in my case << and >>)
+ *  - Swapping terms into the middle of a block of text.
+ *
+ * @param {InputCard|TextareaCard} myCard The Card this autocomplete is for. This is a really dirty way to do this,
+ *                                        as the implementations are very co-dependant. It works though.
+ */
+var Config = function(myCard) {
 
   // Private variables
-  var input = inputEl;
+  var card = myCard;
+  var input = card.getTextElement();
 
   //***** Privileged Methods *****//
 
@@ -49,7 +62,7 @@ var Config = function(inputEl) {
           terms.push(prepend);
           terms.push(ui.item.value);
           terms.push(append);
-          $(this).parent()[0].MaterialTextfield.change(terms.join(''));
+          card.setValue(terms.join(''));
         }
         else {
           var cursor = input[0].selectionStart;
@@ -60,7 +73,7 @@ var Config = function(inputEl) {
 
           var newCursorPos = newStart.length;
 
-          $(this).parent()[0].MaterialTextfield.change(newValue);
+          card.setValue(newValue);
           input[0].focus();
           input[0].selectionStart = newCursorPos;
           input[0].selectionEnd = newCursorPos;

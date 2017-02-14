@@ -21,9 +21,27 @@ var TextareaCard = function(appendTo, options) {
   var self = this;
   var innerBase = $(textareaHTML);
   var textarea = innerBase.find('textarea');
-  var acConfig = new AutocompleteConfig(textarea);
+  var acConfig;
 
-  //***** Privileged Methods *****//
+  //***** Private Methods *****//
+
+  this.init_ = function(appendTo, options) {
+    this.append(innerBase);
+    acConfig = new AutocompleteConfig(this);
+
+    if (options !== undefined) {
+      if (options.label !== undefined) {
+        this.setLabel(options.label);
+      }
+      if (options.autocomplete !== undefined) {
+        this.setAutocomplete(options.autocomplete);
+      }
+    }
+
+    componentHandler.upgradeElement(innerBase[0], 'MaterialTextfield');
+  };
+
+  //***** Public Methods *****//
 
   /**
    * Sets autocomplete based upon some options.
@@ -81,8 +99,7 @@ var TextareaCard = function(appendTo, options) {
    * @param {String} value The value to set in the textarea.
    */
   this.setValue = function(value) {
-    textarea.val(value);
-    innerBase.addClass('is-dirty');
+    innerBase[0].MaterialTextfield.change(value);
   };
 
   /**
@@ -94,19 +111,16 @@ var TextareaCard = function(appendTo, options) {
     innerBase.find('label').text(label);
   };
 
-  // constructor
-  this.append(innerBase);
+  /**
+   * Gets the HTMLTextarea object as a jquery object.
+   *
+   * @return {jquery} The input object.
+   */
+  this.getTextElement = function() {
+    return textarea;
+  };
 
-  if (options !== undefined) {
-    if (options.label !== undefined) {
-      this.setLabel(options.label);
-    }
-    if (options.autocomplete !== undefined) {
-      this.setAutocomplete(options.autocomplete);
-    }
-  }
-
-  componentHandler.upgradeElement(innerBase[0], 'MaterialTextfield');
+  this.init_(appendTo, options);
 };
 
 

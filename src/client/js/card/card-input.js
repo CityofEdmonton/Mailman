@@ -25,12 +25,13 @@ var InputCard = function(appendTo, options) {
   var innerBase = $(inputHTML);
   var input = innerBase.find('input');
   var error = innerBase.find('[data-id="ci-error"]');
-  var acConfig = new AutocompleteConfig(input);
+  var acConfig;
 
   //***** Private Methods *****//
 
   this.init_ = function(appendTo, options) {
     this.append(innerBase);
+     acConfig = new AutocompleteConfig(this);
 
     if (options !== undefined) {
       if (options.label !== undefined) {
@@ -137,6 +138,15 @@ var InputCard = function(appendTo, options) {
   this.setError = function(errorObj) {
     error.text(errorObj.hint);
     input.attr('pattern', errorObj.pattern);
+  };
+
+  /**
+   * Gets the HTMLInput object as a jquery object.
+   *
+   * @return {jquery} The input object.
+   */
+  this.getTextElement = function() {
+    return input;
   };
 
   this.init_(appendTo, options);
