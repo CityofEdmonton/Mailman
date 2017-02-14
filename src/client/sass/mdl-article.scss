@@ -80,11 +80,6 @@
     margin-top: 48px;
   }
 
-  .help {
-    margin-left: 24px;
-    color: $fade-gray;
-  }
-
   .settings-button {
     position: absolute;
     right: 32px;
@@ -115,6 +110,21 @@
 
 .mm-body-field {
   resize: none;
+}
+
+// Cards
+// Titled Card
+
+.help-icon {
+  position: absolute;
+  bottom: 20px;
+  cursor: pointer;
+  color: grey;
+  font-size: 18px;
+}
+
+.help-tooltip {
+
 }
 
 // MDL Changes
