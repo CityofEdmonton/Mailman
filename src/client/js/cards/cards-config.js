@@ -40,12 +40,20 @@ CardsConfig.buildCardRepo = function(contentArea) {
   repo[CardNames.to] = new InputCard(contentArea, {
     title: 'Who are you sending to?',
     help: 'This is the column filled with the email addresses of the recipients.',
-    label: 'To...'
+    label: 'To...',
+    error: {
+      hint: 'Must be a single header surrounded by whack whacks',
+      pattern: '<<[^<>]*>>'
+    }
   });
 
   repo[CardNames.row] = new InputCard(contentArea, {
     title: 'Which row contains your header titles?',
-    label: 'Header row...'
+    label: 'Header row...',
+    error: {
+      hint: 'Must be a number greater than 0',
+      pattern: '[1-9][0-9]*'
+    }
   });
 
   repo[CardNames.subject] = new InputCard(contentArea, {
@@ -85,7 +93,11 @@ CardsConfig.buildCardRepo = function(contentArea) {
           'Please specify a column that determines when an email should be sent.',
       'Note that Mailman looks for the value TRUE to determine when to send an email.'
     ],
-    label: 'Send?'
+    label: 'Send?',
+    error: {
+      hint: 'Must be a single header surrounded by whack whacks',
+      pattern: '<<[^<>]*>>'
+    }
   });
 
   repo[CardNames.lastSent] = new InputCard(contentArea, {

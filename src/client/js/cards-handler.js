@@ -468,6 +468,7 @@ var Cards = function(parent) {
   var setColumns = function(values) {
     cardRepository[CardNames.to].setAutocomplete({
       results: values,
+      trigger: '<<',
       prepend: '<<',
       append: '>>',
       maxResults: maxResults,
@@ -492,6 +493,7 @@ var Cards = function(parent) {
 
     cardRepository[CardNames.shouldSend].setAutocomplete({
       results: values,
+      trigger: '<<',
       prepend: '<<',
       append: '>>',
       maxResults: maxResults,

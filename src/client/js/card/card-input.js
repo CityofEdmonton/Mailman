@@ -11,7 +11,10 @@ var AutocompleteConfig = require('./autocomplete-config.js');
  * @param {Object} options The configuration options for this InputCard.
  * @param {String} options.label The label the input should have when it has no text.
  * @param {Object} options.autocomplete The autocomplete configuration object. Please see setAutocomplete for a more
- * detailed listing of this Object.
+ *  detailed listing of this Object.
+ * @param {Object} options.error The Object containing the information needed for this input to support input validation.
+ * @param {string} options.error.hint The text displayed when text is invalid.
+ * @param {string} options.error.pattern The regex pattern to match against.
  * @constructor
  */
 var InputCard = function(appendTo, options) {
@@ -21,9 +24,30 @@ var InputCard = function(appendTo, options) {
   var self = this;
   var innerBase = $(inputHTML);
   var input = innerBase.find('input');
+  var error = innerBase.find('[data-id="ci-error"]');
   var acConfig = new AutocompleteConfig(input);
 
-  //***** Privileged Methods *****//
+  //***** Private Methods *****//
+
+  this.init_ = function(appendTo, options) {
+    this.append(innerBase);
+
+    if (options !== undefined) {
+      if (options.label !== undefined) {
+        this.setLabel(options.label);
+      }
+      if (options.error !== undefined) {
+        this.setError(options.error);
+      }
+      if (options.autocomplete !== undefined) {
+        this.setAutocomplete(options.autocomplete);
+      }
+    }
+
+    componentHandler.upgradeElement(innerBase[0], 'MaterialTextfield');
+  };
+
+  //***** Public Methods *****//
 
   /**
    * Sets autocomplete based upon some options.
@@ -57,7 +81,17 @@ var InputCard = function(appendTo, options) {
       maxResults = options.maxResults;
     }
     if (options.triggerOnFocus === true) {
-      input.on('focus', function() {input.autocomplete('search', self.getValue())});
+      input.on('focus', function() {
+
+        if (self.getValue() === '') {
+          if (trigger !== undefined) {
+            input.autocomplete('search', trigger)
+          }
+          else {
+            input.autocomplete('search', self.getValue())
+          }
+        }
+      });
     }
     if (options.results !== undefined) {
       results = options.results;
@@ -94,19 +128,19 @@ var InputCard = function(appendTo, options) {
     innerBase.find('label').text(label);
   };
 
-  // constructor
-  this.append(innerBase);
+  /**
+   * Sets the error/input formatting required.
+   *
+   * @param {Object} errorObj The Object containing the information needed for this input to support input validation.
+   * @param {string} errorObj.hint The text displayed when text is invalid.
+   * @param {string} errorObj.pattern The regex pattern to match against.
+   */
+  this.setError = function(errorObj) {
+    error.text(errorObj.hint);
+    input.attr('pattern', errorObj.pattern);
+  };
 
-  if (options !== undefined) {
-    if (options.label !== undefined) {
-      this.setLabel(options.label);
-    }
-    if (options.autocomplete !== undefined) {
-      this.setAutocomplete(options.autocomplete);
-    }
-  }
-
-  componentHandler.upgradeElement(innerBase[0], 'MaterialTextfield');
+  this.init_(appendTo, options);
 };
 
 
