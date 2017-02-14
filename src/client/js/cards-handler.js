@@ -33,9 +33,6 @@ var Cards = function(parent) {
   // This stores the configured Cards. These are only meant for easily adding/removing Cards without losing the data.
   var cardRepository = CardsConfig.buildCardRepo(contentArea);
 
-  // Whether to show the Card help or not
-  var showingHelp;
-
   // The currently shown Card.
   var activeCard;
 
@@ -51,12 +48,6 @@ var Cards = function(parent) {
    * @param {jQuery} contentArea The area where Cards are meant to be added.
    */
   this.init = function(contentArea) {
-
-    // Set the help any time a new Card is inserted.
-    PubSub.subscribe('Cards.insertNode', function(msg, data) {
-      setHelp();
-    });
-
     setupCards();
   };
 
@@ -174,19 +165,6 @@ var Cards = function(parent) {
   };
 
   /**
-   * This function toggles the state of the help <p> tags.
-   *
-   */
-  this.toggleHelp = function() {
-    if (showingHelp) {
-      hideHelp();
-    }
-    else {
-      showHelp();
-    }
-  };
-
-  /**
    * Sets all Card values based upon the values in emailRule.
    * TODO Replace this with something more flexible. It could use a match up between EmailRule properties and
    *  the CardNames.
@@ -244,7 +222,6 @@ var Cards = function(parent) {
       cards = createTriggerList();
     }
 
-    hideHelp();
     activeCard = cards.head;
     self.jumpTo(activeCard.name);
   };
@@ -348,40 +325,6 @@ var Cards = function(parent) {
       google.script.run
           .sendTestEmail(self.getRule().toConfig());
     });
-  };
-
-  /**
-   * This function hides the help <p> tags.
-   *
-   * @private
-   */
-  var hideHelp = function() {
-    showingHelp = false;
-    Util.setHidden($('.help'), true);
-  };
-
-  /**
-   * This function shows the help <p> tags.
-   *
-   * @private
-   */
-  var showHelp = function() {
-    showingHelp = true;
-    Util.setHidden($('.help'), false);
-  };
-
-  /**
-   * Based upon the value of showingHelp, it either hides or shows the help.
-   *
-   * @private
-   */
-  var setHelp = function() {
-    if (showingHelp) {
-      showHelp();
-    }
-    else {
-      hideHelp();
-    }
   };
 
   /**

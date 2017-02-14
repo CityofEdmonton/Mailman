@@ -87,10 +87,6 @@ var MailMan = function(appendTo) {
       cardsView.hide();
     });
 
-    actionBar.setHelpHandler(function() {
-      cardsView.toggleHelp();
-    });
-
     actionBar.setSettingsHandler(function() {
       settingsView.show();
       rulesListView.hide();
