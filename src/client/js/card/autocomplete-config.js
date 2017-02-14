@@ -49,7 +49,7 @@ var Config = function(inputEl) {
           terms.push(prepend);
           terms.push(ui.item.value);
           terms.push(append);
-          this.value = terms.join('');
+          $(this).parent()[0].MaterialTextfield.change(terms.join(''));
         }
         else {
           var cursor = input[0].selectionStart;
@@ -60,14 +60,11 @@ var Config = function(inputEl) {
 
           var newCursorPos = newStart.length;
 
-          this.value = newValue;
+          $(this).parent()[0].MaterialTextfield.change(newValue);
           input[0].focus();
           input[0].selectionStart = newCursorPos;
           input[0].selectionEnd = newCursorPos;
         }
-
-        // We have to manually mark the text field as dirty. If we don't, MDL text fields act weird.
-        $(this).parent().addClass('is-dirty');
 
         return false;
       }

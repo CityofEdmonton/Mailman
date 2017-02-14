@@ -115,8 +115,7 @@ var InputCard = function(appendTo, options) {
    * @param {string} value The value to set in the input.
    */
   this.setValue = function(value) {
-    input.val(value);
-    innerBase.addClass('is-dirty');
+    innerBase[0].MaterialTextfield.change(value);
   };
 
   /**
