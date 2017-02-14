@@ -43,6 +43,10 @@
       color: $background;
       display: flex;
 
+      .mm-load-text {
+        font-size: 6em;
+      }
+
       .bouncy {
 
         animation-name: bounce;

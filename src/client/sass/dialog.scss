@@ -1,8 +1,61 @@
 .mm-dialog {
   width: 240px;
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
+  position: fixed;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+// polyfill for IE
+dialog {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: -moz-fit-content;
+    width: -webkit-fit-content;
+    width: fit-content;
+    height: -moz-fit-content;
+    height: -webkit-fit-content;
+    height: fit-content;
+    margin: auto;
+    border: solid;
+    padding: 1em;
+    background: white;
+    color: black;
+    display: none
+}
+
+dialog[open] {
+    display: block
+}
+
+dialog+.backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.1)
+}
+
+@media screen and (max-width:540px) {
+    dialog[_polyfill_modal] {
+        top: 0;
+        width: auto;
+        margin: 1em
+    }
+}
+
+._dialog_overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0
+}
+
+// Fix the full width issue
+
+.mdl-dialog__actions--full-width > * {
+  flex: 0 0 auto;
+  width: 100%;
 }
