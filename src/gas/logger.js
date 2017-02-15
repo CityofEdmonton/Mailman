@@ -2,12 +2,11 @@
 // This is the logging spreadsheet I'm using.
 var logSheet;
 var maxRows = 3000;
-var DEBUG = true;
 var MAILMAN_LOG_NAME = 'mailman_log';
 var SS_KEY = 'MAILMAN_LOG_URL';
 
 function log(text) {
-  if (DEBUG) {
+  try {
     if (logSheet === undefined) {
       var url = getLogURL();
 
@@ -24,11 +23,20 @@ function log(text) {
 
     logSheet.appendRow([new Date().toString().slice(0, -15), text, Session.getActiveUser().getEmail(), MAILMAN_VERSION]);
   }
+  catch (e) {
+    // This tends to be the user not having logging permissions to the Sheet.
+  }
 
 }
 
 function turnOnLogging() {
   var ss = SpreadsheetApp.create(MAILMAN_LOG_NAME);
+
+  // The log file needs to be editable by anyone that could use Mailman.
+  // Ideally, this log is temporary.
+  var file = DriveApp.getFileById(ss.getId());
+  file.setSharing(DriveApp.Access.DOMAIN, DriveApp.Permission.EDIT);
+
   var url = ss.getUrl();
 
   var prop = PropertiesService.getDocumentProperties();
