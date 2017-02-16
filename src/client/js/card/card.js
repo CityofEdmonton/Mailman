@@ -1,15 +1,55 @@
-
 var baseHTML = require('./card-base.html');
+var Util = require('../util.js');
+var ID = require('../data/id.js');
 
+
+
+/**
+ * The Card forms an important base visual Object. It is used as a base for building other, more advanced Cards.
+ *
+ * @param {jquery} appendTo The div to append this Card to.
+ * @param {Object} options The configuration Object for this Card.
+ * @param {boolean} options.visible Whether to make the Card appear by default.
+ * @param {Array<string>} options.paragraphs An array of strings to turn into paragraphs for this Card.
+ */
 var Card = function(appendTo, options) {
   // Private variables
   var self = this;
-  var base = $(baseHTML);
 
-  // Public Variables
+  // jquery objects
+  var base = $(baseHTML);
+  var menu = base.find('[data-id="card-list"]');
+  var button = base.find('[data-id="options-button"]');
 
   //***** Private Methods *****//
 
+  this.init_ = function(appendTo, options) {
+    appendTo.append(base);
+
+    var id = ID();
+    button.attr('id', id);
+    menu.attr('data-mdl-for', id);
+
+    if (options !== undefined) {
+      if (options.visible !== undefined) {
+        if (options.visible === true) {
+          this.show();
+        }
+        else {
+          this.hide();
+        }
+      }
+      if (options.paragraphs !== undefined) {
+        options.paragraphs.every(function(data) {
+          self.append('<p>' + data + '</p>');
+          return true;
+        });
+      }
+    }
+
+    this.hide();
+    componentHandler.upgradeElement(base.find('.mdl-js-menu')[0], 'MaterialMenu');
+  };
 
   //***** Privileged Methods *****//
 
@@ -103,7 +143,9 @@ var Card = function(appendTo, options) {
       return $(this).text() === title;
     });
 
-    item.on('click', callback);
+    item.on('click', function() {
+      callback();
+    });
 
     var button = base.find('button');
     button.removeClass('hidden');
@@ -130,40 +172,8 @@ var Card = function(appendTo, options) {
     }
   };
 
-  // constructor
-  appendTo.append(base);
-
-  // Create a unique ID for binding the menu to the button.
-  // From here: https://gist.github.com/gordonbrander/2230317
-  var id = 'UID_' + Math.random().toString(36).substr(2, 9);
-  var menu = base.find('ul');
-  var button = base.find('button');
-
-  button.attr('id', id);
-  menu.attr('data-mdl-for', id);
-
-  if (options !== undefined) {
-    if (options.visible !== undefined) {
-      if (options.visible === true) {
-        this.show();
-      }
-      else {
-        this.hide();
-      }
-    }
-    if (options.paragraphs !== undefined) {
-      options.paragraphs.every(function(data) {
-        self.append('<p>' + data + '</p>');
-        return true;
-      });
-    }
-  }
-
-  this.hide();
-  componentHandler.upgradeElement(base.find('.mdl-js-menu')[0], 'MaterialMenu');
+  this.init_(appendTo, options);
 };
-
-//***** Public Methods *****//
 
 
 /** */
