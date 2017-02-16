@@ -69,6 +69,15 @@ var TitledCard = function(appendTo, options) {
     Util.setHidden(helpIcon, false);
   };
 
+  /**
+   * Determines whether a Card has help set.
+   *
+   * @return {boolean} Returns true if this Card has help. False if it has no help.
+   */
+  this.hasHelp = function() {
+    return !helpIcon.hasClass('hidden');
+  };
+
   this.init_(appendTo, options);
 };
 
