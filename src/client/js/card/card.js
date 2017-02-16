@@ -146,7 +146,7 @@ var Card = function(appendTo, options) {
 
     item.on('click', function() {
       callback();
-      Util.setHidden(menu, true);
+      menu.removeClass('is-visible');
     });
 
     Util.setHidden(button, false);

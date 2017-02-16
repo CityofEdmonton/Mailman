@@ -11,6 +11,7 @@ var PubSub = require('pubsub-js');
 var Keys = require('./data/prop-keys.js');
 var CardsConfig = require('./cards/cards-config.js');
 var CardNames = require('./cards/card-names.js');
+var Snackbar = require('./snackbar/snackbar.js');
 
 var Cards = function(parent) {
 
@@ -314,16 +315,20 @@ var Cards = function(parent) {
 
     });
 
-    cardRepository[CardNames.sendNow].addOption('send test email', function() {
-      console.log('Sending test email...');
+    cardRepository[CardNames.sendNow].addOption('Send test email', function() {
       google.script.run
-          .sendTestEmail(self.getRule().toConfig());
+        .withSuccessHandler(function() {
+          Snackbar.show('Test email sent.');
+        })
+        .sendTestEmail(self.getRule().toConfig());
     });
 
-    cardRepository[CardNames.triggerConfirmation].addOption('send test email', function() {
-      console.log('Sending test email...');
+    cardRepository[CardNames.triggerConfirmation].addOption('Send test email', function() {
       google.script.run
-          .sendTestEmail(self.getRule().toConfig());
+        .withSuccessHandler(function() {
+          Snackbar.show('Test email sent.');
+        })
+        .sendTestEmail(self.getRule().toConfig());
     });
   };
 
