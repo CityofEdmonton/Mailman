@@ -18,8 +18,9 @@ var Card = function(appendTo, options) {
 
   // jquery objects
   var base = $(baseHTML);
-  var menu = base.find('[data-id="card-list"]');
+  var menu; // This isn't created until the MDL component handler gets ahold of it.
   var button = base.find('[data-id="options-button"]');
+  var myMenu = base.find('[data-id="card-list"]'); // This is the ul i created.
 
   //***** Private Methods *****//
 
@@ -28,7 +29,7 @@ var Card = function(appendTo, options) {
 
     var id = ID();
     button.attr('id', id);
-    menu.attr('data-mdl-for', id);
+    myMenu.attr('data-mdl-for', id);
 
     if (options !== undefined) {
       if (options.visible !== undefined) {
@@ -48,7 +49,8 @@ var Card = function(appendTo, options) {
     }
 
     this.hide();
-    componentHandler.upgradeElement(base.find('.mdl-js-menu')[0], 'MaterialMenu');
+    componentHandler.upgradeElement(myMenu[0], 'MaterialMenu');
+    menu = base.find('.mdl-menu__container');
   };
 
   //***** Privileged Methods *****//
@@ -91,8 +93,8 @@ var Card = function(appendTo, options) {
    * @this Card
    */
   this.show = function() {
-    if (base.hasClass('hidden') === true) {
-      base.removeClass('hidden');
+    if (!this.isShown()) {
+      Util.setHidden(base, false);
       base.trigger('card.show', this);
     }
   };
@@ -103,8 +105,8 @@ var Card = function(appendTo, options) {
    * @this Card
    */
   this.hide = function() {
-    if (base.hasClass('hidden') === false) {
-      base.addClass('hidden');
+    if (this.isShown()) {
+      Util.setHidden(base, true);
       base.trigger('card.hide', this);
     }
   };
@@ -136,19 +138,18 @@ var Card = function(appendTo, options) {
    * @param {String | undefined} icon The icon to display next to the title. Leave undefined for no icon.
    */
   this.addOption = function(title, callback, icon) {
-    var menu = base.find('ul');
-    menu.append('<li class="mdl-menu__item">' + title + '</li>');
+    myMenu.append('<li class="mdl-menu__item">' + title + '</li>');
 
-    var item = menu.children().filter(function() {
+    var item = myMenu.children().filter(function() {
       return $(this).text() === title;
     });
 
     item.on('click', function() {
       callback();
+      Util.setHidden(menu, true);
     });
 
-    var button = base.find('button');
-    button.removeClass('hidden');
+    Util.setHidden(button, false);
   };
 
   /**
@@ -157,18 +158,15 @@ var Card = function(appendTo, options) {
    * @param {String} title The title of the option to be displayed.
    */
   this.removeOption = function(title) {
-    var menu = base.find('ul');
-
-    var item = menu.children().filter(function() {
+    var item = myMenu.children().filter(function() {
       return $(this).text() === title;
     });
 
     item.off();
     item.remove();
 
-    if (menu.children().length === 0) {
-      var button = base.find('button');
-      button.addClass('hidden');
+    if (myMenu.children().length === 0) {
+      Util.setHidden(button, true);
     }
   };
 
