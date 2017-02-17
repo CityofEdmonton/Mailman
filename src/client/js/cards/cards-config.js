@@ -100,15 +100,6 @@ CardsConfig.buildCardRepo = function(contentArea) {
     }
   });
 
-  repo[CardNames.lastSent] = new InputCard(contentArea, {
-    title: 'Where should Mailman keep track of the previously sent email?',
-    paragraphs: [
-      'Every time Mailman sends an email, it records the time in a cell.',
-      'Using the timestamp, you can determine whether you want to send another email.'
-    ],
-    label: 'Last sent...'
-  });
-
   repo[CardNames.triggerConfirmation] = new TitledCard(contentArea, {
     title: 'Submit the trigger?',
     paragraphs: [

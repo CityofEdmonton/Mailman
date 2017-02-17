@@ -18,7 +18,6 @@ var RuleTypes = require('./rule-types.js');
  * @param {string} config.subject The tagged subject of the EmailRule. This can contain tags and normal strings.
  * @param {string} config.body The tagged body of the EmailRule. It can contain text and tags together.
  * @param {string} config.sendColumn The tagged column that contains the truthy value.
- * @param {string} config.timestampColumn The tagged column that Mailman will edit when an email is sent.
  * @param {string=} config.headerRow The row these emails should start sending from.
  * @param {string=} config.title The title of this EmailRule.
  * @param {string=} config.createdDatetime The time this EmailRule was created.
@@ -69,10 +68,6 @@ var EmailRule = function(config) {
     if (config.ruleType === RuleTypes.TRIGGER &&
         config.sendColumn == null) {
       throw new Error('EmailRule config is missing "sendColumn".');
-    }
-    if (config.ruleType === RuleTypes.TRIGGER &&
-        config.timestampColumn == null) {
-      throw new Error('EmailRule config is missing "timestampColumn".');
     }
 
     // id

@@ -196,9 +196,6 @@ var Cards = function(parent) {
     if (rule.sendColumn != null) {
       cardRepository[CardNames.shouldSend].setValue(rule.sendColumn);
     }
-    if (rule.timestampColumn != null) {
-      cardRepository[CardNames.lastSent].setValue(rule.timestampColumn);
-    }
 
     self.setType(rule.ruleType);
   };
@@ -267,7 +264,6 @@ var Cards = function(parent) {
     config.title = self.getCard(CardNames.title).getValue();
     if (self.getRuleType() === RuleTypes.TRIGGER) {
       config.sendColumn = self.getCard(CardNames.shouldSend).getValue();
-      config.timestampColumn = self.getCard(CardNames.lastSent).getValue();
       config.ruleType = RuleTypes.TRIGGER;
     }
     else {
@@ -447,14 +443,6 @@ var Cards = function(parent) {
       maxResults: maxResults,
       triggerOnFocus: true
     });
-
-    cardRepository[CardNames.lastSent].setAutocomplete({
-      results: values,
-      prepend: '<<',
-      append: '>>',
-      maxResults: maxResults,
-      triggerOnFocus: true
-    });
   };
 
   /**
@@ -519,9 +507,6 @@ var Cards = function(parent) {
 
     list.add(cardRepository[CardNames.shouldSend]);
     list.tail.name = CardNames.shouldSend;
-
-    list.add(cardRepository[CardNames.lastSent]);
-    list.tail.name = CardNames.lastSent;
 
     list.add(cardRepository[CardNames.triggerConfirmation]);
     list.tail.name = CardNames.triggerConfirmation;
