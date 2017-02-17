@@ -111,6 +111,7 @@ function getValues(sheet, rowIndex) {
 
   var row = range.offset(rowIndex, 0, 1, range.getNumColumns());
 
+  // TODO use getValues()
   var values = [];
   for (var i = 1; i <= row.getNumColumns(); i++) {
     values.push(row.getCell(1, i).getDisplayValue());
@@ -127,7 +128,7 @@ function getValues(sheet, rowIndex) {
   * @param {EmailRule} rule The EmailRule to use for getting a given cell.
   * @param {String} headerName The name of the header. This determines the column to look in.
   * @param {Number} row The 0-based row index. 0 is the very top row in the Sheet.
-  * @return {String} The string value found in the given row/column/Sheet.
+  * @return {Range} The cell.
   */
 function getCell(rule, headerName, row) {
   var ss = getSpreadsheet();
@@ -141,6 +142,25 @@ function getCell(rule, headerName, row) {
   }
 
   return sheet.getDataRange().getCell(row + 1, column + 1);
+}
+
+
+/**
+ * Appends a column to the end of the headers.
+ * @param  {EmailRule} rule The rule that contains the info we are interested in.
+ * @param  {string} name The name of the new header.
+ * @return {Range} The cell of the new header.
+ */
+function appendColumn(rule, name) {
+  var ss = getSpreadsheet();
+  var sheet = ss.getSheetByName(rule.sheet);
+  var range = sheet.getDataRange();
+  var headerRow = range.offset(rule.headerRow - 1, 0, 1, range.getNumColumns());
+
+  var newHeader = headerRow.offset(0, headerRow.getNumColumns(), 1, 1);
+  newHeader.setValue(name);
+
+  return newHeader;
 }
 
 

@@ -30,11 +30,12 @@ var EmailRule = function(config) {
 
   var id;
   var self = this;
+  var TIMESTAMP_COLUMN = 'Mailman Email Timestamp';
 
   // public variables
   this.createdDatetime;
   this.title;
-  this.headerRow;
+  this.headerRow = 1;
   this.ruleType = config.ruleType;
 
   // INSTANT
@@ -45,7 +46,7 @@ var EmailRule = function(config) {
 
   // TRIGGER
   this.sendColumn = config.sendColumn;
-  this.timestampColumn = config.timestampColumn;
+  this.timestampColumn = '<<' + TIMESTAMP_COLUMN + '>>';
 
   // ***** private methods ***** //
 

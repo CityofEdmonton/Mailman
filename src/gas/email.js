@@ -16,6 +16,7 @@ var RuleTypes = {
  * @return {Boolean} true if the email was sent, false otherwise.
  */
 function sendBasicEmail(headerRow, row, rule) {
+
   var combinedObj = {};
   for (var j = 0; j < headerRow.length; j++) {
     combinedObj[headerRow[j]] = row[j];
@@ -191,7 +192,26 @@ function instantEmail(rule) {
     var row = getValues(sheet, i);
 
     try {
-      sendBasicEmail(header, row, rule);
+      // We only timestamp when the email successfully sends.
+      if (sendBasicEmail(header, row, rule)) {
+        var dateColumn = rule.timestampColumn.replace(/(<<|>>)/g, '');
+        var currentDate = new Date();
+        var datetime = (currentDate.getMonth() + 1) + '/' +
+                currentDate.getDate() + '/' +
+                currentDate.getFullYear() + ' ' +
+                currentDate.getHours() + ':' +
+                currentDate.getMinutes() + ':' +
+                currentDate.getSeconds();
+
+        var cell = getCell(rule, dateColumn, i);
+
+        if (cell === null) {
+          log('Column: ' + dateColumn + ' couldn\'t be found. Timestamping failed.');
+        }
+        else {
+          cell.setValue(datetime);
+        }
+      }
     }
     catch (e) {
       log(e);

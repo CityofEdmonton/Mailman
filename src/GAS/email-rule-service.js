@@ -1,4 +1,5 @@
 var RULE_SHEET_NAME = 'mm-config';
+var TIMESTAMP_COLUMN = 'Email Timestamp';
 var ID_INDEX = 1;
 var RULE_INDEX = 2;
 
@@ -86,6 +87,19 @@ function deleteByID(id) {
  */
 function createRule(rule) {
   try {
+    // We need to verify there is a timestamp column.
+    var dataSheet = getSpreadsheet().getSheetByName(rule.sheet);
+    if (dataSheet !== null) {
+      var headers = getHeaderStrings(rule);
+      var name = rule.timestampColumn
+        .replace('<<', '')
+        .replace('>>', '');
+
+      if (headers.indexOf(name) === -1) {
+        appendColumn(rule, name);
+      }
+    }
+
     var sheet = getRuleSheet();
 
     sheet.appendRow([rule.id, JSON.stringify(rule)]);
@@ -104,7 +118,20 @@ function createRule(rule) {
  */
 function updateRule(rule) {
   try {
-    log('looking for:');
+    // We need to verify there is a timestamp column.
+    var dataSheet = getSpreadsheet().getSheetByName(rule.sheet);
+    if (dataSheet !== null) {
+      var headers = getHeaderStrings(rule);
+      var name = rule.timestampColumn
+        .replace('<<', '')
+        .replace('>>', '');
+
+      if (headers.indexOf(name) === -1) {
+        appendColumn(rule, name);
+      }
+    }
+
+    log('updating:');
     log(rule);
     var row = getRowByID(rule.id);
 
