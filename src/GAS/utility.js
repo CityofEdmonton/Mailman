@@ -111,13 +111,7 @@ function getValues(sheet, rowIndex) {
 
   var row = range.offset(rowIndex, 0, 1, range.getNumColumns());
 
-  // TODO use getValues()
-  var values = [];
-  for (var i = 1; i <= row.getNumColumns(); i++) {
-    values.push(row.getCell(1, i).getDisplayValue());
-  }
-
-  return values;
+  return row.getDisplayValues()[0];
 }
 
 
