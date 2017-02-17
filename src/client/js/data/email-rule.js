@@ -6,8 +6,7 @@ var RuleTypes = require('./rule-types.js');
 
 
 /**
- * This resource represents an email blast. They can be one time, or recurring (TRIGGER)
- * emails.
+ * This resource represents an email blast. They can be one time, or recurring (TRIGGER) emails.
  *
  * @constructor
  * @param {Object} config The config Object used to initialize this EmailRule.
@@ -65,8 +64,7 @@ var EmailRule = function(config) {
     if (config.body == null) {
       throw new Error('EmailRule config is missing "body".');
     }
-    if (config.ruleType === RuleTypes.TRIGGER &&
-        config.sendColumn == null) {
+    if (config.ruleType === RuleTypes.TRIGGER && config.sendColumn == null) {
       throw new Error('EmailRule config is missing "sendColumn".');
     }
 

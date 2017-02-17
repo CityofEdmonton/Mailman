@@ -55,6 +55,7 @@ CardsConfig.buildCardRepo = function(contentArea) {
       pattern: '[1-9][0-9]*'
     }
   });
+  repo[CardNames.row].setValue(1); // Default row 1.
 
   repo[CardNames.subject] = new InputCard(contentArea, {
     title: 'What\'s your subject?',
