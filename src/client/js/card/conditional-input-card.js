@@ -3,6 +3,14 @@ var InputCard = require('./card-input.js');
 
 
 
+/**
+ * This Card extends the functionality of InputCard. It gives the ability of disabling the InputCard.
+ * This is useful in situations where you don't want the Card to be required.
+ *
+ * @param {jquery} appendTo The div to append this Card to.
+ * @param {Object} options The object that describes the Card functionality. See the parent object InputCard for details.
+ * @param {boolean} enabled The default state of the checkbox.
+ */
 var ConditionalInputCard = function(appendTo, options) {
   InputCard.call(this, appendTo, options);
 
@@ -19,18 +27,23 @@ var ConditionalInputCard = function(appendTo, options) {
 
     checkbox.on('change', setCardState);
 
+    componentHandler.upgradeElement(innerBase[0], 'MaterialCheckbox');
+
     if (options.enabled !== undefined) {
       if (options.enabled) {
         checkbox.attr('checked');
-      }
-      else {
-        checkbox.removeAttr('checked');
       }
     }
   };
 
   var setCardState = function(e) {
-    console.log(e);
+    // NOTE MDL doesn't change the class until after this event is fired. That revereses our logic here.
+    if (!innerBase.hasClass('is-checked')) {
+      enableCard();
+    }
+    else {
+      disableCard();
+    }
   };
 
   var disableCard = function() {
@@ -40,6 +53,17 @@ var ConditionalInputCard = function(appendTo, options) {
   var enableCard = function() {
     self.enableInput();
   };
+
+  //***** Public Functions *****//
+
+  /**
+   * Checks whether this Card is enabled.
+   *
+   * @returns {boolean} True if the Card is enabled. False if it isn't.
+   */
+  this.isEnabled = function() {
+    return checkbox.is('[checked]');
+  }
 
   this.init_(appendTo, options);
 };
