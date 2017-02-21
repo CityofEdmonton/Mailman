@@ -443,6 +443,15 @@ var Cards = function(parent) {
       maxResults: maxResults,
       triggerOnFocus: true
     });
+
+    cardRepository[CardNames.conditional].setAutocomplete({
+      results: values,
+      trigger: '<<',
+      prepend: '<<',
+      append: '>>',
+      maxResults: maxResults,
+      triggerOnFocus: true
+    });
   };
 
   /**
