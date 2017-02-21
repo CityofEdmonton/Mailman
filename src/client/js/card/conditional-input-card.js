@@ -34,6 +34,9 @@ var ConditionalInputCard = function(appendTo, options) {
         checkbox.attr('checked');
       }
     }
+    if (options.checkboxText !== undefined) {
+      cbLabel.text(options.checkboxText);
+    }
   };
 
   var setCardState = function(e) {

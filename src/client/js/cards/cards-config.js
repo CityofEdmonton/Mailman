@@ -111,7 +111,7 @@ CardsConfig.buildCardRepo = function(contentArea) {
   });
 
   repo[CardNames.conditional] = new ConditionalInputCard(contentArea, {
-    title: 'Conditional Column',
+    title: 'Conditional column (optional)',
     help: 'This column is used to determine when to send an email. If a given row reads TRUE, ' +
       'Mailman will send an email. Any other value and Mailman won\'t send. This can be useful for scheduling your ' +
       'merges or ensuring you don\'t accidentally email someone twice.',
@@ -120,7 +120,8 @@ CardsConfig.buildCardRepo = function(contentArea) {
       hint: 'Must be a single header surrounded by whack whacks',
       pattern: '<<[^<>]*>>'
     },
-    enabled: true
+    enabled: true,
+    checkboxText: 'Filter this merge?'
   });
 
   return repo;
