@@ -149,6 +149,22 @@ var InputCard = function(appendTo, options) {
     return input;
   };
 
+  /**
+   * This disables the input element.
+   *
+   */
+  this.disableInput = function() {
+    input.attr('disabled');
+  };
+
+  /**
+   * This enables the input element.
+   *
+   */
+  this.enableInput = function() {
+    input.removeAttr('disabled');
+  };
+
   this.init_(appendTo, options);
 };
 
@@ -156,8 +172,6 @@ var InputCard = function(appendTo, options) {
 /** */
 InputCard.prototype.constructor = InputCard;
 InputCard.prototype = Object.create(TitledCard.prototype);
-
-//***** Public Methods *****//
 
 
 /** */
