@@ -472,6 +472,9 @@ var Cards = function(parent) {
     list.add(cardRepository[CardNames.body]);
     list.tail.name = CardNames.body;
 
+    list.add(cardRepository[CardNames.conditional]);
+    list.tail.name = CardNames.conditional;
+
     list.add(cardRepository[CardNames.sendNow]);
     list.tail.name = CardNames.sendNow;
 
