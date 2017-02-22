@@ -126,14 +126,8 @@ var MailMan = function(appendTo) {
       runDialog.show()
         .then(function() {
           // This only occurs when the user clicks OK.
-          if (rule.ruleType === RuleTypes.INSTANT) {
-            google.script.run
-                .instantEmail(rule.toConfig());
-          }
-          else if (rule.ruleType === RuleTypes.TRIGGER) {
-            google.script.run
-                .triggerEmailNoSS(rule.toConfig());
-          }
+          google.script.run
+              .startMergeTemplate(rule.toConfig());
 
           PubSub.publish('Rules.run', rule);
         });

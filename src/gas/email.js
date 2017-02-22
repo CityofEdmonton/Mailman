@@ -98,7 +98,7 @@ function sendManyEmails() {
       var rule = rules.rules[i];
 
       if (rule.ruleType === RuleTypes.TRIGGER) {
-        triggerEmail(ss, rule);
+        startMergeTemplate(rule);
       }
     }
 
@@ -108,32 +108,46 @@ function sendManyEmails() {
     log(e);
     throw e;
   }
-
 }
 
 
-function triggerEmailNoSS(rule) {
-  try {
-    var ss = getSpreadsheet();
-    log('For sheet: ' + ss.getUrl());
-
-    triggerEmail(ss, rule);
-  }
-  catch (e) {
-    log(e);
-    throw e;
-  }
-
-}
-
-
-function triggerEmail(ss, rule) {
-  log('Starting trigger rule...');
+function sendTestEmail(rule) {
+  log('Starting test email...');
   log(rule);
   if (!validateRule(rule)) {
     return;
   }
 
+  var ss = getSpreadsheet();
+  var sheet = ss.getSheetByName(rule.sheet);
+  var range = sheet.getDataRange();
+  var header = getHeaderStrings(rule);
+  var user = Session.getActiveUser().getEmail();
+  rule.to = user;
+
+  log('For sheet: ' + ss.getUrl());
+
+  var row = getValues(sheet, parseInt(rule.headerRow));
+
+  try {
+    sendBasicEmail(header, row, rule);
+  }
+  catch (e) {
+    log(e);
+  }
+
+  log('Ending test email...');
+}
+
+
+function startMergeTemplate(rule) {
+  log('Starting merge template...');
+  log(rule);
+  if (!validateRule(rule)) {
+    return;
+  }
+
+  var ss = getSpreadsheet();
   var sheet = ss.getSheetByName(rule.sheet);
   var range = sheet.getDataRange();
   var header = getHeaderStrings(rule);
@@ -168,95 +182,11 @@ function triggerEmail(ss, rule) {
     }
   }
 
-  log('Ending trigger rule...');
-}
-
-
-function instantEmail(rule) {
-
-  log('Starting instant email...');
-  log(rule);
-  if (!validateRule(rule)) {
-    return;
-  }
-
-  // Validate each rule for each row
-  var ss = getSpreadsheet();
-  var sheet = ss.getSheetByName(rule.sheet);
-  var range = sheet.getDataRange();
-  var header = getHeaderStrings(rule);
-
-  log('For sheet: ' + ss.getUrl());
-
-  for (var i = parseInt(rule.headerRow); i < range.getNumRows(); i++) {
-    var row = getValues(sheet, i);
-
-    try {
-      // We only timestamp when the email successfully sends.
-      if (sendBasicEmail(header, row, rule)) {
-        var dateColumn = rule.timestampColumn.replace(/(<<|>>)/g, '');
-        var currentDate = new Date();
-        var datetime = (currentDate.getMonth() + 1) + '/' +
-                currentDate.getDate() + '/' +
-                currentDate.getFullYear() + ' ' +
-                currentDate.getHours() + ':' +
-                currentDate.getMinutes() + ':' +
-                currentDate.getSeconds();
-
-        var cell = getCell(rule, dateColumn, i);
-
-        if (cell === null) {
-          log('Column: ' + dateColumn + ' couldn\'t be found. Timestamping failed.');
-        }
-        else {
-          cell.setValue(datetime);
-        }
-      }
-    }
-    catch (e) {
-      log(e);
-    }
-
-  }
-
-  log('Ending instant email...');
-}
-
-
-function sendTestEmail(rule) {
-  log('Starting test email...');
-  log(rule);
-  if (!validateRule(rule)) {
-    return;
-  }
-
-  var ss = getSpreadsheet();
-  var sheet = ss.getSheetByName(rule.sheet);
-  var range = sheet.getDataRange();
-  var header = getHeaderStrings(rule);
-  var user = Session.getActiveUser().getEmail();
-  rule.to = user;
-
-  log('For sheet: ' + ss.getUrl());
-
-  var row = getValues(sheet, parseInt(rule.headerRow));
-
-  try {
-    sendBasicEmail(header, row, rule);
-  }
-  catch (e) {
-    log(e);
-  }
-
-  log('Ending test email...');
+  log('Ending merge template...');
 }
 
 
 function validateRule(rule) {
-  if (rule.ruleType == null) {
-    log('EmailRule config is missing "ruleType".');
-    return false;
-  }
   if (rule.to == null) {
     log('EmailRule config is missing "to".');
     return false;
@@ -277,13 +207,7 @@ function validateRule(rule) {
     log('EmailRule config is missing "body".');
     return false;
   }
-  if (rule.ruleType === RuleTypes.TRIGGER &&
-      rule.sendColumn == null) {
-    log('EmailRule config is missing "sendColumn".');
-    return false;
-  }
-  if (rule.ruleType === RuleTypes.TRIGGER &&
-      rule.timestampColumn == null) {
+  if (rule.timestampColumn == null) {
     log('EmailRule config is missing "timestampColumn".');
     return false;
   }
