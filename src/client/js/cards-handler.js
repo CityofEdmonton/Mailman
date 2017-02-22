@@ -194,7 +194,7 @@ var Cards = function(parent) {
       cardRepository[CardNames.body].setValue(rule.body);
     }
     if (rule.sendColumn != null) {
-      cardRepository[CardNames.shouldSend].setValue(rule.sendColumn);
+      cardRepository[CardNames.conditional].setValue(rule.sendColumn);
     }
 
     self.setType(rule.ruleType);
@@ -262,17 +262,19 @@ var Cards = function(parent) {
     config.body = self.getCard(CardNames.body).getValue();
     config.sheet = self.getCard(CardNames.sheet).getValue();
     config.title = self.getCard(CardNames.title).getValue();
+
+    if (self.getCard(CardNames.conditional).isEnabled()) {
+      config.sendColumn = self.getCard(CardNames.conditional).getValue();
+    }
+
     if (self.getRuleType() === RuleTypes.TRIGGER) {
-      config.sendColumn = self.getCard(CardNames.shouldSend).getValue();
       config.ruleType = RuleTypes.TRIGGER;
     }
     else {
       config.ruleType = RuleTypes.INSTANT;
     }
 
-    if (self.getCard(CardNames.row).getValue() !== '') {
-      config.headerRow = self.getCard(CardNames.row).getValue();
-    }
+    config.headerRow = self.getCard(CardNames.row).getValue();
 
     if (updateRule !== null) {
       return updateRule;
@@ -517,8 +519,8 @@ var Cards = function(parent) {
     list.add(cardRepository[CardNames.body]);
     list.tail.name = CardNames.body;
 
-    list.add(cardRepository[CardNames.shouldSend]);
-    list.tail.name = CardNames.shouldSend;
+    list.add(cardRepository[CardNames.conditional]);
+    list.tail.name = CardNames.conditional;
 
     list.add(cardRepository[CardNames.triggerConfirmation]);
     list.tail.name = CardNames.triggerConfirmation;

@@ -41,7 +41,7 @@ var ConditionalInputCard = function(appendTo, options) {
 
   var setCardState = function(e) {
     // NOTE MDL doesn't change the class until after this event is fired. That revereses our logic here.
-    if (!innerBase.hasClass('is-checked')) {
+    if (!self.isEnabled()) {
       enableCard();
     }
     else {
@@ -65,7 +65,7 @@ var ConditionalInputCard = function(appendTo, options) {
    * @returns {boolean} True if the Card is enabled. False if it isn't.
    */
   this.isEnabled = function() {
-    return checkbox.is('[checked]');
+    return innerBase.hasClass('is-checked');
   }
 
   this.init_(appendTo, options);
