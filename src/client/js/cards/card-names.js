@@ -17,5 +17,6 @@ module.exports = {
   triggerSetup: 'Trigger',
   shouldSend: 'Confirmation',
   lastSent: 'Last Sent',
-  title: 'Title'
+  title: 'Title',
+  conditional: 'Conditional'
 };

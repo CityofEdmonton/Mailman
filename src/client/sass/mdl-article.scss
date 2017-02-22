@@ -90,6 +90,7 @@
 .demo-layout.is-small-screen {
   .demo-content {
     padding: 40px 28px;
+    padding-bottom: 56px;
   }
 }
 
@@ -131,7 +132,11 @@
 }
 
 .mm-text-field {
-  margin-bottom: 24px;
+  // margin-bottom: 24px;
+}
+
+.mm-checkbox {
+  // margin-bottom: 24px;
 }
 
 // MDL Changes
@@ -149,6 +154,26 @@
   background: $failure-red;
   color: $white;
 }
+
+.mdl-textfield {
+
+  &:not(.is-invalid) {
+    & + .mm-error-spacer {
+      display: none;
+    }
+  }
+
+  &.is-invalid {
+
+    & + .mm-error-spacer {
+      display: block;
+    }
+  }
+}
+.mm-error-spacer {
+  height: 64px;
+}
+
 
 // jQuery UI classes
 // Mostly for Autocomplete

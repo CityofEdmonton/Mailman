@@ -23,8 +23,10 @@ var InputCard = function(appendTo, options) {
   // Private variables
   var self = this;
   var innerBase = $(inputHTML);
+  var mdlObject = innerBase.find('[data-id="mdl-object"]');
   var input = innerBase.find('input');
   var error = innerBase.find('[data-id="ci-error"]');
+  var errorSpacer = innerBase.find('[data-id="error-spacer"]');
   var acConfig;
 
   //***** Private Methods *****//
@@ -45,7 +47,7 @@ var InputCard = function(appendTo, options) {
       }
     }
 
-    componentHandler.upgradeElement(innerBase[0], 'MaterialTextfield');
+    componentHandler.upgradeElement(mdlObject[0], 'MaterialTextfield');
   };
 
   //***** Public Methods *****//
@@ -116,7 +118,7 @@ var InputCard = function(appendTo, options) {
    * @param {string} value The value to set in the input.
    */
   this.setValue = function(value) {
-    innerBase[0].MaterialTextfield.change(value);
+    mdlObject[0].MaterialTextfield.change(value);
   };
 
   /**
@@ -138,6 +140,7 @@ var InputCard = function(appendTo, options) {
   this.setError = function(errorObj) {
     error.text(errorObj.hint);
     input.attr('pattern', errorObj.pattern);
+    errorSpacer.height(error.actual('height'));
   };
 
   /**
@@ -149,6 +152,22 @@ var InputCard = function(appendTo, options) {
     return input;
   };
 
+  /**
+   * This disables the input element.
+   *
+   */
+  this.disableInput = function() {
+    mdlObject[0].MaterialTextfield.disable();
+  };
+
+  /**
+   * This enables the input element.
+   *
+   */
+  this.enableInput = function() {
+    mdlObject[0].MaterialTextfield.enable();
+  };
+
   this.init_(appendTo, options);
 };
 
@@ -156,8 +175,6 @@ var InputCard = function(appendTo, options) {
 /** */
 InputCard.prototype.constructor = InputCard;
 InputCard.prototype = Object.create(TitledCard.prototype);
-
-//***** Public Methods *****//
 
 
 /** */

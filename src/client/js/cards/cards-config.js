@@ -2,6 +2,7 @@ var CardNames = require('./card-names.js');
 var InputCard = require('../card/card-input.js');
 var TitledCard = require('../card/card-titled.js');
 var TextareaCard = require('../card/card-textarea.js');
+var ConditionalInputCard = require('../card/conditional-input-card.js');
 
 var CardsConfig = {};
 
@@ -107,6 +108,20 @@ CardsConfig.buildCardRepo = function(contentArea) {
       'This will regularly check the previously mentioned column for the value TRUE. ' +
           'When TRUE is found in the column, an email is sent out with that row\'s information.'
     ]
+  });
+
+  repo[CardNames.conditional] = new ConditionalInputCard(contentArea, {
+    title: 'Conditional column (optional)',
+    help: 'This column is used to determine when to send an email. If a given row reads TRUE, ' +
+      'Mailman will send an email. Any other value and Mailman won\'t send. This can be useful for scheduling your ' +
+      'merges or ensuring you don\'t accidentally email someone twice.',
+    label: 'Conditional',
+    error: {
+      hint: 'Must be a single header surrounded by whack whacks',
+      pattern: '<<[^<>]*>>'
+    },
+    enabled: true,
+    checkboxText: 'Filter this merge?'
   });
 
   return repo;
