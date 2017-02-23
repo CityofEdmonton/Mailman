@@ -9,10 +9,10 @@ var ID = require('../id.js');
  * This is meant to be easily de/serializeable.
  *
  * @param {Object} config The Object used to create this MergeTemplate.
- * @param {string} config.createdBy The user that originally created this MergeTemplate.
- * @param {string} config.createdDatetime The date string of when this MergeTemplate was created.
- * @param {string} config.id The unique identifier of this merge.
- * @param {Object} config.mergeRepeater An Object representing a MergeRepeater Object. See MergeRepeater for details.
+ * @param {string|undefined} config.createdBy The user that originally created this MergeTemplate.
+ * @param {string|undefined} config.createdDatetime The date string of when this MergeTemplate was created.
+ * @param {string|undefined} config.id The unique identifier of this merge.
+ * @param {Object|undefined} config.mergeRepeater An Object representing a MergeRepeater Object. See MergeRepeater for details.
  * @param {Object} config.mergeData An Object representing a MergeData Object. See MergeData for details.
  */
 var MergeTemplate = function(config) {
@@ -34,7 +34,7 @@ var MergeTemplate = function(config) {
 
   var self = this;
   var createdBy = 'Unknown user';
-  var createdDatetime = self.getDateString(new Date());
+  var createdDatetime;
   var id = ID();
 
   //***** Private Methods *****//
@@ -43,6 +43,9 @@ var MergeTemplate = function(config) {
     if (config.mergeData == null) {
       throw new Error('MergeTemplate must contain mergeData.');
     }
+
+    createdDatetime = self.getDateString(new Date());
+    console.log(createdDatetime);
 
     this.update(config);
   };
@@ -103,8 +106,7 @@ var MergeTemplate = function(config) {
    * @return {string} The stringified version of the Date.
    */
   this.getDateString = function(date) {
-    return
-      (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear() + ' ' +
+    return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear() + ' ' +
       date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
   };
 
@@ -128,7 +130,7 @@ var MergeTemplate = function(config) {
     };
   };
 
-this.init_(config);
+  this.init_(config);
 };
 
 

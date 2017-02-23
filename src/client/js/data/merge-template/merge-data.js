@@ -10,9 +10,9 @@
  * @param {string} config.type The type of the MergeData. These aren't stored anywhere special.
  * This can be used to assist in determining what type of MergeData this is.
  * @param {Object} config.data The data of this MergeData. (to, subject and body for email)
- * @param {string} config.title The title of this merge.
+ * @param {string|undefined} config.title The title of this merge.
  * @param {string} config.sheet The Sheet name this merge pulls data from.
- * @param {string} config.headerRow The row to look for headers in. The merge starts in the next row.
+ * @param {string|undefined} config.headerRow The row to look for headers in. The merge starts in the next row.
  */
 var MergeData = function(config) {
 
