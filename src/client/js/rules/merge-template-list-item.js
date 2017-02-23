@@ -1,20 +1,19 @@
 
-var baseHTML = require('./rule-list-item.html');
-var EmailRule = require('../data/email-rule.js');
+var baseHTML = require('./merge-template-list-item.html');
+var MergeTemplate = require('../data/merge-template/merge-template.js');
 var ID = require('../data/id.js');
 var Util = require('../util.js');
-var RuleTypes = require('../data/rule-types.js');
 
 
 
 /**
- * Used to display an EmailRule. It has icons for editing and deleting the rule.
+ * Used to display a MergeTemplate. It has icons for editing, deleting and running.
  *
  * @constructor
  * @param {jquery} appendTo The object to append this component to.
- * @param {EmailRule} rule The rule to display.
+ * @param {MergeTemplate} template The merge to display.
  */
-var RuleListItem = function(appendTo, rule) {
+var MergeTemplateListItem = function(appendTo, template) {
   // private variables
   var self = this;
   var base = $(baseHTML);
@@ -26,29 +25,19 @@ var RuleListItem = function(appendTo, rule) {
   var editIcon = base.find('[data-id="edit"]');
   var title = base.find('[data-id="title"]');
 
-  var rule;
+  var template;
 
   // public variables
 
   //***** private methods *****//
 
-  this.init_ = function(appendTo, rule) {
-    rule = rule;
+  this.init_ = function(appendTo, templateObj) {
+    template = templateObj;
 
-    title.text(rule.title);
+    title.text(template.toConfig().mergeData.title);
 
-    if (rule.ruleType === RuleTypes.TRIGGER) {
-      Util.setHidden(instantIcon, true);
-      Util.setHidden(triggerIcon, false);
-    }
-    else if (rule.ruleType === RuleTypes.INSTANT) {
-      Util.setHidden(instantIcon, false);
-      Util.setHidden(triggerIcon, true);
-    }
-    else {
-      throw new Error('Unknown ruletype.');
-    }
-
+    Util.setHidden(instantIcon, false);
+    Util.setHidden(triggerIcon, true);
     appendTo.append(base);
 
     componentHandler.upgradeElement(deleteIcon[0], 'MaterialButton');
@@ -64,7 +53,7 @@ var RuleListItem = function(appendTo, rule) {
    * @param {Function} callback The function to call.
    */
   this.setDeleteHandler = function(callback) {
-    deleteIcon.on('click', rule, callback);
+    deleteIcon.on('click', template, callback);
   };
 
   /**
@@ -73,7 +62,7 @@ var RuleListItem = function(appendTo, rule) {
    * @param {Function} callback The function to call.
    */
   this.setEditHandler = function(callback) {
-    editIcon.on('click', rule, callback);
+    editIcon.on('click', template, callback);
   };
 
   /**
@@ -82,7 +71,7 @@ var RuleListItem = function(appendTo, rule) {
    * @param {Function} callback The function to call.
    */
   this.setRunHandler = function(callback) {
-    runIcon.on('click', rule, callback);
+    runIcon.on('click', template, callback);
   };
 
   /**
@@ -93,9 +82,9 @@ var RuleListItem = function(appendTo, rule) {
     base.remove();
   };
 
-  this.init_(appendTo, rule);
+  this.init_(appendTo, template);
 };
 
 
 /** */
-module.exports = RuleListItem;
+module.exports = MergeTemplateListItem;
