@@ -1,6 +1,6 @@
 var MergeRepeater = require('./merge-repeater.js');
 var MergeData = require('./merge-data.js');
-var ID = require('./id.js');
+var ID = require('../id.js');
 
 
 
@@ -35,7 +35,7 @@ var MergeTemplate = function(config) {
   var self = this;
   var createdBy = 'Unknown user';
   var createdDatetime = self.getDateString(new Date());
-  var id = ID();  
+  var id = ID();
 
   //***** Private Methods *****//
 
