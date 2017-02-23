@@ -1,7 +1,8 @@
 
-var baseHTML = require('./rules-list-view.html');
-var EmailRule = require('../data/email-rule.js');
-var RuleListItem = require('./rule-list-item.js');
+var baseHTML = require('./merge-templates-list-view.html');
+var MergeTemplateListItem = require('./merge-template-list-item.js');
+var MergeTemplate = require('../data/merge-template/merge-template.js');
+var MergeTemplateContainer = require('../data/merge-template-container.js');
 var Util = require('../util.js');
 var PubSub = require('pubsub-js');
 var ActionBar = require('../action-bar/action-bar.js');
@@ -9,18 +10,18 @@ var ActionBar = require('../action-bar/action-bar.js');
 
 
 /**
- * This view displays all of the EmailRules. Each EmailRule corresponds to a RuleListItem.
+ * This view displays all of the MergeTemplates. Each MergeTemplate corresponds to a MergeTemplateListItem.
  * This view responds to the following PubSub events: Rules.delete, Rules.add, Rules.update.
  * This view publishes the following events: Mailman.RulesListView.show.
  * @constructor
  * @param {jquery} appendTo The element this view should be appended to.
  */
-var RulesListView = function(appendTo) {
+var MergeTemplatesListView = function(appendTo) {
   // private variables
   var self = this;
   var base = $(baseHTML);
-  var ruleItems = [];
-  var ruleContainer;
+  var listItems = [];
+  var mergeTemplates;
   var actionBar = ActionBar;
 
   // jQuery Objects
@@ -77,20 +78,20 @@ var RulesListView = function(appendTo) {
   };
 
   var rebuild = function() {
-    for (var i = 0; i < ruleItems.length; i++) {
-      ruleItems[i].cleanup();
+    for (var i = 0; i < listItems.length; i++) {
+      listItems[i].cleanup();
     }
 
-    ruleItems = [];
-    for (var i = 0; i < ruleContainer.length(); i++) {
-      self.addRule(ruleContainer.get(i));
+    listItems = [];
+    for (var i = 0; i < mergeTemplates.length(); i++) {
+      self.add(mergeTemplates.get(i));
     }
 
     setEmptyDisplay();
   };
 
   var setEmptyDisplay = function() {
-    if (ruleItems.length === 0) {
+    if (listItems.length === 0) {
       Util.setHidden(list, true);
       Util.setHidden(emptyContainer, false);
       actionBar.hideBranding();
@@ -102,35 +103,35 @@ var RulesListView = function(appendTo) {
     }
   };
 
-  //***** privileged methods *****//
+  //***** public methods *****//
 
   /**
-   * Sets the RulesContainer this view uses.
+   * Sets the MergeTemplateContainer this view uses.
    *
-   * @param {RuleContainer} container This is the model used by the view to update.
+   * @param {MergeTemplateContainer} container This is the model used by the view to update.
    */
-  this.setRulesContainer = function(container) {
-    ruleContainer = container;
+  this.setContainer = function(container) {
+    mergeTemplates = container;
     rebuild();
   };
 
   /**
-   * Adds a new RuleListItem to this view.
+   * Adds a new MergeTemplateListItem to this view.
    *
-   * @param {EmailRule} rule The model that is used to build the view.
+   * @param {MergeTemplate} template The model that is used to build the view.
    */
-  this.addRule = function(rule) {
+  this.add = function(template) {
 
-    var item = new RuleListItem(list, rule);
+    var item = new MergeTemplateListItem(list, template);
     item.setDeleteHandler(itemDelete);
     item.setEditHandler(itemEdit);
     item.setRunHandler(itemRun);
 
-    ruleItems.push(item);
+    listItems.push(item);
   };
 
   /**
-   * Hides the RulesListView.
+   * Hides this view.
    *
    */
   this.hide = function() {
@@ -139,8 +140,8 @@ var RulesListView = function(appendTo) {
   };
 
   /**
-   * Shows the RulesListView.
-   *
+   * Shows this view.
+   * TODO
    */
   this.show = function() {
     setEmptyDisplay();
@@ -149,7 +150,7 @@ var RulesListView = function(appendTo) {
   };
 
   /**
-   * Sets the handler for each RuleListItem deletion.
+   * Sets the handler for each list item deletion.
    *
    * @param {Function} callback Called when the delete icon is clicked.
    */
@@ -158,7 +159,7 @@ var RulesListView = function(appendTo) {
   };
 
   /**
-   * Sets the handler for each RuleListItem edit.
+   * Sets the handler for each list item edit.
    *
    * @param {Function} callback Called when the edit icon is clicked.
    */
@@ -167,7 +168,7 @@ var RulesListView = function(appendTo) {
   };
 
   /**
-   * Sets the handler for each RuleListItem run.
+   * Sets the handler for each list item run.
    *
    * @param {Function} callback Called when the run icon is clicked.
    */
@@ -177,7 +178,7 @@ var RulesListView = function(appendTo) {
 
   /**
    * Sets the handler for the new trigger button click.
-   *
+   * TODO
    * @param {Function} callback Called when the add trigger button is clicked.
    */
   this.setTriggerHandler = function(callback) {
@@ -186,7 +187,7 @@ var RulesListView = function(appendTo) {
 
   /**
    * Sets the handler for the instant email button click.
-   *
+   * TODO
    * @param {Function} callback Called when the instant trigger button is clicked.
    */
   this.setInstantHandler = function(callback) {
@@ -198,4 +199,4 @@ var RulesListView = function(appendTo) {
 
 
 /** */
-module.exports = RulesListView;
+module.exports = MergeTemplatesListView;
