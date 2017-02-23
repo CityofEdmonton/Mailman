@@ -1,11 +1,11 @@
 
 var baseHTML = require('./merge-templates-list-view.html');
 var MergeTemplateListItem = require('./merge-template-list-item.js');
-var MergeTemplate = require('../data/merge-template/merge-template.js');
-var MergeTemplateContainer = require('../data/merge-template-container.js');
-var Util = require('../util.js');
+var MergeTemplate = require('../../data/merge-template/merge-template.js');
+var MergeTemplateContainer = require('../../data/merge-template-container.js');
+var Util = require('../../util.js');
 var PubSub = require('pubsub-js');
-var ActionBar = require('../action-bar/action-bar.js');
+var ActionBar = require('../../action-bar/action-bar.js');
 
 
 
