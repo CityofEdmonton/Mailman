@@ -33,7 +33,7 @@ var EmailRule = function(config) {
   // public variables
   this.createdDatetime;
   this.title;
-  this.headerRow = 1;
+  this.headerRow = '1';
   this.ruleType = config.ruleType;
 
   // INSTANT
