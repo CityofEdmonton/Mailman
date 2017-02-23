@@ -1,24 +1,28 @@
 var baseHTML = require('./cards-view.html');
-var Cards = require('../cards-handler.js');
-var Util = require('../util.js');
+var Util = require('../../util.js');
 var PubSub = require('pubsub-js');
+var Promise = require('promise');
 
 
 
 /**
- * This view displays all the information needed to create a new EmailRule.
+ * This view helps a user set up their own MergeTemplate. This view can be used for email merge, doc merge, draft merge,
+ * or any other merge, so long as it adheres to the Card-style creation process.
  * This view publishes the following events: Mailman.CardsView.show.
  *
  * @constructor
  * @param {jquery} appendTo The element this view should be appended to.
+ * @param {CardHandler} handler There are different types of CardHandlers. This needs to support them all.
  */
-var CardsView = function(appendTo) {
+var CardsView = function(appendTo, handler) {
   // private variables
   var self = this;
   var base = $(baseHTML);
   var cards;
-  var doneCB;
-  var cancelCB;
+
+  // These are used to resolve the Promise in done.
+  var resolveCB;
+  var rejectCB;
 
   // jQuery Objects
   var contentArea = base.find('[data-id="content-area"]');
@@ -31,17 +35,25 @@ var CardsView = function(appendTo) {
   this.init_ = function(appendTo) {
     appendTo.append(base);
 
-    cards = new Cards(contentArea);
+    cards = new handler(contentArea);
 
     step.on('click', self.next);
-    done.on('click', self.done);
+    done.on('click', doneClicked);
     back.on('click', self.back);
-    cancel.on('click', self.cancel);
+    cancel.on('click', cancelClicked);
 
     componentHandler.upgradeElement(step[0], 'MaterialButton');
     componentHandler.upgradeElement(done[0], 'MaterialButton');
     componentHandler.upgradeElement(back[0], 'MaterialButton');
     componentHandler.upgradeElement(cancel[0], 'MaterialButton');
+  };
+
+  var doneClicked = function() {
+    resolveCB(cards.getRule()); //TODO
+  };
+
+  var cancelClicked = function() {
+    rejectCB('cancelled');
   };
 
   //***** public methods *****//
@@ -53,8 +65,6 @@ var CardsView = function(appendTo) {
   /**
    * This function goes to the next card.
    *
-   * TODO There is non-DRY code between this function and this.back.
-   * TODO Move this into the CardHandler or a CardsView.
    * @param {event} event The event that triggered the function call.
    */
   this.next = function(event) {
@@ -65,8 +75,6 @@ var CardsView = function(appendTo) {
   /**
    * This function goes to the previous card.
    *
-   * TODO There is non-DRY code between this function and this.next.
-   * TODO Move this into the CardHandler or a CardsView.
    * @param {event} event The event that triggered the function call.
    */
   this.back = function(event) {
@@ -75,29 +83,16 @@ var CardsView = function(appendTo) {
   };
 
   /**
-   * Passes the EmailRule to the previously set callback.
+   * Gives a Promise that can be used to determine whether the CardsView is done or not.
    *
-   * @param {event} event The event that triggered the function call.
+   * @return {Promise} A promise that doesn't resolve until the DONE button is clicked. The Promise is rejected if
+   * CANCEL is clicked.
    */
-  this.done = function(event) {
-    if (doneCB == undefined) {
-      throw new Error('CardsView has no done callback. Please set with setDoneCallback.');
-    }
-
-    doneCB(cards.getRule());
-  };
-
-  /**
-   * Cancels the EmailRule creation process.
-   *
-   * @param {event} event The event that triggered the function call.
-   */
-  this.cancel = function(event) {
-    if (cancelCB == undefined) {
-      throw new Error('CardsView has no cancel callback. Please set with setDCancelCallback.');
-    }
-
-    cancelCB();
+  this.done = function() {
+    return new Promise(function(resolve, reject) {
+      resolveCB = resolve;
+      rejectCB = reject;
+    });
   };
 
   /**
