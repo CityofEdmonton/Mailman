@@ -96,15 +96,13 @@ var MergeTemplateService = {
   create: function(template) {
     try {
       // We need to verify there is a timestamp column.
-      var dataSheet = getSpreadsheet().getSheetByName(template.sheet);
+      var dataSheet = getSpreadsheet().getSheetByName(template.mergeData.sheet);
       if (dataSheet !== null) {
-        var headers = getHeaderStrings(template);
-        var name = template.timestampColumn
-          .replace('<<', '')
-          .replace('>>', '');
+        var headers = HeaderService.get(template.mergeData.sheet, template.mergeData.headerRow);
+        var name = template.mergeData.timestampColumn.replace('<<', '').replace('>>', '');
 
         if (headers.indexOf(name) === -1) {
-          appendColumn(template, name);
+          MergeTemplateService.appendColumn(template.mergeData.sheet, template.mergeData.headerRow, name);
         }
       }
 
@@ -126,27 +124,25 @@ var MergeTemplateService = {
   update: function(template) {
     try {
       // We need to verify there is a timestamp column.
-      var dataSheet = getSpreadsheet().getSheetByName(template.sheet);
+      var dataSheet = getSpreadsheet().getSheetByName(template.mergeData.sheet);
       if (dataSheet !== null) {
-        var headers = getHeaderStrings(template);
-        var name = template.timestampColumn
-          .replace('<<', '')
-          .replace('>>', '');
+        var headers = HeaderService.get(template.mergeData.sheet, template.mergeData.headerRow);
+        var name = template.mergeData.timestampColumn.replace('<<', '').replace('>>', '');
 
         if (headers.indexOf(name) === -1) {
-          appendColumn(template, name);
+          MergeTemplateService.appendColumn(template.mergeData.sheet, template.mergeData.headerRow, name);
         }
       }
 
       log('updating: ' + template.id);
-      var row = getRowByID(template.id);
+      var row = MergeTemplateService.getRowByID(template.id);
 
       if (row == null) {
         throw new Error('Template ' + template.id + ' does not exist.');
       }
 
       var cell = row.getCell(1, MergeTemplateService.DATA_INDEX);
-      cell.setValue(JSON.stringify(cell));
+      cell.setValue(JSON.stringify(template));
     }
     catch (e) {
       log(e);
@@ -154,7 +150,7 @@ var MergeTemplateService = {
     }
   },
 
-  //***** private methods *****//
+  //***** private methods / utility methods *****//
 
   getRowByID: function(id) {
     var sheet = MergeTemplateService.getTemplateSheet();
@@ -176,5 +172,17 @@ var MergeTemplateService = {
   getTemplateSheet: function() {
     var ss = getSpreadsheet();
     return ss.getSheetByName(MergeTemplateService.SHEET_NAME);
+  },
+
+  appendColumn: function(sheetName, rowNum, name) {
+    var ss = getSpreadsheet();
+    var sheet = ss.getSheetByName(sheetName);
+    var range = sheet.getDataRange();
+    var headerRow = range.offset(rowNum - 1, 0, 1, range.getNumColumns());
+
+    var newHeader = headerRow.offset(0, headerRow.getNumColumns(), 1, 1);
+    newHeader.setValue(name);
+
+    return newHeader;
   }
 };
