@@ -45,7 +45,6 @@ var MergeTemplate = function(config) {
     }
 
     createdDatetime = self.getDateString(new Date());
-    console.log(createdDatetime);
 
     this.update(config);
   };
