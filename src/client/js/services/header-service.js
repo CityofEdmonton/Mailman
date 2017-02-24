@@ -8,3 +8,5 @@ var HeaderService = function() {
     return Provoke('HeaderService', 'get', sheet, row);
   };
 };
+
+module.exports = HeaderService;
