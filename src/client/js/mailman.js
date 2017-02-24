@@ -1,18 +1,18 @@
-var Rules = require('./data/rule-container.js');
-var RuleTypes = require('./data/rule-types.js');
-var EmailRule = require('./data/email-rule.js');
-var Keys = require('./data/prop-keys.js');
-var RulesListView = require('./rules/rules-list-view.js');
-var CardsView = require('./cards/cards-view.js');
+
+var MergeTemplateContainer = require('./data/merge-template-container.js');
+var MergeTemplateService = require('./services/merge-template-service.js');
+var MergeTemplatesView = require('./views/merge-template/merge-templates-list-view.js');
+var CardsView = require('./views/merge-setup/cards-view.js');
 var SettingsView = require('./settings/settings-view.js');
 var ActionBar = require('./action-bar/action-bar.js');
 var Snackbar = require('./snackbar/snackbar.js');
 var Dialog = require('./dialog/dialog.js');
 var LoadingScreen = require('./loading/loading-screen.js');
 var baseHTML = require('./main.html');
-var RulesService = require('./data/rules-service.js');
 var PubSub = require('pubsub-js');
 
+// Handlers
+var StandardMailHandler = require('./controllers/standard-mail-handler.js');
 
 
 var MailMan = function(appendTo) {
@@ -22,13 +22,14 @@ var MailMan = function(appendTo) {
   //***** LOCAL VARIABLES *****//
 
   var self = this;
-  var rulesService = new RulesService();
   var actionBar = ActionBar;
   var snackbar = Snackbar;
   var ls = LoadingScreen;
 
-  var rules;
-  var rulesListView;
+  var mtService = new MergeTemplateService();
+  var templatesContainer;
+
+  var mtListView;
   var cardsView;
   var settingsView;
   var runDialog;
@@ -52,8 +53,8 @@ var MailMan = function(appendTo) {
 
     actionBar.init(header);
     snackbar.init(base);
-    rulesListView = new RulesListView(base);
-    cardsView = new CardsView(base);
+    mtListView = new MergeTemplatesView(base);
+
     settingsView = new SettingsView(base);
     runDialog = new Dialog(appendTo, 'Run this merge?', 'This will run your merge template. ' +
       'Emails will be sent to everyone in your specified sheet. Are you sure you want to merge?');
@@ -77,105 +78,97 @@ var MailMan = function(appendTo) {
 
     PubSub.subscribe('Rules.add', function(msg, data) {
       cardsView.cleanup();
-      rulesListView.show();
+      mtListView.show();
       cardsView.hide();
     });
 
     PubSub.subscribe('Rules.update', function(msg, data) {
       cardsView.cleanup();
-      rulesListView.show();
+      mtListView.show();
       cardsView.hide();
     });
 
     actionBar.setSettingsHandler(function() {
       settingsView.show();
-      rulesListView.hide();
+      mtListView.hide();
       cardsView.hide();
     });
 
-    rulesListView.setTriggerHandler(function(e) {
-      cardsView.newRule(RuleTypes.TRIGGER);
+    mtListView.setInstantHandler(function(e) { // TODO
+      cardsView = createCardsView(base, StandardMailHandler);
 
-      rulesListView.hide();
+      mtListView.hide();
       cardsView.show();
     });
 
-    rulesListView.setInstantHandler(function(e) {
-      cardsView.newRule(RuleTypes.INSTANT);
-
-      rulesListView.hide();
-      cardsView.show();
-    });
-
-    rulesListView.setDeleteHandler(function(rule) {
-      deleteDialog.show()
-        .then(function() {
+    mtListView.setDeleteHandler(function(template) {
+      deleteDialog.show().then(
+        function() {
           // This only occurs when the user clicks OK.
-          rules.remove(rule);
-        });
+          templatesContainer.remove(template);
+        },
+        function(err) {
+          console.error(err);
+        }
+      ).done();
     });
 
-    rulesListView.setEditHandler(function(rule) {
-      cardsView.setRule(rule);
-
-      rulesListView.hide();
+    mtListView.setEditHandler(function(template) { // TODO
+      cardsView = createCardsView(base, StandardMailHandler, template);
+      mtListView.hide();
       cardsView.show();
     });
 
-    rulesListView.setRunHandler(function(rule) {
+    mtListView.setRunHandler(function(template) {
       runDialog.show()
         .then(function() {
           // This only occurs when the user clicks OK.
           google.script.run
-              .startMergeTemplate(rule.toConfig());
+              .startMergeTemplate(template.toConfig()); // TODO
 
-          PubSub.publish('Rules.run', rule);
-        });
+          PubSub.publish('Rules.run', template); // TODO
+        }).done();
     });
 
-    cardsView.setDoneCallback(function(rule) {
-      if (rules.indexOf(rule.getID()) !== -1) {
-        rules.update(rule);
+    mtService.getAll().then(
+      function(result) {
+        templatesContainer = new MergeTemplateContainer(result);
+        mtListView.setContainer(templatesContainer);
+        ls.hide();
+      },
+      function(err) {
+        console.error(err);
       }
-      else {
-        rules.add(rule.toConfig());
-      }
-    });
+    ).done();
 
-    cardsView.setCancelCallback(function() {
-      cardsView.cleanup();
-
-      rulesListView.show();
-      cardsView.hide();
-    });
-
-    rulesService.getRules(
-        function(config) {
-          try {
-            rules = new Rules(config);
-          }
-          catch (e) {
-            rules = new Rules({});
-            // We don't need to fail if the rule isn't properly formatted. Just log and continue on.
-            console.log(e);
-          }
-
-          rulesListView.setRulesContainer(rules);
-          ls.hide();
-        },
-        function(e) {
-          console.log('failed loading rules');
-          console.log(e);
-
-          rules = new Rules({});
-          rulesListView.setRulesContainer(rules);
-          ls.hide();
-        });
-
-    rulesListView.show();
+    mtListView.show();
   };
 
   //***** PRIVATE *****//
+
+  var createCardsView = function(base, handler, data) {
+
+    var view = new CardsView(base, handler, data);
+
+    view.done().then(
+      function(template) {
+        if (templatesContainer.indexOf(template.toConfig().id) !== -1) {
+          templatesContainer.update(template);
+        }
+        else {
+          templatesContainer.add(template.toConfig());
+        }
+      },
+      function() {
+        view.cleanup();
+
+        mtListView.show();
+        view.hide();
+      }
+    ).done();
+
+    return view;
+  };
 
   this.init(appendTo);
 };
