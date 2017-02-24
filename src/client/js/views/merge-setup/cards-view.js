@@ -67,7 +67,7 @@ var CardsView = function(appendTo, handler, data) {
   //***** public methods *****//
 
   this.cleanup = function() {
-    //cards.cleanup();
+    //cards.cleanup(); TODO
     console.log('cleanup');
   };
 
@@ -105,17 +105,6 @@ var CardsView = function(appendTo, handler, data) {
   };
 
   /**
-   * Creates a fresh instance of this view for creating a new EmailRule.
-   * TODO
-   * @param  {RuleTypes} type The RuleType of the new EmailRule. This view knows nothing about these.
-   * It just passes the type through to the CardsHandler.
-   */
-  this.newRule = function(type) {
-    cards.setType(type);
-    setButtonState();
-  };
-
-  /**
    * Shows this view.
    *
    */
@@ -130,24 +119,6 @@ var CardsView = function(appendTo, handler, data) {
    */
   this.hide = function() {
     Util.setHidden(base, true);
-  };
-
-  /**
-   * Sets the function to call when the done button is clicked.
-   *
-   * @param {Function} cb The function that will be called when the done button is clicked.
-   */
-  this.setDoneCallback = function(cb) {
-    doneCB = cb;
-  };
-
-  /**
-   * Sets the function to call when the cancel button is clicked.
-   *
-   * @param {Function} cb The function that will be called when the cancel button is clicked.
-   */
-  this.setCancelCallback = function(cb) {
-    cancelCB = cb;
   };
 
   //***** private methods *****//
