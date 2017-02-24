@@ -14,7 +14,7 @@ var Promise = require('promise');
  * @param {jquery} appendTo The element this view should be appended to.
  * @param {CardHandler} handler There are different types of CardHandlers. This needs to support them all.
  */
-var CardsView = function(appendTo, handler) {
+var CardsView = function(appendTo, handler, data) {
   // private variables
   var self = this;
   var base = $(baseHTML);
@@ -32,10 +32,14 @@ var CardsView = function(appendTo, handler) {
   var cancel = base.find('[data-id="cancel"]');
 
   //***** private methods *****//
-  this.init_ = function(appendTo) {
+  this.init_ = function(appendTo, handler, data) {
     appendTo.append(base);
 
     cards = new handler(contentArea);
+    if (data != null) {
+      cards.setMergeTemplate(data);
+    }
+    setButtonState();
 
     step.on('click', self.next);
     done.on('click', doneClicked);
@@ -49,17 +53,22 @@ var CardsView = function(appendTo, handler) {
   };
 
   var doneClicked = function() {
-    resolveCB(cards.getRule()); //TODO
+    if (resolveCB != null) {
+      resolveCB(cards.getMergeTemplate());
+    }
   };
 
   var cancelClicked = function() {
-    rejectCB('cancelled');
+    if (rejectCB != null) {
+      rejectCB('cancelled');
+    }
   };
 
   //***** public methods *****//
 
   this.cleanup = function() {
-    cards.cleanup();
+    //cards.cleanup();
+    console.log('cleanup');
   };
 
   /**
@@ -68,7 +77,7 @@ var CardsView = function(appendTo, handler) {
    * @param {event} event The event that triggered the function call.
    */
   this.next = function(event) {
-    var active = cards.next();
+    cards.next();
     setButtonState();
   };
 
@@ -78,7 +87,7 @@ var CardsView = function(appendTo, handler) {
    * @param {event} event The event that triggered the function call.
    */
   this.back = function(event) {
-    var active = cards.back();
+    cards.back();
     setButtonState();
   };
 
@@ -96,18 +105,8 @@ var CardsView = function(appendTo, handler) {
   };
 
   /**
-   * Sets the EmailRule this view should display. This is typically used when editing an existing EmailRule.
-   *
-   * @param {EmailRule} rule The rule contains all the information that should be displayed in this view.
-   */
-  this.setRule = function(rule) {
-    cards.setRule(rule);
-    setButtonState();
-  };
-
-  /**
    * Creates a fresh instance of this view for creating a new EmailRule.
-   *
+   * TODO
    * @param  {RuleTypes} type The RuleType of the new EmailRule. This view knows nothing about these.
    * It just passes the type through to the CardsHandler.
    */
@@ -175,7 +174,7 @@ var CardsView = function(appendTo, handler) {
     }
   };
 
-  this.init_(appendTo);
+  this.init_(appendTo, handler, data);
 };
 
 

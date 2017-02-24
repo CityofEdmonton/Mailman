@@ -1,11 +1,14 @@
-var CardNames = require('./card-names.js');
+var CardNames = require('./names.js');
 var InputCard = require('../card/card-input.js');
 var TitledCard = require('../card/card-titled.js');
 var TextareaCard = require('../card/card-textarea.js');
 var ConditionalInputCard = require('../card/conditional-input-card.js');
 
+var HeaderService = require('../services/header-service.js');
+
 var CardsConfig = {};
 
+CardsConfig.maxResults = 5;
 
 /**
  * Initializes a Card repository.
@@ -15,6 +18,7 @@ var CardsConfig = {};
 CardsConfig.buildCardRepo = function(contentArea) {
 
   var repo = {};
+  var hService = new HeaderService();
 
   repo[CardNames.welcome] = new TitledCard(contentArea, {
     title: 'Welcome!',
@@ -57,6 +61,62 @@ CardsConfig.buildCardRepo = function(contentArea) {
     }
   });
   repo[CardNames.row].setValue(1); // Default row 1.
+  repo[CardNames.row].attachEvent('card.hide', function(event, card) {
+    // Set the header row
+    var row = card.getValue();
+    var sheet = repo[CardNames.sheet].getValue();
+
+    hService.get(sheet, row).then(
+      function(values) {
+        repo[CardNames.to].setAutocomplete({
+          results: values,
+          trigger: '<<',
+          prepend: '<<',
+          append: '>>',
+          maxResults: CardsConfig.maxResults,
+          triggerOnFocus: true
+        });
+
+        repo[CardNames.subject].setAutocomplete({
+          results: values,
+          trigger: '<<',
+          prepend: '<<',
+          append: '>>',
+          maxResults: CardsConfig.maxResults
+        });
+
+        repo[CardNames.body].setAutocomplete({
+          results: values,
+          trigger: '<<',
+          prepend: '<<',
+          append: '>>',
+          maxResults: CardsConfig.maxResults
+        });
+
+        repo[CardNames.shouldSend].setAutocomplete({
+          results: values,
+          trigger: '<<',
+          prepend: '<<',
+          append: '>>',
+          maxResults: CardsConfig.maxResults,
+          triggerOnFocus: true
+        });
+
+        repo[CardNames.conditional].setAutocomplete({
+          results: values,
+          trigger: '<<',
+          prepend: '<<',
+          append: '>>',
+          maxResults: CardsConfig.maxResults,
+          triggerOnFocus: true
+        });
+      },
+      function(err) {
+        console.error(err);
+      }
+    )
+
+  });
 
   repo[CardNames.subject] = new InputCard(contentArea, {
     title: 'What\'s your subject?',
