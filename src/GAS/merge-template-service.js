@@ -150,6 +150,33 @@ var MergeTemplateService = {
     }
   },
 
+  validate: function(template) {
+    if (template == null) {
+      throw new Error('MergeTemplate is null');
+    }
+    if (template.mergeData == null) {
+      throw new Error('MergeTemplate.mergeData is null');
+    }
+    if (template.mergeData.type == null) {
+      throw new Error('MergeTemplate.mergeData.type is null');
+    }
+    if (template.mergeData.data == null) {
+      throw new Error('MergeTemplate.mergeData.data is null');
+    }
+    if (template.mergeData.sheet == null) {
+      throw new Error('MergeTemplate.mergeData.sheet is null');
+    }
+    if (template.mergeData.title == null) {
+      throw new Error('MergeTemplate.mergeData.title is null');
+    }
+    if (template.mergeData.headerRow == null) {
+      throw new Error('MergeTemplate.mergeData.headerRow is null');
+    }
+    if (template.mergeData.timestampColumn == null) {
+      throw new Error('MergeTemplate.mergeData.timestampColumn is null');
+    }
+  },
+
   //***** private methods / utility methods *****//
 
   getRowByID: function(id) {

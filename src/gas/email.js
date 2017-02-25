@@ -1,5 +1,5 @@
 
-
+// TODO
 var RuleTypes = {
   INSTANT: 'INSTANT',
   TRIGGER: 'TRIGGER'

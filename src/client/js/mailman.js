@@ -1,6 +1,7 @@
 
 var MergeTemplateContainer = require('./data/merge-template-container.js');
 var MergeTemplateService = require('./services/merge-template-service.js');
+var EmailService = require('./services/email-service.js');
 var MergeTemplatesView = require('./views/merge-template/merge-templates-list-view.js');
 var CardsView = require('./views/merge-setup/cards-view.js');
 var SettingsView = require('./settings/settings-view.js');
@@ -27,6 +28,7 @@ var MailMan = function(appendTo) {
   var ls = LoadingScreen;
 
   var mtService = new MergeTemplateService();
+  var emailService = new EmailService();
   var templatesContainer;
 
   var mtListView;
@@ -79,22 +81,31 @@ var MailMan = function(appendTo) {
     PubSub.subscribe('Rules.add', function(msg, data) {
       cardsView.cleanup();
       mtListView.show();
-      cardsView.hide();
+
+      if (cardsView != null) {
+        cardsView.hide();
+      }
     });
 
     PubSub.subscribe('Rules.update', function(msg, data) {
       cardsView.cleanup();
       mtListView.show();
-      cardsView.hide();
+
+      if (cardsView != null) {
+        cardsView.hide();
+      }
     });
 
     actionBar.setSettingsHandler(function() {
       settingsView.show();
       mtListView.hide();
-      cardsView.hide();
+
+      if (cardsView != null) {
+        cardsView.hide();
+      }
     });
 
-    mtListView.setInstantHandler(function(e) { // TODO
+    mtListView.setInstantHandler(function(e) {
       cardsView = createCardsView(base, StandardMailHandler);
 
       mtListView.hide();
@@ -123,9 +134,7 @@ var MailMan = function(appendTo) {
       runDialog.show()
         .then(function() {
           // This only occurs when the user clicks OK.
-          google.script.run
-              .startMergeTemplate(template.toConfig()); // TODO
-
+          emailService.send(template);
           PubSub.publish('Rules.run', template); // TODO
         }).done();
     });

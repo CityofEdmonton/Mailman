@@ -140,7 +140,7 @@ function getCell(rule, headerName, row) {
 
 
 /**
- * Appends a column to the end of the headers.
+ * Appends a column to the end of the headers. TODO Delete this
  * @param  {EmailRule} rule The rule that contains the info we are interested in.
  * @param  {string} name The name of the new header.
  * @return {Range} The cell of the new header.
