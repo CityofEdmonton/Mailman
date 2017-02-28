@@ -20,6 +20,7 @@ var MergeData = function(config) {
   var type = config.type;
   var data = config.data;
   var sheet = config.sheet;
+  var conditional = config.conditional;
   var title = 'title';
   var headerRow = '1';
   var timestampColumn = '<<Mailman ' + type + ' Timestamp>>';
@@ -78,7 +79,8 @@ var MergeData = function(config) {
       title: title,
       sheet: sheet,
       headerRow: headerRow,
-      timestampColumn: timestampColumn
+      timestampColumn: timestampColumn,
+      conditional: conditional
     };
   };
 
