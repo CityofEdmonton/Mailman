@@ -12,19 +12,26 @@ var EmailService = {
       throw e;
     }
 
-
     log('Starting merge template ' + template.id);
     var ss = getSpreadsheet();
     var sheet = ss.getSheetByName(template.mergeData.sheet);
     var range = sheet.getDataRange();
     var header = HeaderService.get(template.mergeData.sheet, template.mergeData.headerRow);
+    var sendHelper;
+
+    if (template.mergeData.conditional == null) {
+      sendHelper = EmailService.sendHelper;
+    }
+    else {
+      sendHelper = EmailService.conditionalSendHelper;
+    }
 
     for (var i = parseInt(template.mergeData.headerRow); i < range.getNumRows(); i++) {
       var row = range.offset(i, 0, 1, range.getNumColumns());
 
       try {
         // We only timestamp when the email successfully sends.
-        if (EmailService.conditionalSendHelper(header, row.getDisplayValues()[0], template)) {
+        if (sendHelper(header, row.getDisplayValues()[0], template)) {
           var timestampName = template.mergeData.timestampColumn.replace(/(<<|>>)/g, '');
           var timeCell = row.getCell(1, header.indexOf(timestampName) + 1);
 
@@ -36,14 +43,7 @@ var EmailService = {
                   currentDate.getMinutes() + ':' +
                   currentDate.getSeconds();
 
-
-
-          if (timeCell === null) {
-            log('Column: ' + timestampName + ' couldn\'t be found. Timestamping failed.');
-          }
-          else {
-            timeCell.setValue(datetime);
-          }
+          timeCell.setValue(datetime);
         }
       }
       catch (e) {
@@ -134,9 +134,9 @@ var EmailService = {
     var to = replaceTags(template.mergeData.data.to, combinedObj);
     var subject = replaceTags(template.mergeData.data.subject, combinedObj);
     var body = replaceTags(template.mergeData.data.body, combinedObj);
-    var sendColumn = replaceTags(template.mergeData.data.sendColumn, combinedObj); // TODO
+    var sendColumn = replaceTags(template.mergeData.conditional, combinedObj);
 
-    if (sendColumn.toLowerCase() === 'true') {
+    if (sendColumn.toLowerCase() == 'true') {
       EmailService.send(to, subject, body);
 
       return true;

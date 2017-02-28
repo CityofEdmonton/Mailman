@@ -54,14 +54,14 @@ var StandardMailHandler = function(parent) {
   this.setMergeTemplate = function(template) {
     updateConfig = template.toConfig();
     cardRepository[CardNames.title].setValue(updateConfig.mergeData.title);
-    cardRepository[CardNames.sheet].setValue(updateConfig.mergeData.sheet); // TODO
+    cardRepository[CardNames.sheet].setValue(updateConfig.mergeData.sheet);
     cardRepository[CardNames.row].setValue(updateConfig.mergeData.headerRow);
     cardRepository[CardNames.to].setValue(updateConfig.mergeData.data.to);
     cardRepository[CardNames.subject].setValue(updateConfig.mergeData.data.subject);
     cardRepository[CardNames.body].setValue(updateConfig.mergeData.data.body);
-    cardRepository[CardNames.conditional].setValue(updateConfig.mergeData.data.conditional);
+    cardRepository[CardNames.conditional].setValue(updateConfig.mergeData.conditional);
 
-    // Load headers
+    // Load headers TODO
   };
 
   this.getMergeTemplate = function() {
@@ -72,12 +72,12 @@ var StandardMailHandler = function(parent) {
           title: cardRepository[CardNames.title].getValue(),
           sheet: cardRepository[CardNames.sheet].getValue(),
           headerRow: cardRepository[CardNames.row].getValue(),
+          conditional: cardRepository[CardNames.conditional].getValue(),
           type: type,
           data: {
             to: cardRepository[CardNames.to].getValue(),
             subject: cardRepository[CardNames.subject].getValue(),
-            body: cardRepository[CardNames.body].getValue(),
-            conditional: cardRepository[CardNames.conditional].getValue()
+            body: cardRepository[CardNames.body].getValue()
           }
         }
       }
