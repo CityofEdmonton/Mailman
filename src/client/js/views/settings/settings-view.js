@@ -1,14 +1,13 @@
 var baseHTML = require('./settings-view.html');
 var Util = require('../../util/util.js');
 var PubSub = require('pubsub-js');
-var SettingsService = require('../../data/settings-service.js');
+var SettingsService = require('../../services/settings-service.js');
 
 
 /**
  * The SettingsView handles much of the advanced app parameters. Primary functions include:
  * Logging
- * Data clearing
- * Send email as me
+ * TODO Spruce this up. It should include some high-level stats for Mailman.
  *
  * @param {jquery} appendTo The object to append this view to.
  */
@@ -25,23 +24,21 @@ var SettingsView = function(appendTo) {
   var logSwitchIn = base.find('[data-id="log-switch-input"]');
   var logSwitch = base.find('[data-id="log-switch"]');
   var logIcon = base.find('[data-id="log-icon"]');
-  var send = base.find('[data-id="as-me-button"]');
-  var clear = base.find('[data-id="clear"]');
 
   //***** private methods *****//
 
   this.init_ = function(appendTo) {
     appendTo.append(base);
 
-    ss.getLog(
+    ss.getLog().then(
       function(url) {
-        setURL(url);
-
         if (url != null) {
+          setURL(url);
           logSwitch[0].MaterialSwitch.on();
         }
       },
-    logError);
+      logError
+    ).done();
 
     back.on('click', function() {
       self.hide();
@@ -55,20 +52,12 @@ var SettingsView = function(appendTo) {
 
       if (logSwitchIn[0].checked) {
         console.log('turning on logging');
-        ss.turnOnLogging(setURL, logError);
+        ss.turnOnLogging().then(setURL, logError).done();
       }
       else {
         console.log('turning off logging');
-        ss.turnOffLogging(removeURL, logError);
+        ss.turnOffLogging().then(removeURL, logError).done();
       }
-    });
-
-    send.on('click', function() {
-      ss.sendAsMe(null, logError);
-    });
-
-    clear.on('click', function() {
-      ss.clearData(null, logError);
     });
   };
 
