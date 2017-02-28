@@ -57,6 +57,8 @@ var ConditionalInputCard = function(appendTo, options) {
     self.enableInput();
   };
 
+  var oldGetValue = this.getValue;
+
   //***** Public Functions *****//
 
   /**
@@ -66,6 +68,13 @@ var ConditionalInputCard = function(appendTo, options) {
    */
   this.isEnabled = function() {
     return innerBase.hasClass('is-checked');
+  }
+
+  this.getValue = function() {
+    if (self.isEnabled()) {
+      return oldGetValue();
+    }
+    return;
   }
 
   this.init_(appendTo, options);
