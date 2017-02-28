@@ -20,16 +20,6 @@ CardsConfig.buildCardRepo = function(contentArea) {
   var repo = {};
   var hService = new HeaderService();
 
-  repo[CardNames.welcome] = new TitledCard(contentArea, {
-    title: 'Welcome!',
-    help: 'Help will be displayed here normally. Since this is just the welcome page, there isn\'t much to know!',
-    paragraphs: [
-      'Welcome to Mailman! This application helps users easily create mail merges. It aims to be easy to use, ' +
-          'while also providing advanced options for power users.',
-      'To get started, simply click NEXT down below.'
-    ]
-  });
-
   repo[CardNames.title] = new InputCard(contentArea, {
     title: 'What should this merge be called?',
     help: 'This title will help you differentiate this merge from others.',
@@ -93,15 +83,6 @@ CardsConfig.buildCardRepo = function(contentArea) {
           maxResults: CardsConfig.maxResults
         });
 
-        repo[CardNames.shouldSend].setAutocomplete({
-          results: values,
-          trigger: '<<',
-          prepend: '<<',
-          append: '>>',
-          maxResults: CardsConfig.maxResults,
-          triggerOnFocus: true
-        });
-
         repo[CardNames.conditional].setAutocomplete({
           results: values,
           trigger: '<<',
@@ -140,14 +121,6 @@ CardsConfig.buildCardRepo = function(contentArea) {
     ]
   });
 
-  repo[CardNames.triggerSetup] = new TitledCard(contentArea, {
-    title: 'Repeated emails.',
-    paragraphs: [
-      'Mailman will now guide you through the process of creating your own repeated mail merge.',
-      'This feature can be used to set up an email-based reminder system.'
-    ]
-  });
-
   repo[CardNames.shouldSend] = new InputCard(contentArea, {
     title: 'Which column determines whether an email should be sent?',
     paragraphs: [
@@ -160,14 +133,6 @@ CardsConfig.buildCardRepo = function(contentArea) {
       hint: 'Must be a single header surrounded by whack whacks',
       pattern: '<<[^<>]*>>'
     }
-  });
-
-  repo[CardNames.triggerConfirmation] = new TitledCard(contentArea, {
-    title: 'Submit the trigger?',
-    paragraphs: [
-      'This will regularly check the previously mentioned column for the value TRUE. ' +
-          'When TRUE is found in the column, an email is sent out with that row\'s information.'
-    ]
   });
 
   repo[CardNames.conditional] = new ConditionalInputCard(contentArea, {
