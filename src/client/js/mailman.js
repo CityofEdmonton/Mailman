@@ -75,7 +75,7 @@ var MailMan = function(appendTo) {
       snackbar.show('Merge template updated.');
     });
     PubSub.subscribe('Rules.run', function(msg, data) {
-      snackbar.show('Running merge "' + data.title + '".');
+      snackbar.show('Running merge "' + data.mergeData.title + '".');
     });
 
     PubSub.subscribe('Rules.add', function(msg, data) {
@@ -135,7 +135,7 @@ var MailMan = function(appendTo) {
         .then(function() {
           // This only occurs when the user clicks OK.
           emailService.send(template);
-          PubSub.publish('Rules.run', template); // TODO
+          PubSub.publish('Rules.run', template.toConfig()); // TODO
         }).done();
     });
 
