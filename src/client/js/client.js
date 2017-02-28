@@ -4,7 +4,7 @@ require('mdl');
 
 var MailMan = require('./mailman.js');
 var Util = require('./util.js');
-var LoadingScreen = require('./loading/loading-screen.js');
+var LoadingScreen = require('./views/loading/loading-screen.js');
 
 $(document).ready(function() {
   var body = $(document).find('[data-id="body"]');

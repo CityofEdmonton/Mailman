@@ -8,7 +8,7 @@ var SettingsView = require('./views/settings/settings-view.js');
 var ActionBar = require('./views/action-bar/action-bar.js');
 var Snackbar = require('./views/snackbar/snackbar.js');
 var Dialog = require('./dialog/dialog.js');
-var LoadingScreen = require('./loading/loading-screen.js');
+var LoadingScreen = require('./views/loading/loading-screen.js');
 var baseHTML = require('./main.html');
 var PubSub = require('pubsub-js');
 
