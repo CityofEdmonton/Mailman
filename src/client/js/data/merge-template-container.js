@@ -90,7 +90,7 @@ var MergeTemplateContainer = function(config) {
       }
     ).done();
 
-    rules.splice(index, 1);
+    templates.splice(index, 1);
   };
 
   /**
