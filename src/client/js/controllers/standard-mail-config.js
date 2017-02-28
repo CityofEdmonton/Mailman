@@ -3,8 +3,8 @@ var InputCard = require('../card/card-input.js');
 var TitledCard = require('../card/card-titled.js');
 var TextareaCard = require('../card/card-textarea.js');
 var ConditionalInputCard = require('../card/conditional-input-card.js');
-
 var HeaderService = require('../services/header-service.js');
+var SheetsService = require('../services/sheets-service.js');
 
 var CardsConfig = {};
 
@@ -19,6 +19,7 @@ CardsConfig.buildCardRepo = function(contentArea) {
 
   var repo = {};
   var hService = new HeaderService();
+  var sService = new SheetsService();
 
   repo[CardNames.title] = new InputCard(contentArea, {
     title: 'What should this merge be called?',
@@ -31,6 +32,19 @@ CardsConfig.buildCardRepo = function(contentArea) {
     help: 'This Sheet must contain all the information you may want to send in an email.',
     label: 'Sheet...'
   });
+  sService.get().then(
+    function(result) {
+      repo[CardNames.sheet].setAutocomplete({
+        results: result,
+        maxResults: CardsConfig.maxResults,
+        triggerOnFocus: true
+      });
+    },
+    function(err) {
+      console.error(err);
+    }
+  ).done();
+
 
   repo[CardNames.to] = new InputCard(contentArea, {
     title: 'Who are you sending to?',
@@ -95,7 +109,7 @@ CardsConfig.buildCardRepo = function(contentArea) {
       function(err) {
         console.error(err);
       }
-    )
+    ).done();
 
   });
 
