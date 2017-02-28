@@ -26,7 +26,7 @@ var MergeTemplateService = function() {
   };
 
   this.delete = function(template) {
-    return Provoke('MergeTemplateService', 'delete', template.getID());
+    return Provoke('MergeTemplateService', 'deleteByID', template.getID());
   }
 };
 
