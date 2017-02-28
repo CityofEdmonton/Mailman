@@ -1,5 +1,5 @@
 var baseHTML = require('./action-bar.html');
-var Util = require('../util.js');
+var Util = require('../../util.js');
 var PubSub = require('pubsub-js');
 var $ = require('jquery');
 
