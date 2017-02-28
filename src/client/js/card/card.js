@@ -1,5 +1,5 @@
 var baseHTML = require('./card-base.html');
-var Util = require('../util.js');
+var Util = require('../util/util.js');
 var ID = require('../data/id.js');
 
 

@@ -2,7 +2,7 @@
 var baseHTML = require('./merge-template-list-item.html');
 var MergeTemplate = require('../../data/merge-template/merge-template.js');
 var ID = require('../../data/id.js');
-var Util = require('../../util.js');
+var Util = require('../../util/util.js');
 
 
 

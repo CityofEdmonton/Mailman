@@ -1,5 +1,5 @@
 var baseHTML = require('./loading-screen.html');
-var Util = require('../../util.js');
+var Util = require('../../util/util.js');
 
 
 

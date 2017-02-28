@@ -3,7 +3,7 @@ require('jquery-ui');
 require('mdl');
 
 var MailMan = require('./mailman.js');
-var Util = require('./util.js');
+var Util = require('./util/util.js');
 var LoadingScreen = require('./views/loading/loading-screen.js');
 
 $(document).ready(function() {

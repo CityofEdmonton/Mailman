@@ -1,7 +1,7 @@
 var Card = require('./card.js');
 var titleHTML = require('./card-titled.html');
 var ID = require('../data/id.js');
-var Util = require('../util.js');
+var Util = require('../util/util.js');
 
 
 

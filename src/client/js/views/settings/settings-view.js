@@ -1,5 +1,5 @@
 var baseHTML = require('./settings-view.html');
-var Util = require('../../util.js');
+var Util = require('../../util/util.js');
 var PubSub = require('pubsub-js');
 var SettingsService = require('../../data/settings-service.js');
 
