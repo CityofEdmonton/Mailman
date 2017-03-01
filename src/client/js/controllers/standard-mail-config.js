@@ -5,6 +5,7 @@ var TextareaCard = require('../card/card-textarea.js');
 var ConditionalInputCard = require('../card/conditional-input-card.js');
 var HeaderService = require('../services/header-service.js');
 var SheetsService = require('../services/sheets-service.js');
+var EmailService = require('../services/email-service.js');
 
 var CardsConfig = {};
 
@@ -20,6 +21,7 @@ CardsConfig.buildCardRepo = function(contentArea) {
   var repo = {};
   var hService = new HeaderService();
   var sService = new SheetsService();
+  var eService = new EmailService();
 
   repo[CardNames.title] = new InputCard(contentArea, {
     title: 'What should this merge be called?',
@@ -133,6 +135,17 @@ CardsConfig.buildCardRepo = function(contentArea) {
       'This will save the merge. It won\'t send any emails yet.',
        'If you would like to send yourself a test email, click the option from the lower right.'
     ]
+  });
+  repo[CardNames.sendNow].addOption('Send test email', function() {
+    var to = repo[CardNames.to].getValue();
+    var subject = repo[CardNames.subject].getValue();
+    var body = repo[CardNames.body].getValue();
+
+    eService.sendTest(to, subject, body).then(
+      function() {
+        console.log('done sending');
+      }
+    ).done();
   });
 
   repo[CardNames.shouldSend] = new InputCard(contentArea, {

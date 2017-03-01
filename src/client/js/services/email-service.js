@@ -4,8 +4,8 @@ var Provoke = require('../util/provoke.js');
 
 var EmailService = function() {
 
-  this.sendTest = function(to, subject, body) {
-    return Provoke('EmailService', 'send', to, subject, body);
+  this.sendTest = function(sheetName, headerRow, subject, body) {
+    return Provoke('EmailService', 'sendTest', sheetName, headerRow, subject, body);
   };
 
   this.send = function(template) {

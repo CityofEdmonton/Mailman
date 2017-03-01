@@ -54,6 +54,34 @@ var EmailService = {
     log('Ending merge template...');
   },
 
+  /**
+   * Sends a test email to the current user.
+   *
+   * @param  {string} sheetName The name of the Sheet to send from.
+   * @param  {string} headerRow The 1-based row the header is in.
+   * @param  {string} subject The whack-whacked subject.
+   * @param  {string} body The whack whacked body.
+   */
+  sendTest: function(sheetName, headerRow, subject, body) {
+    log('Sending test email');
+    var ss = getSpreadsheet();
+    var sheet = ss.getSheetByName(sheetName);
+    var range = sheet.getDataRange();
+    var header = HeaderService.get(sheetName, headerRow);
+    var row = range.offset(parseInt(headerRow), 0, 1, range.getNumColumns());
+
+    var combinedObj = {};
+    for (var j = 0; j < header.length; j++) {
+      combinedObj[header[j]] = row[j];
+    }
+
+    // Convert <<>> tags to actual text.
+    var subject = EmailService.replaceTags(subject, combinedObj);
+    var body = EmailService.replaceTags(body, combinedObj);
+
+    EmailService.send(Session.getActiveUser().getEmail(), subject, body);
+  },
+
   send: function(to, subject, body) {
     var htmlEmail = HtmlService.createTemplateFromFile('email-template');
     htmlEmail.id = getSpreadsheet().getId();
