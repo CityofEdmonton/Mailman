@@ -56,18 +56,3 @@ function openFeedbackDialog() {
 
   SpreadsheetApp.getUi().showModalDialog(ui, 'Feedback');
 }
-
-
-/**
- * Creates an HTML modal for creating/viewing Mailman email templates.
- *
- */
-function openModalDialog() {
-  var ui = HtmlService.createHtmlOutputFromFile('rich-text-editor')
-      .setTitle('Mailman')
-      .setSandboxMode(HtmlService.SandboxMode.IFRAME)
-      .setHeight(600)
-      .setWidth(750);
-
-  SpreadsheetApp.getUi().showModalDialog(ui, ' ');
-}
