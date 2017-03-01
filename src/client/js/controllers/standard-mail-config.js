@@ -3,6 +3,7 @@ var InputCard = require('../card/card-input.js');
 var TitledCard = require('../card/card-titled.js');
 var TextareaCard = require('../card/card-textarea.js');
 var ConditionalInputCard = require('../card/conditional-input-card.js');
+var Snackbar = require('../views/snackbar/snackbar.js');
 var HeaderService = require('../services/header-service.js');
 var SheetsService = require('../services/sheets-service.js');
 var EmailService = require('../services/email-service.js');
@@ -144,7 +145,10 @@ CardsConfig.buildCardRepo = function(contentArea) {
 
     eService.sendTest(sheet, row, subject, body).then(
       function() {
-        console.log('done sending');
+        Snackbar.show('Test email sent.');
+      },
+      function(err) {
+        console.error(err);
       }
     ).done();
   });
