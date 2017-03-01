@@ -64,11 +64,15 @@ var EmailService = {
    */
   sendTest: function(sheetName, headerRow, subject, body) {
     log('Sending test email');
+    log(sheetName);
+    log(headerRow);
+    log(subject);
+    log(body);
     var ss = getSpreadsheet();
     var sheet = ss.getSheetByName(sheetName);
     var range = sheet.getDataRange();
     var header = HeaderService.get(sheetName, headerRow);
-    var row = range.offset(parseInt(headerRow), 0, 1, range.getNumColumns());
+    var row = range.offset(parseInt(headerRow), 0, 1, range.getNumColumns()).getDisplayValues()[0];
 
     var combinedObj = {};
     for (var j = 0; j < header.length; j++) {
