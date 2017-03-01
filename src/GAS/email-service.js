@@ -13,7 +13,7 @@ var EmailService = {
     }
 
     log('Starting merge template ' + template.id);
-    var ss = getSpreadsheet();
+    var ss = Utility.getSpreadsheet();
     var sheet = ss.getSheetByName(template.mergeData.sheet);
     var range = sheet.getDataRange();
     var header = HeaderService.get(template.mergeData.sheet, template.mergeData.headerRow);
@@ -64,11 +64,7 @@ var EmailService = {
    */
   sendTest: function(sheetName, headerRow, subject, body) {
     log('Sending test email');
-    log(sheetName);
-    log(headerRow);
-    log(subject);
-    log(body);
-    var ss = getSpreadsheet();
+    var ss = Utility.getSpreadsheet();
     var sheet = ss.getSheetByName(sheetName);
     var range = sheet.getDataRange();
     var header = HeaderService.get(sheetName, headerRow);
@@ -88,7 +84,7 @@ var EmailService = {
 
   send: function(to, subject, body) {
     var htmlEmail = HtmlService.createTemplateFromFile('email-template');
-    htmlEmail.id = getSpreadsheet().getId();
+    htmlEmail.id = Utility.getSpreadsheet().getId();
     htmlEmail.bodyArray = body.split('\n');
 
     log('Sending email to ' + to);
@@ -163,10 +159,10 @@ var EmailService = {
     }
 
     // Convert <<>> tags to actual text.
-    var to = replaceTags(template.mergeData.data.to, combinedObj);
-    var subject = replaceTags(template.mergeData.data.subject, combinedObj);
-    var body = replaceTags(template.mergeData.data.body, combinedObj);
-    var sendColumn = replaceTags(template.mergeData.conditional, combinedObj);
+    var to = EmailService.replaceTags(template.mergeData.data.to, combinedObj);
+    var subject = EmailService.replaceTags(template.mergeData.data.subject, combinedObj);
+    var body = EmailService.replaceTags(template.mergeData.data.body, combinedObj);
+    var sendColumn = EmailService.replaceTags(template.mergeData.conditional, combinedObj);
 
     if (sendColumn.toLowerCase() == 'true') {
       EmailService.send(to, subject, body);

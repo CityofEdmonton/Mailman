@@ -96,7 +96,7 @@ var MergeTemplateService = {
   create: function(template) {
     try {
       // We need to verify there is a timestamp column.
-      var dataSheet = getSpreadsheet().getSheetByName(template.mergeData.sheet);
+      var dataSheet = Utility.getSpreadsheet().getSheetByName(template.mergeData.sheet);
       if (dataSheet !== null) {
         var headers = HeaderService.get(template.mergeData.sheet, template.mergeData.headerRow);
         var name = template.mergeData.timestampColumn.replace('<<', '').replace('>>', '');
@@ -124,7 +124,7 @@ var MergeTemplateService = {
   update: function(template) {
     try {
       // We need to verify there is a timestamp column.
-      var dataSheet = getSpreadsheet().getSheetByName(template.mergeData.sheet);
+      var dataSheet = Utility.getSpreadsheet().getSheetByName(template.mergeData.sheet);
       if (dataSheet !== null) {
         var headers = HeaderService.get(template.mergeData.sheet, template.mergeData.headerRow);
         var name = template.mergeData.timestampColumn.replace('<<', '').replace('>>', '');
@@ -197,12 +197,12 @@ var MergeTemplateService = {
   },
 
   getTemplateSheet: function() {
-    var ss = getSpreadsheet();
+    var ss = Utility.getSpreadsheet();
     return ss.getSheetByName(MergeTemplateService.SHEET_NAME);
   },
 
   appendColumn: function(sheetName, rowNum, name) {
-    var ss = getSpreadsheet();
+    var ss = Utility.getSpreadsheet();
     var sheet = ss.getSheetByName(sheetName);
     var range = sheet.getDataRange();
     var headerRow = range.offset(rowNum - 1, 0, 1, range.getNumColumns());

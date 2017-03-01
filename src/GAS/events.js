@@ -33,13 +33,7 @@ function openSidebar() {
       .setTitle(' ')
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 
-  if (!validateTriggers()) {
-    deleteForThisSheet();
-    log('Triggers should be rebuilt.');
-    createTriggerBasedEmail(); // IMPORTANT
-  }
-
-  setupSheet();
+  Utility.setupSheet();
 
   SpreadsheetApp.getUi().showSidebar(ui);
 }

@@ -6,7 +6,7 @@ var SheetsService = {
    * @return {Array<string>} An array containing all of the Sheet names.
    */
   get: function() {
-    var ss = getSpreadsheet();
+    var ss = Utility.getSpreadsheet();
     return ss.getSheets().map(function(sheet) {
       return sheet.getName();
     });
