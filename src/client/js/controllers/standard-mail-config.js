@@ -137,11 +137,12 @@ CardsConfig.buildCardRepo = function(contentArea) {
     ]
   });
   repo[CardNames.sendNow].addOption('Send test email', function() {
-    var to = repo[CardNames.to].getValue();
+    var sheet = repo[CardNames.sheet].getValue();
+    var row = repo[CardNames.row].getValue();
     var subject = repo[CardNames.subject].getValue();
     var body = repo[CardNames.body].getValue();
 
-    eService.sendTest(to, subject, body).then(
+    eService.sendTest(sheet, row, subject, body).then(
       function() {
         console.log('done sending');
       }
