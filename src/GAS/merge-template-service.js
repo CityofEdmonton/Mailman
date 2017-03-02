@@ -1,5 +1,33 @@
 
+var runAllMergeTemplates = function() {
+  log('Running all merge templates.');
+  var user = Session.getEffectiveUser().getEmail();
+  var templates = JSON.parse(MergeTemplateService.getAll());
+  templates = templates.filter(function(template) {
+    if (template.mergeRepeater == null) {
+      return false;
+    }
+    if (template.mergeRepeater.owner !== user) {
+      return false;
+    }
 
+    // TODO filter by the calling triggers id with template.mergeRepeater.triggers.
+
+    return true;
+  });
+
+  templates.forEach(function(template) {
+    var mergeData = template.mergeData;
+    if (template.mergeData.type === "Email") {
+      EmailService.startMergeTemplate(template);
+    }
+    else {
+      log('Template attempting to run with type: ' + template.mergeData.type);
+    }
+  });
+
+  log('Done running merge templates.');
+};
 
 /**
  * This service allows easy access to the Mailman template data.
@@ -150,6 +178,35 @@ var MergeTemplateService = {
     }
   },
 
+  getRepeatConfig: function() {
+    try {
+      var ss = Utility.getSpreadsheet();
+      var triggers = ScriptApp.getUserTriggers(ss);
+
+      return {
+        triggers: TriggerService.createTriggers(),
+        owner: Session.getEffectiveUser().getEmail(),
+        events: [
+          'Merge Repeater created.'
+        ]
+      }
+    }
+    catch (e) {
+      log(e);
+      throw e;
+    }
+  },
+
+  removeRepeatMerge: function(template) {
+    
+  },
+
+  /**
+   * Validates the correctness of a MergeTemplate.
+   * TODO validate the MergeRepeaters
+   *
+   * @param  {Object} template A simple config Object representing a MergeTemplate.
+   */
   validate: function(template) {
     if (template == null) {
       throw new Error('MergeTemplate is null');
@@ -211,5 +268,100 @@ var MergeTemplateService = {
     newHeader.setValue(name);
 
     return newHeader;
+  },
+
+  triggerExists_: function(id) {
+    var ss = Utility.getSpreadsheet();
+    var triggers = ScriptApp.getUserTriggers(ss);
+
+    var value = triggers.find(function(trigger) {
+      return id === trigger.getUniqueId();
+    });
+
+    if (value !== undefined) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  },
+
+  getMergeRepeaters_: function() {
+    var templates = MergeTemplateService.getAll().templates;
+    var mergeRepeaters = [];
+
+    templates.forEach(function(tpl) {
+      if (tpl.mergeRepeater != null) {
+        mergeRepeaters.push(tpl.mergeRepeater);
+      }
+    });
+
+    return mergeRepeaters;
+  },
+
+  validateTriggers_: function(triggers) {
+    // Get a list of valid triggers.
+    var user = Session.getEffectiveUser().getEmail();
+
+    // We need to filter out all the other users repeats.
+    var repeaters = MergeTemplateService.getMergeRepeaters_();
+    repeaters = repeaters.filter(function(rep) {
+      rep.owner === user;
+    });
+
+    // If this trigger has no repeaters, then we don't need it any more, so delete it.
+    triggers.forEach(function(trigger) {
+      var id = trigger.getUniqueId();
+
+      // True if none of the repeaters have a reference to this trigger.
+      var isUseless = repeaters.every(function(rep) {
+        return rep.triggers.indexOf(id) === -1;
+      });
+
+      if (isUseless) {
+        log('Deleting trigger: ' + id);
+        ScriptApp.deleteTrigger(trigger);
+      }
+    });
+  },
+
+  /**
+   * This function returns an Array of trigger IDs. This function has some major side effects.
+   * 1. This function removes the MergeRepeaters that reference triggers that don't exist. This occurs when a sheet
+   * is copied.
+   * 2. This function also deletes any triggers that don't have a related MergeRepeater.
+   *
+   *
+   *
+   * @return {[type]} [description]
+   */
+  getActiveTriggers_: function() {
+    var ss = Utility.getSpreadsheet();
+    var triggers = ScriptApp.getUserTriggers(ss);
+
+    var actualTriggerIDs = [];
+    triggers.forEach(function(trigger) {
+      actualTriggerIDs.push(trigger.getUniqueId());
+    })
+
+    var repeaters = MergeTemplateService.getMergeRepeaters_();
+    repeaters = repeaters.filter(function(rep) {
+      rep.owner === user;
+    });
+
+    // Consider deleting old triggers?
+
+    var triggerIDs = [];
+
+    repeaters.forEach(function(repeater) {
+      repeater.triggers.forEach(function(triggerID) {
+        if (triggerIDs.indexOf(triggerID) === -1) {
+          triggerIDs.push(triggerID);
+        }
+      });
+    })
+
   }
+
+
 };
