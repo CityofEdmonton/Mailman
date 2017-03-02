@@ -5,6 +5,7 @@ var TriggerService = {
 
   /**
    * Gets a Trigger based upon an id. Returns undefined if it doesn't exist.
+   * NOTE Untested
    *
    * @param  {string} id The id of the Trigger to return.
    * @return {Trigger} The Trigger with the specified id.
@@ -12,10 +13,15 @@ var TriggerService = {
   getTriggerByID: function(id) {
     var ss = Utility.getSpreadsheet();
     var triggers = ScriptApp.getUserTriggers(ss);
+    var trigger;
 
-    return triggers.find(function(element) {
-      return element.getUniqueId() === id;
+    triggers.forEach(function(element) {
+      if (element.getUniqueId() === id) {
+        trigger = element;
+      }
     });
+
+    return trigger;
   },
 
   /**
@@ -49,10 +55,15 @@ var TriggerService = {
   getTriggerByEventType: function(type) {
     var ss = Utility.getSpreadsheet();
     var allTriggers = ScriptApp.getUserTriggers(ss);
+    var trigger;
 
-    return allTriggers.find(function(element) {
-      return element.getEventType() === type;
+    allTriggers.forEach(function(element) {
+      if (element.getEventType() === type) {
+        trigger = element;
+      }
     });
+
+    return trigger;
   },
 
   /**

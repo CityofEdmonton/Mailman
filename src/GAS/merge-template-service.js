@@ -198,7 +198,7 @@ var MergeTemplateService = {
   },
 
   removeRepeatMerge: function(template) {
-    
+
   },
 
   /**
@@ -268,22 +268,6 @@ var MergeTemplateService = {
     newHeader.setValue(name);
 
     return newHeader;
-  },
-
-  triggerExists_: function(id) {
-    var ss = Utility.getSpreadsheet();
-    var triggers = ScriptApp.getUserTriggers(ss);
-
-    var value = triggers.find(function(trigger) {
-      return id === trigger.getUniqueId();
-    });
-
-    if (value !== undefined) {
-      return true;
-    }
-    else {
-      return false;
-    }
   },
 
   getMergeRepeaters_: function() {
