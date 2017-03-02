@@ -1,4 +1,5 @@
 var Provoke = require('../util/provoke.js');
+var Promise = require('promise');
 
 
 
@@ -27,6 +28,17 @@ var MergeTemplateService = function() {
 
   this.delete = function(template) {
     return Provoke('MergeTemplateService', 'deleteByID', template.getID());
+  }
+
+  this.repeat = function(template) {
+    return Provoke('MergeTemplateService', 'getRepeatConfig', template.toConfig()).then(
+      function(config) {
+        return config;
+      },
+      function(err) {
+        throw err;
+      }
+    );
   }
 };
 
