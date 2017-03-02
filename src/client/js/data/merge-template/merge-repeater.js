@@ -57,15 +57,20 @@ var MergeRepeater = function(config) {
     }
   };
 
+
+
+
   /**
    * Converts this object into an easily serializeable form.
    *
    * @returns {Object} An Object containing all the data needed to recreate this Object.
    */
   this.toConfig = function() {
-    triggers: triggers,
-    owner: owner,
-    events: events
+    return {
+      triggers: triggers,
+      owner: owner,
+      events: events
+    };
   };
 
   this.init_(config);
