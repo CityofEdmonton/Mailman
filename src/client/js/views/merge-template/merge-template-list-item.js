@@ -18,8 +18,7 @@ var MergeTemplateListItem = function(appendTo, template) {
   var self = this;
   var base = $(baseHTML);
 
-  var triggerIcon = base.find('[data-id="trigger-icon"]');
-  var instantIcon = base.find('[data-id="instant-icon"]');
+  var instantIcon = base.find('[data-id="repeat-toggle-mail"]');
   var deleteIcon = base.find('[data-id="delete"]');
   var runIcon = base.find('[data-id="run"]');
   var editIcon = base.find('[data-id="edit"]');

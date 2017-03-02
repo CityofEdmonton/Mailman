@@ -13,15 +13,6 @@
   }
 }
 
-.rli-list-avatar {
-  margin-right: 16px;
-  float: left;
-  height: 40px;
-  width: 40px;
-  font-size: 40px;
-  color: $icon-gray;
-}
-
 .rli-hide-overflow-text {
   text-overflow: ellipsis;
   overflow: hidden;
@@ -29,16 +20,6 @@
   display: block;
   outline: none;
   max-width: 140px;
-}
-
-.rli-list-alt-icon {
-  color: $white;
-  height: 20px;
-  width: 20px;
-  font-size: 20px;
-  left: 18px;
-  bottom: 22px;
-  position: relative;
 }
 
 .rli-icon-container {
@@ -76,6 +57,35 @@
 }
 
 // MDL override
+
+.mdl-button {
+
+
+  .rli-button-popup {
+    display: none;
+    color: $white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-2px, -2px);
+    transform: translate(-2px, -2px);
+  }
+
+  .rli-list-avatar {
+    font-size: 50px;
+    color: #757575;
+  }
+
+  &:hover {
+    .rli-button-popup {
+      display: block;
+    }
+  }
+
+  &.rli-parent {
+    height: inherit;
+  }
+}
 
 .mdl-list__item-primary-content {
     height: inherit !important;
