@@ -69,6 +69,10 @@
     left: 50%;
     -webkit-transform: translate(-2px, -2px);
     transform: translate(-2px, -2px);
+
+    &.rli-repeat {
+      display: block;
+    }
   }
 
   .rli-list-avatar {
@@ -79,6 +83,10 @@
   &:hover {
     .rli-button-popup {
       display: block;
+
+      &.rli-repeat {
+        display: none;
+      }
     }
   }
 

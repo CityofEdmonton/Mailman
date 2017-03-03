@@ -18,7 +18,8 @@ var MergeTemplateListItem = function(appendTo, template) {
   var self = this;
   var base = $(baseHTML);
 
-  var repeatIcon = base.find('[data-id="repeat-toggle-mail"]');
+  var repeatButton = base.find('[data-id="repeat-toggle-mail"]');
+  var repeatIcon = base.find('[data-id="repeat-icon"]');
   var deleteIcon = base.find('[data-id="delete"]');
   var runIcon = base.find('[data-id="run"]');
   var editIcon = base.find('[data-id="edit"]');
@@ -33,7 +34,16 @@ var MergeTemplateListItem = function(appendTo, template) {
   this.init_ = function(appendTo, templateObj) {
     template = templateObj;
 
-    title.text(template.toConfig().mergeData.title);
+    var config = template.toConfig();
+    title.text(config.mergeData.title);
+    
+    if (config.mergeRepeater == null) {
+      repeatIcon.removeClass('rli-repeat');
+    }
+    else {
+      repeatIcon.addClass('rli-repeat');
+    }
+
 
     appendTo.append(base);
 
@@ -77,7 +87,7 @@ var MergeTemplateListItem = function(appendTo, template) {
    * @param {Function} callback The function to call when the toggle button is clicked.
    */
   this.setToggleHandler = function(callback) {
-    repeatIcon.on('click', template, callback);
+    repeatButton.on('click', template, callback);
   };
 
   /**
