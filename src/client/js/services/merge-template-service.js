@@ -30,8 +30,8 @@ var MergeTemplateService = function() {
     return Provoke('MergeTemplateService', 'deleteByID', template.getID());
   };
 
-  this.getRepeat = function(template) {
-    return Provoke('MergeTemplateService', 'getRepeatConfig', template.toConfig());
+  this.getRepeat = function() {
+    return Provoke('MergeTemplateService', 'getRepeatConfig');
   };
 
   this.removeRepeat = function(template) {

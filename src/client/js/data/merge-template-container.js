@@ -32,7 +32,7 @@ var MergeTemplateContainer = function(config) {
     }
 
     if (oldConfig.mergeRepeater == null) {
-      service.getRepeat(template).then(
+      service.getRepeat().then(
         function(config) {
           var tempConfig = template.toConfig();
           tempConfig.mergeRepeater = config;

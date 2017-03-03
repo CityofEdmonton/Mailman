@@ -5,7 +5,6 @@ var TriggerService = {
 
   /**
    * Gets a Trigger based upon an id. Returns undefined if it doesn't exist.
-   * NOTE Untested
    *
    * @param  {string} id The id of the Trigger to return.
    * @return {Trigger} The Trigger with the specified id.

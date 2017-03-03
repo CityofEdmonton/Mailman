@@ -178,6 +178,12 @@ var MergeTemplateService = {
     }
   },
 
+  /**
+   * Gets a config Object that describes a MergeRepeater. This creates the required triggers,
+   * if they don't already exist.
+   *
+   * @return {Object} See MergeRepeater for details on members.
+   */
   getRepeatConfig: function() {
     try {
       var ss = Utility.getSpreadsheet();
@@ -197,8 +203,43 @@ var MergeTemplateService = {
     }
   },
 
+  /**
+   * Remove the MergeRepeater from this MergeTemplate. This doesn't save the Merge.
+   *
+   * @param {Object} template The Object that has the MergeRepeater removed.
+   * @return {Object} The Object that no longer has the MergeRepeater attached.
+   */
   removeRepeatMerge: function(template) {
+    try {
+      var ss = Utility.getSpreadsheet();
+      var triggers = ScriptApp.getUserTriggers(ss);
 
+      var triggerIDs = template.mergeRepeater.triggers;
+
+      // Delete any triggers that are no longer doing anything
+      var repeaters = MergeTemplateService.getMergeRepeaters_();
+      triggerIDs.forEach(function(id) {
+        var found = false;
+
+        repeaters.forEach(function(repeater) {
+          if (repeater.triggers.indexOf(id) !== -1) {
+            found = true;
+          }
+        });
+
+        if (!found) {
+          log('Trigger not needed anymore: ' + id);
+          ScriptApp.deleteTrigger(TemplateService.getTriggerByID(id));
+        }
+      });
+
+      template.mergeRepeater = undefined;
+      return template;
+    }
+    catch (e) {
+      log(e);
+      throw e;
+    }
   },
 
   /**
