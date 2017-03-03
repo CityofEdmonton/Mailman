@@ -67,6 +67,7 @@ var MergeTemplatesListView = function(appendTo) {
   };
 
   var itemRepeat = function(e) {
+    console.log(e);
     repeatCB(e.data);
   }
 
@@ -123,6 +124,7 @@ var MergeTemplatesListView = function(appendTo) {
     item.setDeleteHandler(itemDelete);
     item.setEditHandler(itemEdit);
     item.setRunHandler(itemRun);
+    item.setToggleHandler(repeatCB);
 
     listItems.push(item);
   };
@@ -138,7 +140,7 @@ var MergeTemplatesListView = function(appendTo) {
 
   /**
    * Shows this view.
-   * TODO
+   *
    */
   this.show = function() {
     setEmptyDisplay();
@@ -178,8 +180,8 @@ var MergeTemplatesListView = function(appendTo) {
    *
    * @param {Function} callback Called when the repeat icon is clicked.
    */
-  this.setRunHandler = function(callback) {
-    runCallback = callback;
+  this.setRepeatHandler = function(callback) {
+    repeatCB = callback;
   };
 
   /**

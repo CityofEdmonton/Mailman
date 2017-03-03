@@ -18,7 +18,7 @@ var MergeTemplateListItem = function(appendTo, template) {
   var self = this;
   var base = $(baseHTML);
 
-  var instantIcon = base.find('[data-id="repeat-toggle-mail"]');
+  var repeatIcon = base.find('[data-id="repeat-toggle-mail"]');
   var deleteIcon = base.find('[data-id="delete"]');
   var runIcon = base.find('[data-id="run"]');
   var editIcon = base.find('[data-id="edit"]');
@@ -35,8 +35,6 @@ var MergeTemplateListItem = function(appendTo, template) {
 
     title.text(template.toConfig().mergeData.title);
 
-    Util.setHidden(instantIcon, false);
-    Util.setHidden(triggerIcon, true);
     appendTo.append(base);
 
     componentHandler.upgradeElement(deleteIcon[0], 'MaterialButton');
@@ -71,6 +69,15 @@ var MergeTemplateListItem = function(appendTo, template) {
    */
   this.setRunHandler = function(callback) {
     runIcon.on('click', template, callback);
+  };
+
+  /**
+   * Sets the handler for when the toggle button is clicked.
+   *
+   * @param {Function} callback The function to call when the toggle button is clicked.
+   */
+  this.setToggleHandler = function(callback) {
+    repeatIcon.on('click', template, callback);
   };
 
   /**
