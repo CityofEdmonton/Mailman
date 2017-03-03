@@ -27,15 +27,14 @@ var MergeTemplatesListView = function(appendTo) {
   // jQuery Objects
   var list = base.find('[data-id="list"]');
   var emptyContainer = base.find('[data-id="empty-container"]');
-  var triggerButton = base.find('[data-id="trigger-button"]');
   var instantButton = base.find('[data-id="instant-button"]');
 
   // Event callbacks
   var deletionCallback;
   var editCallback;
   var runCallback;
-  var triggerCB;
   var instantCB;
+  var repeatCB;
 
   // public variables
 
@@ -45,7 +44,6 @@ var MergeTemplatesListView = function(appendTo) {
   this.init_ = function(appendTo) {
     appendTo.append(base);
 
-    triggerButton.on('click', newTrigger);
     instantButton.on('click', newInstant);
 
     PubSub.subscribe('Rules.delete', rebuild);
@@ -53,7 +51,6 @@ var MergeTemplatesListView = function(appendTo) {
     PubSub.subscribe('Rules.update', rebuild);
     PubSub.subscribe('Mailman.SettingsView.hide', self.show);
 
-    componentHandler.upgradeElement(triggerButton[0], 'MaterialButton');
     componentHandler.upgradeElement(instantButton[0], 'MaterialButton');
   };
 
@@ -69,9 +66,9 @@ var MergeTemplatesListView = function(appendTo) {
     runCallback(e.data);
   };
 
-  var newTrigger = function(e) {
-    triggerCB(e);
-  };
+  var itemRepeat = function(e) {
+    repeatCB(e.data);
+  }
 
   var newInstant = function(e) {
     instantCB(e);
@@ -177,18 +174,18 @@ var MergeTemplatesListView = function(appendTo) {
   };
 
   /**
-   * Sets the handler for the new trigger button click.
-   * TODO
-   * @param {Function} callback Called when the add trigger button is clicked.
+   * Sets the handler for each list item repeat.
+   *
+   * @param {Function} callback Called when the repeat icon is clicked.
    */
-  this.setTriggerHandler = function(callback) {
-    triggerCB = callback;
+  this.setRunHandler = function(callback) {
+    runCallback = callback;
   };
 
   /**
    * Sets the handler for the instant email button click.
    * TODO
-   * @param {Function} callback Called when the instant trigger button is clicked.
+   * @param {Function} callback Called when the instant button is clicked.
    */
   this.setInstantHandler = function(callback) {
     instantCB = callback;
