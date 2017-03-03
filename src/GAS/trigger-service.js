@@ -1,6 +1,10 @@
 
-var mergeHandler
 
+/**
+ * This service is meant for handling triggers that run MergeTemplates repeatedly.
+ * 
+ * @type {Object}
+ */
 var TriggerService = {
 
   /**
