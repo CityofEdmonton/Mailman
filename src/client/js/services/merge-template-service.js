@@ -28,11 +28,15 @@ var MergeTemplateService = function() {
 
   this.delete = function(template) {
     return Provoke('MergeTemplateService', 'deleteByID', template.getID());
-  }
+  };
 
-  this.repeat = function(template) {
+  this.getRepeat = function(template) {
     return Provoke('MergeTemplateService', 'getRepeatConfig', template.toConfig());
-  }
+  };
+
+  this.removeRepeat = function(template) {
+    return Provoke('MergeTemplateService', 'removeRepeatMerge', template.toConfig());
+  };
 };
 
 

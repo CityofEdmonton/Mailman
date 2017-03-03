@@ -24,22 +24,35 @@ var MergeTemplateContainer = function(config) {
   // ***** public methods ***** //
 
   this.makeRepeat = function(template) {
-    var index = self.indexOf(template.toConfig().id);
+    var oldConfig = template.toConfig();
+
+    var index = self.indexOf(oldConfig.id);
     if (index === -1) {
       throw new Error('MergeTemplate not found.');
     }
 
-    service.repeat(template).then(
-      function(config) {
-        console.log(config);
-        var tempConfig = template.toConfig();
-        tempConfig.mergeRepeater = config;
-        self.update(new MergeTemplate(tempConfig));
-      },
-      function(err) {
-        console.error(err);
-      }
-    ).done();
+    if (oldConfig.mergeRepeater == null) {
+      service.getRepeat(template).then(
+        function(config) {
+          var tempConfig = template.toConfig();
+          tempConfig.mergeRepeater = config;
+          self.update(new MergeTemplate(tempConfig));
+        },
+        function(err) {
+          console.error(err);
+        }
+      ).done();
+    }
+    else {
+      service.removeRepeat(template).then(
+        function(config) {
+          self.update(new MergeTemplate(config));
+        },
+        function(err) {
+          console.error(err);
+        }
+      ).done();
+    }
   };
 
   /**
