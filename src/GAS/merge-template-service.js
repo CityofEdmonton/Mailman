@@ -1,5 +1,5 @@
 
-var runAllMergeTemplates = function() {
+function runAllMergeTemplates() {
   log('Running all merge templates.');
   var user = Session.getEffectiveUser().getEmail();
   var templates = JSON.parse(MergeTemplateService.getAll());
