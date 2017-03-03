@@ -28,7 +28,7 @@ var Dialog = function(appendTo, titleText, contentText) {
 
   this.init_ = function(appendTo, titleText, contentText) {
     appendTo.append(base);
-    
+
     title.text(titleText);
     content.text(contentText);
 
@@ -59,7 +59,6 @@ var Dialog = function(appendTo, titleText, contentText) {
 
       cancel.on('click', function() {
         base[0].close();
-        reject('Closing dialog.');
       });
       confirm.on('click', function() {
         base[0].close();
