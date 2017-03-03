@@ -20,11 +20,11 @@ var Utility = {
    */
   setupSheet: function() {
     var ss = Utility.getSpreadsheet();
-    var sheet = ss.getSheetByName(RULE_SHEET_NAME);
+    var sheet = ss.getSheetByName(MergeTemplateService.SHEET_NAME);
 
     if (sheet === null) {
       log('Creating config sheet.');
-      sheet = ss.insertSheet(RULE_SHEET_NAME);
+      sheet = ss.insertSheet(MergeTemplateService.SHEET_NAME);
     }
 
     sheet.hideSheet();
@@ -54,7 +54,7 @@ var Utility = {
    */
   clearSheet: function() {
     var ss = Utility.getSpreadsheet();
-    var sheet = ss.getSheetByName(RULE_SHEET_NAME);
+    var sheet = ss.getSheetByName(MergeTemplateService.SHEET_NAME);
     sheet.clear();
   },
 
