@@ -31,14 +31,7 @@ var MergeTemplateService = function() {
   }
 
   this.repeat = function(template) {
-    return Provoke('MergeTemplateService', 'getRepeatConfig', template.toConfig()).then(
-      function(config) {
-        return config;
-      },
-      function(err) {
-        throw err;
-      }
-    );
+    return Provoke('MergeTemplateService', 'getRepeatConfig', template.toConfig());
   }
 };
 

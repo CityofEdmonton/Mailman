@@ -23,6 +23,25 @@ var MergeTemplateContainer = function(config) {
 
   // ***** public methods ***** //
 
+  this.makeRepeat = function(template) {
+    var index = self.indexOf(template.toConfig().id);
+    if (index === -1) {
+      throw new Error('MergeTemplate not found.');
+    }
+
+    service.repeat(template).then(
+      function(config) {
+        console.log(config);
+        var tempConfig = template.toConfig();
+        tempConfig.mergeRepeater = config;
+        self.update(new MergeTemplate(tempConfig));
+      },
+      function(err) {
+        console.error(err);
+      }
+    ).done();
+  };
+
   /**
    * Appends a new MergeTemplate. Notifies all listeners.
    *
