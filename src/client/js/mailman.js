@@ -36,6 +36,7 @@ var MailMan = function(appendTo) {
   var settingsView;
   var runDialog;
   var deleteDialog;
+  var repeatDialog;
 
   // jquery objects
   var base = $(baseHTML);
@@ -63,6 +64,10 @@ var MailMan = function(appendTo) {
 
     deleteDialog = new Dialog(appendTo, 'Delete this merge template?', 'This will remove this merge template. ' +
       'You won\'t be able to send emails using it anymore. Are you sure you want to delete this merge template?');
+
+    repeatDialog = new Dialog(appendTo, 'Repeatedly run this merge template?', 'This will cause this merge template ' +
+      'to run regularly. This is an advanced feature and requires training. Please see IT Knowledge Management for ' +
+      'tips on training and use. Are you sure you want to repeatedly run this merge template?');
 
     // PubSub
     PubSub.subscribe('Rules.delete', function(msg, data) {
@@ -124,7 +129,7 @@ var MailMan = function(appendTo) {
       ).done();
     });
 
-    mtListView.setEditHandler(function(template) { // TODO
+    mtListView.setEditHandler(function(template) {
       cardsView = createCardsView(base, StandardMailHandler, template);
       mtListView.hide();
       cardsView.show();
@@ -132,11 +137,22 @@ var MailMan = function(appendTo) {
 
     mtListView.setRunHandler(function(template) {
       runDialog.show()
-        .then(function() {
-          // This only occurs when the user clicks OK.
-          emailService.send(template);
-          PubSub.publish('Rules.run', template.toConfig()); // TODO
-        }).done();
+        .then(
+          function() {
+            // This only occurs when the user clicks OK.
+            emailService.send(template);
+            PubSub.publish('Rules.run', template.toConfig());
+          }
+        ).done();
+    });
+
+    mtListView.setRepeatHandler(function(e) {
+      repeatDialog.show()
+        .then(
+          function() {
+            templatesContainer.makeRepeat(e.data);
+          }
+        ).done();
     });
 
     mtService.getAll().then(
