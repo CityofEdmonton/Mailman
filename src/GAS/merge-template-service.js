@@ -1,32 +1,41 @@
 
 function runAllMergeTemplates() {
-  log('Running all merge templates.');
-  var user = Session.getEffectiveUser().getEmail();
-  var templates = JSON.parse(MergeTemplateService.getAll());
-  templates = templates.filter(function(template) {
-    if (template.mergeRepeater == null) {
-      return false;
-    }
-    if (template.mergeRepeater.owner !== user) {
-      return false;
-    }
+  try {
+    log('Running all merge templates.');
 
-    // TODO filter by the calling triggers id with template.mergeRepeater.triggers.
+    var user = Session.getEffectiveUser().getEmail();
+    var templates = JSON.parse(MergeTemplateService.getAll());
+    templates = templates.filter(function(template) {
+      if (template.mergeRepeater == null) {
+        return false;
+      }
+      if (template.mergeRepeater.owner !== user) {
+        return false;
+      }
 
-    return true;
-  });
+      // TODO filter by the calling triggers id with template.mergeRepeater.triggers.
 
-  templates.forEach(function(template) {
-    var mergeData = template.mergeData;
-    if (template.mergeData.type === "Email") {
-      EmailService.startMergeTemplate(template);
-    }
-    else {
-      log('Template attempting to run with type: ' + template.mergeData.type);
-    }
-  });
+      return true;
+    });
 
-  log('Done running merge templates.');
+    log(JSON.stringify(templates));
+
+    templates.forEach(function(template) {
+      var mergeData = template.mergeData;
+      if (template.mergeData.type === "Email") {
+        EmailService.startMergeTemplate(template);
+      }
+      else {
+        log('Template attempting to run with type: ' + template.mergeData.type);
+      }
+    });
+
+    log('Done running merge templates.');
+  }
+  catch (e) {
+    log(e);
+    throw(e);
+  }
 };
 
 /**
@@ -230,6 +239,9 @@ var MergeTemplateService = {
         if (!found) {
           log('Trigger not needed anymore: ' + id);
           ScriptApp.deleteTrigger(TemplateService.getTriggerByID(id));
+        }
+        else {
+          log('Still need the trigger.')
         }
       });
 
