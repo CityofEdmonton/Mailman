@@ -37,6 +37,10 @@ var MergeTemplateService = function() {
   this.removeRepeat = function(template) {
     return Provoke('MergeTemplateService', 'removeRepeatMerge', template.toConfig());
   };
+
+  this.runMerges = function() {
+    return Provoke(null, 'runAllMergeTemplates');
+  }
 };
 
 

@@ -4,7 +4,8 @@ function runAllMergeTemplates() {
     log('Running all merge templates.');
 
     var user = Session.getEffectiveUser().getEmail();
-    var templates = JSON.parse(MergeTemplateService.getAll());
+    var templates = MergeTemplateService.getAll().templates;
+    log(templates);
     templates = templates.filter(function(template) {
       if (template.mergeRepeater == null) {
         return false;
