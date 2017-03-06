@@ -2,6 +2,8 @@ var baseHTML = require('./settings-view.html');
 var Util = require('../../util/util.js');
 var PubSub = require('pubsub-js');
 var SettingsService = require('../../services/settings-service.js');
+var Snackbar = require('../snackbar/snackbar.js');
+
 
 
 /**
@@ -51,11 +53,11 @@ var SettingsView = function(appendTo) {
       // setTimeout(enable, 3000);
 
       if (logSwitchIn[0].checked) {
-        console.log('turning on logging');
+        Snackbar.show('Turning ON logging...');
         ss.turnOnLogging().then(setURL, logError).done();
       }
       else {
-        console.log('turning off logging');
+        Snackbar.show('Turning OFF logging...');
         ss.turnOffLogging().then(removeURL, logError).done();
       }
     });

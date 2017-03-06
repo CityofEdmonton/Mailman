@@ -151,11 +151,11 @@ var MailMan = function(appendTo) {
     mtListView.setRepeatDialog(repeatDialog);
     mtListView.setRepeatHandlers(
       function(template) {
-        console.log('ON in MM');
+        snackbar.show('Turning ON repeated merge...');
         templatesContainer.toggleRepeat(template);
       },
       function(template) {
-        console.log('OFF in MM');
+        snackbar.show('Turning OFF repeated merge...');
         templatesContainer.toggleRepeat(template);
       });
 
