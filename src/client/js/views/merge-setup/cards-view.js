@@ -46,10 +46,10 @@ var CardsView = function(appendTo, handler, data) {
     back.on('click', self.back);
     cancel.on('click', cancelClicked);
 
-    componentHandler.upgradeElement(step[0], 'MaterialButton');
-    componentHandler.upgradeElement(done[0], 'MaterialButton');
-    componentHandler.upgradeElement(back[0], 'MaterialButton');
-    componentHandler.upgradeElement(cancel[0], 'MaterialButton');
+    componentHandler.upgradeElement(step[0]);
+    componentHandler.upgradeElement(done[0]);
+    componentHandler.upgradeElement(back[0]);
+    componentHandler.upgradeElement(cancel[0]);
   };
 
   var doneClicked = function() {
@@ -67,8 +67,7 @@ var CardsView = function(appendTo, handler, data) {
   //***** public methods *****//
 
   this.cleanup = function() {
-    //cards.cleanup(); TODO
-    console.log('cleanup');
+    base.remove();
   };
 
   /**
