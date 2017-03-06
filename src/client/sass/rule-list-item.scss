@@ -3,6 +3,10 @@
 .rli-list-item {
   background: $white;
   margin: 10px 0px;
+
+  &[disabled="true"] {
+    opacity: 0.4;
+  }
 }
 
 .mdl-list__item--three-line {
