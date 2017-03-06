@@ -20,7 +20,8 @@ var Card = function(appendTo, options) {
   var base = $(baseHTML);
   var menu; // This isn't created until the MDL component handler gets ahold of it.
   var button = base.find('[data-id="options-button"]');
-  var myMenu = base.find('[data-id="card-list"]'); // This is the ul i created.
+  var myMenu = base.find('[data-id="card-list"]');
+  var optionsLabel = base.find('[data-id="options-label"]');
 
   //***** Private Methods *****//
 
@@ -30,6 +31,8 @@ var Card = function(appendTo, options) {
     var id = ID();
     button.attr('id', id);
     myMenu.attr('data-mdl-for', id);
+    optionsLabel.attr('data-mdl-for', id);
+
 
     if (options !== undefined) {
       if (options.visible !== undefined) {
@@ -49,7 +52,11 @@ var Card = function(appendTo, options) {
     }
 
     this.hide();
+
     componentHandler.upgradeElement(myMenu[0], 'MaterialMenu');
+    componentHandler.upgradeElement(button[0], 'MaterialButton');
+    componentHandler.upgradeElement(optionsLabel[0], 'MaterialTooltip');
+    
     menu = base.find('.mdl-menu__container');
   };
 
