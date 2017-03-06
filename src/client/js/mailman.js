@@ -146,14 +146,16 @@ var MailMan = function(appendTo) {
         ).done();
     });
 
-    mtListView.setRepeatHandler(function(e) {
-      repeatDialog.show()
-        .then(
-          function() {
-            templatesContainer.makeRepeat(e.data);
-          }
-        ).done();
-    });
+    mtListView.setRepeatDialog(repeatDialog);
+    mtListView.setRepeatHandlers(
+      function(template) {
+        console.log('ON in MM');
+        templatesContainer.toggleRepeat(template);
+      },
+      function(template) {
+        console.log('OFF in MM');
+        templatesContainer.toggleRepeat(template);
+      });
 
     mtService.getAll().then(
       function(result) {

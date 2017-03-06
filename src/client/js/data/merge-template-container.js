@@ -23,7 +23,7 @@ var MergeTemplateContainer = function(config) {
 
   // ***** public methods ***** //
 
-  this.makeRepeat = function(template) {
+  this.toggleRepeat = function(template) {
     var oldConfig = template.toConfig();
 
     var index = self.indexOf(oldConfig.id);

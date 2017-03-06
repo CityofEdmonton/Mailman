@@ -23,6 +23,7 @@ var MergeTemplatesListView = function(appendTo) {
   var listItems = [];
   var mergeTemplates;
   var actionBar = ActionBar;
+  var dialog;
 
   // jQuery Objects
   var list = base.find('[data-id="list"]');
@@ -35,6 +36,7 @@ var MergeTemplatesListView = function(appendTo) {
   var runCallback;
   var instantCB;
   var repeatCB;
+  var unrepeatCB;
 
   // public variables
 
@@ -65,11 +67,6 @@ var MergeTemplatesListView = function(appendTo) {
   var itemRun = function(e) {
     runCallback(e.data);
   };
-
-  var itemRepeat = function(e) {
-    console.log(e);
-    repeatCB(e.data);
-  }
 
   var newInstant = function(e) {
     instantCB(e);
@@ -124,7 +121,8 @@ var MergeTemplatesListView = function(appendTo) {
     item.setDeleteHandler(itemDelete);
     item.setEditHandler(itemEdit);
     item.setRunHandler(itemRun);
-    item.setToggleHandler(repeatCB);
+    item.setRepeatHandlers(repeatCB, unrepeatCB);
+    item.setRepeatDialog(dialog);
 
     listItems.push(item);
   };
@@ -178,10 +176,12 @@ var MergeTemplatesListView = function(appendTo) {
   /**
    * Sets the handler for each list item repeat.
    *
-   * @param {Function} callback Called when the repeat icon is clicked.
+   * @param {Function} onCallback Called when the repeat icon is clicked on.
+   * @param {Function} offCallback Called when the repeat icon is clicked off.
    */
-  this.setRepeatHandler = function(callback) {
-    repeatCB = callback;
+  this.setRepeatHandlers = function(onCallback, offCallback) {
+    repeatCB = onCallback;
+    unrepeatCB = offCallback;
   };
 
   /**
@@ -191,6 +191,10 @@ var MergeTemplatesListView = function(appendTo) {
    */
   this.setInstantHandler = function(callback) {
     instantCB = callback;
+  };
+
+  this.setRepeatDialog = function(rDialog) {
+    dialog = rDialog;
   };
 
   this.init_(appendTo);
