@@ -27,6 +27,14 @@ var MergeTemplateListItem = function(appendTo, template) {
   var editIcon = base.find('[data-id="edit"]');
   var title = base.find('[data-id="title"]');
 
+  var editTT = base.find('[data-id="edit-label"]');
+  var runTT = base.find('[data-id="run-label"]');
+  var deleteTT = base.find('[data-id="delete-label"]');
+  var repeatTT = base.find('[data-id="repeat-label"]');
+
+  var REPEAT_ON_LABEL = 'Turn Off Repeat';
+  var REPEAT_OFF_LABEL = 'Turn On Repeat';
+
   //***** private methods *****//
 
   this.init_ = function(appendTo, templateObj) {
@@ -37,16 +45,39 @@ var MergeTemplateListItem = function(appendTo, template) {
 
     if (config.mergeRepeater == null) {
       repeatIcon.removeClass('rli-repeat');
+      repeatTT.text(REPEAT_OFF_LABEL);
     }
     else {
       repeatIcon.addClass('rli-repeat');
+      repeatTT.text(REPEAT_ON_LABEL);
     }
+
+    var id = ID();
+    editIcon.attr('id', id);
+    editTT.attr('data-mdl-for', id);
+
+    id = ID();
+    runIcon.attr('id', id);
+    runTT.attr('data-mdl-for', id);
+
+    id = ID();
+    deleteIcon.attr('id', id);
+    deleteTT.attr('data-mdl-for', id);
+
+    id = ID();
+    repeatButton.attr('id', id);
+    repeatTT.attr('data-mdl-for', id);
 
     appendTo.append(base);
 
     componentHandler.upgradeElement(deleteIcon[0], 'MaterialButton');
     componentHandler.upgradeElement(runIcon[0], 'MaterialButton');
     componentHandler.upgradeElement(editIcon[0], 'MaterialButton');
+    componentHandler.upgradeElement(repeatButton[0], 'MaterialButton');
+    componentHandler.upgradeElement(editTT[0], 'MaterialTooltip');
+    componentHandler.upgradeElement(runTT[0], 'MaterialTooltip');
+    componentHandler.upgradeElement(deleteTT[0], 'MaterialTooltip');
+    componentHandler.upgradeElement(repeatTT[0], 'MaterialTooltip');
   };
 
   //***** privileged methods *****//
