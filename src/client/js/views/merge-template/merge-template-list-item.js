@@ -161,12 +161,36 @@ var MergeTemplateListItem = function(appendTo, template) {
 
   this.getTemplate = function() {
     return template;
-  }
+  };
 
   /**
-  * Cleans up this component. This involves removing the HTML from the DOM.
-  *
-  */
+   * Disables the ListItem and all of its controls.
+   *
+   */
+  this.disable = function() {
+    base.attr(disabled, true);
+    repeatButton.attr(disabled, true);
+    deleteIcon.attr(disabled, true);
+    runIcon.attr(disabled, true);
+    editIcon.attr(disabled, true);
+  };
+
+  /**
+   * Enables the ListItem and all of it's controls.
+   *
+   */
+  this.enable = function() {
+    base.removeAttr(disabled);
+    repeatButton.removeAttr(disabled);
+    deleteIcon.removeAttr(disabled);
+    runIcon.removeAttr(disabled);
+    editIcon.removeAttr(disabled);
+  };
+
+  /**
+   * Cleans up this component. This involves removing the HTML from the DOM.
+   *
+   */
   this.cleanup = function() {
     base.remove();
   };
