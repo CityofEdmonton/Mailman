@@ -84,6 +84,15 @@
     position: absolute;
     right: 32px;
     bottom: 16px;
+
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(158, 158, 158, .2);
+    }
+    &:active {
+      background-color: rgba(158, 158, 158, .4);
+    }
   }
 }
 
