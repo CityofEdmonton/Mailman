@@ -45,6 +45,8 @@ var MailMan = function(appendTo) {
 
   //***** PUBLIC *****//
 
+  window.runAllTemplates = mtService.runMerges;
+
   /**
    * Performs basic set up of the Mailman environment.
    *
