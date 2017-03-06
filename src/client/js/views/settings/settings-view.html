@@ -5,18 +5,25 @@
       <li data-id="log-li" class="mdl-list__item mdl-list__item--three-line mdl-shadow--2dp sv-list-item">
 
         <span class="mdl-list__item-primary-content sv-primary">
-          <span data-id="log-icon" class="sv-icon-container">
+          <span data-id="log-icon" class="sv-icon-container" id="log-icon">
             <i class="material-icons sv-list-avatar">format_list_bulleted</i>
           </span>
+          <div data-id="open-log-label" class="sv-log-label mdl-tooltip mdl-tooltip--right" data-mdl-for="log-icon">
+            Open Log
+          </div>
 
           <span class="mdl-typography--title mdl-color-text--grey-600">Logging</span>
         </span>
 
         <span class="mdl-list__item-secondary-content">
-          <label data-id="log-switch" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="sv-switch-1">
+          <label data-id="log-switch" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="sv-switch-1"
+            id="toggle-log">
             <input data-id="log-switch-input" type="checkbox" id="sv-switch-1" class="mdl-switch__input" />
             <span class="mdl-switch__label"></span>
           </label>
+          <div data-id="toggle-log-label" class="mdl-tooltip mdl-tooltip--left" data-mdl-for="toggle-log">
+            Toggle Logging
+          </div>
         </span>
       </li>
     </ul>
