@@ -23,7 +23,9 @@ var MergeTemplatesListView = function(appendTo) {
   var listItems = [];
   var mergeTemplates;
   var actionBar = ActionBar;
-  var dialog;
+  var repeatDialog;
+  var runDialog;
+  var deleteDialog;
 
   // jQuery Objects
   var list = base.find('[data-id="list"]');
@@ -56,16 +58,8 @@ var MergeTemplatesListView = function(appendTo) {
     componentHandler.upgradeElement(instantButton[0], 'MaterialButton');
   };
 
-  var itemDelete = function(e) {
-    deletionCallback(e.data);
-  };
-
   var itemEdit = function(e) {
     editCallback(e.data);
-  };
-
-  var itemRun = function(e) {
-    runCallback(e.data);
   };
 
   var newInstant = function(e) {
@@ -100,6 +94,8 @@ var MergeTemplatesListView = function(appendTo) {
 
   //***** public methods *****//
 
+  // this.setRunPromise = function()
+
   /**
    * Sets the MergeTemplateContainer this view uses.
    *
@@ -118,11 +114,13 @@ var MergeTemplatesListView = function(appendTo) {
   this.add = function(template) {
 
     var item = new MergeTemplateListItem(list, template);
-    item.setDeleteHandler(itemDelete);
+    item.setDeleteHandler(deletionCallback);
     item.setEditHandler(itemEdit);
-    item.setRunHandler(itemRun);
+    item.setRunHandler(runCallback);
     item.setRepeatHandlers(repeatCB, unrepeatCB);
-    item.setRepeatDialog(dialog);
+    item.setRepeatDialog(repeatDialog);
+    item.setRunDialog(runDialog);
+    item.setDeleteDialog(deleteDialog);
 
     listItems.push(item);
   };
@@ -193,8 +191,16 @@ var MergeTemplatesListView = function(appendTo) {
     instantCB = callback;
   };
 
-  this.setRepeatDialog = function(rDialog) {
-    dialog = rDialog;
+  this.setRepeatDialog = function(dialog) {
+    repeatDialog = dialog;
+  };
+
+  this.setRunDialog = function(dialog) {
+    runDialog = dialog;
+  };
+
+  this.setDeleteDialog = function(dialog) {
+    deleteDialog = dialog;
   };
 
   this.init_(appendTo);

@@ -72,9 +72,6 @@ var MailMan = function(appendTo) {
       'tips on training and use. Are you sure you want to repeatedly run this merge template?');
 
     // PubSub
-    PubSub.subscribe('Rules.delete', function(msg, data) {
-      snackbar.show('Merge template deleted.');
-    });
     PubSub.subscribe('Rules.add', function(msg, data) {
       snackbar.show('Merge template created.');
     });
@@ -119,16 +116,10 @@ var MailMan = function(appendTo) {
       cardsView.show();
     });
 
+    mtListView.setDeleteDialog(deleteDialog);
     mtListView.setDeleteHandler(function(template) {
-      deleteDialog.show().then(
-        function() {
-          // This only occurs when the user clicks OK.
-          templatesContainer.remove(template);
-        },
-        function(err) {
-          console.error(err);
-        }
-      ).done();
+      snackbar.show('Merge template deleted.');
+      templatesContainer.remove(template);
     });
 
     mtListView.setEditHandler(function(template) {
@@ -137,15 +128,11 @@ var MailMan = function(appendTo) {
       cardsView.show();
     });
 
+    mtListView.setRunDialog(runDialog);
     mtListView.setRunHandler(function(template) {
-      runDialog.show()
-        .then(
-          function() {
-            // This only occurs when the user clicks OK.
-            emailService.send(template);
-            PubSub.publish('Rules.run', template.toConfig());
-          }
-        ).done();
+      // This only occurs when the user clicks OK.
+      emailService.send(template);
+      PubSub.publish('Rules.run', template.toConfig());
     });
 
     mtListView.setRepeatDialog(repeatDialog);

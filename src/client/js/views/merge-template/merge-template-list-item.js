@@ -3,6 +3,7 @@ var baseHTML = require('./merge-template-list-item.html');
 var MergeTemplate = require('../../data/merge-template/merge-template.js');
 var ID = require('../../data/id.js');
 var Util = require('../../util/util.js');
+var Disabler = require('../../util/disable.js');
 
 
 
@@ -17,7 +18,9 @@ var MergeTemplateListItem = function(appendTo, template) {
   // private variables
   var self = this;
   var base = $(baseHTML);
-  var dialog;
+  var repeatDialog;
+  var runDialog;
+  var deleteDialog;
   var template;
 
   var repeatButton = base.find('[data-id="repeat-toggle-mail"]');
@@ -88,7 +91,12 @@ var MergeTemplateListItem = function(appendTo, template) {
   * @param {Function} callback The function to call.
   */
   this.setDeleteHandler = function(callback) {
-    deleteIcon.on('click', template, callback);
+    deleteIcon.on('click', template, function(e) {
+      deleteDialog.show().then(function() {
+        Disabler(deleteIcon, 10000);
+        callback(e.data);
+      }).done();
+    });
   };
 
   /**
@@ -106,7 +114,12 @@ var MergeTemplateListItem = function(appendTo, template) {
   * @param {Function} callback The function to call.
   */
   this.setRunHandler = function(callback) {
-    runIcon.on('click', template, callback);
+    runIcon.on('click', template, function(e) {
+      runDialog.show().then(function() {
+        Disabler(runIcon, 10000);
+        callback(e.data);
+      }).done();
+    });
   };
 
   /**
@@ -120,21 +133,35 @@ var MergeTemplateListItem = function(appendTo, template) {
       var config = template.toConfig();
 
       if (config.mergeRepeater == null) {
-        dialog.show().then(function() {
+        repeatDialog.show().then(function() {
           console.log('List item on');
+          Disabler(repeatButton, 10000);
           onCallback(template);
         }).done();
       }
       else {
         console.log('List item off');
+        Disabler(repeatButton, 10000);
         offCallback(template);
       }
     });
   };
 
-  this.setRepeatDialog = function(rDialog) {
-    dialog = rDialog;
+  this.setRepeatDialog = function(dialog) {
+    repeatDialog = dialog;
   };
+
+  this.setRunDialog = function(dialog) {
+    runDialog = dialog;
+  };
+
+  this.setDeleteDialog = function(dialog) {
+    deleteDialog = dialog;
+  };
+
+  this.getTemplate = function() {
+    return template;
+  }
 
   /**
   * Cleans up this component. This involves removing the HTML from the DOM.
