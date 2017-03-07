@@ -2,6 +2,7 @@ var baseHTML = require('./cards-view.html');
 var Util = require('../../util/util.js');
 var PubSub = require('pubsub-js');
 var Promise = require('promise');
+var Disabler = require('../../util/disable.js');
 
 
 
@@ -18,6 +19,8 @@ var CardsView = function(appendTo, handler, data) {
   // private variables
   var self = this;
   var base = $(baseHTML);
+  var validateInterval = 1000;
+  var timeoutID;
   var cards;
 
   // These are used to resolve the Promise in done.
@@ -50,6 +53,10 @@ var CardsView = function(appendTo, handler, data) {
     componentHandler.upgradeElement(done[0]);
     componentHandler.upgradeElement(back[0]);
     componentHandler.upgradeElement(cancel[0]);
+
+    timeoutID = window.setInterval(function() {
+      validate();
+    }, validateInterval)
   };
 
   var doneClicked = function() {
@@ -67,6 +74,7 @@ var CardsView = function(appendTo, handler, data) {
   //***** public methods *****//
 
   this.cleanup = function() {
+    window.clearInterval(timeoutID);
     base.remove();
   };
 
@@ -141,6 +149,19 @@ var CardsView = function(appendTo, handler, data) {
     else if (cards.isLast()) {
       Util.setHidden(done, false);
       Util.setHidden(step, true);
+    }
+
+    validate();
+  };
+
+  var validate = function() {
+    if (!cards.validateState()) {
+      step.attr('disabled', 'true');
+      done.attr('disabled', 'true');
+    }
+    else {
+      step.removeAttr('disabled');
+      done.removeAttr('disabled');
     }
   };
 

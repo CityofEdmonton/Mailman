@@ -18,6 +18,11 @@ var StandardMailHandler = function(parent) {
   //***** private functions *****//
 
   this.init_ = function() {
+    cardRepository[CardNames.title].setValidation(cardValidator);
+    cardRepository[CardNames.sheet].setValidation(cardValidator);
+    cardRepository[CardNames.row].setValidation(cardValidator);
+    cardRepository[CardNames.to].setValidation(cardValidator);
+
     cardsList = new List();
     cardsList.add(CardNames.title);
     cardsList.add(CardNames.sheet);
@@ -32,8 +37,13 @@ var StandardMailHandler = function(parent) {
     show(activeNode.data);
   };
 
-  var setCards = function() {
+  var cardValidator = function(card) {
+    console.log('ERPERP');
+    if (card.getValue() == '') {
+      return false;
+    }
 
+    return true;
   };
 
   var show = function(name) {
@@ -114,6 +124,13 @@ var StandardMailHandler = function(parent) {
 
   this.isLast = function() {
     return activeNode === cardsList.tail;
+  };
+
+  this.validateState = function() {
+    if (cardRepository[activeNode.data].isValid !== undefined) {
+      return cardRepository[activeNode.data].isValid();
+    }
+    return true;
   };
 
   this.init_();

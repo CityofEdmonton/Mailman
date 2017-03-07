@@ -23,6 +23,8 @@ var InputCard = function(appendTo, options) {
   // Private variables
   var self = this;
   var innerBase = $(inputHTML);
+  var validate;
+
   var mdlObject = innerBase.find('[data-id="mdl-object"]');
   var input = innerBase.find('input');
   var error = innerBase.find('[data-id="ci-error"]');
@@ -166,6 +168,21 @@ var InputCard = function(appendTo, options) {
    */
   this.enableInput = function() {
     mdlObject[0].MaterialTextfield.enable();
+  };
+
+  this.setValidation = function(callback) {
+    validate = callback;
+  };
+
+  this.isValid = function() {
+    if (mdlObject.hasClass('is-invalid')) {
+      return false;
+    }
+    if (validate !== undefined && !validate(self)) {
+      return false;
+    }
+
+    return true;
   };
 
   this.init_(appendTo, options);
