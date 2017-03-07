@@ -2,7 +2,7 @@
 function runAllMergeTemplates() {
   var props = PropertiesService.getDocumentProperties();
   var authInfo = ScriptApp.getAuthorizationInfo(ScriptApp.AuthMode.FULL);
-
+  log(authInfo.getAuthorizationStatus());
   if (authInfo.getAuthorizationStatus() == ScriptApp.AuthorizationStatus.REQUIRED) {
     log ('Reauth required.');
 
