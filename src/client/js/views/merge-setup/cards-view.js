@@ -2,6 +2,7 @@ var baseHTML = require('./cards-view.html');
 var Util = require('../../util/util.js');
 var PubSub = require('pubsub-js');
 var Promise = require('promise');
+var Snackbar = require('../snackbar/snackbar.js');
 var Disabler = require('../../util/disable.js');
 
 
@@ -61,6 +62,7 @@ var CardsView = function(appendTo, handler, data) {
 
   var doneClicked = function() {
     if (resolveCB != null) {
+      Snackbar.show('Saving...', 1000);
       resolveCB(cards.getMergeTemplate());
     }
   };
