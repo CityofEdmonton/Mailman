@@ -1,43 +1,40 @@
 
 function runAllMergeTemplates() {
-  try {
-    log('Running all merge templates.');
+  var props = PropertiesService.getDocumentProperties();
+  var authInfo = ScriptApp.getAuthorizationInfo(ScriptApp.AuthMode.FULL);
 
-    var user = Session.getEffectiveUser().getEmail();
-    var templates = MergeTemplateService.getAll().templates;
-    log(templates);
-    templates = templates.filter(function(template) {
-      if (template.mergeRepeater == null) {
-        return false;
+  if (authInfo.getAuthorizationStatus() === ScriptApp.AuthorizationStatus.REQUIRED) {
+    log ('Reauth required.');
+
+    var lastAuthEmailDate = props.getProperty(LAST_AUTH_KEY);
+    var today = new Date().toDateString();
+    if (lastAuthEmailDate != today) {
+      log('A new auth email will be sent.');
+
+      if (MailApp.getRemainingDailyQuota() > 0) {
+
+        var html = HtmlService.createTemplateFromFile('authorization-email');
+        html.url = authInfo.getAuthorizationUrl();
+        html.addonTitle = APP_NAME;
+        var message = html.evaluate();
+
+        MailApp.sendEmail(Session.getEffectiveUser().getEmail(),
+            'Authorization Required',
+            message.getContent(), {
+                name: APP_NAME,
+                htmlBody: message.getContent()
+            }
+        );
       }
-      if (template.mergeRepeater.owner !== user) {
-        return false;
-      }
 
-      // TODO filter by the calling triggers id with template.mergeRepeater.triggers.
-
-      return true;
-    });
-
-    log(JSON.stringify(templates));
-
-    templates.forEach(function(template) {
-      var mergeData = template.mergeData;
-      if (template.mergeData.type === "Email") {
-        EmailService.startMergeTemplate(template);
-      }
-      else {
-        log('Template attempting to run with type: ' + template.mergeData.type);
-      }
-    });
-
-    log('Done running merge templates.');
+      props.setProperty(LAST_AUTH_KEY, today);
+    }
   }
-  catch (e) {
-    log(e);
-    throw(e);
+  else {
+    MergeTemplateService.runAll();
   }
 };
+
 
 /**
  * This service allows easy access to the Mailman template data.
@@ -81,6 +78,54 @@ var MergeTemplateService = {
     catch (e) {
       log(e);
       throw e;
+    }
+  },
+
+  /**
+   * This function runs all previously created MergeTemplates.
+   * Templates are filtered on the following conditions:
+   * - MergeTemplate has a mergeRepeater
+   * - MergeRepeater.owner is the same as the effective user.
+   * - The triggerID this is called from matches the triggerIDs inside MergeRepeater. TODO
+   *
+   */
+  runAll: function() {
+    try {
+      log('Running all merge templates.');
+
+      var user = Session.getEffectiveUser().getEmail();
+      var templates = MergeTemplateService.getAll().templates;
+      log(templates);
+      templates = templates.filter(function(template) {
+        if (template.mergeRepeater == null) {
+          return false;
+        }
+        if (template.mergeRepeater.owner !== user) {
+          return false;
+        }
+
+        // TODO filter by the calling triggers id with template.mergeRepeater.triggers.
+
+        return true;
+      });
+
+      log(JSON.stringify(templates));
+
+      templates.forEach(function(template) {
+        var mergeData = template.mergeData;
+        if (template.mergeData.type === "Email") {
+          EmailService.startMergeTemplate(template);
+        }
+        else {
+          log('Template attempting to run with type: ' + template.mergeData.type);
+        }
+      });
+
+      log('Done running merge templates.');
+    }
+    catch (e) {
+      log(e);
+      throw(e);
     }
   },
 
