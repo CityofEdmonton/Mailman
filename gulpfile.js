@@ -94,7 +94,7 @@ function buildGAS() {
         .pipe(gulp.dest('./build/gas'));
 
     // GAS
-    return gulp.src('./src/gas/*')
+    return gulp.src('./src/gas/**/*.js')
         .pipe(gulp.dest('./build/gas/gas'));
 }
 
