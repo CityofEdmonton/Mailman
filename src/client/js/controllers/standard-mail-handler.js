@@ -38,7 +38,6 @@ var StandardMailHandler = function(parent) {
   };
 
   var cardValidator = function(card) {
-    console.log('ERPERP');
     if (card.getValue() == '') {
       return false;
     }
