@@ -3,7 +3,7 @@ function runAllMergeTemplates() {
   var props = PropertiesService.getDocumentProperties();
   var authInfo = ScriptApp.getAuthorizationInfo(ScriptApp.AuthMode.FULL);
 
-  if (authInfo.getAuthorizationStatus() === ScriptApp.AuthorizationStatus.REQUIRED) {
+  if (authInfo.getAuthorizationStatus() == ScriptApp.AuthorizationStatus.REQUIRED) {
     log ('Reauth required.');
 
     var lastAuthEmailDate = props.getProperty(LAST_AUTH_KEY);
