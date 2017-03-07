@@ -1,3 +1,4 @@
+var Provoke = require('../util/provoke.js');
 var Promise = require('promise');
 
 
@@ -14,12 +15,13 @@ var MetadataService = function() {
 
   this.getUser = function() {
     if (user == null) {
-      return Provoke('MetadataService', 'getUser');
+      console.log('NEW');
+      user = Provoke('MetadataService', 'getUser').then();
+      return user;
     }
     else {
-      return new Promise(resolve, reject) {
-        resolve(user);
-      };
+      console.log('CACHED');
+      return user;
     }
   };
 
@@ -28,11 +30,14 @@ var MetadataService = function() {
       return Provoke('MetadataService', 'getVersion');
     }
     else {
-      return new Promise(resolve, reject) {
+      return new Promise(function(resolve, reject) {
         resolve(version);
-      };
+      });
     }
   };
+
 };
 
+
+/** */
 module.exports = new MetadataService();

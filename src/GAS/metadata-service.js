@@ -2,7 +2,8 @@
 
 var MetadataService = {
   getUser: function() {
-    Session.getEffectiveUser().getEmail();
+    log('getting user: ');
+    return Session.getEffectiveUser().getEmail();
   },
 
   getVersion: function() {
@@ -10,6 +11,6 @@ var MetadataService = {
   },
 
   getQuota: function() {
-    
+
   }
 };
