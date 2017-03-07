@@ -84,6 +84,7 @@
     position: absolute;
     right: 32px;
     bottom: 16px;
+    color: $white;
 
     cursor: pointer;
 
@@ -132,8 +133,17 @@
   position: absolute;
   bottom: 20px;
   cursor: pointer;
-  color: grey;
+  color: $white;
   font-size: 18px;
+}
+
+.card-stripe {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  background-color: $weird-green;
+  width: 100%;
+  height: 60px;
 }
 
 .help-tooltip {
