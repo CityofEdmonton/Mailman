@@ -1,9 +1,9 @@
-
 var baseHTML = require('./merge-template-list-item.html');
 var MergeTemplate = require('../../data/merge-template/merge-template.js');
 var ID = require('../../data/id.js');
 var Util = require('../../util/util.js');
 var Disabler = require('../../util/disable.js');
+var MetadataService = require('../../services/metadata-service.js');
 
 
 
@@ -18,6 +18,7 @@ var MergeTemplateListItem = function(appendTo, template) {
   // private variables
   var self = this;
   var base = $(baseHTML);
+  var user;
   var repeatDialog;
   var runDialog;
   var deleteDialog;
@@ -46,15 +47,6 @@ var MergeTemplateListItem = function(appendTo, template) {
     var config = template.toConfig();
     title.text(config.mergeData.title);
 
-    if (config.mergeRepeater == null) {
-      repeatIcon.removeClass('rli-repeat');
-      repeatTT.text(REPEAT_OFF_LABEL);
-    }
-    else {
-      repeatIcon.addClass('rli-repeat');
-      repeatTT.text(REPEAT_ON_LABEL);
-    }
-
     var id = ID();
     editIcon.attr('id', id);
     editTT.attr('data-mdl-for', id);
@@ -81,6 +73,32 @@ var MergeTemplateListItem = function(appendTo, template) {
     componentHandler.upgradeElement(runTT[0], 'MaterialTooltip');
     componentHandler.upgradeElement(deleteTT[0], 'MaterialTooltip');
     componentHandler.upgradeElement(repeatTT[0], 'MaterialTooltip');
+
+    MetadataService.getUser().then(function(u) {
+      user = u;
+      lock();
+    });
+  };
+
+  var lock = function() {
+    var config = template.toConfig();
+
+    if (config.mergeRepeater == null) {
+      repeatIcon.removeClass('rli-repeat');
+      repeatTT.text(REPEAT_OFF_LABEL);
+    }
+    else {
+      repeatIcon.addClass('rli-repeat');
+      repeatTT.text(REPEAT_ON_LABEL);
+
+      console.log('Current: ' + user);
+      console.log('Owner: ' + config.mergeRepeater.owner);
+      if (config.mergeRepeater.owner !== user) {
+        console.log('disabling');
+        self.disable();
+        // Add some visual indicator.
+      }
+    }
   };
 
   //***** privileged methods *****//
@@ -168,11 +186,11 @@ var MergeTemplateListItem = function(appendTo, template) {
    *
    */
   this.disable = function() {
-    base.attr(disabled, true);
-    repeatButton.attr(disabled, true);
-    deleteIcon.attr(disabled, true);
-    runIcon.attr(disabled, true);
-    editIcon.attr(disabled, true);
+    base.attr('disabled', true);
+    repeatButton.attr('disabled', true);
+    deleteIcon.attr('disabled', true);
+    runIcon.attr('disabled', true);
+    editIcon.attr('disabled', true);
   };
 
   /**
@@ -180,11 +198,11 @@ var MergeTemplateListItem = function(appendTo, template) {
    *
    */
   this.enable = function() {
-    base.removeAttr(disabled);
-    repeatButton.removeAttr(disabled);
-    deleteIcon.removeAttr(disabled);
-    runIcon.removeAttr(disabled);
-    editIcon.removeAttr(disabled);
+    base.removeAttr('disabled');
+    repeatButton.removeAttr('disabled');
+    deleteIcon.removeAttr('disabled');
+    runIcon.removeAttr('disabled');
+    editIcon.removeAttr('disabled');
   };
 
   /**

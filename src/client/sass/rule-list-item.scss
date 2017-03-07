@@ -4,7 +4,7 @@
   background: $white;
   margin: 10px 0px;
 
-  &[disabled="true"] {
+  &[disabled] {
     opacity: 0.4;
   }
 }
@@ -84,12 +84,15 @@
     color: #757575;
   }
 
-  &:hover {
-    .rli-button-popup {
-      display: block;
+  &:not([disabled]) {
 
-      &.rli-repeat {
-        display: none;
+    &:hover {
+      .rli-button-popup {
+        display: block;
+
+        &.rli-repeat {
+          display: none;
+        }
       }
     }
   }
