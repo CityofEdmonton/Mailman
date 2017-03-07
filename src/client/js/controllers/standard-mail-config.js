@@ -25,14 +25,14 @@ CardsConfig.buildCardRepo = function(contentArea) {
   var eService = new EmailService();
 
   repo[CardNames.title] = new InputCard(contentArea, {
-    title: 'What should this merge be called?',
-    help: 'This title will help you differentiate this merge from others.',
+    title: 'Title',
+    help: 'What should this merge be called? This title will help you differentiate this merge from others.',
     label: 'Title...'
   });
 
   repo[CardNames.sheet] = new InputCard(contentArea, {
-    title: 'Which Sheet are we sending from?',
-    help: 'This Sheet must contain all the information you may want to send in an email.',
+    title: 'Sheet',
+    help: 'Which Sheet are we sending from? This Sheet must contain all the information you may want to send in an email.',
     label: 'Sheet...'
   });
   sService.get().then(
@@ -50,8 +50,8 @@ CardsConfig.buildCardRepo = function(contentArea) {
 
 
   repo[CardNames.to] = new InputCard(contentArea, {
-    title: 'Who are you sending to?',
-    help: 'This is the column filled with the email addresses of the recipients.',
+    title: 'To',
+    help: 'Who are you sending to? This is the column filled with the email addresses of the recipients.',
     label: 'To...',
     error: {
       hint: 'Must be a single header surrounded by whack whacks',
@@ -60,7 +60,8 @@ CardsConfig.buildCardRepo = function(contentArea) {
   });
 
   repo[CardNames.row] = new InputCard(contentArea, {
-    title: 'Which row contains your header titles?',
+    title: 'Header Row',
+    help: 'Which row contains your header titles?',
     label: 'Header row...',
     error: {
       hint: 'Must be a number greater than 0',
@@ -117,24 +118,26 @@ CardsConfig.buildCardRepo = function(contentArea) {
   });
 
   repo[CardNames.subject] = new InputCard(contentArea, {
-    title: 'What\'s your subject?',
-    help: 'Recipients will see this as the subject line of the email. Type "<<" to see a list of column names. ' +
-        'These tags will be swapped out with the associated values in the Sheet.',
+    title: 'Subject',
+    help: 'What\'s your subject? Recipients will see this as the subject line of the email. ' +
+      'Type << to see a list of column names. ' +
+      'These whack whacks will be swapped out with the associated values in the Sheet.',
     label: 'Subject...'
   });
 
   repo[CardNames.body] = new TextareaCard(contentArea, {
-    title: 'What\'s in the body?',
-    help: 'Recipients will see this as the body of the email. Type "<<" to see a list of column names. These tags ' +
-        'will be swapped out with the associated values in the Sheet.',
+    title: 'Body',
+    help: 'What\'s in the body? Recipients will see this as the body of the email. ' +
+      'Type << to see a list of column names. These whack whacks ' +
+      'will be swapped out with the associated values in the Sheet.',
     label: 'Body...'
   });
 
   repo[CardNames.sendNow] = new TitledCard(contentArea, {
-    title: 'Save this merge?',
+    title: 'Save',
     paragraphs: [
       'This will save the merge. It won\'t send any emails yet.',
-       'If you would like to send yourself a test email, click the option from the lower right.'
+      'If you would like to send yourself a test email, select the option from the lower right.'
     ]
   });
   repo[CardNames.sendNow].addOption('Send test email', function() {
@@ -153,22 +156,8 @@ CardsConfig.buildCardRepo = function(contentArea) {
     ).done();
   });
 
-  repo[CardNames.shouldSend] = new InputCard(contentArea, {
-    title: 'Which column determines whether an email should be sent?',
-    paragraphs: [
-      'Mailman regularly checks whether an email needs to be sent. ' +
-          'Please specify a column that determines when an email should be sent.',
-      'Note that Mailman looks for the value TRUE to determine when to send an email.'
-    ],
-    label: 'Send?',
-    error: {
-      hint: 'Must be a single header surrounded by whack whacks',
-      pattern: '<<[^<>]*>>'
-    }
-  });
-
   repo[CardNames.conditional] = new ConditionalInputCard(contentArea, {
-    title: 'Conditional column (optional)',
+    title: 'Conditional send (optional)',
     help: 'This column is used to determine when to send an email. If a given row reads TRUE, ' +
       'Mailman will send an email. Any other value and Mailman won\'t send. This can be useful for scheduling your ' +
       'merges or ensuring you don\'t accidentally email someone twice.',
