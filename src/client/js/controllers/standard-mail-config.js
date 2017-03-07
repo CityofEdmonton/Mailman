@@ -147,13 +147,13 @@ CardsConfig.buildCardRepo = function(contentArea) {
     var body = repo[CardNames.body].getValue();
 
     eService.sendTest(sheet, row, subject, body).then(
-      function() {
-        Snackbar.show('Test email sent.');
-      },
+      function() {},
       function(err) {
         console.error(err);
       }
     ).done();
+
+    Snackbar.show('Sending test email...');
   });
 
   repo[CardNames.conditional] = new ConditionalInputCard(contentArea, {
