@@ -68,7 +68,15 @@ var ConditionalInputCard = function(appendTo, options) {
    */
   this.isEnabled = function() {
     return innerBase.hasClass('is-checked');
-  }
+  };
+
+  this.check = function() {
+    innerBase[0].MaterialCheckbox.check();
+  };
+
+  this.uncheck = function() {
+    innerBase[0].MaterialCheckbox.uncheck();
+  };
 
   this.getValue = function() {
     if (self.isEnabled()) {

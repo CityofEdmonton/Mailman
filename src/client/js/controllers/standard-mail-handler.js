@@ -68,7 +68,14 @@ var StandardMailHandler = function(parent) {
     cardRepository[CardNames.to].setValue(updateConfig.mergeData.data.to);
     cardRepository[CardNames.subject].setValue(updateConfig.mergeData.data.subject);
     cardRepository[CardNames.body].setValue(updateConfig.mergeData.data.body);
-    cardRepository[CardNames.conditional].setValue(updateConfig.mergeData.conditional);
+
+    if (updateConfig.mergeData.conditional != null) {
+      cardRepository[CardNames.conditional].check();
+      cardRepository[CardNames.conditional].setValue(updateConfig.mergeData.conditional);
+    }
+    else {
+      cardRepository[CardNames.conditional].uncheck();
+    }
 
     // Load headers TODO
   };
