@@ -63,6 +63,7 @@ var CardsView = function(appendTo, handler, data) {
   var doneClicked = function() {
     if (resolveCB != null) {
       Snackbar.show('Saving...', 1000);
+      Disabler(done, 10000);
       resolveCB(cards.getMergeTemplate());
     }
   };
@@ -159,11 +160,9 @@ var CardsView = function(appendTo, handler, data) {
   var validate = function() {
     if (!cards.validateState()) {
       step.attr('disabled', 'true');
-      done.attr('disabled', 'true');
     }
     else {
       step.removeAttr('disabled');
-      done.removeAttr('disabled');
     }
   };
 
