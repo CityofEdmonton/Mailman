@@ -27,7 +27,7 @@ var ConditionalInputCard = function(appendTo, options) {
 
     checkbox.on('change', setCardState);
 
-    componentHandler.upgradeElement(innerBase[0], 'MaterialCheckbox');
+    componentHandler.upgradeAllRegistered();
 
     if (options.enabled !== undefined) {
       if (options.enabled) {
