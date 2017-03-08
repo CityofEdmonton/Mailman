@@ -30,6 +30,7 @@ var MergeTemplateListItem = function(appendTo, template) {
   var runIcon = base.find('[data-id="run"]');
   var editIcon = base.find('[data-id="edit"]');
   var title = base.find('[data-id="title"]');
+  var claimedUser = base.find('[data-id="claimed-user"]');
 
   var editTT = base.find('[data-id="edit-label"]');
   var runTT = base.find('[data-id="run-label"]');
@@ -91,12 +92,10 @@ var MergeTemplateListItem = function(appendTo, template) {
       repeatIcon.addClass('rli-repeat');
       repeatTT.text(REPEAT_ON_LABEL);
 
-      console.log('Current: ' + user);
-      console.log('Owner: ' + config.mergeRepeater.owner);
       if (config.mergeRepeater.owner !== user) {
-        console.log('disabling');
         self.disable();
-        // Add some visual indicator.
+        claimedUser.text('Claimed by ' + config.mergeRepeater.owner);
+        Util.setHidden(claimedUser, false);
       }
     }
   };

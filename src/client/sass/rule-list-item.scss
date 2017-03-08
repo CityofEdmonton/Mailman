@@ -3,9 +3,23 @@
 .rli-list-item {
   background: $white;
   margin: 10px 0px;
+  position: relative;
 
   &[disabled] {
     opacity: 0.4;
+  }
+}
+
+.rli-claimed-user {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  font-size: 12px;
+  letter-spacing: 0em;
+  color: black;
+
+  &.rli-hide-overflow-text {
+    max-width: 220px;
   }
 }
 
