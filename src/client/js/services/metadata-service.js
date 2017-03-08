@@ -15,12 +15,10 @@ var MetadataService = function() {
 
   this.getUser = function() {
     if (user == null) {
-      console.log('NEW');
       user = Provoke('MetadataService', 'getUser').then();
       return user;
     }
     else {
-      console.log('CACHED');
       return user;
     }
   };
