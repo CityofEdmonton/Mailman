@@ -142,9 +142,14 @@ var MergeTemplateContainer = function(config) {
    * @return {number} The index of the MergeTemplate with the given ID. -1 if not found.
    */
   this.indexOf = function(id) {
-    return templates.findIndex(function(element) {
-      return element.toConfig().id === id;
+    var returnID;
+    templates.forEach(function(element) {
+      if (element.toConfig().id === id) {
+        returnID = id;
+      }
     });
+
+    return returnID | -1;
   };
 
   /**
