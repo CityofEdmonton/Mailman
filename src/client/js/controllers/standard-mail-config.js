@@ -119,6 +119,9 @@ CardsConfig.buildCardRepo = function(contentArea) {
 
   repo[CardNames.subject] = new InputCard(contentArea, {
     title: 'Subject',
+    paragraphs: [
+      'Tip: try typing <<'
+    ],
     help: 'What\'s your subject? Recipients will see this as the subject line of the email. ' +
       'Type << to see a list of column names. ' +
       'These whack whacks will be swapped out with the associated values in the Sheet.',
@@ -127,6 +130,9 @@ CardsConfig.buildCardRepo = function(contentArea) {
 
   repo[CardNames.body] = new TextareaCard(contentArea, {
     title: 'Body',
+    paragraphs: [
+      'Tip: try typing <<'
+    ],
     help: 'What\'s in the body? Recipients will see this as the body of the email. ' +
       'Type << to see a list of column names. These whack whacks ' +
       'will be swapped out with the associated values in the Sheet.',
