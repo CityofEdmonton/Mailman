@@ -31,9 +31,9 @@ CardsConfig.buildCardRepo = function(contentArea) {
   });
 
   repo[CardNames.sheet] = new InputCard(contentArea, {
-    title: 'Sheet',
-    help: 'Which Sheet are we sending from? This Sheet must contain all the information you may want to send in an email.',
-    label: 'Sheet...'
+    title: 'Tab',
+    help: 'Which tab are we sending from? This tab must contain all the information you may want to send in an email.',
+    label: 'Tab...'
   });
   sService.get().then(
     function(result) {
