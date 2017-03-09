@@ -28,6 +28,7 @@ var SettingsView = function(appendTo) {
   var logSwitch = base.find('[data-id="log-switch"]');
   var logIcon = base.find('[data-id="log-icon"]');
   var emailsLeft = base.find('[data-id="emails-left"]');
+  var version = base.find('[data-id="version"]');
 
   //***** private methods *****//
 
@@ -44,15 +45,15 @@ var SettingsView = function(appendTo) {
       logError
     ).done();
 
-    window.setInterval(function() {
-      MetadataService.getQuota().then(
-        function(result) {
-          emailsLeft.text(result + ' daily emails remaining');
-        },
-        logError
-      );
-    }, 10000);
+    getQuota();
+    window.setInterval(getQuota, 10000);
 
+    MetadataService.getVersion().then(
+      function(result) {
+        version.text('Version: ' + result);
+      },
+      logError
+    ).done();
 
     back.on('click', function() {
       self.hide();
@@ -69,6 +70,15 @@ var SettingsView = function(appendTo) {
         ss.turnOffLogging().then(removeURL, logError).done();
       }
     });
+  };
+
+  var getQuota = function() {
+    MetadataService.getQuota().then(
+      function(result) {
+        emailsLeft.text(result + ' daily emails remaining');
+      },
+      logError
+    ).done();
   };
 
   var setURL = function(url) {
