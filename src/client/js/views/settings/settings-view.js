@@ -26,6 +26,8 @@ var SettingsView = function(appendTo) {
   var logSwitchIn = base.find('[data-id="log-switch-input"]');
   var logSwitch = base.find('[data-id="log-switch"]');
   var logIcon = base.find('[data-id="log-icon"]');
+  var advSwitch = base.find('[data-id="advanced-features-switch"]');
+  var advSwitchIn = base.find('[data-id="advanced-features-switch-input"]');
 
   //***** private methods *****//
 
@@ -42,15 +44,20 @@ var SettingsView = function(appendTo) {
       logError
     ).done();
 
+    ss.getAdvancedMerge().then(
+      function(result) {
+        if (result) {
+          advSwitch[0].MaterialSwitch.on();
+        }
+      },
+      logError
+    ).done();
+
     back.on('click', function() {
       self.hide();
     });
 
     logSwitchIn.on('change', function() {
-
-      // var enable = logSwitch[0].MaterialSwitch.enable.bind(logSwitch[0].MaterialSwitch);
-      // logSwitch[0].MaterialSwitch.disable();
-      // setTimeout(enable, 3000);
 
       if (logSwitchIn[0].checked) {
         Snackbar.show('Turning ON logging...');
@@ -59,6 +66,17 @@ var SettingsView = function(appendTo) {
       else {
         Snackbar.show('Turning OFF logging...');
         ss.turnOffLogging().then(removeURL, logError).done();
+      }
+    });
+
+    advSwitchIn.on('change', function() {
+      if (advSwitchIn[0].checked) {
+        Snackbar.show('Turning ON advanced features...');
+        ss.turnOnAdvancedMerge().catch(logError).done();
+      }
+      else {
+        Snackbar.show('Turning OFF advanced features...');
+        ss.turnOffAdvancedMerge().catch(logError).done();
       }
     });
   };
