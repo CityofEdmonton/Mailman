@@ -6,9 +6,21 @@ var SheetsService = {
    * @return {Array<string>} An array containing all of the Sheet names.
    */
   get: function() {
-    var ss = Utility.getSpreadsheet();
-    return ss.getSheets().map(function(sheet) {
-      return sheet.getName();
-    });
+    try {
+      var ss = Utility.getSpreadsheet();
+      var sheets = ss.getSheets();
+      var names = [];
+      sheets.forEach(function(sheet) {
+        var name = sheet.getName();
+        if (name !== 'mm-config') {
+          names.push(name);
+        }
+      });
+      return names;
+    }
+    catch (e) {
+      log(e);
+      throw e;
+    }
   }
 }
