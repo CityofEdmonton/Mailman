@@ -108,12 +108,12 @@ var MergeTemplateContainer = function(config) {
    * @param  {MergeTemplate} template The template to delete.
    */
   this.remove = function(template) {
-    var index = self.indexOf(template.toConfig().id);
+    var index = self.indexOf(template.getID());
     if (index === -1) {
       throw new Error('MergeTemplate not found.');
     }
 
-    service.delete(self.get(index)).then(
+    service.delete(template).then(
       function(result) {
         PubSub.publish('Rules.delete');
       },
@@ -142,14 +142,13 @@ var MergeTemplateContainer = function(config) {
    * @return {number} The index of the MergeTemplate with the given ID. -1 if not found.
    */
   this.indexOf = function(id) {
-    var returnID;
-    templates.forEach(function(element) {
-      if (element.toConfig().id === id) {
-        returnID = id;
+    for (var i = 0; i < templates.length; i++) {
+      if (templates[i].toConfig().id === id) {
+        return i;
       }
-    });
+    }
 
-    return returnID | -1;
+    return -1;
   };
 
   /**
