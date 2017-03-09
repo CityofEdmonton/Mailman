@@ -3,6 +3,7 @@
 var SettingsService = {
   MAILMAN_LOG_NAME: 'mailman_log',
   SS_KEY: 'MAILMAN_LOG_URL',
+  ADV_MERGE_KEY: 'MAILMAN_MERGE_KEY',
 
   /**
    * Turns on logging and creates a log at the root of the user's drive.
@@ -51,5 +52,39 @@ var SettingsService = {
   getLogURL: function() {
     var prop = PropertiesService.getDocumentProperties();
     return prop.getProperty(SettingsService.SS_KEY);
+  },
+
+  /**
+   * Gets the state of the advanced merge.
+   *
+   * @return {boolean} Returns true if advanced features are on, false otherwise.
+   */
+  getAdvancedMerge: function() {
+    var prop = PropertiesService.getDocumentProperties();
+
+    if (prop.getProperty(SettingsService.ADV_MERGE_KEY) == null) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  },
+
+  /**
+   * Turns on advanced merge features.
+   *
+   */
+  turnOnAdvancedMerge: function() {
+    var prop = PropertiesService.getDocumentProperties();
+    prop.setProperty(SettingsService.ADV_MERGE_KEY, true);
+  },
+
+  /**
+   * Turns off advanced merge features.
+   *
+   */
+  turnOffAdvancedMerge: function() {
+    var prop = PropertiesService.getDocumentProperties();
+    prop.deleteProperty(SettingsService.ADV_MERGE_KEY);
   }
 };
