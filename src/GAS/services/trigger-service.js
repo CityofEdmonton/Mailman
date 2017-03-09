@@ -2,7 +2,7 @@
 
 /**
  * This service is meant for handling triggers that run MergeTemplates repeatedly.
- * 
+ *
  * @type {Object}
  */
 var TriggerService = {
@@ -92,6 +92,20 @@ var TriggerService = {
     return triggers;
   },
 
+  deleteUnusedTriggers: function() {
+    var ss = Utility.getSpreadsheet();
+    var allTriggers = ScriptApp.getUserTriggers(ss);
+
+    var repeaters = MergeTemplateService.getMergeRepeaters();
+
+    allTriggers.forEach(function(trigger) {
+      if (!TriggerService.triggerExistsInRepeaters_(trigger, repeaters)) {
+        log('Deleting trigger ' + trigger.getUniqueId());
+        ScriptApp.deleteTrigger(trigger);
+      }
+    });
+  },
+
   //*** Private functions ***//
 
   createTimeBasedTrigger_: function(handler) {
@@ -110,5 +124,19 @@ var TriggerService = {
       .forSpreadsheet(ss)
       .onFormSubmit()
       .create();
+  },
+
+  triggerExistsInRepeaters_: function(trigger, repeaters) {
+    var id = trigger.getUniqueId();
+
+    for (var i = 0; i < repeaters.length; i++) {
+      for (var j = 0; j < repeaters[i].triggers.length; j++) {
+        if (id === repeaters[i].triggers[j]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 };

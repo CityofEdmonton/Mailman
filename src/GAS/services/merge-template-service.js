@@ -132,6 +132,7 @@ var MergeTemplateService = {
       if (row !== null) {
         sheet.deleteRow(row.getRowIndex());
       }
+      TriggerService.deleteUnusedTriggers();
     }
     catch (e) {
       log(e);
@@ -194,6 +195,8 @@ var MergeTemplateService = {
 
       var cell = row.getCell(1, MergeTemplateService.DATA_INDEX);
       cell.setValue(JSON.stringify(template));
+
+      TriggerService.deleteUnusedTriggers();
     }
     catch (e) {
       log(e);
@@ -235,29 +238,6 @@ var MergeTemplateService = {
   removeRepeatMerge: function(template) {
     try {
       var ss = Utility.getSpreadsheet();
-      var triggers = ScriptApp.getUserTriggers(ss);
-
-      var triggerIDs = template.mergeRepeater.triggers;
-
-      // Delete any triggers that are no longer doing anything
-      var repeaters = MergeTemplateService.getMergeRepeaters_();
-      triggerIDs.forEach(function(id) {
-        var found = false;
-
-        repeaters.forEach(function(repeater) {
-          if (repeater.triggers.indexOf(id) !== -1) {
-            found = true;
-          }
-        });
-
-        if (!found) {
-          log('Trigger not needed anymore: ' + id);
-          ScriptApp.deleteTrigger(TemplateService.getTriggerByID(id));
-        }
-        else {
-          log('Still need the trigger.')
-        }
-      });
 
       template.mergeRepeater = undefined;
       return template;
@@ -266,6 +246,19 @@ var MergeTemplateService = {
       log(e);
       throw e;
     }
+  },
+
+  getMergeRepeaters: function() {
+    var templates = MergeTemplateService.getAll().templates;
+    var mergeRepeaters = [];
+
+    templates.forEach(function(tpl) {
+      if (tpl.mergeRepeater != null) {
+        mergeRepeaters.push(tpl.mergeRepeater);
+      }
+    });
+
+    return mergeRepeaters;
   },
 
   /**
@@ -335,19 +328,6 @@ var MergeTemplateService = {
     newHeader.setValue(name);
 
     return newHeader;
-  },
-
-  getMergeRepeaters_: function() {
-    var templates = MergeTemplateService.getAll().templates;
-    var mergeRepeaters = [];
-
-    templates.forEach(function(tpl) {
-      if (tpl.mergeRepeater != null) {
-        mergeRepeaters.push(tpl.mergeRepeater);
-      }
-    });
-
-    return mergeRepeaters;
   },
 
   validateTriggers_: function(triggers) {

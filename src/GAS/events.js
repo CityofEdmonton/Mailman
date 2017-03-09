@@ -34,6 +34,7 @@ function openSidebar() {
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 
   Utility.setupSheet();
+  TriggerService.deleteUnusedTriggers();
 
   SpreadsheetApp.getUi().showSidebar(ui);
 }
