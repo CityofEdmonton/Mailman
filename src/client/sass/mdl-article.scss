@@ -73,7 +73,8 @@
 
 .demo-content {
   border-radius: 2px;
-  padding: 52px 26px;
+  padding: 12px 26px;
+  padding-bottom: 56px;
   position: relative;
 
   h3 {
@@ -94,13 +95,6 @@
     &:active {
       background-color: rgba(158, 158, 158, .4);
     }
-  }
-}
-
-.demo-layout.is-small-screen {
-  .demo-content {
-    padding: 40px 28px;
-    padding-bottom: 56px;
   }
 }
 
