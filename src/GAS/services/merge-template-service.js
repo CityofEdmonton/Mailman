@@ -41,6 +41,11 @@ var MergeTemplateService = {
         }
       }
 
+      rObj.templates.forEach(function(template) {
+        MergeTemplateService.validate(template);
+        MergeTemplateService.validateMergeRepeater(template);
+      });
+
       return rObj;
     }
     catch (e) {
@@ -263,7 +268,6 @@ var MergeTemplateService = {
 
   /**
    * Validates the correctness of a MergeTemplate.
-   * TODO validate the MergeRepeaters
    *
    * @param  {Object} template A simple config Object representing a MergeTemplate.
    */
@@ -291,6 +295,27 @@ var MergeTemplateService = {
     }
     if (template.mergeData.timestampColumn == null) {
       throw new Error('MergeTemplate.mergeData.timestampColumn is null');
+    }
+  },
+
+  validateMergeRepeater: function(template) {
+    if (template.mergeRepeater != null) {
+      if (template.mergeRepeater.owner == null) {
+        throw new Error('MergeTemplate.mergeRepeater.owner is null');
+      }
+      if (template.mergeRepeater.triggers == null || template.mergeRepeater.triggers.length === 0) {
+        throw new Error('MergeTemplate.mergeRepeater.triggers is empty');
+      }
+
+      for (var i = 0; i < template.mergeRepeater.triggers.length; i++) {
+        var triggerID = template.mergeRepeater.triggers[i];
+        if (TriggerService.getTriggerByID(triggerID) == null) {
+          log('Deleting MergeRepeater'); // TODO use the function for this.
+          template.mergeRepeater = null;
+          MergeTemplateService.update(template);
+          break;
+        }
+      }
     }
   },
 
