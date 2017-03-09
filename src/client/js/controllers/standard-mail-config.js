@@ -24,56 +24,7 @@ CardsConfig.buildCardRepo = function(contentArea) {
   var sService = new SheetsService();
   var eService = new EmailService();
 
-  repo[CardNames.title] = new InputCard(contentArea, {
-    title: 'What should this merge template be called?',
-    help: 'This title will help you differentiate this merge from others.',
-    label: 'Title...'
-  });
-
-  repo[CardNames.sheet] = new InputCard(contentArea, {
-    title: 'Which tab are we sending from?',
-    help: 'This tab must contain all the information you may want to send in an email.',
-    label: 'Tab...'
-  });
-  sService.get().then(
-    function(result) {
-      repo[CardNames.sheet].setAutocomplete({
-        results: result,
-        maxResults: CardsConfig.maxResults,
-        triggerOnFocus: true
-      });
-    },
-    function(err) {
-      console.error(err);
-    }
-  ).done();
-
-
-  repo[CardNames.to] = new InputCard(contentArea, {
-    title: 'Who are you sending to?',
-    help: 'This is the column filled with the email addresses of the recipients.',
-    label: 'To...',
-    error: {
-      hint: 'Must be a single header surrounded by template tags',
-      pattern: '<<[^<>]*>>'
-    }
-  });
-
-  repo[CardNames.row] = new InputCard(contentArea, {
-    title: 'Which row contains your header titles?',
-    help: 'Mailman will use this to swap out template tags.',
-    label: 'Header row...',
-    error: {
-      hint: 'Must be a number greater than 0',
-      pattern: '[1-9][0-9]*'
-    }
-  });
-  repo[CardNames.row].setValue(1); // Default row 1.
-  repo[CardNames.row].attachEvent('card.hide', function(event, card) {
-    // Set the header row
-    var row = card.getValue();
-    var sheet = repo[CardNames.sheet].getValue();
-
+  var setHeaders = function(sheet, row) {
     hService.get(sheet, row).then(
       function(values) {
         repo[CardNames.to].setAutocomplete({
@@ -114,7 +65,64 @@ CardsConfig.buildCardRepo = function(contentArea) {
         console.error(err);
       }
     ).done();
+  };
 
+  repo[CardNames.title] = new InputCard(contentArea, {
+    title: 'What should this merge template be called?',
+    help: 'This title will help you differentiate this merge from others.',
+    label: 'Title...'
+  });
+
+  repo[CardNames.sheet] = new InputCard(contentArea, {
+    title: 'Which tab are we sending from?',
+    help: 'This tab must contain all the information you may want to send in an email.',
+    label: 'Tab...'
+  });
+  repo[CardNames.sheet].attachEvent('card.hide', function(event, card) {
+    // Set the header row
+    var row = repo[CardNames.row].getValue();
+    var sheet = repo[CardNames.sheet].getValue();
+    setHeaders(sheet, row);
+  });
+  sService.get().then(
+    function(result) {
+      repo[CardNames.sheet].setAutocomplete({
+        results: result,
+        maxResults: CardsConfig.maxResults,
+        triggerOnFocus: true
+      });
+    },
+    function(err) {
+      console.error(err);
+    }
+  ).done();
+
+
+  repo[CardNames.to] = new InputCard(contentArea, {
+    title: 'Who are you sending to?',
+    help: 'This is the column filled with the email addresses of the recipients.',
+    label: 'To...',
+    error: {
+      hint: 'Must be a single header surrounded by template tags',
+      pattern: '<<[^<>]*>>'
+    }
+  });
+
+  repo[CardNames.row] = new InputCard(contentArea, {
+    title: 'Which row contains your header titles?',
+    help: 'Mailman will use this to swap out template tags.',
+    label: 'Header row...',
+    error: {
+      hint: 'Must be a number greater than 0',
+      pattern: '[1-9][0-9]*'
+    }
+  });
+  repo[CardNames.row].setValue(1); // Default row 1.
+  repo[CardNames.row].attachEvent('card.hide', function(event, card) {
+    // Set the header row
+    var row = card.getValue();
+    var sheet = repo[CardNames.sheet].getValue();
+    setHeaders(sheet, row);
   });
 
   repo[CardNames.subject] = new InputCard(contentArea, {
@@ -176,6 +184,8 @@ CardsConfig.buildCardRepo = function(contentArea) {
 
   return repo;
 };
+
+
 
 
 /** */
