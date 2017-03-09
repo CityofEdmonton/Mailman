@@ -1,38 +1,6 @@
 
 function runAllMergeTemplates() {
-  var props = PropertiesService.getDocumentProperties();
-  var authInfo = ScriptApp.getAuthorizationInfo(ScriptApp.AuthMode.FULL);
-  log(authInfo.getAuthorizationStatus());
-  if (authInfo.getAuthorizationStatus() == ScriptApp.AuthorizationStatus.REQUIRED) {
-    log ('Reauth required.');
-
-    var lastAuthEmailDate = props.getProperty(LAST_AUTH_KEY);
-    var today = new Date().toDateString();
-    if (lastAuthEmailDate != today) {
-      log('A new auth email will be sent.');
-
-      if (MailApp.getRemainingDailyQuota() > 0) {
-
-        var html = HtmlService.createTemplateFromFile('authorization-email');
-        html.url = authInfo.getAuthorizationUrl();
-        html.addonTitle = APP_NAME;
-        var message = html.evaluate();
-
-        MailApp.sendEmail(Session.getEffectiveUser().getEmail(),
-            'Authorization Required',
-            message.getContent(), {
-                name: APP_NAME,
-                htmlBody: message.getContent()
-            }
-        );
-      }
-
-      props.setProperty(LAST_AUTH_KEY, today);
-    }
-  }
-  else {
-    MergeTemplateService.runAll();
-  }
+  MergeTemplateService.runAll();
 };
 
 
