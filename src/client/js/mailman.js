@@ -83,20 +83,14 @@ var MailMan = function(appendTo) {
     });
 
     PubSub.subscribe('Rules.add', function(msg, data) {
-      cardsView.cleanup();
       mtListView.show();
-
-      if (cardsView != null) {
-        cardsView.hide();
-      }
     });
 
     PubSub.subscribe('Rules.update', function(msg, data) {
-      cardsView.cleanup();
       mtListView.show();
 
       if (cardsView != null) {
-        cardsView.hide();
+        cardsView.cleanup();
       }
     });
 
