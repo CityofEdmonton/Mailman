@@ -11,6 +11,6 @@ var MetadataService = {
   },
 
   getQuota: function() {
-
+    return MailApp.getRemainingDailyQuota();
   }
 };

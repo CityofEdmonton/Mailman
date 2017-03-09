@@ -12,28 +12,41 @@ var MetadataService = function() {
   var user;
   var version;
   var quota;
+  var resetInterval = 30000;
+
+  this.init_ = function() {
+    window.setInterval(resetCache, resetInterval);
+  };
 
   this.getUser = function() {
     if (user == null) {
       user = Provoke('MetadataService', 'getUser').then();
-      return user;
     }
-    else {
-      return user;
-    }
+
+    return user;
   };
 
   this.getVersion = function() {
-    if (user == null) {
-      return Provoke('MetadataService', 'getVersion');
+    if (version == null) {
+      version = Provoke('MetadataService', 'getVersion');
     }
-    else {
-      return new Promise(function(resolve, reject) {
-        resolve(version);
-      });
-    }
+
+    return version;
   };
 
+  this.getQuota = function() {
+    if (quota == null) {
+      quota = Provoke('MetadataService', 'getQuota');
+    }
+
+    return quota;
+  };
+
+  var resetCache = function() {
+    quota = null;
+  };
+
+  this.init_();
 };
 
 
