@@ -112,7 +112,7 @@ var MailMan = function(appendTo) {
 
     mtListView.setDeleteDialog(deleteDialog);
     mtListView.setDeleteHandler(function(template) {
-      snackbar.show('Merge template deleted.');
+      snackbar.show('Deleting merge template...');
       templatesContainer.remove(template);
     });
 
