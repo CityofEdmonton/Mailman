@@ -50,7 +50,7 @@ var SettingsView = function(appendTo) {
 
     MetadataService.getVersion().then(
       function(result) {
-        version.text('Version: ' + result);
+        version.text('Mailman ' + result);
       },
       logError
     ).done();
