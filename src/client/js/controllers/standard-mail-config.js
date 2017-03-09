@@ -25,14 +25,14 @@ CardsConfig.buildCardRepo = function(contentArea) {
   var eService = new EmailService();
 
   repo[CardNames.title] = new InputCard(contentArea, {
-    title: 'Title',
-    help: 'What should this merge be called? This title will help you differentiate this merge from others.',
+    title: 'What should this merge template be called?',
+    help: 'This title will help you differentiate this merge from others.',
     label: 'Title...'
   });
 
   repo[CardNames.sheet] = new InputCard(contentArea, {
-    title: 'Tab',
-    help: 'Which tab are we sending from? This tab must contain all the information you may want to send in an email.',
+    title: 'Which tab are we sending from?',
+    help: 'This tab must contain all the information you may want to send in an email.',
     label: 'Tab...'
   });
   sService.get().then(
@@ -50,18 +50,18 @@ CardsConfig.buildCardRepo = function(contentArea) {
 
 
   repo[CardNames.to] = new InputCard(contentArea, {
-    title: 'To',
-    help: 'Who are you sending to? This is the column filled with the email addresses of the recipients.',
+    title: 'Who are you sending to?',
+    help: 'This is the column filled with the email addresses of the recipients.',
     label: 'To...',
     error: {
-      hint: 'Must be a single header surrounded by whack whacks',
+      hint: 'Must be a single header surrounded by template tags',
       pattern: '<<[^<>]*>>'
     }
   });
 
   repo[CardNames.row] = new InputCard(contentArea, {
-    title: 'Header Row',
-    help: 'Which row contains your header titles?',
+    title: 'Which row contains your header titles?',
+    help: 'Mailman will use this to swap out template tags.',
     label: 'Header row...',
     error: {
       hint: 'Must be a number greater than 0',
@@ -118,24 +118,22 @@ CardsConfig.buildCardRepo = function(contentArea) {
   });
 
   repo[CardNames.subject] = new InputCard(contentArea, {
-    title: 'Subject',
+    title: 'What would you like your email subject to be?',
     paragraphs: [
       'Tip: try typing <<'
     ],
-    help: 'What\'s your subject? Recipients will see this as the subject line of the email. ' +
-      'Type << to see a list of column names. ' +
-      'These whack whacks will be swapped out with the associated values in the Sheet.',
+    help: 'Recipients will see this as the subject line of the email. Type << to see a list of column names. ' +
+      'Template tags will be swapped out with the associated values in the Sheet.',
     label: 'Subject...'
   });
 
   repo[CardNames.body] = new TextareaCard(contentArea, {
-    title: 'Body',
+    title: 'What would you like your email body to be?',
     paragraphs: [
       'Tip: try typing <<'
     ],
-    help: 'What\'s in the body? Recipients will see this as the body of the email. ' +
-      'Type << to see a list of column names. These whack whacks ' +
-      'will be swapped out with the associated values in the Sheet.',
+    help: 'Recipients will see this as the body of the email. Type << to see a list of column names. ' +
+    'Template tags will be swapped out with the associated values in the Sheet.',
     label: 'Body...'
   });
 
@@ -163,17 +161,17 @@ CardsConfig.buildCardRepo = function(contentArea) {
   });
 
   repo[CardNames.conditional] = new ConditionalInputCard(contentArea, {
-    title: 'Conditional send (optional)',
+    title: 'Conditionally send this merge?',
     help: 'This column is used to determine when to send an email. If a given row reads TRUE, ' +
       'Mailman will send an email. Any other value and Mailman won\'t send. This can be useful for scheduling your ' +
       'merges or ensuring you don\'t accidentally email someone twice.',
     label: 'Conditional',
     error: {
-      hint: 'Must be a single header surrounded by whack whacks',
+      hint: 'Must be a single header surrounded by template tags',
       pattern: '<<[^<>]*>>'
     },
     enabled: true,
-    checkboxText: 'Filter this merge?'
+    checkboxText: 'Use conditional sending?'
   });
 
   return repo;
