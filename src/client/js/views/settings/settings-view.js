@@ -3,6 +3,7 @@ var Util = require('../../util/util.js');
 var PubSub = require('pubsub-js');
 var SettingsService = require('../../services/settings-service.js');
 var Snackbar = require('../snackbar/snackbar.js');
+var MetadataService = require('../../services/metadata-service.js');
 
 
 
@@ -26,6 +27,7 @@ var SettingsView = function(appendTo) {
   var logSwitchIn = base.find('[data-id="log-switch-input"]');
   var logSwitch = base.find('[data-id="log-switch"]');
   var logIcon = base.find('[data-id="log-icon"]');
+  var emailsLeft = base.find('[data-id="emails-left"]');
 
   //***** private methods *****//
 
@@ -41,6 +43,16 @@ var SettingsView = function(appendTo) {
       },
       logError
     ).done();
+
+    window.setInterval(function() {
+      MetadataService.getQuota().then(
+        function(result) {
+          emailsLeft.text(result + ' daily emails remaining');
+        },
+        logError
+      );
+    }, 10000);
+
 
     back.on('click', function() {
       self.hide();
