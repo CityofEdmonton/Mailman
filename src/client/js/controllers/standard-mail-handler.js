@@ -21,7 +21,6 @@ var StandardMailHandler = function(parent) {
     cardRepository[CardNames.title].setValidation(cardValidator);
     cardRepository[CardNames.sheet].setValidation(cardValidator);
     cardRepository[CardNames.row].setValidation(cardValidator);
-    cardRepository[CardNames.to].setValidation(cardValidator);
 
     cardsList = new List();
     cardsList.add(CardNames.title);
@@ -65,7 +64,11 @@ var StandardMailHandler = function(parent) {
     cardRepository[CardNames.title].setValue(updateConfig.mergeData.title);
     cardRepository[CardNames.sheet].setValue(updateConfig.mergeData.sheet);
     cardRepository[CardNames.row].setValue(updateConfig.mergeData.headerRow);
-    cardRepository[CardNames.to].setValue(updateConfig.mergeData.data.to);
+    cardRepository[CardNames.to].setValue({
+      to: updateConfig.mergeData.data.to,
+      cc: updateConfig.mergeData.data.cc,
+      bcc: updateConfig.mergeData.data.bcc
+    });
     cardRepository[CardNames.subject].setValue(updateConfig.mergeData.data.subject);
     cardRepository[CardNames.body].setValue(updateConfig.mergeData.data.body);
 
@@ -81,7 +84,7 @@ var StandardMailHandler = function(parent) {
   };
 
   this.getMergeTemplate = function() {
-
+    var toVals = cardRepository[CardNames.to].getValue();
     return new MergeTemplate(
       Object.assign({}, updateConfig, {
         mergeData: {
@@ -91,7 +94,9 @@ var StandardMailHandler = function(parent) {
           conditional: cardRepository[CardNames.conditional].getValue(),
           type: type,
           data: {
-            to: cardRepository[CardNames.to].getValue(),
+            to: toVals.to,
+            cc: toVals.cc,
+            bcc: toVals.bcc,
             subject: cardRepository[CardNames.subject].getValue(),
             body: cardRepository[CardNames.body].getValue()
           }

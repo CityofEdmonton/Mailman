@@ -3,6 +3,7 @@ var InputCard = require('../card/card-input.js');
 var TitledCard = require('../card/card-titled.js');
 var TextareaCard = require('../card/card-textarea.js');
 var ConditionalInputCard = require('../card/conditional-input-card.js');
+var ToCard = require('../card/to-cc-bcc.js');
 var Snackbar = require('../views/snackbar/snackbar.js');
 var HeaderService = require('../services/header-service.js');
 var SheetsService = require('../services/sheets-service.js');
@@ -103,10 +104,9 @@ CardsConfig.buildCardRepo = function(contentArea) {
   // It aims to match template tags << >> and emails email@domain in a comma delimited list.
   // It supports just one email or just one template tag and any combination of them.
   // It doesn't support spaces between the names. Just commas.
-  repo[CardNames.to] = new InputCard(contentArea, {
+  repo[CardNames.to] = new ToCard(contentArea, {
     title: 'Who are you sending to?',
     help: 'This is the column filled with the email addresses of the recipients.',
-    label: 'To...',
     error: {
       hint: 'Must be template tags << >> or emails seperated by commas',
       pattern: '(<<[^<>]*>>|[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+))(,<<[^<>]*>>|,[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*)*'
