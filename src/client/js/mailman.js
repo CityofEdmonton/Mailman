@@ -74,6 +74,12 @@ var MailMan = function(appendTo) {
     // PubSub
     PubSub.subscribe('Rules.add', function(msg, data) {
       snackbar.show('Merge template created.');
+
+      mtListView.show();
+
+      if (cardsView != null) {
+        cardsView.cleanup();
+      }
     });
     PubSub.subscribe('Rules.update', function(msg, data) {
       snackbar.show('Merge template updated.');
