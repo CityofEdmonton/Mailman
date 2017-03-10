@@ -35,7 +35,7 @@ var InputCard = function(appendTo, options) {
 
   this.init_ = function(appendTo, options) {
     this.append(innerBase);
-     acConfig = new AutocompleteConfig(this);
+     acConfig = new AutocompleteConfig(mdlObject);
 
     if (options !== undefined) {
       if (options.label !== undefined) {

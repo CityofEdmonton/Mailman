@@ -6,15 +6,15 @@
  * implementation, such as:
  *  - pre and post tags. These surround a search term. (in my case << and >>)
  *  - Swapping terms into the middle of a block of text.
+ * This code is the worst. TODO refactor, if time permits.
  *
  * @param {InputCard|TextareaCard} myCard The Card this autocomplete is for. This is a really dirty way to do this,
  *                                        as the implementations are very co-dependant. It works though.
  */
-var Config = function(myCard) {
+var Config = function(mdlObject) {
 
   // Private variables
-  var card = myCard;
-  var input = card.getTextElement();
+  var input = mdlObject.find('input');
 
   //***** Privileged Methods *****//
 
@@ -62,7 +62,8 @@ var Config = function(myCard) {
           terms.push(prepend);
           terms.push(ui.item.value);
           terms.push(append);
-          card.setValue(terms.join(''));
+          // card.setValue(terms.join(''));
+          mdlObject[0].MaterialTextfield.change(terms.join(''));
         }
         else {
           var cursor = input[0].selectionStart;
@@ -73,7 +74,7 @@ var Config = function(myCard) {
 
           var newCursorPos = newStart.length;
 
-          card.setValue(newValue);
+          mdlObject[0].MaterialTextfield.change(newValue);
           input[0].focus();
           input[0].selectionStart = newCursorPos;
           input[0].selectionEnd = newCursorPos;
