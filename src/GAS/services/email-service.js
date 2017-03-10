@@ -82,14 +82,20 @@ var EmailService = {
     EmailService.send(Session.getActiveUser().getEmail(), subject, body);
   },
 
-  send: function(to, subject, body) {
+  send: function(to, subject, body, cc, bcc) {
     var htmlEmail = HtmlService.createTemplateFromFile('email-template');
     htmlEmail.id = Utility.getSpreadsheet().getId();
     htmlEmail.bodyArray = body.split('\n');
 
-    log('Sending email to ' + to);
+    log('Sending email to ' + JSON.stringify({
+      to: to,
+      cc: cc,
+      bcc: bcc
+    }));
     GmailApp.sendEmail(to, subject, body, {
-      htmlBody: htmlEmail.evaluate().getContent()
+      htmlBody: htmlEmail.evaluate().getContent(),
+      cc: cc,
+      bcc: bcc
     });
   },
 
@@ -126,7 +132,7 @@ var EmailService = {
    * @param {Object} template The MergeTemplate used to send the email. See the client-side object for info.
    * @return {Boolean} true if the email was sent, false otherwise.
    */
-  sendHelper: function(headerRow, row, template) { // sendBasicEmail
+  sendHelper: function(headerRow, row, template) {
 
     var combinedObj = {};
     for (var j = 0; j < headerRow.length; j++) {
@@ -137,8 +143,17 @@ var EmailService = {
     var to = EmailService.replaceTags(template.mergeData.data.to, combinedObj);
     var subject = EmailService.replaceTags(template.mergeData.data.subject, combinedObj);
     var body = EmailService.replaceTags(template.mergeData.data.body, combinedObj);
+    var cc;
+    var bcc;
 
-    EmailService.send(to, subject, body);
+    if (template.mergeData.data.cc != null) {
+      cc = EmailService.replaceTags(template.mergeData.data.cc, combinedObj);;
+    }
+    if (template.mergeData.data.bcc != null) {
+      bcc = EmailService.replaceTags(template.mergeData.data.bcc, combinedObj);;
+    }
+
+    EmailService.send(to, subject, body, cc, bcc);
 
     return true;
   },
@@ -163,9 +178,18 @@ var EmailService = {
     var subject = EmailService.replaceTags(template.mergeData.data.subject, combinedObj);
     var body = EmailService.replaceTags(template.mergeData.data.body, combinedObj);
     var sendColumn = EmailService.replaceTags(template.mergeData.conditional, combinedObj);
+    var cc;
+    var bcc;
+
+    if (template.mergeData.data.cc != null) {
+      cc = EmailService.replaceTags(template.mergeData.data.cc, combinedObj);;
+    }
+    if (template.mergeData.data.bcc != null) {
+      bcc = EmailService.replaceTags(template.mergeData.data.bcc, combinedObj);;
+    }
 
     if (sendColumn.toLowerCase() == 'true') {
-      EmailService.send(to, subject, body);
+      EmailService.send(to, subject, body, cc, bcc);
 
       return true;
     }
