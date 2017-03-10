@@ -14,7 +14,13 @@
 var Config = function(mdlObject) {
 
   // Private variables
-  var input = mdlObject.find('input');
+  var input;
+  if (mdlObject.find('input').length !== 0) {
+    input = mdlObject.find('input');
+  }
+  if (mdlObject.find('textarea').length !== 0) {
+    input = mdlObject.find('textarea');
+  }
 
   //***** Privileged Methods *****//
 
