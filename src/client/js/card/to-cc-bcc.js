@@ -1,6 +1,7 @@
 var inputHTML = require('./to-cc-bcc.html');
 var TitledCard = require('./card-titled.js');
 var AutocompleteConfig = require('./autocomplete-config.js');
+var Util = require('../util/util.js');
 
 
 
@@ -24,6 +25,13 @@ var InputCard = function(appendTo, options) {
   var innerBase = $(inputHTML);
   var showingFields;
 
+  var offIcon = 'keyboard_arrow_down';
+  var onIcon = 'keyboard_arrow_up';
+
+  // JQuery objects
+
+  var bonusButton = innerBase.find('[data-id="toggle-bonus"]');
+  var toIcon = innerBase.find('[data-id="toggle-bonus-icon"]');
   var toMDL = innerBase.find('[data-id="to-mdl"]');
   var toInput = innerBase.find('[data-id="to-input"]');
   var toError = innerBase.find('[data-id="to-error"]');
@@ -60,6 +68,16 @@ var InputCard = function(appendTo, options) {
       }
     }
 
+    bonusButton.on('click', function(e) {
+      if (showingFields) {
+        hideFields();
+      }
+      else {
+        showFields();
+      }
+    });
+    hideFields();
+
     componentHandler.upgradeElement(toMDL[0], 'MaterialTextfield');
     componentHandler.upgradeElement(ccMDL[0], 'MaterialTextfield');
     componentHandler.upgradeElement(bccMDL[0], 'MaterialTextfield');
@@ -75,11 +93,21 @@ var InputCard = function(appendTo, options) {
   };
 
   var showFields = function() {
-
+    showingFields = true;
+    toIcon.text(onIcon);
+    Util.setHidden(ccMDL, false);
+    Util.setHidden(ccErrorSpacer, false);
+    Util.setHidden(bccMDL, false);
+    Util.setHidden(bccErrorSpacer, false);
   };
 
   var hideFields = function() {
-
+    showingFields = false;
+    toIcon.text(offIcon);
+    Util.setHidden(ccMDL, true);
+    Util.setHidden(ccErrorSpacer, true);
+    Util.setHidden(bccMDL, true);
+    Util.setHidden(bccErrorSpacer, true);
   };
 
   //***** Public Methods *****//
@@ -132,19 +160,45 @@ var InputCard = function(appendTo, options) {
   /**
    * Gets the value in the input.
    *
-   * @return {string} The value in the input.
+   * @param {Object} value The Object containing to, cc and bcc.
+   * @param {string} value.to The to field.
+   * @param {string} value.cc The cc field.
+   * @param {string} value.bcc The bcc field.
    */
   this.getValue = function() {
-    return toInput.val();
+    if (showingFields) {
+      return {
+        to: toInput.val(),
+        cc: ccInput.val(),
+        bcc: bccInput.val()
+      };
+    }
+    else {
+      return {
+        to: toInput.val()
+      };
+    }
   };
 
   /**
    * Sets the value of the input.
    *
-   * @param {string} value The value to set in the input.
+   * @param {Object} value The Object containing to, cc and bcc.
+   * @param {string} value.to The to field.
+   * @param {string} value.cc The cc field.
+   * @param {string} value.bcc The bcc field.
    */
   this.setValue = function(value) {
-    toMDL[0].MaterialTextfield.change(value);
+    if (value.cc != null || value.bcc != null) {
+      showFields();
+    }
+    else {
+      hideFields();
+    }
+
+    ccMDL[0].MaterialTextfield.change(value.cc);
+    bccMDL[0].MaterialTextfield.change(value.bcc);
+    toMDL[0].MaterialTextfield.change(value.to);
   };
 
   /**
