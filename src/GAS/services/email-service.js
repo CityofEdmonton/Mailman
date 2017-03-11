@@ -83,6 +83,10 @@ var EmailService = {
   },
 
   send: function(to, subject, body, cc, bcc) {
+    if (to === '' || to == null) {
+      return;
+    }
+
     var htmlEmail = HtmlService.createTemplateFromFile('email-template');
     htmlEmail.id = Utility.getSpreadsheet().getId();
     htmlEmail.bodyArray = body.split('\n');
