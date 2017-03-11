@@ -84,7 +84,7 @@ var EmailService = {
 
   send: function(to, subject, body, cc, bcc) {
     if (to === '' || to == null) {
-      return;
+      return false;
     }
 
     var htmlEmail = HtmlService.createTemplateFromFile('email-template');
@@ -101,6 +101,8 @@ var EmailService = {
       cc: cc,
       bcc: bcc
     });
+
+    return true;
   },
 
   /**
@@ -157,9 +159,7 @@ var EmailService = {
       bcc = EmailService.replaceTags(template.mergeData.data.bcc, combinedObj);;
     }
 
-    EmailService.send(to, subject, body, cc, bcc);
-
-    return true;
+    return EmailService.send(to, subject, body, cc, bcc);
   },
 
   /**
@@ -193,9 +193,7 @@ var EmailService = {
     }
 
     if (sendColumn.toLowerCase() == 'true') {
-      EmailService.send(to, subject, body, cc, bcc);
-
-      return true;
+      return EmailService.send(to, subject, body, cc, bcc);
     }
 
     return false;
