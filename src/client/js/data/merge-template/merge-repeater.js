@@ -18,6 +18,7 @@ var MergeRepeater = function(config) {
   var triggers;
   var owner;
   var events;
+  var sheetID;
 
   //***** Private Methods *****//
 
@@ -38,6 +39,9 @@ var MergeRepeater = function(config) {
     }
     if (config.events != null) {
       events = config.events;
+    }
+    if (config.sheetID != null) {
+      sheetID = config.sheetID;
     }
   }
 
@@ -69,7 +73,8 @@ var MergeRepeater = function(config) {
     return {
       triggers: triggers,
       owner: owner,
-      events: events
+      events: events,
+      sheetID: sheetID
     };
   };
 

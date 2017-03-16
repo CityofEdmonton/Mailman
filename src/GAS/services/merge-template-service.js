@@ -225,7 +225,8 @@ var MergeTemplateService = {
         owner: Session.getEffectiveUser().getEmail(),
         events: [
           'Merge Repeater created.'
-        ]
+        ],
+        sheetID: ss.getId()
       }
     }
     catch (e) {
@@ -307,14 +308,12 @@ var MergeTemplateService = {
         throw new Error('MergeTemplate.mergeRepeater.triggers is empty');
       }
 
-      for (var i = 0; i < template.mergeRepeater.triggers.length; i++) {
-        var triggerID = template.mergeRepeater.triggers[i];
-        if (TriggerService.getTriggerByID(triggerID) == null) {
-          log('Deleting MergeRepeater'); // TODO use the function for this.
-          template.mergeRepeater = null;
-          MergeTemplateService.update(template);
-          break;
-        }
+      log('SheetID: ' + Utility.getSpreadsheet().getId());
+      log(template.mergeRepeater.sheetID);
+      if (template.mergeRepeater.sheetID !== Utility.getSpreadsheet().getId()) {
+        log('Invalid sheet: removing MergeRepeater.'); // TODO use the function for this.
+        template.mergeRepeater = null;
+        MergeTemplateService.update(template);
       }
     }
   },
