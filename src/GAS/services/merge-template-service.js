@@ -308,8 +308,6 @@ var MergeTemplateService = {
         throw new Error('MergeTemplate.mergeRepeater.triggers is empty');
       }
 
-      log('SheetID: ' + Utility.getSpreadsheet().getId());
-      log(template.mergeRepeater.sheetID);
       if (template.mergeRepeater.sheetID !== Utility.getSpreadsheet().getId()) {
         log('Invalid sheet: removing MergeRepeater.'); // TODO use the function for this.
         template.mergeRepeater = null;
