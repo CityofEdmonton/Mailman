@@ -30,7 +30,7 @@ var MergeTemplateService = {
       };
 
       for (var i = 0; i < range.getNumRows(); i++) {
-        var row = range.offset(i, 0, 1, range.getNumColumns());
+        var row = range.offset(i, 0, 1, MergeTemplateService.DATA_INDEX);
         var value = row.getCell(1, MergeTemplateService.DATA_INDEX).getDisplayValue();
 
         if (value === '') {
@@ -150,6 +150,7 @@ var MergeTemplateService = {
 
       if (row !== null) {
         log('Deleting ' + id);
+        sheet.appendRow(['']);
         sheet.deleteRow(row.getRowIndex());
       }
       TriggerService.deleteUnusedTriggers();
