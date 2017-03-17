@@ -31,19 +31,35 @@ var MergeTemplateService = {
 
       for (var i = 0; i < range.getNumRows(); i++) {
         var row = range.offset(i, 0, 1, range.getNumColumns());
+        var value = row.getCell(1, MergeTemplateService.DATA_INDEX).getDisplayValue();
+
+        if (value === '') {
+          continue;
+        }
+
+        var config;
         try {
-          var config = JSON.parse(row.getCell(1, MergeTemplateService.DATA_INDEX).getDisplayValue());
+          config = JSON.parse(value);
+          MergeTemplateService.validate(config);
           rObj.templates.push(config);
         }
         catch (e) {
           // Potentially delete the template.
-          log('Invalid JSON discovered.');
+          log(e);
+          MergeTemplateService.deleteByID(config.id);
+          i--;
         }
       }
 
       rObj.templates.forEach(function(template) {
-        MergeTemplateService.validate(template);
-        MergeTemplateService.validateMergeRepeater(template);
+        try {
+          MergeTemplateService.validateMergeRepeater(template);
+        }
+        catch(e) {
+          log(e);
+          template.mergeRepeater = null;
+          MergeTemplateService.update(template);
+        }
       });
 
       return rObj;
@@ -68,7 +84,7 @@ var MergeTemplateService = {
 
       var user = Session.getEffectiveUser().getEmail();
       var templates = MergeTemplateService.getAll().templates;
-      log(templates);
+
       templates = templates.filter(function(template) {
         if (template.mergeRepeater == null) {
           return false;
@@ -81,8 +97,6 @@ var MergeTemplateService = {
 
         return true;
       });
-
-      log(JSON.stringify(templates));
 
       templates.forEach(function(template) {
         var mergeData = template.mergeData;
@@ -135,6 +149,7 @@ var MergeTemplateService = {
       var row = MergeTemplateService.getRowByID(id);
 
       if (row !== null) {
+        log('Deleting ' + id);
         sheet.deleteRow(row.getRowIndex());
       }
       TriggerService.deleteUnusedTriggers();
@@ -309,9 +324,7 @@ var MergeTemplateService = {
       }
 
       if (template.mergeRepeater.sheetID !== Utility.getSpreadsheet().getId()) {
-        log('Invalid sheet: removing MergeRepeater.'); // TODO use the function for this.
-        template.mergeRepeater = null;
-        MergeTemplateService.update(template);
+        throw new Error('MergeTemplate.mergeRepeater.sheetID is invalid');
       }
     }
   },
