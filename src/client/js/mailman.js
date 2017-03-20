@@ -75,45 +75,30 @@ var MailMan = function(appendTo) {
     PubSub.subscribe('Rules.add', function(msg, data) {
       snackbar.show('Merge template created.');
 
-      mtListView.show();
+      showListView();
 
       if (cardsView != null) {
         cardsView.cleanup();
       }
-    });
-    PubSub.subscribe('Rules.update', function(msg, data) {
-      snackbar.show('Merge template updated.');
     });
     PubSub.subscribe('Rules.run', function(msg, data) {
       snackbar.show('Running merge "' + data.mergeData.title + '".');
     });
-
-    PubSub.subscribe('Rules.add', function(msg, data) {
-      mtListView.show();
-    });
-
     PubSub.subscribe('Rules.update', function(msg, data) {
-      mtListView.show();
+      snackbar.show('Merge template updated.');
+
+      showListView();
 
       if (cardsView != null) {
         cardsView.cleanup();
       }
     });
 
-    actionBar.setSettingsHandler(function() {
-      settingsView.show();
-      mtListView.hide();
-
-      if (cardsView != null) {
-        cardsView.hide();
-      }
-    });
+    actionBar.setSettingsHandler(showSettingsView);
 
     mtListView.setInstantHandler(function(e) {
       cardsView = createCardsView(base, StandardMailHandler);
-
-      mtListView.hide();
-      cardsView.show();
+      showCardsView();
     });
 
     mtListView.setDeleteDialog(deleteDialog);
@@ -124,8 +109,7 @@ var MailMan = function(appendTo) {
 
     mtListView.setEditHandler(function(template) {
       cardsView = createCardsView(base, StandardMailHandler, template);
-      mtListView.hide();
-      cardsView.show();
+      showCardsView();
     });
 
     mtListView.setRunDialog(runDialog);
@@ -157,10 +141,37 @@ var MailMan = function(appendTo) {
       }
     ).done();
 
-    mtListView.show();
+    showListView();
   };
 
   //***** PRIVATE *****//
+
+  var showListView = function() {
+    mtListView.show();
+    settingsView.hide();
+
+    if (cardsView != null) {
+      cardsView.hide();
+    }
+  };
+
+  var showSettingsView = function() {
+    settingsView.show();
+    mtListView.hide();
+
+    if (cardsView != null) {
+      cardsView.hide();
+    }
+  };
+
+  var showCardsView = function() {
+    mtListView.hide();
+    settingsView.hide();
+
+    if (cardsView != null) {
+      cardsView.show();
+    }
+  };
 
   var createCardsView = function(base, handler, data) {
 
