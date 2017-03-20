@@ -21,6 +21,13 @@ var StandardMailHandler = function(parent) {
     cardRepository[CardNames.title].setValidation(cardValidator);
     cardRepository[CardNames.sheet].setValidation(cardValidator);
     cardRepository[CardNames.row].setValidation(cardValidator);
+    cardRepository[CardNames.conditional].setValidation(function() {
+      if (cardRepository[CardNames.conditional].isEnabled() && cardRepository[CardNames.conditional].getValue() == '') {
+        return false;
+      }
+
+      return true;
+    });
 
     cardsList = new List();
     cardsList.add(CardNames.title);
