@@ -46,7 +46,9 @@ var MergeTemplateService = {
         catch (e) {
           // Potentially delete the template.
           log(e);
-          MergeTemplateService.deleteByID(config.id);
+          sheet.appendRow(['']);
+          sheet.deleteRow(row.getRowIndex());
+          log('Deleting invalid MergeTemplate.');
           i--;
         }
       }
