@@ -1,3 +1,11 @@
+/**
+ * This module exports the MergeTemplateContainer object.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
+
 var MergeTemplate = require('./merge-template/merge-template.js');
 var MTService = require('../services/merge-template-service.js');
 var PubSub = require('pubsub-js');

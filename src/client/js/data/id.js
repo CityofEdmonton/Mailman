@@ -1,9 +1,15 @@
 /**
- * Thanks to gordonbrander for the implementation. Simple and effective.
- * See: https://gist.github.com/gordonbrander/2230317
- * Useful for less than 10000 ids. Beyond that, collisions start to occur.
+ * Thanks to {@link https://gist.github.com/gordonbrander/2230317|gordonbrander} for the implementation.
+ * Simple and effective. Useful for less than 10000 ids. Beyond that, collisions start to occur.
  *
+ * @module
+ */
+
+/**
+ * Generates a string that can be used as an id.
+ * 
  * @return {string} A randomized string.
+ * @alias module:client/js/data/id.ID
  */
 var ID = function() {
   // Math.random should be unique because of its seeding algorithm.
