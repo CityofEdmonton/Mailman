@@ -1,5 +1,7 @@
 /**
  * This module exports a ConditionalInputCard object.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
  * @module
  */
 

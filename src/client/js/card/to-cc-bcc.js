@@ -1,5 +1,7 @@
 /**
  * This module exports a MultifieldCard object. This is used to get to, cc and bcc info from users.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
  * @module
  */
 

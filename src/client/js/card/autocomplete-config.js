@@ -1,5 +1,8 @@
 /**
- * This module exports a TextareaCard constructor.
+ * This module exports a config Object used for setting up autocomplete. This is used in InputCard, TextareaCard,
+ * ConditionalInputCard and MultifieldCard.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
  * @module
  */
 

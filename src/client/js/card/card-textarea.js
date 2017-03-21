@@ -1,5 +1,7 @@
 /**
  * This module exports a TextareaCard constructor.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
  * @module
  */
 
