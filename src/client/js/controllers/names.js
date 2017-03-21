@@ -3,7 +3,8 @@
 /**
  * Exports an Object containing all the Card names.
  *
- * @type {Object}
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
  */
 module.exports = {
   sheet: 'Sheet',

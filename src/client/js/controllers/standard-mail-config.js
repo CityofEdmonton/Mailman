@@ -1,3 +1,12 @@
+/**
+ * This module exports a function that assists in setting up a series of Cards.
+ * This is one of the modules that would need to be swapped out if Mailman were to be repurposed.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
+
 var CardNames = require('./names.js');
 var InputCard = require('../card/card-input.js');
 var TitledCard = require('../card/card-titled.js');
@@ -9,14 +18,30 @@ var HeaderService = require('../services/header-service.js');
 var SheetsService = require('../services/sheets-service.js');
 var EmailService = require('../services/email-service.js');
 
+
+
+/**
+ * The base Object that handles the creation of a map of Cards.
+ *
+ * @static
+ * @type {Object}
+ */
 var CardsConfig = {};
 
+/**
+ * The maximum number of autocomplete results.
+ *
+ * @static
+ * @type {Number}
+ */
 CardsConfig.maxResults = 5;
 
 /**
  * Initializes a Card repository.
  *
- * @return {Object<string, Card>} The repository used for storing Cards. These may not be in the program flow.
+ * @static
+ * @return {Object<string, Card>} The repository used for storing Cards. The map is between the names found
+ * in CardNames and the created Card. These are typically used for handling user setup.
  */
 CardsConfig.buildCardRepo = function(contentArea) {
 
@@ -189,8 +214,6 @@ CardsConfig.buildCardRepo = function(contentArea) {
 
   return repo;
 };
-
-
 
 
 /** */
