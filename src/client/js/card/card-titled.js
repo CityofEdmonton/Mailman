@@ -1,3 +1,9 @@
+/**
+ * This module exports a TitledCard object.
+ * @module
+ */
+
+
 var Card = require('./card.js');
 var titleHTML = require('./card-titled.html');
 var ID = require('../data/id.js');
@@ -8,6 +14,8 @@ var Util = require('../util/util.js');
 /**
  * This represents a basic Card that has a title. It also provides help functionality.
  *
+ * @constructor
+ * @extends module:client/js/card/card~Card
  * @param {jquery} appendTo The jquery object to append this Card to.
  * @param {Object} options The parent configuration object for this TitledCard.
  * @param {string} options.title The title of this Card.

@@ -1,3 +1,9 @@
+/**
+ * This module exports a MultifieldCard object. This is used to get to, cc and bcc info from users.
+ * @module
+ */
+
+
 var inputHTML = require('./to-cc-bcc.html');
 var TitledCard = require('./card-titled.js');
 var AutocompleteConfig = require('./autocomplete-config.js');
@@ -8,16 +14,17 @@ var Util = require('../util/util.js');
 /**
  * This is a less customizeable version of the InputCard. It's meant specifically for to, cc and bcc.
  *
+ * @constructor
+ * @extends module:client/js/card/card-titled~TitledCard
  * @param {jquery} appendTo The object to append this Card to.
- * @param {Object} options The configuration options for this InputCard.
+ * @param {Object} options The configuration options for this Card.
  * @param {Object} options.autocomplete The autocomplete configuration object. Please see setAutocomplete for a more
  *  detailed listing of this Object.
  * @param {Object} options.error The Object containing the information needed for this input to support input validation.
  * @param {string} options.error.hint The text displayed when text is invalid.
- * @param {string} options.error.pattern The regex pattern to match against.
- * @constructor
+ * @param {string} options.error.pattern The regex pattern to match against.*
  */
-var InputCard = function(appendTo, options) {
+var MultifieldCard = function(appendTo, options) {
   TitledCard.call(this, appendTo, options);
 
   // Private variables
@@ -222,6 +229,11 @@ var InputCard = function(appendTo, options) {
     bccErrorSpacer.height(bccError.actual('height'));
   };
 
+  /**
+   * Tests whether the contents of the input fields are valid.
+   *
+   * @return {Boolean} Returns true if the inputs are valid, false otherwise.
+   */
   this.isValid = function() {
     if (toMDL.hasClass('is-invalid') || ccMDL.hasClass('is-invalid') || bccMDL.hasClass('is-invalid')) {
       return false;
@@ -238,9 +250,9 @@ var InputCard = function(appendTo, options) {
 
 
 /** */
-InputCard.prototype.constructor = InputCard;
-InputCard.prototype = Object.create(TitledCard.prototype);
+MultifieldCard.prototype.constructor = MultifieldCard;
+MultifieldCard.prototype = Object.create(TitledCard.prototype);
 
 
 /** */
-module.exports = InputCard;
+module.exports = MultifieldCard;

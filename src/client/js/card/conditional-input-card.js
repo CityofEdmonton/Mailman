@@ -1,3 +1,9 @@
+/**
+ * This module exports a ConditionalInputCard object.
+ * @module
+ */
+
+
 var conditionalHTML = require('./conditional-input-card.html');
 var InputCard = require('./card-input.js');
 
@@ -7,6 +13,8 @@ var InputCard = require('./card-input.js');
  * This Card extends the functionality of InputCard. It gives the ability of disabling the InputCard.
  * This is useful in situations where you don't want the Card to be required.
  *
+ * @constructor
+ * @extends module:client/js/card/card-input~InputCard
  * @param {jquery} appendTo The div to append this Card to.
  * @param {Object} options The object that describes the Card functionality. See the parent object InputCard for details.
  * @param {boolean} enabled The default state of the checkbox.
@@ -70,16 +78,29 @@ var ConditionalInputCard = function(appendTo, options) {
     return innerBase.hasClass('is-checked');
   };
 
+  /**
+   * Checks and enables this Card.
+   *
+   */
   this.check = function() {
     innerBase[0].MaterialCheckbox.check();
     enableCard();
   };
 
+  /**
+   * Unchecks and disables this Card.
+   *
+   */
   this.uncheck = function() {
     innerBase[0].MaterialCheckbox.uncheck();
     disableCard();
   };
 
+  /**
+   * Gets the value associated with this Card.
+   *
+   * @return {string} The value of this Card.
+   */
   this.getValue = function() {
     if (self.isEnabled()) {
       return oldGetValue();

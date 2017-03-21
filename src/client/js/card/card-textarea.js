@@ -1,3 +1,8 @@
+/**
+ * This module exports a TextareaCard constructor.
+ * @module
+ */
+
 var textareaHTML = require('./card-textarea.html');
 var TitledCard = require('./card-titled.js');
 var AutocompleteConfig = require('./autocomplete-config.js');
@@ -7,12 +12,13 @@ var AutocompleteConfig = require('./autocomplete-config.js');
 /**
  * TextareaCards use a multiline input field. They differ from InputCard in this way.
  *
+ * @constructor
+ * @extends module:client/js/card/card-titled~TitledCard
  * @param {jquery} appendTo The object to append this Card to.
  * @param {Object} options The configuration options for this TextareaCard.
  * @param {String} options.label The label the textarea should have when it has no text.
  * @param {Object} options.autocomplete The autocomplete configuration object. Please see setAutocomplete for a more
  * detailed listing of this Object.
- * @constructor
  */
 var TextareaCard = function(appendTo, options) {
   TitledCard.call(this, appendTo, options);

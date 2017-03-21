@@ -1,4 +1,7 @@
-
+/**
+ * This module exports a TextareaCard constructor.
+ * @module
+ */
 
 
 /**

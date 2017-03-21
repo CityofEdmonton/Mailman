@@ -1,3 +1,9 @@
+/**
+ * This module exports a Card object.
+ * @module
+ */
+
+
 var baseHTML = require('./card-base.html');
 var Util = require('../util/util.js');
 var ID = require('../data/id.js');
@@ -7,6 +13,7 @@ var ID = require('../data/id.js');
 /**
  * The Card forms an important base visual Object. It is used as a base for building other, more advanced Cards.
  *
+ * @constructor
  * @param {jquery} appendTo The div to append this Card to.
  * @param {Object} options The configuration Object for this Card.
  * @param {boolean} options.visible Whether to make the Card appear by default.
@@ -56,7 +63,7 @@ var Card = function(appendTo, options) {
     componentHandler.upgradeElement(myMenu[0], 'MaterialMenu');
     componentHandler.upgradeElement(button[0], 'MaterialButton');
     componentHandler.upgradeElement(optionsLabel[0], 'MaterialTooltip');
-    
+
     menu = base.find('.mdl-menu__container');
   };
 

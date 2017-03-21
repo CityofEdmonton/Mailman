@@ -1,3 +1,9 @@
+/**
+ * This module exports an InputCard object.
+ * @module
+ */
+
+
 var inputHTML = require('./card-input.html');
 var TitledCard = require('./card-titled.js');
 var AutocompleteConfig = require('./autocomplete-config.js');
@@ -7,6 +13,8 @@ var AutocompleteConfig = require('./autocomplete-config.js');
 /**
  * InputCards use a 1 line input field. They differ from TextareaCard in this way.
  *
+ * @constructor
+ * @extends module:client/js/card/card-titled~TitledCard
  * @param {jquery} appendTo The object to append this Card to.
  * @param {Object} options The configuration options for this InputCard.
  * @param {String} options.label The label the input should have when it has no text.
@@ -15,7 +23,6 @@ var AutocompleteConfig = require('./autocomplete-config.js');
  * @param {Object} options.error The Object containing the information needed for this input to support input validation.
  * @param {string} options.error.hint The text displayed when text is invalid.
  * @param {string} options.error.pattern The regex pattern to match against.
- * @constructor
  */
 var InputCard = function(appendTo, options) {
   TitledCard.call(this, appendTo, options);
