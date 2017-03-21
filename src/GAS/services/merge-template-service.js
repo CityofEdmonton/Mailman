@@ -1,4 +1,8 @@
 
+/**
+ * Runs all MergeTemplates. Google Apps Script requires a function be globally accessible for it to be run via trigger.
+ * 
+ */
 function runAllMergeTemplates() {
   MergeTemplateService.runAll();
 };
@@ -7,7 +11,6 @@ function runAllMergeTemplates() {
 /**
  * This service allows easy access to the Mailman template data.
  *
- * @type {Object}
  */
 var MergeTemplateService = {
   SHEET_NAME: 'mm-config',
@@ -77,7 +80,7 @@ var MergeTemplateService = {
    * Templates are filtered on the following conditions:
    * - MergeTemplate has a mergeRepeater
    * - MergeRepeater.owner is the same as the effective user.
-   * - The triggerID this is called from matches the triggerIDs inside MergeRepeater. TODO
+   * - The triggerID this is called from matches the triggerIDs inside MergeRepeater.
    *
    */
   runAll: function() {
@@ -231,7 +234,7 @@ var MergeTemplateService = {
    * Gets a config Object that describes a MergeRepeater. This creates the required triggers,
    * if they don't already exist.
    *
-   * @return {Object} See MergeRepeater for details on members.
+   * @return {MergeRepeater} See MergeRepeater for details on members.
    */
   getRepeatConfig: function() {
     try {
@@ -256,8 +259,8 @@ var MergeTemplateService = {
   /**
    * Remove the MergeRepeater from this MergeTemplate. This doesn't save the Merge.
    *
-   * @param {Object} template The Object that has the MergeRepeater removed.
-   * @return {Object} The Object that no longer has the MergeRepeater attached.
+   * @param {MergeTemplate} template The object that has the MergeRepeater removed.
+   * @return {MergeTemplate} The Object that no longer has the MergeRepeater attached.
    */
   removeRepeatMerge: function(template) {
     try {
@@ -272,6 +275,11 @@ var MergeTemplateService = {
     }
   },
 
+  /**
+   * Gets all MergeRepeaters.
+   *
+   * @return {Array<MergeRepeater>} An array of MergeRepeaters.
+   */
   getMergeRepeaters: function() {
     var templates = MergeTemplateService.getAll().templates;
     var mergeRepeaters = [];
@@ -288,7 +296,7 @@ var MergeTemplateService = {
   /**
    * Validates the correctness of a MergeTemplate.
    *
-   * @param  {Object} template A simple config Object representing a MergeTemplate.
+   * @param  {MergeTemplate} template A simple config Object representing a MergeTemplate.
    */
   validate: function(template) {
     if (template == null) {
@@ -317,6 +325,12 @@ var MergeTemplateService = {
     }
   },
 
+  /**
+   * Validates the MergeRepeater attached to a given MergeTemplate. Note that this throws errors when the
+   * MergeRepeater is malformed.
+   *
+   * @param {MergeTemplate} template The MergeTemplate that contains a MergeRepeater to test.
+   */
   validateMergeRepeater: function(template) {
     if (template.mergeRepeater != null) {
       if (template.mergeRepeater.owner == null) {
@@ -334,6 +348,13 @@ var MergeTemplateService = {
 
   //***** private methods / utility methods *****//
 
+  /**
+   * Gets a row (as a Range) based upon a supplied id. This Range will contain a cell with the id of the MergeTemplate,
+   * as well as the stringified MergeTemplate object.
+   *
+   * @param  {string} id The id of the MergeTemplate.
+   * @return {Range} The Range of the MergeTemplate and it's id.
+   */
   getRowByID: function(id) {
     var sheet = MergeTemplateService.getTemplateSheet();
     var range = sheet.getDataRange();
@@ -351,11 +372,24 @@ var MergeTemplateService = {
     return null;
   },
 
+  /**
+   * Gets the sheet that contains Mailman's MergeTemplates.
+   *
+   * @return {Sheet} The Sheet that contains the MergeTemplates.
+   */
   getTemplateSheet: function() {
     var ss = Utility.getSpreadsheet();
     return ss.getSheetByName(MergeTemplateService.SHEET_NAME);
   },
 
+  /**
+   * Appends a column to the given sheet at the given 1-based row index.
+   *
+   * @param  {string} sheetName The name of the sheet to append the column to.
+   * @param  {number} rowNum The 1-based row index to add the header to.
+   * @param  {string} name The name of the column.
+   * @return {Range} The cell with the new column name.
+   */
   appendColumn: function(sheetName, rowNum, name) {
     var ss = Utility.getSpreadsheet();
     var sheet = ss.getSheetByName(sheetName);
@@ -366,71 +400,5 @@ var MergeTemplateService = {
     newHeader.setValue(name);
 
     return newHeader;
-  },
-
-  validateTriggers_: function(triggers) {
-    // Get a list of valid triggers.
-    var user = Session.getEffectiveUser().getEmail();
-
-    // We need to filter out all the other users repeats.
-    var repeaters = MergeTemplateService.getMergeRepeaters_();
-    repeaters = repeaters.filter(function(rep) {
-      rep.owner === user;
-    });
-
-    // If this trigger has no repeaters, then we don't need it any more, so delete it.
-    triggers.forEach(function(trigger) {
-      var id = trigger.getUniqueId();
-
-      // True if none of the repeaters have a reference to this trigger.
-      var isUseless = repeaters.every(function(rep) {
-        return rep.triggers.indexOf(id) === -1;
-      });
-
-      if (isUseless) {
-        log('Deleting trigger: ' + id);
-        ScriptApp.deleteTrigger(trigger);
-      }
-    });
-  },
-
-  /**
-   * This function returns an Array of trigger IDs. This function has some major side effects.
-   * 1. This function removes the MergeRepeaters that reference triggers that don't exist. This occurs when a sheet
-   * is copied.
-   * 2. This function also deletes any triggers that don't have a related MergeRepeater.
-   *
-   *
-   *
-   * @return {[type]} [description]
-   */
-  getActiveTriggers_: function() {
-    var ss = Utility.getSpreadsheet();
-    var triggers = ScriptApp.getUserTriggers(ss);
-
-    var actualTriggerIDs = [];
-    triggers.forEach(function(trigger) {
-      actualTriggerIDs.push(trigger.getUniqueId());
-    })
-
-    var repeaters = MergeTemplateService.getMergeRepeaters_();
-    repeaters = repeaters.filter(function(rep) {
-      rep.owner === user;
-    });
-
-    // Consider deleting old triggers?
-
-    var triggerIDs = [];
-
-    repeaters.forEach(function(repeater) {
-      repeater.triggers.forEach(function(triggerID) {
-        if (triggerIDs.indexOf(triggerID) === -1) {
-          triggerIDs.push(triggerID);
-        }
-      });
-    })
-
   }
-
-
 };

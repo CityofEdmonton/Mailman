@@ -7,7 +7,7 @@ var Promise = require('promise');
  *
  * @param {string} namespace The server-side namespace to search for the function. null for global.
  * @param {string} method The funtion to call server side.
- * @param {...} args The additional arguments to pass to the function.
+ * @param {...*} args The additional arguments to pass to the function.
  */
 var Provoke = function(namespace, method) {
   var runArgs = Array.prototype.slice.call(arguments).slice(2);

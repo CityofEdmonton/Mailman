@@ -10,6 +10,7 @@ var sass = require('gulp-sass');
 var source = require('vinyl-source-stream');
 var stringify = require('stringify');
 var del = require('del');
+var jsdoc = require('gulp-jsdoc3');
 
 // Used for our new bundle system
 var rename = require('gulp-rename');
@@ -28,6 +29,7 @@ gulp.task('lint-all', closureLint);
 gulp.task('browserify', browserifyBundle);
 gulp.task('compile-sass', compileSASS);
 gulp.task('clean', clean);
+gulp.task('generate-doc', jsdocGenerate);
 
 // Web specific
 gulp.task('build-web', ['browserify', 'compile-sass'], buildWeb);
@@ -225,4 +227,9 @@ function clean() {
     return del([
         'build/**/*'
     ]);
+}
+
+function jsdocGenerate(cb) {
+  gulp.src(['./src/**/*.js'])
+        .pipe(jsdoc(cb));
 }
