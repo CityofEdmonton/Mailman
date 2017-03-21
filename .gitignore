@@ -49,3 +49,6 @@ bower_components
 
 # Static Files
 public/css
+
+# Documentation
+docs
