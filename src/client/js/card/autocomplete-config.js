@@ -6,12 +6,14 @@
  * implementation, such as:
  *  - pre and post tags. These surround a search term. (in my case << and >>)
  *  - Swapping terms into the middle of a block of text.
+ *
  * This code is the worst. TODO refactor, if time permits.
  *
- * @param {InputCard|TextareaCard} myCard The Card this autocomplete is for. This is a really dirty way to do this,
- *                                        as the implementations are very co-dependant. It works though.
+ * @constructor
+ * @param {jQuery} mdlObject The jQuery object that contains a MaterialTextfield.
+ * This is a really dirty way to do this, as the implementations are very co-dependant. It works though.
  */
-var Config = function(mdlObject) {
+var AutocompleteConfig = function(mdlObject) {
 
   // Private variables
   var input;
@@ -95,4 +97,4 @@ var Config = function(mdlObject) {
 
 
 /** */
-module.exports = Config;
+module.exports = AutocompleteConfig;
