@@ -1,3 +1,11 @@
+/**
+ * This module exports the MetadataService object.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
+
 var Provoke = require('../util/provoke.js');
 var Promise = require('promise');
 
@@ -6,7 +14,9 @@ var Promise = require('promise');
 /**
  * The MetadataService provides data services relating to this programs information. It also provides basic caching
  * to speed up future queries. As an example, getting the active user is only ever done once (the first time).
+ * The email quota has a 30 second refresh period. If a request is made after a certain point, it repulls the quota.
  *
+ * @constructor
  */
 var MetadataService = function() {
   var user;
@@ -18,6 +28,11 @@ var MetadataService = function() {
     window.setInterval(resetCache, resetInterval);
   };
 
+  /**
+   * Gets the active user.
+   *
+   * @return {Promise} A Promise.
+   */
   this.getUser = function() {
     if (user == null) {
       user = Provoke('MetadataService', 'getUser').then();
@@ -26,6 +41,11 @@ var MetadataService = function() {
     return user;
   };
 
+  /**
+   * Gets the currently executing version of Mailman.
+   *
+   * @return {Promise} A Promise.
+   */
   this.getVersion = function() {
     if (version == null) {
       version = Provoke('MetadataService', 'getVersion');
@@ -34,6 +54,11 @@ var MetadataService = function() {
     return version;
   };
 
+  /**
+   * Gets the remaining quota for the active user.
+   *
+   * @return {Promise} A Promise.
+   */
   this.getQuota = function() {
     if (quota == null) {
       quota = Provoke('MetadataService', 'getQuota');
