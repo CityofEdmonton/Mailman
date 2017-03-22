@@ -1,3 +1,10 @@
+/**
+ * This module exports the MailMan object.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
 
 var MergeTemplateContainer = require('./data/merge-template-container.js');
 var MergeTemplateService = require('./services/merge-template-service.js');
@@ -11,11 +18,15 @@ var Dialog = require('./views/dialog/dialog.js');
 var LoadingScreen = require('./views/loading/loading-screen.js');
 var baseHTML = require('./main.html');
 var PubSub = require('pubsub-js');
-
-// Handlers
 var StandardMailHandler = require('./controllers/standard-mail-handler.js');
 
 
+/**
+ * The base Object for the app. It handles much of the event wiring, as well as app initialization.
+ *
+ * @constructor
+ * @param {jQuery} appendTo The region to append Mailman to.
+ */
 var MailMan = function(appendTo) {
 
   // ***** CONSTANTS ***** //
@@ -47,11 +58,6 @@ var MailMan = function(appendTo) {
 
   window.runAllTemplates = mtService.runMerges;
 
-  /**
-   * Performs basic set up of the Mailman environment.
-   *
-   * @constructor
-   */
   this.init = function(appendTo) {
 
     appendTo.append(base);
