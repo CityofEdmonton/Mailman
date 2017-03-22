@@ -1,4 +1,11 @@
 /**
+ * This module exports the Disabler function.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
+/**
  * Temporarily disables the given object.
  *
  * @param {jquery} obj The object to disable.

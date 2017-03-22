@@ -1,9 +1,20 @@
+/**
+ * This module exports the Provoke function.
+ * This was modified from Bruce McPherson's awesome examples found
+ * {@link http://ramblings.mcpher.com/Home/excelquirks/gassnips/promisesandappsscript|here}.
+ *
+ * @author Bruce McPherson
+ * @module
+ */
+
+
 var Promise = require('promise');
 
 
 
 /**
- * A statically accessed way of calling GAS functions that return a Promise.
+ * A statically accessed way of calling GAS functions that return a Promise. Check out the server side function
+ * {@link exposeRun}.
  *
  * @param {string} namespace The server-side namespace to search for the function. null for global.
  * @param {string} method The funtion to call server side.
