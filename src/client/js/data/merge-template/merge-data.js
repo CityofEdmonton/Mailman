@@ -1,11 +1,19 @@
+/**
+ * This module exports the MergeData object.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
 
 
 
 /**
- * Holds a merge template payload. This is just generic data used for merging. This could be To, Body, Subject (Email),
+ * Holds a merge template payload. This is just generic data used for merging. This could be to, body, subject (email),
  * or some other data, like document title (for doc merge).
  * This Object is meant to be easily de/serializeable.
  *
+ * @constructor
+ * @alias MergeData
  * @param {Object} config A configuration Object used for creating MergeData.
  * @param {string} config.type The type of the MergeData. These aren't stored anywhere special.
  * This can be used to assist in determining what type of MergeData this is.

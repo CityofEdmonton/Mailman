@@ -1,3 +1,10 @@
+/**
+ * This module exports the MergeRepeater object.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
 
 
 /**
@@ -6,6 +13,7 @@
  * config back into this contructor.
  *
  * @constructor
+ * @alias MergeRepeater
  * @param {Object} config The configuration Object used to define this MergeRepeater.
  * @param {Array<string>} config.triggers An Array of trigger IDs that can call this merge.
  * @param {string} config.owner The user that added the MergeRepeater.
@@ -30,6 +38,11 @@ var MergeRepeater = function(config) {
 
   //***** Public Methods *****//
 
+  /**
+   * Updates this MergeRepeater.
+   *
+   * @param {Object} config The same config used in the constructor.
+   */
   this.update = function(config) {
     if (config.triggers != null) {
       triggers = config.triggers;

@@ -7,7 +7,7 @@
 
 /**
  * Generates a string that can be used as an id.
- * 
+ *
  * @return {string} A randomized string.
  * @alias module:client/js/data/id.ID
  */

@@ -1,3 +1,11 @@
+/**
+ * This module exports the MergeTemplate object.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
+
 var MergeRepeater = require('./merge-repeater.js');
 var MergeData = require('./merge-data.js');
 var ID = require('../id.js');
@@ -5,31 +13,25 @@ var ID = require('../id.js');
 
 
 /**
- * This represents a merge of some type. The type of merge is decided by MergeData.
+ * This represents a merge of some type. The type of merge is decided by {@link MergeData}.
  * This is meant to be easily de/serializeable.
  *
+ * @constructor
+ * @alias MergeTemplate
  * @param {Object} config The Object used to create this MergeTemplate.
  * @param {string|undefined} config.createdBy The user that originally created this MergeTemplate.
  * @param {string|undefined} config.createdDatetime The date string of when this MergeTemplate was created.
  * @param {string|undefined} config.id The unique identifier of this merge.
- * @param {Object|undefined} config.mergeRepeater An Object representing a MergeRepeater Object. See MergeRepeater for details.
- * @param {Object} config.mergeData An Object representing a MergeData Object. See MergeData for details.
+ * @param {Object|undefined} config.mergeRepeater An Object representing a {@link MergeRepeater}.
+ * @param {Object} config.mergeData An Object representing {@link MergeData}.
  */
 var MergeTemplate = function(config) {
 
-  /**
-   * @type {MergeRepeater}
-   *
-   * Mailman looks for this on a trigger. If it finds it, it attempts to send it just like if you ran it yourself.
-   */
+  // Mailman looks for this on a trigger. If it finds it, it attempts to send it just like if you ran it yourself.
   var repeater;
 
-  /**
-   * @type {MergeData}
-   *
-   * This represents the "payload" of the merge. This will generally be all the info needed for an email merge,
-   * but could be extended to support other merge types (doc merge, calendar merge).
-   */
+  // This represents the "payload" of the merge. This will generally be all the info needed for an email merge,
+  // but could be extended to support other merge types (doc merge, calendar merge).
   var data;
 
   var self = this;

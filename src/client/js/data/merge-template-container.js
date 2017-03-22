@@ -12,6 +12,16 @@ var PubSub = require('pubsub-js');
 
 
 
+/**
+ * This object handles many of the operations associated with MergeTemplates.
+ * It also acts as the primary store for them.
+ *
+ * @constructor
+ * @alias MergeTemplateContainer
+ * @param {Object} config An Object containing configuration objects for this.
+ * @param {Array<Object>} config.templates An array of MergeTemplate configs to be created.
+ * See also {@link MergeTemplate}
+ */
 var MergeTemplateContainer = function(config) {
 
   // private variables
@@ -31,6 +41,12 @@ var MergeTemplateContainer = function(config) {
 
   // ***** public methods ***** //
 
+  /**
+   * Toggles the repeat state of a given MergeTemplate.
+   * TODO this could be improved by not requiring 2 calls to the server. The update call should be uneccesary.
+   *
+   * @param {MergeTemplate} template The MergeTemplate to toggle the repeater state of.
+   */
   this.toggleRepeat = function(template) {
     var oldConfig = template.toConfig();
 
@@ -64,10 +80,10 @@ var MergeTemplateContainer = function(config) {
   };
 
   /**
-   * Appends a new MergeTemplate. Notifies all listeners.
+   * Creates a new MergeTemplate. It's worth noting that MergeTemplates are created from a config Object that looks
+   * similar to MergeTemplate, but doesn't have all of its information.
    *
-   * TODO Fix event.
-   * @param {Object} config The config object for this MergeTemplate. Please see MergeTemplate for details.
+   * @param {Object} config The config object for this MergeTemplate. Please see {@link MergeTemplate} for details.
    */
   this.add = function(config) {
     var template = new MergeTemplate(config);
@@ -86,7 +102,6 @@ var MergeTemplateContainer = function(config) {
   /**
    * Updates the given MergeTemplate. Note that the id of the given MergeTemplate must be the same as the MergeTemplate
    * stored in this MergeTemplateContainer.
-   * TODO Remove event publish.
    *
    * @param {MergeTemplate} template The new MergeTemplate. Its id must be the same as an existing MergeTemplate.
    * or the update will fail.
@@ -111,7 +126,6 @@ var MergeTemplateContainer = function(config) {
 
   /**
    * Removes a MergeTemplate from the container and notifies any listeners.
-   * TODO This could probably rely more heavily on the server for state.
    *
    * @param  {MergeTemplate} template The template to delete.
    */
@@ -169,7 +183,8 @@ var MergeTemplateContainer = function(config) {
   };
 
   /**
-   * Converts this to a serializeable form.
+   * Converts this to a serializeable form. This Object can be used to create a new MergeTemplateContainer that is
+   * an exact representation of the current one.
    *
    * @return {Object} The configuration object, which can be used to rebuild this object exactly.
    * See MergeTemplateContainer for a detailed description of all object members.
