@@ -1,6 +1,5 @@
 
 
-/** */
 var Util = module.exports = function() {};
 
 

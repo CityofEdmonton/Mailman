@@ -1,3 +1,11 @@
+/**
+ * This module exports the MergeTemplateListItem object.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
+
 var baseHTML = require('./merge-template-list-item.html');
 var MergeTemplate = require('../../data/merge-template/merge-template.js');
 var ID = require('../../data/id.js');

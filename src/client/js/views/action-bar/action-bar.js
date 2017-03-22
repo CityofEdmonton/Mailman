@@ -1,13 +1,24 @@
+/**
+ * This module exports the ActionBar object as a singleton.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
+
 var baseHTML = require('./action-bar.html');
 var Util = require('../../util/util.js');
 var PubSub = require('pubsub-js');
 var $ = require('jquery');
+
+
 
 /**
  * The ActionBar is responsible for the display on the very top of Mailman. It has a logo, a title and some controls.
  * This object is a singleton.
  * ActionBar.init MUST be called.
  *
+ * @constructor
  */
 var ActionBar = function() {
   // private variables
@@ -34,6 +45,12 @@ var ActionBar = function() {
 
   //***** public methods *****//
 
+  /**
+   * This function initializes the ActionBar. This must be called.
+   * TODO remove the event handling from here, as it's done in Mailman now.
+   *
+   * @param {jQuery} appendTo The object to append this ActionBar to.
+   */
   this.init = function(appendTo) {
     if (initialized) {
       return;

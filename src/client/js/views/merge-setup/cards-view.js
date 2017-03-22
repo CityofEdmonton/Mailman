@@ -1,3 +1,11 @@
+/**
+ * This module exports the CardsView object.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
+
 var baseHTML = require('./cards-view.html');
 var Util = require('../../util/util.js');
 var PubSub = require('pubsub-js');
@@ -76,6 +84,10 @@ var CardsView = function(appendTo, handler, data) {
 
   //***** public methods *****//
 
+  /**
+   * Cleans this CardsView up. This mostly just detaches it's HTMLElements.
+   *
+   */
   this.cleanup = function() {
     window.clearInterval(timeoutID);
     base.remove();

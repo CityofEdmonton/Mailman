@@ -1,3 +1,11 @@
+/**
+ * This module exports the SettingsView object.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
+
 var baseHTML = require('./settings-view.html');
 var Util = require('../../util/util.js');
 var PubSub = require('pubsub-js');
@@ -8,10 +16,10 @@ var MetadataService = require('../../services/metadata-service.js');
 
 
 /**
- * The SettingsView handles much of the advanced app parameters. Primary functions include:
- * Logging
- * TODO Spruce this up. It should include some high-level stats for Mailman.
+ * The SettingsView handles much of the advanced app parameters. Primary functions include
+ * logging, current version and the active users email quota.
  *
+ * @constructor
  * @param {jquery} appendTo The object to append this view to.
  */
 var SettingsView = function(appendTo) {

@@ -1,3 +1,11 @@
+/**
+ * This module exports the Dialog object.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
+
 var baseHTML = require('./dialog.html');
 var dialogPolyfill = require('dialog-polyfill');
 var $ = require('jquery');
@@ -6,9 +14,10 @@ var Promise = require('promise');
 
 
 /**
- * The Dialog provides a way to confirm or cancel user actions.This uses MDL Dialog, found here:
- * https://getmdl.io/components/#dialog-section
+ * The Dialog provides a way to confirm or cancel user actions. This uses MDL Dialog, found
+ * {@link https://getmdl.io/components/#dialog-section|here}:
  *
+ * @constructor
  * @param {jquery} appendTo The parent div this dialog should be appended to.
  * @param {string} title The title of this Dialog.
  * @param {string} content The contents of the Dialog.
@@ -70,4 +79,6 @@ var Dialog = function(appendTo, titleText, contentText) {
   this.init_(appendTo, titleText, contentText);
 };
 
+
+/** */
 module.exports = Dialog;

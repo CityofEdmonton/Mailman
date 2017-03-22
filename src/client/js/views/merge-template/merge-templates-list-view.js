@@ -1,3 +1,10 @@
+/**
+ * This module exports the MergeTemplatesListView object.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
 
 var baseHTML = require('./merge-templates-list-view.html');
 var MergeTemplateListItem = require('./merge-template-list-item.js');

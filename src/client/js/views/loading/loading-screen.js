@@ -1,8 +1,21 @@
+/**
+ * This module exports the LoadingScreen object as a singleton.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
+
 var baseHTML = require('./loading-screen.html');
 var Util = require('../../util/util.js');
 
 
 
+/**
+ * This object is a loading screen with a fairly simple animation.
+ *
+ * @constructor
+ */
 var LoadingScreen = function() {
   // private variables
   var initialized = false;
@@ -62,4 +75,6 @@ var LoadingScreen = function() {
 
 };
 
+
+/** */
 module.exports = new LoadingScreen();
