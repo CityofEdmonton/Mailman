@@ -2,6 +2,8 @@
  * Thanks to {@link https://gist.github.com/gordonbrander/2230317|gordonbrander} for the implementation.
  * Simple and effective. Useful for less than 10000 ids. Beyond that, collisions start to occur.
  *
+ * Exports the {@link ID} function.
+ *
  * @module
  */
 

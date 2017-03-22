@@ -1,5 +1,5 @@
 /**
- * This module exports the MergeRepeater object.
+ * This module exports the {@link MergeRepeater} object.
  *
  * @author {@link https://github.com/j-rewerts|Jared Rewerts}
  * @module

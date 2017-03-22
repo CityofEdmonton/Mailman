@@ -1,5 +1,5 @@
 /**
- * This module exports the MergeTemplateContainer object.
+ * This module exports the {@link MergeTemplateContainer} object.
  *
  * @author {@link https://github.com/j-rewerts|Jared Rewerts}
  * @module

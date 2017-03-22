@@ -1,5 +1,5 @@
 /**
- * This module exports the MergeData object.
+ * This module exports the {@link MergeData} object.
  *
  * @author {@link https://github.com/j-rewerts|Jared Rewerts}
  * @module

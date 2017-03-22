@@ -1,5 +1,5 @@
 /**
- * This module exports the MergeTemplate object.
+ * This module exports the {@link MergeTemplate} object.
  *
  * @author {@link https://github.com/j-rewerts|Jared Rewerts}
  * @module
