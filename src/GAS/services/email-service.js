@@ -12,7 +12,8 @@
 var EmailService = {
 
   /**
-   * Runs a MergeTemplate, sending emails as needed.
+   * Runs a MergeTemplate, sending emails as needed. This actually reloads the MergeTemplate,
+   * so it runs the most up to date version.
    *
    * @method
    * @param {MergeTemplate} template The MergeTemplate to run.
@@ -27,7 +28,13 @@ var EmailService = {
       throw e;
     }
 
+    template = MergeTemplateService.getByID(template.id);
+    if (template === null) {
+      return;
+    }
+
     log('Starting merge template ' + template.id);
+
     var ss = Utility.getSpreadsheet();
     var sheet = ss.getSheetByName(template.mergeData.sheet);
     var range = sheet.getDataRange();

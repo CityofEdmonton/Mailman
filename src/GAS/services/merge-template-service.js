@@ -131,16 +131,33 @@ var MergeTemplateService = {
    * Use JSON.parse if you want the actual Object.
    *
    * @param  {string} id The id of the MergeTemplate to return.
-   * @return {string} A stringified version of the MergeTemplate.
+   * @return {Object|null} A config Object of a {@link MergeTemplate}.
    */
   getByID: function(id) {
     try {
+      var sheet = MergeTemplateService.getTemplateSheet();
       var row = MergeTemplateService.getRowByID(id);
       if (row === null) {
-        return {};
+        log('MergeTemplate ' + id + ' doesn\'t exist.');
+        return null;
       }
 
-      return row.getCell(1, MergeTemplateService.DATA_INDEX).getDisplayValue();
+      var value = row.getCell(1, MergeTemplateService.DATA_INDEX).getDisplayValue();
+
+      var config;
+      try {
+        config = JSON.parse(value);
+        MergeTemplateService.validate(config);
+        return config;
+      }
+      catch (e) {
+        // Potentially delete the template.
+        log(e);
+        sheet.appendRow(['']);
+        sheet.deleteRow(row.getRowIndex());
+        log('Deleting invalid MergeTemplate.');
+        return null;
+      }
     }
     catch (e) {
       log(e);
