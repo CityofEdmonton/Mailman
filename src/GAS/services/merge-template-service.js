@@ -235,8 +235,15 @@ var MergeTemplateService = {
       }
 
       log('updating: ' + template.id);
-      var row = MergeTemplateService.getRowByID(template.id);
+      var oldTemplate = MergeTemplateService.getByID(template.id);
+      if (oldTemplate === null) {
+        return;
+      }
+      if (oldTemplate.mergeRepeater != null && oldTemplate.mergeRepeater.owner !== MetadataService.getUser()) {
+        throw new Error('You don\'t have permission to edit that merge template.');
+      }
 
+      var row = MergeTemplateService.getRowByID(template.id);
       if (row == null) {
         throw new Error('Template ' + template.id + ' does not exist.');
       }

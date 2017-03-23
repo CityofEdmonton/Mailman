@@ -17,7 +17,6 @@ var MetadataService = {
    * @return {string} The email address of the effective user.
    */
   getUser: function() {
-    log('getting user: ');
     return Session.getEffectiveUser().getEmail();
   },
 

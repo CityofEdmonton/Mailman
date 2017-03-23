@@ -99,6 +99,15 @@ var MailMan = function(appendTo) {
         cardsView.cleanup();
       }
     });
+    PubSub.subscribe('Rules.updateFailed', function(msg, data) {
+      snackbar.show('You don\'t have permission to edit that merge template.');
+
+      showListView();
+
+      if (cardsView != null) {
+        cardsView.cleanup();
+      }
+    });
 
     actionBar.setSettingsHandler(showSettingsView);
 

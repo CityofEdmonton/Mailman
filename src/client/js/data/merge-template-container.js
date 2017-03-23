@@ -119,6 +119,7 @@ var MergeTemplateContainer = function(config) {
         PubSub.publish('Rules.update');
       },
       function(e) {
+        PubSub.publish('Rules.updateFailed');
         console.log(e);
       }
     ).done();
