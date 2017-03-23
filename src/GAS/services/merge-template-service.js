@@ -1,7 +1,12 @@
+/**
+ * @file A service focused on managing MergeTemplates.
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ */
+
 
 /**
  * Runs all MergeTemplates. Google Apps Script requires a function be globally accessible for it to be run via trigger.
- * 
+ *
  */
 function runAllMergeTemplates() {
   MergeTemplateService.runAll();

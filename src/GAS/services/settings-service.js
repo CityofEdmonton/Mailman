@@ -1,5 +1,14 @@
+/**
+ * @file A service focused on handling Mailman settings.
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ */
 
 
+/**
+ * This service manages the settings for Mailman.
+ * 
+ * @type {Object}
+ */
 var SettingsService = {
   MAILMAN_LOG_NAME: 'mailman_log',
   SS_KEY: 'MAILMAN_LOG_URL',

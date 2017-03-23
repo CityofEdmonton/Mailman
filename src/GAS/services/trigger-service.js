@@ -1,3 +1,7 @@
+/**
+ * @file A service focused on handling triggers.
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ */
 
 
 /**

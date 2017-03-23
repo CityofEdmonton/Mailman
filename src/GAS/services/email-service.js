@@ -1,7 +1,22 @@
-// TODO Performance improvements in here could be very important.
+/**
+ * @file A service focused on sending emails.
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ */
 
+/**
+ * This service handles sending emails using MergeTemplates.
+ * TODO Performance improvements in here could be very important.
+ *
+ * @type {Object}
+ */
 var EmailService = {
 
+  /**
+   * Runs a MergeTemplate, sending emails as needed.
+   *
+   * @method
+   * @param {MergeTemplate} template The MergeTemplate to run.
+   */
   startMergeTemplate: function(template) {
     try {
       MergeTemplateService.validate(template);
@@ -82,6 +97,16 @@ var EmailService = {
     EmailService.send(Session.getActiveUser().getEmail(), subject, body);
   },
 
+  /**
+   * Handles sending emails. Emails that don't have to defined return false.
+   *
+   * @param {string} to The primary recipients of the email. Can be a comma delimited list of users.
+   * @param {string} subject The subject of the email. This can be an empty string.
+   * @param {string} body The body of the email. This can be an empty string.
+   * @param {string|undefined} cc Secondary recipients of the email. Can be a comma delimited list of users.
+   * @param {string|undefined} bcc Blind copied recipients. Can be a comma delimited list of users.
+   * @return {boolean} true if the email was sent, false if it wasn't.
+   */
   send: function(to, subject, body, cc, bcc) {
     if (to === '' || to == null) {
       return false;

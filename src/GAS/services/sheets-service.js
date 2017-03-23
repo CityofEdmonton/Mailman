@@ -1,3 +1,14 @@
+/**
+ * @file A service focused on handling Google Sheets.
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ */
+
+
+/**
+ * This service handles Google Sheets.
+ * 
+ * @type {Object}
+ */
 var SheetsService = {
 
   /**
