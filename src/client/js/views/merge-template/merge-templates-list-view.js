@@ -60,6 +60,7 @@ var MergeTemplatesListView = function(appendTo) {
     PubSub.subscribe('Rules.delete', rebuild);
     PubSub.subscribe('Rules.add', rebuild);
     PubSub.subscribe('Rules.update', rebuild);
+    PubSub.subscribe('Rules.repeater', rebuild);
     PubSub.subscribe('Mailman.SettingsView.hide', self.show);
 
     componentHandler.upgradeElement(instantButton[0], 'MaterialButton');

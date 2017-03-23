@@ -97,6 +97,16 @@ var MergeTemplateService = function() {
   };
 
   /**
+   * Adds a MergeRepeater to a MergeTemplate.
+   *
+   * @param {MergeTemplate} template This guy gets updated with a MergeRepeater.
+   * @return {Promise} A Promise.
+   */
+  this.addRepeater = function(template) {
+    return Provoke('MergeTemplateService', 'addRepeater', template.toConfig());
+  };
+
+  /**
    * Runs all MergeTemplates.
    *
    * @return {Promise} A Promise.

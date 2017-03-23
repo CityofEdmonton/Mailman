@@ -37,7 +37,15 @@ var MergeTemplateContainer = function(config) {
     for (var i = 0; i < templateObjs.length; i++) {
       templates.push(new MergeTemplate(templateObjs[i]));
     }
-  }
+  };
+
+  var indexOf = function(template) {
+    var index = self.indexOf(template.toConfig().id);
+    if (index === -1) {
+      throw new Error('MergeTemplate not found.');
+    }
+    return index;
+  };
 
   // ***** public methods ***** //
 
@@ -50,30 +58,29 @@ var MergeTemplateContainer = function(config) {
   this.toggleRepeat = function(template) {
     var oldConfig = template.toConfig();
 
-    var index = self.indexOf(oldConfig.id);
-    if (index === -1) {
-      throw new Error('MergeTemplate not found.');
-    }
+    var index = indexOf(template);
 
     if (oldConfig.mergeRepeater == null) {
-      service.getRepeat().then(
+      service.addRepeater(template).then(
         function(config) {
-          var tempConfig = template.toConfig();
-          tempConfig.mergeRepeater = config;
-          self.update(new MergeTemplate(tempConfig));
+          templates[index] = new MergeTemplate(config);
+          PubSub.publish('Rules.repeater');
         },
         function(err) {
           console.error(err);
+          PubSub.publish('Rules.updateFailed');
         }
       ).done();
     }
     else {
       service.removeRepeat(template).then(
         function(config) {
-          self.update(new MergeTemplate(config));
+          templates[index] = new MergeTemplate(config);
+          PubSub.publish('Rules.repeater');
         },
         function(err) {
           console.error(err);
+          PubSub.publish('Rules.updateFailed');
         }
       ).done();
     }
@@ -107,12 +114,7 @@ var MergeTemplateContainer = function(config) {
    * or the update will fail.
    */
   this.update = function(template) {
-
-    var index = self.indexOf(template.toConfig().id);
-    if (index === -1) {
-      throw new Error('MergeTemplate not found.');
-    }
-    templates[index] = template;
+    templates[indexOf(template)] = template;
 
     service.update(template).then(
       function() {

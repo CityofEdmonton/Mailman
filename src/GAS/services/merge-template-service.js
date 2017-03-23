@@ -235,9 +235,10 @@ var MergeTemplateService = {
       }
 
       log('updating: ' + template.id);
+      // Verify the active user has permissions to edit this MergeTemplate.
       var oldTemplate = MergeTemplateService.getByID(template.id);
       if (oldTemplate === null) {
-        return;
+        throw new Error('Template ' + template.id + ' does not exist.');
       }
       if (oldTemplate.mergeRepeater != null && oldTemplate.mergeRepeater.owner !== MetadataService.getUser()) {
         throw new Error('You don\'t have permission to edit that merge template.');
@@ -286,9 +287,39 @@ var MergeTemplateService = {
   },
 
   /**
-   * Remove the MergeRepeater from this MergeTemplate. This doesn't save the Merge.
+   * Adds a MergeRepeater to the provided MergeTemplate.
    *
-   * @param {MergeTemplate} template The object that has the MergeRepeater removed.
+   * @param {MergeTemplate} template This MergeTemplate has a MergeRepeater added.
+   * @return {MergeTemplate} The new MergeTemplate with the added MergeRepeater.
+   */
+  addRepeater: function(template) {
+    try {
+      var ss = Utility.getSpreadsheet();
+      var triggers = ScriptApp.getUserTriggers(ss);
+
+      template.mergeRepeater = {
+        triggers: TriggerService.createTriggers(),
+        owner: Session.getEffectiveUser().getEmail(),
+        events: [
+          'Merge Repeater created.'
+        ],
+        sheetID: ss.getId()
+      };
+
+      MergeTemplateService.update(template);
+      log('MergeTemplate ' + template.id + ' now repeating.');
+      return template;
+    }
+    catch (e) {
+      log(e);
+      throw e;
+    }
+  },
+
+  /**
+   * Remove the MergeRepeater from this MergeTemplate.
+   *
+   * @param {MergeTemplate} template The object that has the MergeRepeater to be removed.
    * @return {MergeTemplate} The Object that no longer has the MergeRepeater attached.
    */
   removeRepeatMerge: function(template) {
@@ -296,6 +327,7 @@ var MergeTemplateService = {
       var ss = Utility.getSpreadsheet();
 
       template.mergeRepeater = undefined;
+      MergeTemplateService.update(template);
       return template;
     }
     catch (e) {
