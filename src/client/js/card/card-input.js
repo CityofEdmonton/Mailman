@@ -73,14 +73,14 @@ var InputCard = function(appendTo, options) {
    * @param {Number} options.maxResults A Number indicating the maximum number of displayed results.
    * @param {Boolean} options.triggerOnFocus A value indicating whether the autocomplete should trigger when focused.
    * This brings it more in line with the behaviour of a drop down list.
-   * @param {Array<String>} options.results The list of results to filter through.
+   * @param {Function} options.getter A function that returns a Promise containing values to filter.
+   * This function is called with no parameters. If you need params, use f.bind prior to passing it in here.
    */
   this.setAutocomplete = function(options) {
     var append = '';
     var prepend = '';
     var maxResults;
     var trigger;
-    var results = [];
 
     if (options.trigger !== undefined) {
       trigger = options.trigger;
@@ -107,11 +107,8 @@ var InputCard = function(appendTo, options) {
         }
       });
     }
-    if (options.results !== undefined) {
-      results = options.results;
-    }
 
-    input.autocomplete(acConfig.getAutocompleteConfig(append, prepend, maxResults, trigger, results));
+    input.autocomplete(acConfig.getAutocompleteConfig(append, prepend, maxResults, trigger, options.getter));
   };
 
   /**

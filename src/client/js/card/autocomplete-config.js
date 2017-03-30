@@ -7,6 +7,7 @@
  */
 
 
+
 /**
  * This config object prepares a jqueryUI autocomplete object. I've added some notable features to the base jquery
  * implementation, such as:
@@ -30,7 +31,9 @@ var AutocompleteConfig = function(mdlObject) {
     input = mdlObject.find('textarea');
   }
 
-  //***** Privileged Methods *****//
+  var maxResults = 5;
+
+  //***** public methods *****//
 
   /**
    * Gets the jQuery UI autocomplete config.
@@ -39,16 +42,21 @@ var AutocompleteConfig = function(mdlObject) {
    * @param {string} prepend The string to put before the selection.
    * @param {number} maxResults The maximum number of results displayed when filtering results.
    * @param {string} trigger A string to watch for that triggers selection.
-   * @param {Array<string>} results The results to filter for autocomplete.
    * @return {object} A configuration object used by jQuery UI.
    */
-  this.getAutocompleteConfig = function(append, prepend, maxResults, trigger, results) {
+  this.getAutocompleteConfig = function(append, prepend, maxResults, trigger, getter) {
+    var requestID = 0;
+
     return {
       minLength: 0,
       source: function(request, response) {
 
-        if (trigger === undefined) {
-          response($.ui.autocomplete.filter(results, request.term.split(/,\s*/).pop()).slice(0, maxResults));
+        if (trigger == null) {
+          input.addClass('mm-autocomplete-loading');
+          getter().then(function(values) {
+            input.removeClass('mm-autocomplete-loading');
+            response($.ui.autocomplete.filter(values, request.term.split(/,\s*/).pop()).slice(0, maxResults));
+          });
         }
         else {
           var cursor = input[0].selectionStart;
@@ -61,9 +69,15 @@ var AutocompleteConfig = function(mdlObject) {
           }
           else {
             // delegate back to autocomplete, but extract the last term
-            response($.ui.autocomplete.filter(results, last).slice(0, maxResults));
+
+            input.addClass('mm-autocomplete-loading');
+            getter().then(function(values) {
+              input.removeClass('mm-autocomplete-loading');
+              response($.ui.autocomplete.filter(values, last).slice(0, maxResults));
+            });
           }
         }
+
       },
       focus: function() {
         return false;
@@ -76,7 +90,7 @@ var AutocompleteConfig = function(mdlObject) {
           terms.push(prepend);
           terms.push(ui.item.value);
           terms.push(append);
-          // card.setValue(terms.join(''));
+          
           mdlObject[0].MaterialTextfield.change(terms.join(''));
         }
         else {

@@ -131,15 +131,15 @@ var MultifieldCard = function(appendTo, options) {
    * @param {Number} options.maxResults A Number indicating the maximum number of displayed results.
    * @param {Boolean} options.triggerOnFocus A value indicating whether the autocomplete should trigger when focused.
    * This brings it more in line with the behaviour of a drop down list.
-   * @param {Array<String>} options.results The list of results to filter through.
+   * @param {Function} options.getter A function that returns a Promise containing values to filter.
+   * This function is called with no parameters. If you need params, use f.bind prior to passing it in here.
    */
   this.setAutocomplete = function(options) {
     var append = '';
     var prepend = '';
     var maxResults;
     var trigger;
-    var results = [];
-
+    
     if (options.trigger !== undefined) {
       trigger = options.trigger;
     }
@@ -157,13 +157,10 @@ var MultifieldCard = function(appendTo, options) {
       ccInput.on('focus', {trigger: trigger}, triggerFocus);
       bccInput.on('focus', {trigger: trigger}, triggerFocus);
     }
-    if (options.results !== undefined) {
-      results = options.results;
-    }
 
-    toInput.autocomplete(toAutocompleteConfig.getAutocompleteConfig(append, prepend, maxResults, trigger, results));
-    ccInput.autocomplete(ccAutocompleteConfig.getAutocompleteConfig(append, prepend, maxResults, trigger, results));
-    bccInput.autocomplete(bccAutocompleteConfig.getAutocompleteConfig(append, prepend, maxResults, trigger, results));
+    toInput.autocomplete(toAutocompleteConfig.getAutocompleteConfig(append, prepend, maxResults, trigger, options.getter));
+    ccInput.autocomplete(ccAutocompleteConfig.getAutocompleteConfig(append, prepend, maxResults, trigger, options.getter));
+    bccInput.autocomplete(bccAutocompleteConfig.getAutocompleteConfig(append, prepend, maxResults, trigger, options.getter));
   };
 
   /**

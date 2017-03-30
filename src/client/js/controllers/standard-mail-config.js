@@ -50,48 +50,44 @@ CardsConfig.buildCardRepo = function(contentArea) {
   var sService = new SheetsService();
   var eService = new EmailService();
 
-  var setHeaders = function(sheet, row) {
-    hService.get(sheet, row).then(
-      function(values) {
-        repo[CardNames.to].setAutocomplete({
-          results: values,
-          trigger: '<<',
-          prepend: '<<',
-          append: '>>',
-          maxResults: CardsConfig.maxResults,
-          triggerOnFocus: true
-        });
+  var setHeaders = function(sheet, row, getHeaders) {
 
-        repo[CardNames.subject].setAutocomplete({
-          results: values,
-          trigger: '<<',
-          prepend: '<<',
-          append: '>>',
-          maxResults: CardsConfig.maxResults
-        });
+    repo[CardNames.to].setAutocomplete({
+      trigger: '<<',
+      prepend: '<<',
+      append: '>>',
+      maxResults: CardsConfig.maxResults,
+      triggerOnFocus: true,
+      getter: getHeaders
+    });
 
-        repo[CardNames.body].setAutocomplete({
-          results: values,
-          trigger: '<<',
-          prepend: '<<',
-          append: '>>',
-          maxResults: CardsConfig.maxResults
-        });
+    repo[CardNames.subject].setAutocomplete({
+      trigger: '<<',
+      prepend: '<<',
+      append: '>>',
+      maxResults: CardsConfig.maxResults,
+      getter: getHeaders
+    });
 
-        repo[CardNames.conditional].setAutocomplete({
-          results: values,
-          trigger: '<<',
-          prepend: '<<',
-          append: '>>',
-          maxResults: CardsConfig.maxResults,
-          triggerOnFocus: true
-        });
-      },
-      function(err) {
-        console.error(err);
-      }
-    ).done();
+    repo[CardNames.body].setAutocomplete({
+      trigger: '<<',
+      prepend: '<<',
+      append: '>>',
+      maxResults: CardsConfig.maxResults,
+      getter: getHeaders
+    });
+
+    repo[CardNames.conditional].setAutocomplete({
+      trigger: '<<',
+      prepend: '<<',
+      append: '>>',
+      maxResults: CardsConfig.maxResults,
+      triggerOnFocus: true,
+      getter: getHeaders
+    });
   };
+
+  var getHeaders;
 
   repo[CardNames.title] = new InputCard(contentArea, {
     title: 'What should this merge template be called?',
@@ -108,20 +104,14 @@ CardsConfig.buildCardRepo = function(contentArea) {
     // Set the header row
     var row = repo[CardNames.row].getValue();
     var sheet = repo[CardNames.sheet].getValue();
-    setHeaders(sheet, row);
+    getHeaders = hService.get.bind(hService, sheet, row);
+    setHeaders(sheet, row, getHeaders);
   });
-  sService.get().then(
-    function(result) {
-      repo[CardNames.sheet].setAutocomplete({
-        results: result,
-        maxResults: CardsConfig.maxResults,
-        triggerOnFocus: true
-      });
-    },
-    function(err) {
-      console.error(err);
-    }
-  ).done();
+  repo[CardNames.sheet].setAutocomplete({
+    maxResults: CardsConfig.maxResults,
+    triggerOnFocus: true,
+    getter: sService.get
+  });
 
   var matchTag = '<<[^<>]*>>';
   var matchEmail = '[a-zA-Z0-9.!#$%&’*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*';
@@ -138,6 +128,7 @@ CardsConfig.buildCardRepo = function(contentArea) {
     }
   });
 
+
   repo[CardNames.row] = new InputCard(contentArea, {
     title: 'Which row contains your header titles?',
     help: 'Mailman will use this to swap out template tags.',
@@ -150,9 +141,10 @@ CardsConfig.buildCardRepo = function(contentArea) {
   repo[CardNames.row].setValue(1); // Default row 1.
   repo[CardNames.row].attachEvent('card.hide', function(event, card) {
     // Set the header row
-    var row = card.getValue();
+    var row = repo[CardNames.row].getValue();
     var sheet = repo[CardNames.sheet].getValue();
-    setHeaders(sheet, row);
+    getHeaders = hService.get.bind(hService, sheet, row);
+    setHeaders(sheet, row, getHeaders);
   });
 
   repo[CardNames.subject] = new InputCard(contentArea, {
