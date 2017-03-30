@@ -10,25 +10,18 @@ var Provoke = require('../util/provoke.js');
 
 
 /**
- * Handles operations related to getting Sheet names. This object is used as a singleton.
- * It has basic caching abilties.
+ * Handles operations related to getting Sheet names.
  *
  * @constructor
  */
 var SheetsService = function() {
 
-  var sheets = null;
-  var REFRESH_DURATION = 30000;
   var self = this;
 
   //**** private functions ****//
 
   this.init_ = function() {
-    window.setInterval(resetCache, REFRESH_DURATION);
-  };
 
-  var resetCache = function() {
-    sheets = null;
   };
 
   //**** public functions ****//
@@ -39,11 +32,7 @@ var SheetsService = function() {
    * @return {Promise} A Promise.
    */
   this.get = function() {
-    if (sheets === null) {
-      sheets = Provoke('SheetsService', 'get');
-    }
-
-    return sheets;
+    return Provoke('SheetsService', 'get');
   };
 
   self.init_();
@@ -51,4 +40,4 @@ var SheetsService = function() {
 
 
 /** */
-module.exports = new SheetsService();
+module.exports = SheetsService;

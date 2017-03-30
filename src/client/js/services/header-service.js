@@ -9,13 +9,20 @@
 var Provoke = require('../util/provoke.js');
 
 
-
 /**
  * This service handles getting all the headers for a specific Sheet.
  *
  * @constructor
  */
 var HeaderService = function() {
+
+  //***** private methods *****//
+
+  this.init_ = function() {
+
+  };
+
+  //***** public methods *****//
 
   /**
    * Gets the headers for a given Sheet and row.
@@ -26,6 +33,9 @@ var HeaderService = function() {
   this.get = function(sheet, row) {
     return Provoke('HeaderService', 'get', sheet, row);
   };
+
+
+  this.init_();
 };
 
 
