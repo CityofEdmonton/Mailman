@@ -124,7 +124,7 @@ CardsConfig.buildCardRepo = function(contentArea) {
     help: 'This is the column filled with the email addresses of the recipients.',
     error: {
       hint: 'Must be template tags << >> or emails seperated by commas',
-      pattern: '(<<[^<>]*>>|[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+))(,<<[^<>]*>>|,[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*)*'
+      pattern: '(<<[^<>]*>>|[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-.]+)(,<<[^<>]*>>|,[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*)*'
     }
   });
 
