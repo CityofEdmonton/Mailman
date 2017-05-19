@@ -27,7 +27,6 @@ function log(text) {
 }
 
 function getLogSheet() {
-  Logger.log('test');
   if (logSheet == null) {
     var url = SettingsService.getLogURL();
     Logger.log(url);
@@ -36,6 +35,13 @@ function getLogSheet() {
       return;
     }
 
-    logSheet = SpreadsheetApp.openByUrl(url);
+    try {
+      // This catches the event where the log sheet has been deleted.
+      logSheet = SpreadsheetApp.openByUrl(url);
+    }
+    catch (e) {
+      Logger.log(e);
+      return;
+    }
   }
 }
