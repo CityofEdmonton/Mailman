@@ -240,9 +240,6 @@ var MergeTemplateService = {
       if (oldTemplate === null) {
         throw new Error('Template ' + template.id + ' does not exist.');
       }
-      if (oldTemplate.mergeRepeater != null && oldTemplate.mergeRepeater.owner !== MetadataService.getUser()) {
-        throw new Error('You don\'t have permission to edit that merge template.');
-      }
 
       var row = MergeTemplateService.getRowByID(template.id);
       if (row == null) {
