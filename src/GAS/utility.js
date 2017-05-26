@@ -31,24 +31,6 @@ var Utility = {
   },
 
   /**
-   * Validates all of Mailman's triggers. Logs any issues for debug purposes.
-   *
-   * @return {boolean} True if the triggers are set up properly, false if they are set up incorrectly.
-   */
-  validateTriggers: function() {
-    var ss = Utility.getSpreadsheet();
-
-    var triggers = ScriptApp.getUserTriggers(ss);
-    log('Triggers:' + triggers.length);
-    if (triggers.length !== 1) {
-      log('Incorrect number of triggers: ' + triggers.length);
-      return false;
-    }
-
-    return Utility.validateTrigger_(triggers[0]);
-  },
-
-  /**
    * Clears the data storage sheet.
    *
    */
@@ -56,26 +38,5 @@ var Utility = {
     var ss = Utility.getSpreadsheet();
     var sheet = ss.getSheetByName(MergeTemplateService.SHEET_NAME);
     sheet.clear();
-  },
-
-  // *** Private functions *** //
-
-  /**
-   * Ensures the assigned trigger is valid.
-   *
-   * @param  {Trigger} trigger The Trigger to test.
-   * @return {boolean} True if the Trigger is valid, false otherwise.
-   */
-  validateTrigger_: function(trigger) {
-    if (trigger.getEventType() !== ScriptApp.EventType.CLOCK) {
-      log('Invalid trigger event type');
-      return false;
-    }
-    if (trigger.getHandlerFunction() !== 'sendManyEmails') {
-      log('Invalid trigger function');
-      return false;
-    }
-
-    return true;
   }
 };
