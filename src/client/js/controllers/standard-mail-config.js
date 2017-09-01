@@ -113,21 +113,22 @@ CardsConfig.buildCardRepo = function(contentArea) {
     getter: sService.get
   });
 
-  var matchTag = '<<[^<>]*>>';
-  var matchEmail = '[a-zA-Z0-9.!#$%&’*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*';
-  // It's worth explaining this regex.
-  // It aims to match template tags << >> and emails email@domain in a comma delimited list.
-  // It supports just one email or just one template tag and any combination of them.
-  // It doesn't support spaces between the names. Just commas.
+  /**
+   * It's worth explaining this regex.
+   * Match any merge tag: <<[^<>]*>>
+   * Match any email: [a-zA-Z0-9.!#$%&’*+\\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*
+   *
+   * It aims to match template tags << >> and emails email@domain in a comma delimited list.
+   * It matches against a comma-delimited list of merge tags and emails.
+   */
   repo[CardNames.to] = new ToCard(contentArea, {
     title: 'Who are you sending to?',
     help: 'This is the column filled with the email addresses of the recipients.',
     error: {
       hint: 'Must be template tags << >> or emails seperated by commas',
-      pattern: '(<<[^<>]*>>|[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-.]+)(,<<[^<>]*>>|,[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*)*'
+      pattern: '(<<[^<>]*>>|[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-.]+)(,\\s*<<[^<>]*>>|,\\s*[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*)*'
     }
   });
-
 
   repo[CardNames.row] = new InputCard(contentArea, {
     title: 'Which row contains your header titles?',
