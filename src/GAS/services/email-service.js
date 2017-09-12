@@ -39,21 +39,23 @@ var EmailService = {
     var sheet = ss.getSheetByName(template.mergeData.sheet);
     var range = sheet.getDataRange();
     var header = HeaderService.get(template.mergeData.sheet, template.mergeData.headerRow);
-    var sendHelper;
-
-    if (template.mergeData.conditional == null) {
-      sendHelper = EmailService.sendHelper;
-    }
-    else {
-      sendHelper = EmailService.conditionalSendHelper;
-    }
 
     for (var i = parseInt(template.mergeData.headerRow); i < range.getNumRows(); i++) {
       var row = range.offset(i, 0, 1, range.getNumColumns());
 
+      var emailProps = EmailService.getEmailFields(header, row.getDisplayValues()[0], template);
+      var to = emailProps.to;
+      var cc = emailProps.cc;
+      var bcc = emailProps.bcc;
+      var subject = emailProps.subject;
+      var body = emailProps.body;
+      var conditional = emailProps.conditional;
+
       try {
         // We only timestamp when the email successfully sends.
-        if (sendHelper(header, row.getDisplayValues()[0], template)) {
+        if ((template.mergeData.conditional == null || conditional === 'true') &&
+          EmailService.send(to, subject, body, cc, bcc)) {
+
           var timestampName = template.mergeData.timestampColumn.replace(/(<<|>>)/g, '');
           var timeCell = row.getCell(1, header.indexOf(timestampName) + 1);
 
@@ -162,6 +164,37 @@ var EmailService = {
   /******* Private / utility functions *******/
 
   /**
+   * Retrieves the required fields for an email to be sent.
+   *
+   * @param {String[]} headerRow An array of header values.
+   * @param {String[]} row An array of row values.
+   * @param {Object} template The MergeTemplate used to send the email. See the client-side object for info.
+   * @return {Boolean} true if the email was sent, false otherwise.
+   */
+  getEmailFields: function(headerRow, row, template) {
+    var valueMap = {};
+    for (var j = 0; j < headerRow.length; j++) {
+      valueMap[headerRow[j]] = row[j];
+    }
+
+    if (template.mergeData.type.toLowerCase() === 'email') {
+      return {
+        to: EmailService.replaceTags(template.mergeData.data.to, valueMap),
+        cc: EmailService.replaceTags(template.mergeData.data.cc, valueMap),
+        bcc: EmailService.replaceTags(template.mergeData.data.bcc, valueMap),
+        subject: EmailService.replaceTags(template.mergeData.data.subject, valueMap),
+        body: EmailService.replaceTags(template.mergeData.data.body, valueMap),
+        conditional: EmailService.replaceTags(template.mergeData.conditional, valueMap).toLowerCase()
+      };
+    }
+    else if (template.mergeData.type.toLowerCase() === 'document') {
+      log('Merged using document.');
+    }
+
+    return {};
+  },
+
+  /**
    * Sends an email based upon a MergeTemplate. Whack whacks are swapped out.
    * Handles to, subject and body fields.
    *
@@ -240,6 +273,10 @@ var EmailService = {
    * @return {string} The text with all tags replaced with data.
    */
   replaceTags: function(text, headerToData) {
+    if (text == null) {
+      text = '';
+    }
+
     var dataText = text.replace(/<<.*?>>/g, function(match, offset, string) {
       var columnName = match.slice(2, match.length - 2);
       return headerToData[columnName];
