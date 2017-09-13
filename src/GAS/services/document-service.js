@@ -3,8 +3,10 @@
  * @author {@link https://github.com/j-rewerts|Jared Rewerts}
  */
 
+
 /**
  * This service handles reading Google Docs.
+ * NOTE: The active user must be authorized to run this!
  *
  * @type {Object}
  */
@@ -17,10 +19,23 @@ var DocumentService = {
    * @return {string} An HTML string that may include merge tags.
    */
   getDocumentAsHTML: function(id) {
-    if (openedDocuments[id]) {
+    if (DocumentService.openedDocuments[id]) {
       return openedDocuments[id];
     }
 
     // Get as HTML
-  },
+    var url = 'https://docs.google.com/feeds/download/documents/export/Export?id=' + id + '&exportFormat=html';
+    var param = {
+      method: 'get',
+      headers: {
+        'Authorization': 'Bearer ' + ScriptApp.getOAuthToken()
+      },
+      muteHttpExceptions: true,
+    };
+    var html = UrlFetchApp.fetch(url, param).getContentText();
+    log('Loading Doc ' + id);
+    DocumentService.openedDocuments[id] = html;
+
+    return html;
+  }
 };
