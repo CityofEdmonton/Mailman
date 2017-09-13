@@ -189,6 +189,15 @@ var EmailService = {
     }
     else if (template.mergeData.type.toLowerCase() === 'document') {
       log('Merged using document.');
+      var bodyHTML = DocumentService.getDocumentAsHTML(template.mergeData.data.documentID);
+      return {
+        to: EmailService.replaceTags(template.mergeData.data.to, valueMap),
+        cc: EmailService.replaceTags(template.mergeData.data.cc, valueMap),
+        bcc: EmailService.replaceTags(template.mergeData.data.bcc, valueMap),
+        subject: EmailService.replaceTags(template.mergeData.data.subject, valueMap),
+        body: EmailService.replaceTags(bodyHTML, valueMap),
+        conditional: EmailService.replaceTags(template.mergeData.conditional, valueMap).toLowerCase()
+      };
     }
 
     return {};
