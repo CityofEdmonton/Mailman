@@ -21,7 +21,6 @@ var EmailService = {
   startMergeTemplate: function(template) {
     try {
       MergeTemplateService.validate(template);
-      EmailService.validate(template.mergeData.data);
     }
     catch(e) {
       log(e);
@@ -137,28 +136,6 @@ var EmailService = {
     });
 
     return true;
-  },
-
-  /**
-   * Validates the supplied MergeData.data. This can be found in MergeTemplate.mergeData.data. This is specifically
-   * for mail merge.
-   * Note, this throws errors if the data is invalid.
-   *
-   * @param  {Object} data The data payload containing to, subject and body.
-   */
-  validate: function(data) {
-    if (data == null) {
-      throw new Error('MergeTemplate.mergeData.data is null');
-    }
-    if (data.to == null) {
-      throw new Error('MergeTemplate.mergeData.data.to is null');
-    }
-    if (data.subject == null) {
-      throw new Error('MergeTemplate.mergeData.data.subject is null');
-    }
-    if (data.body == null) {
-      throw new Error('MergeTemplate.mergeData.data.body is null');
-    }
   },
 
   /******* Private / utility functions *******/

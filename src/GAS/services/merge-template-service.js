@@ -352,7 +352,8 @@ var MergeTemplateService = {
   },
 
   /**
-   * Validates the correctness of a MergeTemplate.
+   * Validates the correctness of a MergeTemplate. Note that a template's mergeRepeater is not validated, but its
+   * mergeData object is.
    *
    * @param  {MergeTemplate} template A simple config Object representing a MergeTemplate.
    */
@@ -360,26 +361,62 @@ var MergeTemplateService = {
     if (template == null) {
       throw new Error('MergeTemplate is null');
     }
-    if (template.mergeData == null) {
+
+    MergeTemplateService.validateMergeData(template.mergeData);
+  },
+
+  /**
+   * Validates the correctness of a MergeData object.
+   *
+   * @param  {MergeData} mergeData A simple config Object representing a MergeData.
+   */
+  validateMergeData: function(mergeData) {
+    if (mergeData == null) {
       throw new Error('MergeTemplate.mergeData is null');
     }
-    if (template.mergeData.type == null) {
+    if (mergeData.type == null) {
       throw new Error('MergeTemplate.mergeData.type is null');
     }
-    if (template.mergeData.data == null) {
+    if (mergeData.data == null) {
       throw new Error('MergeTemplate.mergeData.data is null');
     }
-    if (template.mergeData.sheet == null) {
+    if (mergeData.sheet == null) {
       throw new Error('MergeTemplate.mergeData.sheet is null');
     }
-    if (template.mergeData.title == null) {
+    if (mergeData.title == null) {
       throw new Error('MergeTemplate.mergeData.title is null');
     }
-    if (template.mergeData.headerRow == null) {
+    if (mergeData.headerRow == null) {
       throw new Error('MergeTemplate.mergeData.headerRow is null');
     }
-    if (template.mergeData.timestampColumn == null) {
+    if (mergeData.timestampColumn == null) {
       throw new Error('MergeTemplate.mergeData.timestampColumn is null');
+    }
+
+    if (mergeData.type.toLowerCase() == 'email') {
+      if (mergeData.data.to == null || mergeData.data.to == '') {
+        throw new Error('Email merge "to" is null');
+      }
+      if (mergeData.data.subject == null || mergeData.data.subject == '') {
+        throw new Error('Email merge "subject" is null');
+      }
+      if (mergeData.data.body == null || mergeData.data.body == '') {
+        throw new Error('Email merge "body" is null');
+      }
+    }
+    else if (mergeData.type.toLowerCase() == 'document') {
+      if (mergeData.data.to == null || mergeData.data.to == '') {
+        throw new Error('Document merge "to" is null');
+      }
+      if (mergeData.data.subject == null || mergeData.data.subject == '') {
+        throw new Error('Document merge "subject" is null');
+      }
+      if (mergeData.data.documentID == null || mergeData.data.documentID == '') {
+        throw new Error('Document merge "documentID" is null');
+      }
+    }
+    else {
+      throw new Error('MergeTemplate.mergeData.type is unknown type: ' + mergeData.type);
     }
   },
 
