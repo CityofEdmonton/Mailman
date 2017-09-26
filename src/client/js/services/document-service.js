@@ -32,7 +32,7 @@ var DocumentService = function() {
    * @return {Promise} A Promise that resolves when the user has selected or cancelled the picker.
    */
   this.getDocument = function() {
-    return Provoke('PickerService', 'open', key);
+    return Provoke('PickerService', 'openDocument', key);
   };
 
 

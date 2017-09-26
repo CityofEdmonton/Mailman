@@ -1,10 +1,19 @@
 var PickerService = {};
 
-PickerService.open = function(writeTo) {
-  var html = HtmlService.createHtmlOutputFromFile('picker.html')
-      .setWidth(600)
-      .setHeight(425)
-      .setSandboxMode(HtmlService.SandboxMode.IFRAME);
+PickerService.openDocument = function(writeTo) {
+  var template = HtmlService
+    .createTemplateFromFile('picker.html');
+  template.oauthToken = getOAuthToken();
+  log(template.oauthToken);
+  // template.fileType = google.picker.ViewId.DOCUMENTS;
+  template.writeTo = writeTo;
+  log(template.writeTo);
+
+  var html = template.evaluate()
+    .setWidth(600)
+    .setHeight(425)
+    .setSandboxMode(HtmlService.SandboxMode.IFRAME);
+
   SpreadsheetApp.getUi().showModalDialog(html, 'Select a file');
 }
 
