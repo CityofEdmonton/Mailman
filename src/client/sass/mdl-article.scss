@@ -152,6 +152,19 @@
   // margin-bottom: 24px;
 }
 
+.docs-color {
+  color: $docs-blue;
+}
+
+.docs-picker-button {
+  margin: auto;
+  display: block;
+}
+
+.docs-icon {
+  margin-left: 8px;
+}
+
 // MDL Changes
 .mailman-button {
   background: $pantone-2945;
