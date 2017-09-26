@@ -7,6 +7,7 @@
 
 
 var Provoke = require('./util/provoke.js');
+var EventEmitter = require('./event-emitter/local-storage-emitter.js');
 
 
 /**
@@ -19,11 +20,11 @@ var Picker = function(token) {
   var key = 'DOC_PICKER_RESPONSE';
   var DEVELOPER_KEY = 'TODO';
   var DIALOG_DIMENSIONS = {width: 600, height: 425};
+  var emitter = new EventEmitter();
 
   //***** private methods *****//
 
   this.init_ = function(token) {
-    console.log(token);
     var picker = new google.picker.PickerBuilder()
         // For other views, see https://developers.google.com/picker/docs/#otherviews
         .addView(google.picker.ViewId.DOCUMENTS)
@@ -52,21 +53,12 @@ var Picker = function(token) {
       var id = doc[google.picker.Document.ID];
       var url = doc[google.picker.Document.URL];
       var title = doc[google.picker.Document.NAME];
-      document.getElementById('result').innerHTML =
-          '<b>You chose:</b><br>Name: <a href="' + url + '">' + title +
-          '</a><br>ID: ' + id;
+      emitter.emit(key, {id, url, title});
+      google.script.host.close();
     } else if (action == google.picker.Action.CANCEL) {
-      document.getElementById('result').innerHTML = 'Picker canceled.';
+      console.log('Cancelled document selection.');
+      google.script.host.close();
     }
-  }
-
-  /**
-   * Displays an error message within the #result element.
-   *
-   * @param {string} message The error message to display.
-   */
-  function showError(message) {
-    document.getElementById('result').innerHTML = 'Error: ' + message;
   }
 
   //***** public methods *****//

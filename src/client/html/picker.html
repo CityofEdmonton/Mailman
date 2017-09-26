@@ -16,7 +16,6 @@
      */
     function onApiLoad() {
       gapi.load('picker', {'callback': function() {
-        // getOAuthToken();
         var picker = new Picker(oauth);
       }});
     };
