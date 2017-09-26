@@ -26,13 +26,13 @@ var DocumentPickerCard = function(appendTo, options) {
   var self = this;
   var innerBase = $(html);
 
-  var mdlObject = innerBase.find('[data-id="mdl-object"]');
+  var mdlObject = innerBase.find('[data-id="docs-button"]');
 
   //***** Private Methods *****//
 
   this.init_ = function(appendTo, options) {
     this.append(innerBase);
-    componentHandler.upgradeElement(mdlObject[0], 'MaterialTextfield');
+    componentHandler.upgradeElement(mdlObject[0], 'MaterialButton');
   };
 
   //***** Public Methods *****//
