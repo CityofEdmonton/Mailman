@@ -48,7 +48,8 @@ gulp.task('build-gas', ['browserify', 'compile-sass'], buildGAS);
 function browserifyBundle() {
     // we define our input files, which we want to have bundled:
     var files = [
-        './src/client/js/client.js'
+        './src/client/js/client.js',
+        './src/client/js/picker.js'
     ];
 
     // map them to our stream function
