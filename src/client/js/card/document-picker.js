@@ -9,6 +9,7 @@
 var html = require('./document-picker.html');
 var TitledCard = require('./card-titled.js');
 var Util = require('../util/util.js');
+var DocService = require('../services/document-service.js');
 
 
 /**
@@ -26,14 +27,28 @@ var DocumentPickerCard = function(appendTo, options) {
   var self = this;
   var innerBase = $(html);
 
-  var mdlObject = innerBase.find('[data-id="docs-button"]');
+  var button = innerBase.find('[data-id="docs-button"]');
 
   //***** Private Methods *****//
 
   this.init_ = function(appendTo, options) {
     this.append(innerBase);
-    componentHandler.upgradeElement(mdlObject[0], 'MaterialButton');
+
+    button.on('click', function() {
+      open();
+    });
+
+    componentHandler.upgradeElement(button[0], 'MaterialButton');
   };
+
+  var open = function() {
+    console.log(DocService);
+    DocService.getDocument().then((result) => {
+      console.log(result);
+    }, (err) => {
+      throw err;
+    });
+  }
 
   //***** Public Methods *****//
 
