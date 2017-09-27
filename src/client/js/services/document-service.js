@@ -39,6 +39,14 @@ var DocumentService = function() {
     });
   };
 
+  /**
+   * Gets the thumbnail URL for a Google Doc.
+   * @param {string} id The id of the document.
+   * @return {string} The URL of the docs thumbnail.
+   */
+  this.getThumbnail = function(id) {
+    return Provoke('DocumentService', 'getThumbnail', id);
+  };
 
   this.init_();
 };

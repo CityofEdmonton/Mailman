@@ -37,5 +37,14 @@ var DocumentService = {
     DocumentService.openedDocuments[id] = html;
 
     return html;
+  },
+
+  /**
+   * Gets the thumbnail URL for a Google Doc.
+   * @param {string} id The id of the document.
+   * @return {string} The URL of the docs thumbnail.
+   */
+  getThumbnail: function(id) {
+    return Drive.Files.get(id).thumbnailLink;
   }
 };
