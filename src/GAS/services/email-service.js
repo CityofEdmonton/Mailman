@@ -106,7 +106,8 @@ var EmailService = {
   },
 
   /**
-   * Handles sending emails. Emails that don't have to defined return false.
+   * Handles sending emails. Emails that don't have "to" defined return false.
+   * Emails that contain closing </html> tags result in an html email being sent.
    *
    * @param {string} to The primary recipients of the email. Can be a comma delimited list of users.
    * @param {string} subject The subject of the email. This can be an empty string.
@@ -120,20 +121,26 @@ var EmailService = {
       return false;
     }
 
-    var htmlEmail = HtmlService.createTemplateFromFile('email-template');
-    htmlEmail.id = Utility.getSpreadsheet().getId();
-    htmlEmail.bodyArray = body.split('\n');
-
     log('Sending email to ' + JSON.stringify({
       to: to,
       cc: cc,
       bcc: bcc
     }));
-    GmailApp.sendEmail(to, subject, body, {
-      htmlBody: htmlEmail.evaluate().getContent(),
-      cc: cc,
-      bcc: bcc
-    });
+
+    if (/<\/[a-z][\s\S]*>/.test(body)) {
+      GmailApp.sendEmail(to, subject, body, {
+        htmlBody: body,
+        cc: cc,
+        bcc: bcc
+      });
+    }
+    else {
+      GmailApp.sendEmail(to, subject, body, {
+        cc: cc,
+        bcc: bcc
+      });
+    }
+
 
     return true;
   },
