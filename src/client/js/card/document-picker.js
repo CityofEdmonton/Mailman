@@ -26,8 +26,11 @@ var DocumentPickerCard = function(appendTo, options) {
   // Private variables
   var self = this;
   var innerBase = $(html);
+  var documentID;
 
   var button = innerBase.find('[data-id="docs-button"]');
+  var imageContainer = innerBase.find('[data-id="image-container"]');
+  var title = innerBase.find('[data-id="title"]');
 
   //***** Private Methods *****//
 
@@ -42,23 +45,25 @@ var DocumentPickerCard = function(appendTo, options) {
   };
 
   var open = function() {
-    console.log(DocService);
     DocService.getDocument().then((result) => {
-      console.log(result);
+      documentID = result.id;
+      title.text(result.title);
+      imageContainer.empty();
+      imageContainer.append('<img src="' + result.thumbnail + '"/>');
     }, (err) => {
       throw err;
     });
-  }
+  };
 
   //***** Public Methods *****//
 
   /**
    * Gets the document id selected by the user.
    *
-   * @return {string|null} The id of the document.
+   * @return {string?} The id of the document.
    */
   this.getValue = function() {
-    return null;
+    return documentID;
   };
 
   this.init_(appendTo, options);

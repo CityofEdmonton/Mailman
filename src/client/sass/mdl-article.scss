@@ -152,17 +152,40 @@
   // margin-bottom: 24px;
 }
 
+// DocumentPickerCard
 .docs-color {
   color: $docs-blue;
 }
 
 .docs-picker-button {
+  display: flex;
+  flex-direction: column;
+  height: inherit;
+  padding: 0px;
   margin: auto;
-  display: block;
 }
 
-.docs-icon {
-  margin-left: 8px;
+.docs-image-container {
+  max-height: 100px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.docs-picker-bar {
+  background: $mdl-plain-color;
+  width: 100%;
+  padding-left: 8px;
+  padding-right: 8px;
+  text-align: left;
+}
+
+.doc-title {
+  max-width: 100px;
+  text-overflow: ellipsis;
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: top;
+  overflow-x: hidden;
 }
 
 // MDL Changes

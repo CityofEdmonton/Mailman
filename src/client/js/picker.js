@@ -6,8 +6,8 @@
  */
 
 
-var Provoke = require('./util/provoke.js');
 var EventEmitter = require('./event-emitter/local-storage-emitter.js');
+var DocumentService = require('./services/document-service.js');
 
 
 /**
@@ -53,8 +53,14 @@ var Picker = function(token) {
       var id = doc[google.picker.Document.ID];
       var url = doc[google.picker.Document.URL];
       var title = doc[google.picker.Document.NAME];
-      emitter.emit(key, {id, url, title});
-      google.script.host.close();
+      var iconURL = doc[google.picker.Document.ICON_URL];
+      var thumbnails = doc[google.picker.Document.THUMBNAILS];
+      var embedURL = doc[google.picker.Document.EMBEDDABLE_URL];
+
+      DocumentService.getThumbnail(id).then((thumbnail) => {
+        emitter.emit(key, {id, url, title, iconURL, thumbnails, embedURL, thumbnail});
+        google.script.host.close();
+      });
     } else if (action == google.picker.Action.CANCEL) {
       console.log('Cancelled document selection.');
       google.script.host.close();
@@ -62,7 +68,6 @@ var Picker = function(token) {
   }
 
   //***** public methods *****//
-
 
   this.init_(token);
 };
