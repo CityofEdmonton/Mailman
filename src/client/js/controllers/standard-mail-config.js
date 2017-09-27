@@ -13,10 +13,12 @@ var TitledCard = require('../card/card-titled.js');
 var TextareaCard = require('../card/card-textarea.js');
 var ConditionalInputCard = require('../card/conditional-input-card.js');
 var ToCard = require('../card/to-cc-bcc.js');
+var DocumentCard = require('../card/document-picker.js')
 var Snackbar = require('../views/snackbar/snackbar.js');
 var HeaderService = require('../services/header-service.js');
 var SheetsService = require('../services/sheets-service.js');
 var EmailService = require('../services/email-service.js');
+var Util = require('../util/util.js');
 
 
 
@@ -166,6 +168,20 @@ CardsConfig.buildCardRepo = function(contentArea) {
     help: 'Recipients will see this as the body of the email. Type << to see a list of column names. ' +
     'Template tags will be swapped out with the associated values in the Sheet.',
     label: 'Body...'
+  });
+  repo[CardNames.body].addOption('Send a Google Doc', function() {
+    console.log('Sending from doc.');
+    repo[CardNames.body].hide();
+    repo[CardNames.documentSelector].show();
+  });
+
+  repo[CardNames.documentSelector] = new DocumentCard(contentArea, {
+    title: 'Which document should be sent?',
+    help: 'Recipients will see this as the body of the email. Each merge tag in the document is swapped out.',
+    label: 'Document...'
+  });
+  repo[CardNames.documentSelector].addOption('Send plain email', function() {
+    console.log('Sending plain.');
   });
 
   repo[CardNames.sendNow] = new TitledCard(contentArea, {

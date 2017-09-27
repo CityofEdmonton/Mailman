@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons.css">
+
+  <!-- build:js inline build/common/picker.bundle.js -->
+  <script type="text/javascript" src="../js/picker.bundle.js"></script>
+  <!-- /build -->
+
+  <script>
+    var oauth = <?= oauthToken ?>;
+    var writeTo = <?= writeTo ?>;
+
+    /**
+     * Loads the Google Picker API.
+     */
+    function onApiLoad() {
+      gapi.load('picker', {'callback': function() {
+        var picker = new Picker(oauth);
+      }});
+    };
+  </script>
+</head>
+<body>
+  <div>
+    <p id='result'></p>
+  </div>
+  <script src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
+</body>
+</html>

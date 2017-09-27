@@ -127,7 +127,7 @@ var EmailService = {
       bcc: bcc
     }));
 
-    if (/<\/[a-z][\s\S]*>/.test(body)) {
+    if (/<html>/.test(body)) {
       GmailApp.sendEmail(to, subject, body, {
         htmlBody: body,
         cc: cc,
@@ -140,7 +140,6 @@ var EmailService = {
         bcc: bcc
       });
     }
-
 
     return true;
   },
@@ -172,7 +171,6 @@ var EmailService = {
       };
     }
     else if (template.mergeData.type.toLowerCase() === 'document') {
-      log('Merged using document.');
       var bodyHTML = DocumentService.getDocumentAsHTML(template.mergeData.data.documentID);
       return {
         to: EmailService.replaceTags(template.mergeData.data.to, valueMap),
@@ -200,9 +198,15 @@ var EmailService = {
       text = '';
     }
 
-    var dataText = text.replace(/<<.*?>>/g, function(match, offset, string) {
-      var columnName = match.slice(2, match.length - 2);
-      return headerToData[columnName];
+    // This must match <<these>> and &lt;&lt;these&gt;&gt; since we need to support HTML.
+    var dataText = text.replace(/<<(.*?)>>|&lt;&lt;(.*?)&gt;&gt;/g, function(match, m1, m2, offset, string) {
+      if (m1 && headerToData[m1]) {
+        return headerToData[m1];
+      }
+      else if (m2 && headerToData[m2]) {
+        return headerToData[m2];
+      }
+      return '';
     });
 
     return dataText;
