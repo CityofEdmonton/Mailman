@@ -41,6 +41,7 @@ var StandardMailHandler = function(parent) {
     cardRepository[CardNames.title].setValidation(cardValidator);
     cardRepository[CardNames.sheet].setValidation(cardValidator);
     cardRepository[CardNames.row].setValidation(cardValidator);
+    cardRepository[CardNames.documentSelector].setValidation(cardValidator);
     cardRepository[CardNames.conditional].setValidation(function() {
       if (cardRepository[CardNames.conditional].isEnabled() && cardRepository[CardNames.conditional].getValue() == '') {
         return false;
@@ -49,18 +50,7 @@ var StandardMailHandler = function(parent) {
       return true;
     });
 
-    cardsList = new List();
-    cardsList.add(CardNames.title);
-    cardsList.add(CardNames.sheet);
-    cardsList.add(CardNames.row);
-    cardsList.add(CardNames.to);
-    cardsList.add(CardNames.subject);
-    cardsList.add(CardNames.body);
-    cardsList.add(CardNames.conditional);
-    cardsList.add(CardNames.sendNow);
-
-    activeNode = cardsList.head;
-    show(activeNode.data);
+    selectFlow('email');
   };
 
   var cardValidator = function(card) {
@@ -84,6 +74,48 @@ var StandardMailHandler = function(parent) {
     }
   }
 
+  var selectFlow = function(flowType) {
+    type = flowType;
+    if (flowType.toLowerCase() === 'email') {
+      cardsList = buildEmailFlow();
+    }
+    else if (flowType.toLowerCase() === 'document') {
+      cardsList = buildDocumentFlow();
+    }
+    else {
+      throw new Error('Unknown merge type: ' + type);
+    }
+
+    activeNode = cardsList.head;
+    show(activeNode.data);
+  };
+
+  var buildEmailFlow = function() {
+    var cards = new List();
+    cards.add(CardNames.title);
+    cards.add(CardNames.sheet);
+    cards.add(CardNames.row);
+    cards.add(CardNames.to);
+    cards.add(CardNames.subject);
+    cards.add(CardNames.body);
+    cards.add(CardNames.conditional);
+    cards.add(CardNames.sendNow);
+    return cards;
+  };
+
+  var buildDocumentFlow = function() {
+    var cards = new List();
+    cards.add(CardNames.title);
+    cards.add(CardNames.sheet);
+    cards.add(CardNames.row);
+    cards.add(CardNames.to);
+    cards.add(CardNames.subject);
+    cards.add(CardNames.documentSelector);
+    cards.add(CardNames.conditional);
+    cards.add(CardNames.sendNow);
+    return cards;
+  };
+
   //***** public functions *****//
 
   /**
@@ -93,6 +125,16 @@ var StandardMailHandler = function(parent) {
    */
   this.setMergeTemplate = function(template) {
     updateConfig = template.toConfig();
+
+    if (updateConfig.mergeData.data.body) {
+      type = 'email';
+      selectFlow('email');
+    }
+    else if (updateConfig.mergeData.data.documentID) {
+      type = 'document';
+      selectFlow('document');
+    }
+    
     cardRepository[CardNames.title].setValue(updateConfig.mergeData.title);
     cardRepository[CardNames.sheet].setValue(updateConfig.mergeData.sheet);
     cardRepository[CardNames.row].setValue(updateConfig.mergeData.headerRow);
@@ -102,7 +144,16 @@ var StandardMailHandler = function(parent) {
       bcc: updateConfig.mergeData.data.bcc
     });
     cardRepository[CardNames.subject].setValue(updateConfig.mergeData.data.subject);
-    cardRepository[CardNames.body].setValue(updateConfig.mergeData.data.body);
+
+    if (updateConfig.mergeData.data.body) {
+      cardRepository[CardNames.body].setValue(updateConfig.mergeData.data.body);
+    }
+    else if (updateConfig.mergeData.data.documentID) {
+      cardRepository[CardNames.documentSelector].setValue({
+        id: updateConfig.mergeData.data.documentID
+      });
+    }
+
 
     if (updateConfig.mergeData.conditional != null) {
       cardRepository[CardNames.conditional].check();
@@ -133,7 +184,8 @@ var StandardMailHandler = function(parent) {
             cc: toVals.cc,
             bcc: toVals.bcc,
             subject: cardRepository[CardNames.subject].getValue(),
-            body: cardRepository[CardNames.body].getValue()
+            body: cardRepository[CardNames.body].getValue(),
+            documentID: cardRepository[CardNames.documentSelector].getValue(),
           }
         }
       }

@@ -18,7 +18,7 @@ var DocumentService = require('./services/document-service.js');
 var Picker = function(token) {
 
   var key = 'DOC_PICKER_RESPONSE';
-  var DEVELOPER_KEY = 'TODO';
+  var DEVELOPER_KEY = 'AIzaSyD90ppxJftk67BzaKI483TNdb2J-YdizJc';
   var DIALOG_DIMENSIONS = {width: 600, height: 425};
   var emitter = new EventEmitter();
 

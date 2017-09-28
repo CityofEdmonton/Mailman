@@ -169,20 +169,12 @@ CardsConfig.buildCardRepo = function(contentArea) {
     'Template tags will be swapped out with the associated values in the Sheet.',
     label: 'Body...'
   });
-  repo[CardNames.body].addOption('Send a Google Doc', function() {
-    console.log('Sending from doc.');
-    repo[CardNames.body].hide();
-    repo[CardNames.documentSelector].show();
-  });
 
   repo[CardNames.documentSelector] = new DocumentCard(contentArea, {
     title: 'Which document should be sent?',
     help: 'Recipients will see this as the body of the email. Each merge tag in the document is swapped out.',
     label: 'Document...'
-  });
-  repo[CardNames.documentSelector].addOption('Send plain email', function() {
-    console.log('Sending plain.');
-  });
+  });  
 
   repo[CardNames.sendNow] = new TitledCard(contentArea, {
     title: 'Save',

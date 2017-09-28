@@ -27,6 +27,7 @@ var DocumentPickerCard = function(appendTo, options) {
   var self = this;
   var innerBase = $(html);
   var documentID;
+  var validate;
 
   var button = innerBase.find('[data-id="docs-button"]');
   var imageContainer = innerBase.find('[data-id="image-container"]');
@@ -64,6 +65,38 @@ var DocumentPickerCard = function(appendTo, options) {
    */
   this.getValue = function() {
     return documentID;
+  };
+
+  /**
+   * Sets the value of the document picker.
+   *
+   * @param {string} value The value to set in the input.
+   */
+  this.setValue = function(value) {
+    //mdlObject[0].MaterialTextfield.change(value);
+  };
+
+  /**
+   * Sets validation for this Card.
+   * This is used to determine if the user can click the NEXT button.
+   *
+   * @param {Function} callback The function to call when validating.
+   */
+  this.setValidation = function(callback) {
+    validate = callback;
+  };
+
+  /**
+   * Tests whether this Card is currently valid.
+   *
+   * @return {boolean} True if this Card is valid.
+   */
+  this.isValid = function() {
+    if (validate !== undefined && !validate(self)) {
+      return false;
+    }
+
+    return true;
   };
 
   this.init_(appendTo, options);
