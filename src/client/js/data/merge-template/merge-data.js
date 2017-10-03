@@ -38,7 +38,6 @@ var MergeData = function(config) {
   //***** Private Methods *****//
 
   this.init_ = function(config) {
-    console.log(timestampColumn);
     if (config.type == null) {
       throw new Error('MergeData needs type.');
     }
