@@ -19,6 +19,8 @@ var LoadingScreen = require('./views/loading/loading-screen.js');
 var baseHTML = require('./main.html');
 var PubSub = require('pubsub-js');
 var StandardMailHandler = require('./controllers/standard-mail-handler.js');
+var DocumentMailHandler = require('./controllers/document-mail-handler.js');
+var TypeToHandler = require('./controllers/type-to-handler.js');
 
 
 /**
@@ -111,7 +113,7 @@ var MailMan = function(appendTo) {
 
     actionBar.setSettingsHandler(showSettingsView);
 
-    mtListView.setInstantHandler(function(e) {
+    mtListView.setEmailHandler(function(e) {
       cardsView = createCardsView(base, StandardMailHandler);
       showCardsView();
     });
@@ -123,7 +125,8 @@ var MailMan = function(appendTo) {
     });
 
     mtListView.setEditHandler(function(template) {
-      cardsView = createCardsView(base, StandardMailHandler, template);
+      var type = template.toConfig().mergeData.type;
+      cardsView = createCardsView(base, TypeToHandler[type.toLowerCase()], template);
       showCardsView();
     });
 
