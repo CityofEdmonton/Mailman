@@ -15,15 +15,30 @@
 
   </div>
 
-  <div class="rlv-button-bar">
-    <button id="email-button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect rlv-primary-button"
-      data-id="email-button">
-      <i class="material-icons">add</i>
-    </button>
-    <div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="email-button">
-      New Merge Template
+  <div data-id="fab-container" class="mdl-button--fab_flinger-container rlv-button-bar">
+    <div class="mdl-button--fab_flinger-options">
+      <button id="plain-text-button" data-id="plain-text-button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
+        <i class="material-icons">short_text</i>
+      </button>
+      <button id="document-button" data-id="document-button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
+        <i class="material-icons">description</i>
+      </button>
     </div>
 
+    <button id="fab-button" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect rlv-primary-button"
+      data-id="fab-button">
+      <i class="material-icons">add</i>
+    </button>
+
+    <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="plain-text-button">
+      Plain Text
+    </div>
+    <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="document-button">
+      From Google Doc
+    </div>
+    <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="fab-button">
+      New Merge Template
+    </div>
   </div>
 
 </main>

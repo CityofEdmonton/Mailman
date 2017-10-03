@@ -33,11 +33,15 @@ var MergeTemplatesListView = function(appendTo) {
   var repeatDialog;
   var runDialog;
   var deleteDialog;
+  var SPEED_DIAL_VISIBLE = 'is-showing-options';
 
   // jQuery Objects
   var list = base.find('[data-id="list"]');
   var emptyContainer = base.find('[data-id="empty-container"]');
-  var emailButton = base.find('[data-id="email-button"]');
+  var emailButton = base.find('[data-id="plain-text-button"]');
+  var documentButton = base.find('[data-id="document-button"]');
+  var fabButton = base.find('[data-id="fab-button"]');
+  var fabContainer = base.find('[data-id="fab-container"]');
 
   // Event callbacks
   var deletionCallback;
@@ -47,8 +51,6 @@ var MergeTemplatesListView = function(appendTo) {
   var repeatCB;
   var unrepeatCB;
 
-  // public variables
-
 
   //***** private methods *****//
 
@@ -56,14 +58,13 @@ var MergeTemplatesListView = function(appendTo) {
     appendTo.append(base);
 
     emailButton.on('click', newEmailTemplate);
+    fabButton.on('click', toggleSpeedDial);
 
     PubSub.subscribe('Rules.delete', rebuild);
     PubSub.subscribe('Rules.add', rebuild);
     PubSub.subscribe('Rules.update', rebuild);
     PubSub.subscribe('Rules.repeater', rebuild);
     PubSub.subscribe('Mailman.SettingsView.hide', self.show);
-
-    componentHandler.upgradeElement(emailButton[0], 'MaterialButton');
   };
 
   var itemEdit = function(e) {
@@ -72,6 +73,10 @@ var MergeTemplatesListView = function(appendTo) {
 
   var newEmailTemplate = function(e) {
     emailCB(e);
+  };
+
+  var toggleSpeedDial = function(e) {
+    fabContainer.toggleClass(SPEED_DIAL_VISIBLE);
   };
 
   var rebuild = function() {
