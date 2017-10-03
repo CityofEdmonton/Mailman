@@ -67,9 +67,9 @@
 .mdl-button--fab_flinger-container.is-showing-options > button i {
   -webkit-transition: -webkit-transform 0.1s linear;
           transition: transform 0.1s linear;
-  -webkit-transform: translate(-12px, -12px) rotate(45deg);
-      -ms-transform: translate(-12px, -12px) rotate(45deg);
-          transform: translate(-12px, -12px) rotate(45deg);
+  -webkit-transform: translate(-12px, -12px) rotate(225deg);
+      -ms-transform: translate(-12px, -12px) rotate(225deg);
+          transform: translate(-12px, -12px) rotate(225deg);
 }
 .mdl-button--fab_flinger-container.is-showing-options .mdl-button--fab_flinger-options {
   display: flex;
