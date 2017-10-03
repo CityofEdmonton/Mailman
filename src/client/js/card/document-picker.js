@@ -70,10 +70,15 @@ var DocumentPickerCard = function(appendTo, options) {
   /**
    * Sets the value of the document picker.
    *
-   * @param {string} value The value to set in the input.
+   * @param {string} id The id of the selected document.
    */
-  this.setValue = function(value) {
-    //mdlObject[0].MaterialTextfield.change(value);
+  this.setValue = function(id) {
+    documentID = id;
+    DocService.getMetadata(documentID).then((metadata) => {
+      title.text(metadata.title);
+      imageContainer.empty();
+      imageContainer.append('<img src="' + metadata.thumbnailLink + '"/>');
+    })
   };
 
   /**

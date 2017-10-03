@@ -108,9 +108,7 @@ var DocumentMailHandler = function(parent) {
       bcc: updateConfig.mergeData.data.bcc
     });
     cardRepository[CardNames.subject].setValue(updateConfig.mergeData.data.subject);
-    cardRepository[CardNames.documentSelector].setValue({
-      id: updateConfig.mergeData.data.documentID
-    });
+    cardRepository[CardNames.documentSelector].setValue(updateConfig.mergeData.data.documentID);
 
 
     if (updateConfig.mergeData.conditional != null) {
