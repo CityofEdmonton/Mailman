@@ -1,6 +1,7 @@
 /**
  * This module exports a function that assists in setting up a series of Cards.
  * This is one of the modules that would need to be swapped out if Mailman were to be repurposed.
+ * This merges from a Google Doc.
  *
  * @author {@link https://github.com/j-rewerts|Jared Rewerts}
  * @module
@@ -10,14 +11,13 @@
 var CardNames = require('./names.js');
 var InputCard = require('../card/card-input.js');
 var TitledCard = require('../card/card-titled.js');
-var TextareaCard = require('../card/card-textarea.js');
 var ConditionalInputCard = require('../card/conditional-input-card.js');
 var ToCard = require('../card/to-cc-bcc.js');
+var DocumentCard = require('../card/document-picker.js');
 var Snackbar = require('../views/snackbar/snackbar.js');
 var HeaderService = require('../services/header-service.js');
 var SheetsService = require('../services/sheets-service.js');
 var EmailService = require('../services/email-service.js');
-var Util = require('../util/util.js');
 
 
 
@@ -63,14 +63,6 @@ CardsConfig.buildCardRepo = function(contentArea) {
     });
 
     repo[CardNames.subject].setAutocomplete({
-      trigger: '<<',
-      prepend: '<<',
-      append: '>>',
-      maxResults: CardsConfig.maxResults,
-      getter: getHeaders
-    });
-
-    repo[CardNames.body].setAutocomplete({
       trigger: '<<',
       prepend: '<<',
       append: '>>',
@@ -159,14 +151,10 @@ CardsConfig.buildCardRepo = function(contentArea) {
     label: 'Subject...'
   });
 
-  repo[CardNames.body] = new TextareaCard(contentArea, {
-    title: 'What would you like your email body to be?',
-    paragraphs: [
-      'Tip: try typing <<'
-    ],
-    help: 'Recipients will see this as the body of the email. Type << to see a list of column names. ' +
-    'Template tags will be swapped out with the associated values in the Sheet.',
-    label: 'Body...'
+  repo[CardNames.documentSelector] = new DocumentCard(contentArea, {
+    title: 'Which document should be sent?',
+    help: 'Recipients will see this as the body of the email. Each merge tag in the document is swapped out.',
+    label: 'Document...'
   });
 
   repo[CardNames.sendNow] = new TitledCard(contentArea, {
@@ -180,9 +168,8 @@ CardsConfig.buildCardRepo = function(contentArea) {
     var sheet = repo[CardNames.sheet].getValue();
     var row = repo[CardNames.row].getValue();
     var subject = repo[CardNames.subject].getValue();
-    var body = repo[CardNames.body].getValue();
 
-    eService.sendTest(sheet, row, subject, body).then(
+    eService.sendTest(sheet, row, subject, 'TODO').then(
       function() {},
       function(err) {
         console.error(err);
