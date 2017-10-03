@@ -48,6 +48,7 @@ var MergeTemplatesListView = function(appendTo) {
   var editCallback;
   var runCallback;
   var emailCB;
+  var documentCB;
   var repeatCB;
   var unrepeatCB;
 
@@ -58,6 +59,7 @@ var MergeTemplatesListView = function(appendTo) {
     appendTo.append(base);
 
     emailButton.on('click', newEmailTemplate);
+    documentButton.on('click', newDocumentTemplate);
     fabButton.on('click', toggleSpeedDial);
 
     PubSub.subscribe('Rules.delete', rebuild);
@@ -73,6 +75,10 @@ var MergeTemplatesListView = function(appendTo) {
 
   var newEmailTemplate = function(e) {
     emailCB(e);
+  };
+
+  var newDocumentTemplate = function(e) {
+    documentCB(e);
   };
 
   var toggleSpeedDial = function(e) {
@@ -196,10 +202,19 @@ var MergeTemplatesListView = function(appendTo) {
   /**
    * Sets the handler for the email button click.
    *
-   * @param {Function} callback Called when the + button is clicked.
+   * @param {Function} callback Called when the email button is clicked.
    */
   this.setEmailHandler = function(callback) {
     emailCB = callback;
+  };
+
+  /**
+   * Sets the handler for the document button click.
+   *
+   * @param {Function} callback Called when the document button is clicked.
+   */
+  this.setDocumentHandler = function(callback) {
+    documentCB = callback;
   };
 
   this.setRepeatDialog = function(dialog) {

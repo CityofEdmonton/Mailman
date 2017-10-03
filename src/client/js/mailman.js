@@ -117,6 +117,10 @@ var MailMan = function(appendTo) {
       cardsView = createCardsView(base, StandardMailHandler);
       showCardsView();
     });
+    mtListView.setDocumentHandler(function(e) {
+      cardsView = createCardsView(base, DocumentMailHandler);
+      showCardsView();
+    });
 
     mtListView.setDeleteDialog(deleteDialog);
     mtListView.setDeleteHandler(function(template) {
