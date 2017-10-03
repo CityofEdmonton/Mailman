@@ -46,5 +46,14 @@ var DocumentService = {
    */
   getThumbnail: function(id) {
     return Drive.Files.get(id).thumbnailLink;
+  },
+
+  /**
+   * Gets the metadata associated with a Doc.
+   * @param {string} id The id of the document.
+   * @return {Object} The metadata of the Doc.
+   */
+  getMetadata: function(id) {
+    return Drive.Files.get(id);
   }
 };

@@ -48,6 +48,15 @@ var DocumentService = function() {
     return Provoke('DocumentService', 'getThumbnail', id);
   };
 
+  /**
+   * Gets the thumbnail URL for a Google Doc.
+   * @param {string} id The id of the document.
+   * @return {Object} The Docs metadata.
+   */
+  this.getMetadata = function(id) {
+    return Provoke('DocumentService', 'getMetadata', id);
+  };
+
   this.init_();
 };
 
