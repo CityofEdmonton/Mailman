@@ -37,13 +37,13 @@ var MergeTemplatesListView = function(appendTo) {
   // jQuery Objects
   var list = base.find('[data-id="list"]');
   var emptyContainer = base.find('[data-id="empty-container"]');
-  var instantButton = base.find('[data-id="instant-button"]');
+  var emailButton = base.find('[data-id="email-button"]');
 
   // Event callbacks
   var deletionCallback;
   var editCallback;
   var runCallback;
-  var instantCB;
+  var emailCB;
   var repeatCB;
   var unrepeatCB;
 
@@ -55,7 +55,7 @@ var MergeTemplatesListView = function(appendTo) {
   this.init_ = function(appendTo) {
     appendTo.append(base);
 
-    instantButton.on('click', newInstant);
+    emailButton.on('click', newEmailTemplate);
 
     PubSub.subscribe('Rules.delete', rebuild);
     PubSub.subscribe('Rules.add', rebuild);
@@ -63,15 +63,15 @@ var MergeTemplatesListView = function(appendTo) {
     PubSub.subscribe('Rules.repeater', rebuild);
     PubSub.subscribe('Mailman.SettingsView.hide', self.show);
 
-    componentHandler.upgradeElement(instantButton[0], 'MaterialButton');
+    componentHandler.upgradeElement(emailButton[0], 'MaterialButton');
   };
 
   var itemEdit = function(e) {
     editCallback(e.data);
   };
 
-  var newInstant = function(e) {
-    instantCB(e);
+  var newEmailTemplate = function(e) {
+    emailCB(e);
   };
 
   var rebuild = function() {
@@ -101,8 +101,6 @@ var MergeTemplatesListView = function(appendTo) {
   };
 
   //***** public methods *****//
-
-  // this.setRunPromise = function()
 
   /**
    * Sets the MergeTemplateContainer this view uses.
@@ -191,12 +189,12 @@ var MergeTemplatesListView = function(appendTo) {
   };
 
   /**
-   * Sets the handler for the instant email button click.
-   * TODO
-   * @param {Function} callback Called when the instant button is clicked.
+   * Sets the handler for the email button click.
+   *
+   * @param {Function} callback Called when the + button is clicked.
    */
-  this.setInstantHandler = function(callback) {
-    instantCB = callback;
+  this.setEmailHandler = function(callback) {
+    emailCB = callback;
   };
 
   this.setRepeatDialog = function(dialog) {
