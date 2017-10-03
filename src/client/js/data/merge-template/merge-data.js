@@ -6,6 +6,8 @@
  */
 
 
+var Util = require('../../util/util.js');
+
 
 /**
  * Holds a merge template payload. This is just generic data used for merging. This could be to, body, subject (email),
@@ -31,11 +33,12 @@ var MergeData = function(config) {
   var conditional = config.conditional;
   var title = 'title';
   var headerRow = '1';
-  var timestampColumn = '<<Mailman ' + type + ' Timestamp>>';
+  var timestampColumn = Util.capitalize('<<Mailman ' + type + ' Timestamp>>');
 
   //***** Private Methods *****//
 
   this.init_ = function(config) {
+    console.log(timestampColumn);
     if (config.type == null) {
       throw new Error('MergeData needs type.');
     }

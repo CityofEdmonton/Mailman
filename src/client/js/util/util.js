@@ -162,6 +162,20 @@ Util.setHidden = function(object, state) {
   }
 };
 
+/**
+ * Capitalizes each word in a provided string.
+ * @param {string} str A string to capitalize.
+ * @return {string} The capitalized string.
+ */
+Util.capitalize = function(str) {
+  return str.toLowerCase()
+    .split(' ')
+    .map(function(word) {
+      return word.replace(/\w+/g, function(match) {
+        return match[0].toUpperCase() + match.slice(1);
+      });
+    }).join(' ');
+};
 
 /**
 * A generic UI element hider. Doesn't remove the object from the flow of the document.
