@@ -1,8 +1,11 @@
-[![Stories in Ready](https://badge.waffle.io/coe-google-apps-support/Mailman.png?label=ready&title=Ready)](https://waffle.io/coe-google-apps-support/Mailman)
 # Mailman
 Mailman aims to make sending emails easy. Using common spreadsheet functions, customize when you want to send your emails.
 A powerful, easy to use mail merge solution for the City of Edmonton.
 Mailman guides you through the process of setting up your own mail merge. Just use our merge tags! You can use <<>> to swap out data from your Google Sheets into your emails. Supercharge your email workflow today!
+
+## Collaborate
+
+Is Mailman missing a feature you need? Let us know by filling [this](https://docs.google.com/forms/d/e/1FAIpQLSdbnbN77OCClYjTty4p7j_d25-n0cit_4Mko2BKpIz-LUGedA/viewform) Google Form out. After ~20 minutes, it should show up in [Mailman's issue tracker](https://github.com/coe-google-apps-support/Mailman/issues).
 
 ## Features
 
