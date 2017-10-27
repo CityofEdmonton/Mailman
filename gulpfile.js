@@ -8,9 +8,14 @@ var open = require('gulp-open');
 var os = require('os');
 var sass = require('gulp-sass');
 var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
+var uglify = require('gulp-uglify');
 var stringify = require('stringify');
 var del = require('del');
 var jsdoc = require('gulp-jsdoc3');
+var argv = require('yargs').argv;
+var gulpif = require('gulp-if');
+var sourcemaps = require('gulp-sourcemaps');
 
 // Used for our new bundle system
 var rename = require('gulp-rename');
@@ -25,6 +30,7 @@ gulp.task('test-gas', ['deploy-gas'], openGAS);
 gulp.task('test-web', ['build-web'], openWeb);
 
 // General
+var isDev = (argv.dev === undefined) ? false : true;
 gulp.task('lint-all', closureLint);
 gulp.task('browserify', browserifyBundle);
 gulp.task('compile-sass', compileSASS);
@@ -54,24 +60,31 @@ function browserifyBundle() {
 
     // map them to our stream function
     var tasks = files.map(function(entry) {
-		    var path = entry.split('/');
+		var path = entry.split('/');
 
-        return browserify(entry)
+        return browserify({
+                entries: [entry],
+                debug: isDev
+            })
             .transform(stringify, {
                 appliesTo: {
                     includeExtensions: ['.html']
                 },
-                minify: false
+                minify: false,
+                sourceMaps: true
             })
             .bundle()
             .on('error', function(e) {
                 gutil.log(e);
             })
             .pipe(source(path[path.length - 1]))
+            .pipe(buffer())
+            .pipe(gulpif(isDev, sourcemaps.init({loadMaps: true})))
             // rename them to have "bundle as postfix"
             .pipe(rename({
                 extname: '.bundle.js'
             }))
+            .pipe(gulpif(isDev, sourcemaps.write('./map')))
             .pipe(gulp.dest('./build/common'));
     });
 
@@ -110,6 +123,12 @@ function buildGAS() {
 function buildWeb() {
     gulp.src('./build/common/*.bundle.js')
         .pipe(gulp.dest('./build/web/client/js'));
+
+    // Add source maps in dev mode
+    if (isDev) {
+        gulp.src('./build/common/*.map')
+        .pipe(gulp.dest('./build/web/client/js/map'));
+    }
 
     gulp.src('./src/client/css/*')
         .pipe(gulp.dest('./build/web/client/css'));

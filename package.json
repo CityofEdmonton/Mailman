@@ -56,5 +56,11 @@
       ]
     },
     "mdl": "componentHandler"
+  },
+  "dependencies": {
+    "gulp-if": "^2.0.2",
+    "gulp-sourcemaps": "^2.6.1",
+    "vinyl-buffer": "^1.0.0",
+    "yargs": "^10.0.3"
   }
 }
