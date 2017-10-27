@@ -34,8 +34,10 @@ var MergeTemplateContainer = function(config) {
   this.init_ = function(config) {
     var templateObjs = config.templates;
 
-    for (var i = 0; i < templateObjs.length; i++) {
-      templates.push(new MergeTemplate(templateObjs[i]));
+    if (templateObjs) {
+      for (var i = 0; i < templateObjs.length; i++) {
+        templates.push(new MergeTemplate(templateObjs[i]));
+      }
     }
   };
 

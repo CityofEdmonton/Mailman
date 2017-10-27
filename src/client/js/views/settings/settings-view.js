@@ -9,9 +9,9 @@
 var baseHTML = require('./settings-view.html');
 var Util = require('../../util/util.js');
 var PubSub = require('pubsub-js');
-var SettingsService = require('../../services/settings-service.js');
+//var SettingsService = require('../../services/settings-service.js');
 var Snackbar = require('../snackbar/snackbar.js');
-var MetadataService = require('../../services/metadata-service.js');
+//var MetadataService = require('../../services/metadata-service.js');
 
 
 
@@ -21,12 +21,23 @@ var MetadataService = require('../../services/metadata-service.js');
  *
  * @constructor
  * @param {jquery} appendTo The object to append this view to.
+ * @param SettingsService The Settings Service defined by require('../../services/settings-service.js')
  */
-var SettingsView = function(appendTo) {
+var SettingsView = function(appendTo,
+    settingsService,
+    metadataService) {
+
+  // BEGIN contract block
+  if (!appendTo)
+      throw "appendTo cannot be null";
+  else if (!settingsService)
+      throw "settingsService cannot be null";
+  else if (!metadataService)
+      throw "metadataService cannot be null";
+
   // private variables
   var self = this;
   var visible = false;
-  var ss = new SettingsService();
 
   // jQuery objects
   var base = $(baseHTML);
@@ -43,7 +54,7 @@ var SettingsView = function(appendTo) {
   this.init_ = function(appendTo) {
     appendTo.append(base);
 
-    ss.getLog().then(
+    settingsService.getLog().then(
       function(url) {
         if (url != null) {
           setURL(url);
@@ -56,7 +67,7 @@ var SettingsView = function(appendTo) {
     getQuota();
     window.setInterval(getQuota, 10000);
 
-    MetadataService.getVersion().then(
+    metadataService.getVersion().then(
       function(result) {
         version.text('Mailman ' + result);
       },
@@ -71,17 +82,17 @@ var SettingsView = function(appendTo) {
 
       if (logSwitchIn[0].checked) {
         Snackbar.show('Turning ON logging...');
-        ss.turnOnLogging().then(setURL, logError).done();
+        settingsService.turnOnLogging().then(setURL, logError).done();
       }
       else {
         Snackbar.show('Turning OFF logging...');
-        ss.turnOffLogging().then(removeURL, logError).done();
+        settingsService.turnOffLogging().then(removeURL, logError).done();
       }
     });
   };
 
   var getQuota = function() {
-    MetadataService.getQuota().then(
+    metadataService.getQuota().then(
       function(result) {
         emailsLeft.text(result + ' daily emails remaining');
       },

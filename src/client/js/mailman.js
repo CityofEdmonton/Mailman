@@ -5,6 +5,10 @@
  * @module
  */
 
+ // ServiceFactory is injected by Gulp, either a mock implementation or the real thing
+ // depending on configuration (--dev or not)
+var ServiceFactory = require('./ServiceFactory.js');
+
 
 var MergeTemplateContainer = require('./data/merge-template-container.js');
 var MergeTemplateService = require('./services/merge-template-service.js');
@@ -40,7 +44,9 @@ var MailMan = function(appendTo) {
   var snackbar = Snackbar;
   var ls = LoadingScreen;
 
-  var mtService = new MergeTemplateService();
+  var serviceFactory = new ServiceFactory();
+
+  var mtService = serviceFactory.getMergeTemplateService();
   var emailService = new EmailService();
   var templatesContainer;
 
@@ -67,8 +73,10 @@ var MailMan = function(appendTo) {
     actionBar.init(header);
     snackbar.init(base);
     mtListView = new MergeTemplatesView(base);
-
-    settingsView = new SettingsView(base);
+    
+    settingsView = new SettingsView(base, 
+      serviceFactory.getSettingsService(),
+      serviceFactory.getMetadataService());
     runDialog = new Dialog(appendTo, 'Run this merge?', 'This will run your merge template. ' +
       'Emails will be sent to everyone in your specified sheet. Are you sure you want to merge?');
 

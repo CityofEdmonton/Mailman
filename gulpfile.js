@@ -27,7 +27,10 @@ var fs = require('fs');
 
 // These are the primary tasks
 gulp.task('test-gas', ['deploy-gas'], openGAS);
-gulp.task('test-web', ['build-web'], openWeb);
+gulp.task('test-web', ['build-web'], function() {
+    openWeb();
+    gulp.watch('./src/client/js/**/*.js', ['build-web'])
+});
 
 // General
 var isDev = (argv.dev === undefined) ? false : true;
@@ -52,6 +55,21 @@ gulp.task('build-gas', ['browserify', 'compile-sass'], buildGAS);
  * @return {stream} the stream as the completion hint to the gulp engine
  */
 function browserifyBundle() {
+
+    // first select which ServiceFactory file
+    // we want to use based on our environment
+    var serviceFactoryPath = isDev 
+    ? './src/client/js/ServiceFactory.dev.js' 
+    : './src/client/js/ServiceFactory.prod.js';     
+    
+    // we will copy the file we want to use to 
+    // ./src/client/js/ServiceFactory.js, which 
+    // will be the one used by our application (mailman.js)
+    gulp.src(serviceFactoryPath)
+        .pipe(rename('ServiceFactory.js'))
+        .pipe(gulp.dest('./src/client/js/'))
+
+
     // we define our input files, which we want to have bundled:
     var files = [
         './src/client/js/client.js',
@@ -126,8 +144,8 @@ function buildWeb() {
 
     // Add source maps in dev mode
     if (isDev) {
-        gulp.src('./build/common/*.map')
-        .pipe(gulp.dest('./build/web/client/js/map'));
+        gulp.src('./build/common/map/*.map')
+            .pipe(gulp.dest('./build/web/client/js/map'));
     }
 
     gulp.src('./src/client/css/*')
@@ -204,7 +222,6 @@ function openWeb() {
         }));
 }
 
-
 /**
  * Runs Google's own Closure Linter on the JS destined for the web
  *
@@ -245,7 +262,8 @@ function compileSASS() {
  */
 function clean() {
     return del([
-        'build/**/*'
+        'build/**/*',
+        '!build/gas/**'
     ]);
 }
 
