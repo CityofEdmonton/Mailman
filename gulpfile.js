@@ -102,7 +102,15 @@ function browserifyBundle() {
             .pipe(rename({
                 extname: '.bundle.js'
             }))
-            .pipe(gulpif(isDev, sourcemaps.write('./map')))
+            .pipe(gulpif(isDev, sourcemaps.mapSources(function(sourcePath, file) {
+                // point the source maps to the actual files instead of generated ones
+                return sourcePath.startsWith("src/client")
+                    ? '../../../../../' + sourcePath
+                    : sourcePath;
+            })))
+            .pipe(gulpif(isDev, sourcemaps.write('./map', {
+                includeContent: false,
+            })))
             .pipe(gulp.dest('./build/common'));
     });
 
