@@ -18,6 +18,9 @@ var Promise = require('promise');
  */
 var MergeTemplateService = function() {
 
+  // use an in-memory store of tamplates
+  var templates = [];
+
   //***** private methods *****//
 
 
@@ -30,7 +33,10 @@ var MergeTemplateService = function() {
    * @return {Promise} A promise.
    */
   this.create = function(template) {
-    return Provoke('MergeTemplateService', 'create', template.toConfig());
+    templates.push(template);
+    return new Promise(function(resolve, reject) {
+      resolve();
+    });
   };
 
   /**
@@ -40,7 +46,7 @@ var MergeTemplateService = function() {
    */
   this.getAll = function() {
     return new Promise(function(resolve, reject) {
-      resolve([]); // TODO: // fill this will data somehow
+      resolve(templates);
     });
   };
 
@@ -51,7 +57,9 @@ var MergeTemplateService = function() {
    * @return {Promise} A Promise.
    */
   this.getOne = function(id) {
-    return Provoke('MergeTemplateService', 'getByID', id);
+    debugger;
+    throw "Not Implemented";
+    //return Provoke('MergeTemplateService', 'getByID', id);
   };
 
   /**
@@ -62,7 +70,11 @@ var MergeTemplateService = function() {
    * @return {Promise} A Promise.
    */
   this.update = function(template) {
-    return Provoke('MergeTemplateService', 'update', template.toConfig());
+    // nothing to do since we are directly working on the objects
+    return new Promise(function(resolve, reject) {
+      resolve();
+    });
+    //return Provoke('MergeTemplateService', 'update', template.toConfig());
   };
 
   /**
@@ -72,7 +84,9 @@ var MergeTemplateService = function() {
    * @return {Promise} A Promise.
    */
   this.delete = function(template) {
-    return Provoke('MergeTemplateService', 'deleteByID', template.getID());
+    debugger;
+    throw "Not Implemented";    
+    //return Provoke('MergeTemplateService', 'deleteByID', template.getID());
   };
 
   /**
@@ -83,7 +97,9 @@ var MergeTemplateService = function() {
    * @return {Promise} A Promise.
    */
   this.getRepeat = function() {
-    return Provoke('MergeTemplateService', 'getRepeatConfig');
+    debugger;
+    throw "Not Implemented";    
+    //return Provoke('MergeTemplateService', 'getRepeatConfig');
   };
 
   /**
@@ -95,7 +111,9 @@ var MergeTemplateService = function() {
    * @return {Promise} A Promise.
    */
   this.removeRepeat = function(template) {
-    return Provoke('MergeTemplateService', 'removeRepeatMerge', template.toConfig());
+    debugger;
+    throw "Not Implemented";    
+    //return Provoke('MergeTemplateService', 'removeRepeatMerge', template.toConfig());
   };
 
   /**
@@ -105,7 +123,9 @@ var MergeTemplateService = function() {
    * @return {Promise} A Promise.
    */
   this.addRepeater = function(template) {
-    return Provoke('MergeTemplateService', 'addRepeater', template.toConfig());
+    debugger;
+    throw "Not Implemented";    
+    //return Provoke('MergeTemplateService', 'addRepeater', template.toConfig());
   };
 
   /**
@@ -114,7 +134,9 @@ var MergeTemplateService = function() {
    * @return {Promise} A Promise.
    */
   this.runMerges = function() {
-    return Provoke(null, 'runAllMergeTemplates');
+    debugger;
+    throw "Not Implemented";    
+    //return Provoke(null, 'runAllMergeTemplates');
   }
 };
 

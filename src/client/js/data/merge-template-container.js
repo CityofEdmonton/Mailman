@@ -7,7 +7,7 @@
 
 
 var MergeTemplate = require('./merge-template/merge-template.js');
-var MTService = require('../services/merge-template-service.js');
+//var MTService = require('../services/merge-template-service.js');
 var PubSub = require('pubsub-js');
 
 
@@ -22,12 +22,12 @@ var PubSub = require('pubsub-js');
  * @param {Array<Object>} config.templates An array of MergeTemplate configs to be created.
  * See also {@link MergeTemplate}
  */
-var MergeTemplateContainer = function(config) {
+var MergeTemplateContainer = function(config, serviceFactory) {
 
   // private variables
   var self = this;
   var templates = [];
-  var service = new MTService();
+  var service = serviceFactory.getMergeTemplateService();
 
   // ***** private methods ***** //
 

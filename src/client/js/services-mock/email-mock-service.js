@@ -7,7 +7,7 @@
 
 
 var Provoke = require('../util/provoke.js');
-
+var Promise = require('promise');
 
 
 /**
@@ -27,7 +27,10 @@ var EmailService = function() {
    * @return {Promise} A promise.
    */
   this.sendTest = function(sheetName, headerRow, subject, body) {
-    return Provoke('EmailService', 'sendTest', sheetName, headerRow, subject, body);
+    //return Provoke('EmailService', 'sendTest', sheetName, headerRow, subject, body);
+    return new Promise(function(resolve, reject) {
+      resolve();
+    });
   };
 
   /**

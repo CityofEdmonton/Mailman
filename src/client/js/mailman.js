@@ -163,7 +163,7 @@ var MailMan = function(appendTo) {
 
     mtService.getAll().then(
       function(result) {
-        templatesContainer = new MergeTemplateContainer(result);
+        templatesContainer = new MergeTemplateContainer(result, serviceFactory);
         mtListView.setContainer(templatesContainer);
         ls.hide();
       },
