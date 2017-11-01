@@ -77,6 +77,7 @@ var MailMan = function(appendTo) {
     settingsView = new SettingsView(base, 
       serviceFactory.getSettingsService(),
       serviceFactory.getMetadataService());
+      
     runDialog = new Dialog(appendTo, 'Run this merge?', 'This will run your merge template. ' +
       'Emails will be sent to everyone in your specified sheet. Are you sure you want to merge?');
 
@@ -205,7 +206,7 @@ var MailMan = function(appendTo) {
 
   var createCardsView = function(base, handler, data) {
 
-    var view = new CardsView(base, handler, data);
+    var view = new CardsView(base, handler, data, serviceFactory);
 
     view.done().then(
       function(template) {

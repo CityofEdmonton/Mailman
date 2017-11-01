@@ -14,9 +14,9 @@ var TextareaCard = require('../card/card-textarea.js');
 var ConditionalInputCard = require('../card/conditional-input-card.js');
 var ToCard = require('../card/to-cc-bcc.js');
 var Snackbar = require('../views/snackbar/snackbar.js');
-var HeaderService = require('../services/header-service.js');
-var SheetsService = require('../services/sheets-service.js');
-var EmailService = require('../services/email-service.js');
+// var HeaderService = require('../services/header-service.js');
+// var SheetsService = require('../services/sheets-service.js');
+// var EmailService = require('../services/email-service.js');
 var Util = require('../util/util.js');
 
 
@@ -44,7 +44,10 @@ CardsConfig.maxResults = 5;
  * @return {Object<string, Card>} The repository used for storing Cards. The map is between the names found
  * in CardNames and the created Card. These are typically used for handling user setup.
  */
-CardsConfig.buildCardRepo = function(contentArea) {
+CardsConfig.buildCardRepo = function(contentArea,
+    HeaderService,
+    SheetsService,
+    EmailService) {
 
   var repo = {};
   var hService = new HeaderService();

@@ -53,6 +53,33 @@ var ServiceFactory = function() {
         }
         return this._mergeTemplateService;
     }
+
+    /**
+     * Gets the sheets service
+     */
+    this.getSheetsService = function() {
+        if (!this._sheetsService) {
+            var SheetService = require('./services/sheets-service.js');
+            this._sheetsService = new SheetService();
+        }
+        return this._sheetsService;
+    }    
+
+    this.getHeaderService = function() {
+        if (!this._headerService) {
+            var HeaderService = require('./services/header-service.js');
+            this._headerService = HeaderService;
+        }
+        return this._headerService;
+    }
+
+    this.getEmailService = function() {
+        if (!this._emailService) {
+            var EmailService = require('./services/email-service.js');
+            this._emailService = EmailService;
+        }
+        return this._emailService;
+    }    
 }
 
 

@@ -24,7 +24,7 @@ var Disabler = require('../../util/disable.js');
  * @param {jquery} appendTo The element this view should be appended to.
  * @param {CardHandler} handler There are different types of CardHandlers. This needs to support them all.
  */
-var CardsView = function(appendTo, handler, data) {
+var CardsView = function(appendTo, handler, data, serviceFactory) {
   // private variables
   var self = this;
   var base = $(baseHTML);
@@ -46,8 +46,8 @@ var CardsView = function(appendTo, handler, data) {
   //***** private methods *****//
   this.init_ = function(appendTo, handler, data) {
     appendTo.append(base);
-
-    cards = new handler(contentArea);
+  
+    cards = handler.length >=2 ? new handler(contentArea, serviceFactory) : new handler(contentArea);
     if (data != null) {
       cards.setMergeTemplate(data);
     }
@@ -178,7 +178,7 @@ var CardsView = function(appendTo, handler, data) {
     }
   };
 
-  this.init_(appendTo, handler, data);
+  this.init_(appendTo, handler, data, serviceFactory);
 };
 
 
