@@ -11,3 +11,8 @@ Mailman guides you through the process of setting up your own mail merge. Just u
 * send up to 1500 emails per day
 * store and reuse merge templates for future use
 * create advanced bug trackers, inventory managers and more
+
+
+## VSCode Setup
+* Requires the following extensions:
+* * https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome

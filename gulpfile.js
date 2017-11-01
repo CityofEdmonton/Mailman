@@ -3,6 +3,7 @@ var browserify = require('browserify');
 var gjslint = require('gulp-gjslint');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
+var http = require('http');
 var htmlProcessor = require('gulp-htmlprocessor');
 var open = require('gulp-open');
 var os = require('os');
@@ -16,6 +17,7 @@ var jsdoc = require('gulp-jsdoc3');
 var argv = require('yargs').argv;
 var gulpif = require('gulp-if');
 var sourcemaps = require('gulp-sourcemaps');
+var webserver = require('gulp-webserver');
 
 // Used for our new bundle system
 var rename = require('gulp-rename');
@@ -29,11 +31,11 @@ var fs = require('fs');
 gulp.task('test-gas', ['deploy-gas'], openGAS);
 gulp.task('test-web', ['build-web'], function() {
     openWeb();
-    gulp.watch('./src/client/js/**/*.js', ['build-web'])
+    gulp.watch('./src/client/js/**/*.js', ['build-web']);
 });
 
 // General
-var isDev = (argv.dev === undefined) ? false : true;
+var isProd = (argv.prod === undefined) ? false : true;
 gulp.task('lint-all', closureLint);
 gulp.task('browserify', browserifyBundle);
 gulp.task('compile-sass', compileSASS);
@@ -42,6 +44,8 @@ gulp.task('generate-doc', jsdocGenerate);
 
 // Web specific
 gulp.task('build-web', ['browserify', 'compile-sass'], buildWeb);
+gulp.task('serve-web', ['build-web'], serveWeb);
+gulp.task('stop-web', stopWeb);
 
 // GAS specific
 gulp.task('deploy-gas', ['build-gas'], deployGAS);
@@ -58,9 +62,9 @@ function browserifyBundle() {
 
     // first select which ServiceFactory file
     // we want to use based on our environment
-    var serviceFactoryPath = isDev 
-    ? './src/client/js/ServiceFactory.dev.js' 
-    : './src/client/js/ServiceFactory.prod.js';     
+    var serviceFactoryPath = isProd 
+        ? './src/client/js/ServiceFactory.prod.js' 
+        : './src/client/js/ServiceFactory.dev.js';
     
     // we will copy the file we want to use to 
     // ./src/client/js/ServiceFactory.js, which 
@@ -82,7 +86,7 @@ function browserifyBundle() {
 
         return browserify({
                 entries: [entry],
-                debug: isDev
+                debug: !isProd
             })
             .transform(stringify, {
                 appliesTo: {
@@ -97,18 +101,18 @@ function browserifyBundle() {
             })
             .pipe(source(path[path.length - 1]))
             .pipe(buffer())
-            .pipe(gulpif(isDev, sourcemaps.init({loadMaps: true})))
+            .pipe(gulpif(!isProd, sourcemaps.init({loadMaps: true})))
             // rename them to have "bundle as postfix"
             .pipe(rename({
                 extname: '.bundle.js'
             }))
-            .pipe(gulpif(isDev, sourcemaps.mapSources(function(sourcePath, file) {
+            .pipe(gulpif(!isProd, sourcemaps.mapSources(function(sourcePath, file) {
                 // point the source maps to the actual files instead of generated ones
                 return sourcePath.startsWith("src/client")
-                    ? '../../../../../' + sourcePath
+                    ? '../../../../' + sourcePath
                     : sourcePath;
             })))
-            .pipe(gulpif(isDev, sourcemaps.write('./map', {
+            .pipe(gulpif(!isProd, sourcemaps.write('./map', {
                 includeContent: false,
             })))
             .pipe(gulp.dest('./build/common'));
@@ -151,7 +155,7 @@ function buildWeb() {
         .pipe(gulp.dest('./build/web/client/js'));
 
     // Add source maps in dev mode
-    if (isDev) {
+    if (!isProd) {
         gulp.src('./build/common/map/*.map')
             .pipe(gulp.dest('./build/web/client/js/map'));
     }
@@ -172,6 +176,72 @@ function buildWeb() {
         .pipe(gulp.dest('./build/web/gas'));
 }
 
+/**
+ * Starts a webserver listing on port 8000
+ * (needed for chrome remote debugging (VSCode attaching to Chrome))
+ */
+function serveWeb(cb) {
+    // function to see if the web server is already runnning
+    function isAlive() {
+        return new Promise((resolve, reject) => {
+            http.request('http://localhost:8000/', function(res) {
+                // any response means it's running
+                resolve(true);
+            })
+            .on('error', function(err) {
+                // any error most likely means it's not running
+                resolve(false);
+            })
+            .end();;
+        });
+    }
+
+    // tell gulp to rebuild on any .js file change in /src/client/js
+    gulp.watch('./src/client/js/**/*.js', ['build-web']);
+
+    return new Promise((resolve, reject) => {
+        // first see if it's already running
+        isAlive().then(function(webServerStarted) {
+            if (!webServerStarted) {
+                try {
+                    var item = gulp.src(['.'])
+                        .pipe(webserver({
+                            livereload: true,
+                            filter: function(fileName) {
+                                // live reload whenever things change in the build/ directory
+                                return fileName.match(/^(https?:\/\/.*)?\/?build\//);
+                            },
+                            directoryListing: false,
+                            open: false,
+                            middleware: function(req, res, next) {
+                                if (/_kill_\/?/.test(req.url)) {
+                                    res.end();
+                                    stream.emit('kill');
+                                }
+                                next();
+                            }
+                    }));
+                    resolve(true);
+                }
+                catch(ex) {
+                    reject(ex);
+                }
+            } else {
+                console.log("web server already started");
+                resolve(true);
+            }
+        });
+    });
+}
+
+/**
+ * Stops the running web server 
+ * (https://stackoverflow.com/questions/38977393/start-and-stop-gulp-webserver)
+ * @param {*} cb 
+ */
+function stopWeb(cb) {
+    http.request('http://localhost:8000/_kill_').on('close', cb).end();
+}
 
 /**
  * Deploys the GAS code up to the project.

@@ -20,6 +20,7 @@
     "gulp-sass": "^2.3.2",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
+    "gulp-webserver": "^0.9.1",
     "jsdoc": "^3.4.3",
     "promise": "^7.1.1",
     "pubsub-js": "^1.5.4",
