@@ -80,4 +80,4 @@ var MetadataService = function() {
 
 
 /** */
-module.exports = new MetadataService();
+module.exports = new MetadataService;

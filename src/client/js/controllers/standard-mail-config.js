@@ -45,14 +45,11 @@ CardsConfig.maxResults = 5;
  * in CardNames and the created Card. These are typically used for handling user setup.
  */
 CardsConfig.buildCardRepo = function(contentArea,
-    HeaderService,
-    SheetsService,
-    EmailService) {
+  hService,   // HeaderService,
+  sService,   // SheetsService,
+  eService) { // EmailService) {
 
   var repo = {};
-  var hService = new HeaderService();
-  var sService = new SheetsService();
-  var eService = new EmailService();
 
   var setHeaders = function(sheet, row, getHeaders) {
 

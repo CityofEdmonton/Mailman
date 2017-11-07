@@ -1,5 +1,6 @@
 /**
- * This module exports the ServiceFactory object.
+ * This module exports the ServiceFactory object for local web debugging.
+ * Most of the services are Mock implementations
  *
  * @author {@link https://github.com/dchenier|Dan Chenier}
  * @module
@@ -16,18 +17,18 @@
 var ServiceFactory = function() {
     
   /**
-   * Gets the URL of the current log.
+   * Gets The Settings Service
    *
    * @return The Settings Service
    */
     this.getSettingsService = function() {
         if (!this._settingsService) {
-            var SettingsService = require('./services/settings-service.js');
+            var SettingsService = require('./services-mock/settings-mock-service.js');
             this._settingsService = new SettingsService();
         }
         return this._settingsService;
     }
-        
+       
     /**
      * Gets The Metadata Service
      *
@@ -35,11 +36,11 @@ var ServiceFactory = function() {
      */
     this.getMetadataService = function() {
         if (!this._metadataService) {
-            var MetadataService = require('./services/metadata-service.js');
+            var MetadataService = require('./services-mock/metadata-mock-service.js');
             this._metadataService = new MetadataService();
         }
         return this._metadataService;
-    }    
+    }
 
     /**
      * Gets The MergeTemplate Service
@@ -48,7 +49,7 @@ var ServiceFactory = function() {
      */
     this.getMergeTemplateService = function() {
         if (!this._mergeTemplateService) {
-            var MergeTemplateService = require('./services/merge-template-service.js');
+            var MergeTemplateService = require('./services-mock/merge-template-mock-service.js');
             this._mergeTemplateService = new MergeTemplateService();
         }
         return this._mergeTemplateService;
@@ -59,15 +60,15 @@ var ServiceFactory = function() {
      */
     this.getSheetsService = function() {
         if (!this._sheetsService) {
-            var SheetService = require('./services/sheets-service.js');
+            var SheetService = require('./services-mock/sheets-mock-service.js');
             this._sheetsService = new SheetService();
         }
         return this._sheetsService;
-    }    
+    }
 
     this.getHeaderService = function() {
         if (!this._headerService) {
-            var HeaderService = require('./services/header-service.js');
+            var HeaderService = require('./services-mock/header-mock-service.js');
             this._headerService = new HeaderService();
         }
         return this._headerService;
@@ -75,11 +76,11 @@ var ServiceFactory = function() {
 
     this.getEmailService = function() {
         if (!this._emailService) {
-            var EmailService = require('./services/email-service.js');
+            var EmailService = require('./services-mock/email-mock-service.js');
             this._emailService = new EmailService();
         }
         return this._emailService;
-    }    
+    }
 }
 
 

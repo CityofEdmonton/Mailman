@@ -13,6 +13,9 @@ Mailman guides you through the process of setting up your own mail merge. Just u
 * create advanced bug trackers, inventory managers and more
 
 
-## VSCode Setup
-* Requires the following extensions:
+## Dev Setup
+* VSCode requires the following extensions:
 * * https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome
+*
+* Chrome requires the following extensions on the instance of chrome run by VSCode
+* https://chrome.google.com/webstore/detail/ignore-x-frame-headers/gleekbfjekiniecknbkamfmkohkpodhe

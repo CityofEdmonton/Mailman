@@ -36,6 +36,7 @@ gulp.task('test-web', ['build-web'], function() {
 
 // General
 var isProd = (argv.prod === undefined) ? false : true;
+var isMock = (argv.mock === undefined) ? false : true;
 gulp.task('lint-all', closureLint);
 gulp.task('browserify', browserifyBundle);
 gulp.task('compile-sass', compileSASS);
@@ -64,7 +65,8 @@ function browserifyBundle() {
     // we want to use based on our environment
     var serviceFactoryPath = isProd 
         ? './src/client/js/ServiceFactory.prod.js' 
-        : './src/client/js/ServiceFactory.dev.js';
+        : (isMock ? './src/client/js/ServiceFactory.mock.js'
+                : './src/client/js/ServiceFactory.dev.js');
     
     // we will copy the file we want to use to 
     // ./src/client/js/ServiceFactory.js, which 
@@ -110,6 +112,7 @@ function browserifyBundle() {
                 // point the source maps to the actual files instead of generated ones
                 return sourcePath.startsWith("src/client")
                     ? '../../../../' + sourcePath
+                    //? '../../../../../' + sourcePath
                     : sourcePath;
             })))
             .pipe(gulpif(!isProd, sourcemaps.write('./map', {
@@ -214,6 +217,7 @@ function serveWeb(cb) {
                             directoryListing: false,
                             open: false,
                             middleware: function(req, res, next) {
+                                console.log('requested: ' + req.url);
                                 if (/_kill_\/?/.test(req.url)) {
                                     res.end();
                                     stream.emit('kill');

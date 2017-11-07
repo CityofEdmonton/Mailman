@@ -9,7 +9,7 @@
             "type": "chrome",
             "request": "launch",
             "preLaunchTask": "Serve web",
-            "url": "http://127.0.0.1:8000/build/web/client/html/mailman.html",
+            "url": "http://localhost:8000/build/web/client/html/mailman-dev.html",
             "webRoot": "${workspaceRoot}"
         }
     ]

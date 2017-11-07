@@ -48,7 +48,9 @@ var MetadataService = function() {
    */
   this.getVersion = function() {
     if (version == null) {
-      version = Provoke('MetadataService', 'getVersion');
+      version = new Promise(function(resolve, reject) {
+        resolve("1.0"); // arbitraility picked a number
+      });
     }
 
     return version;
@@ -61,7 +63,9 @@ var MetadataService = function() {
    */
   this.getQuota = function() {
     if (quota == null) {
-      quota = Provoke('MetadataService', 'getQuota');
+      quota = new Promise(function(resolve, reject) {
+        resolve(10); // arbitraility picked a number
+      });
     }
 
     return quota;
@@ -76,4 +80,4 @@ var MetadataService = function() {
 
 
 /** */
-module.exports = new MetadataService;
+module.exports = MetadataService;

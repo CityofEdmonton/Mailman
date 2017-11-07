@@ -26,13 +26,16 @@ var MergeTemplate = require('../data/merge-template/merge-template.js');
  * @constructor
  * @param {jQuery} parent The jquery object that will contain all the Cards.
  */
-var DocumentMailHandler = function(parent) {
+var DocumentMailHandler = function(parent, serviceFactory) {
 
   var self = this;
   var activeNode;
   var contentArea = parent;
   var cardsList;
-  var cardRepository = CardsConfig.buildCardRepo(contentArea);
+  var cardRepository = CardsConfig.buildCardRepo(contentArea, 
+    serviceFactory.getHeaderService(),
+    serviceFactory.getSheetsService(),
+    serviceFactory.getEmailService());
   var updateConfig = {};
 
   //***** private functions *****//
