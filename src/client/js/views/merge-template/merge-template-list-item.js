@@ -11,7 +11,7 @@ var MergeTemplate = require('../../data/merge-template/merge-template.js');
 var ID = require('../../data/id.js');
 var Util = require('../../util/util.js');
 var Disabler = require('../../util/disable.js');
-var MetadataService = require('../../services/metadata-service.js');
+//var MetadataService = require('../../services/metadata-service.js');
 
 
 
@@ -22,7 +22,8 @@ var MetadataService = require('../../services/metadata-service.js');
 * @param {jquery} appendTo The object to append this component to.
 * @param {MergeTemplate} template The merge to display.
 */
-var MergeTemplateListItem = function(appendTo, template) {
+var MergeTemplateListItem = function(appendTo, template,
+  metadataService) {
   // private variables
   var self = this;
   var base = $(baseHTML);
@@ -83,7 +84,7 @@ var MergeTemplateListItem = function(appendTo, template) {
     componentHandler.upgradeElement(deleteTT[0], 'MaterialTooltip');
     componentHandler.upgradeElement(repeatTT[0], 'MaterialTooltip');
 
-    MetadataService.getUser().then(function(u) {
+    metadataService.getUser().then(function(u) {
       user = u;
       lock();
     });

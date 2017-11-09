@@ -205,36 +205,6 @@ var GoogleOAuthService = function() {
     });
   };
 
-
-  /**
-   * Store the request details. Then check to determine whether the user
-   * has authorized the application.
-   *   - If the user has granted access, make the API request.
-   *   - If the user has not granted access, initiate the sign-in flow.
-   *  (from https://developers.google.com/identity/protocols/OAuth2UserAgent)
-   */
-  this.sendAuthorizedApiRequest = function(requestDetails) {
-    return new Promise(function(resolve, reject) {
-      ensureGApi().then(function() {
-        if (isAuthorized) {
-          // Make API request
-          resolve(gapi.client.request(requestDetails));
-        } else {
-          debugger;
-          GoogleAuth.signIn().then(function() {
-            isAuthorized = true;
-            debugger;
-            // Make API request
-            resolve(gapi.client.request(requestDetails));
-          }, function(err) {
-            reject(err);
-          });
-        }
-      });
-    });
-  };
-
-
 };
 
 

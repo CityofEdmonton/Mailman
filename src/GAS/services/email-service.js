@@ -53,7 +53,7 @@ var EmailService = {
       try {
         // We only timestamp when the email successfully sends.
         if ((template.mergeData.conditional == null || conditional === 'true') &&
-          EmailService.send(to, subject, body, cc, bcc)) {
+          EmailService.send(to, subject, body, cc, bcc, true)) {
 
           var timestampName = template.mergeData.timestampColumn.replace(/(<<|>>)/g, '');
           var timeCell = row.getCell(1, header.indexOf(timestampName) + 1);
@@ -102,7 +102,7 @@ var EmailService = {
     var subject = EmailService.replaceTags(subject, combinedObj);
     var body = EmailService.replaceTags(body, combinedObj);
 
-    EmailService.send(Session.getActiveUser().getEmail(), subject, body);
+    EmailService.send(Session.getActiveUser().getEmail(), subject, body, null, null, true);
   },
 
   /**
@@ -114,9 +114,10 @@ var EmailService = {
    * @param {string} body The body of the email. This can be an empty string.
    * @param {string|undefined} cc Secondary recipients of the email. Can be a comma delimited list of users.
    * @param {string|undefined} bcc Blind copied recipients. Can be a comma delimited list of users.
+   * @param {boolean} isBodyHtml isBodyHtml explicitly sets the body text to be send as html
    * @return {boolean} true if the email was sent, false if it wasn't.
    */
-  send: function(to, subject, body, cc, bcc) {
+  send: function(to, subject, body, cc, bcc, isBodyHtml) {
     if (to === '' || to == null) {
       return false;
     }
@@ -127,7 +128,7 @@ var EmailService = {
       bcc: bcc
     }));
 
-    if (/<html>/.test(body)) {
+    if (isBodyHtml || /<html>/.test(body)) {
       GmailApp.sendEmail(to, subject, body, {
         htmlBody: body,
         cc: cc,

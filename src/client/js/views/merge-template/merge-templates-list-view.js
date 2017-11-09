@@ -23,7 +23,15 @@ var ActionBar = require('../action-bar/action-bar.js');
  * @constructor
  * @param {jquery} appendTo The element this view should be appended to.
  */
-var MergeTemplatesListView = function(appendTo) {
+var MergeTemplatesListView = function(appendTo, metadataService) {
+  // contract block
+  if (!appendTo)
+    throw "appendTo cannot be null";
+  if (!metadataService) {
+    throw "metadataService cannot be null";
+  }
+
+
   // private variables
   var self = this;
   var base = $(baseHTML);
@@ -92,7 +100,7 @@ var MergeTemplatesListView = function(appendTo) {
 
     listItems = [];
     for (var i = 0; i < mergeTemplates.length(); i++) {
-      self.add(mergeTemplates.get(i));
+      self.add(mergeTemplates.get(i), metadataService);
     }
 
     setEmptyDisplay();
@@ -130,7 +138,7 @@ var MergeTemplatesListView = function(appendTo) {
    */
   this.add = function(template) {
 
-    var item = new MergeTemplateListItem(list, template);
+    var item = new MergeTemplateListItem(list, template, metadataService);
     item.setDeleteHandler(deletionCallback);
     item.setEditHandler(itemEdit);
     item.setRunHandler(runCallback);

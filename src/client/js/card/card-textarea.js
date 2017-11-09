@@ -5,9 +5,31 @@
  * @module
  */
 
+ // Import TinyMCE
+var tinymce = require('tinymce/tinymce');
+
+// A theme is also required
+require('tinymce/themes/modern/theme');
+
+// Any plugins you want to use has to be imported
+require('tinymce/plugins/paste');
+require('tinymce/plugins/link');
+require('tinymce/plugins/fullscreen');
+require('tinymce/plugins/lists');
+require('tinymce/plugins/advlist');
+require('tinymce/plugins/autolink');
+require('tinymce/plugins/link');
+require('tinymce/plugins/image');
+require('tinymce/plugins/charmap');
+require('tinymce/plugins/anchor');
+require('tinymce/plugins/table');
+require('tinymce/plugins/textcolor');
+require('../util/tinymce-plugins/placeholder');
+
 var textareaHTML = require('./card-textarea.html');
 var TitledCard = require('./card-titled.js');
 var AutocompleteConfig = require('./autocomplete-config.js');
+
 
 
 
@@ -47,6 +69,26 @@ var TextareaCard = function(appendTo, options) {
     }
 
     componentHandler.upgradeElement(innerBase[0], 'MaterialTextfield');
+
+    tinymce.init({
+      selector: 'textarea',
+      toolbar: 'bold italic underline | forecolor backcolor | fullscreen',
+      menubar: 'edit view format insert table',
+      plugins: 'lists advlist autolink link image charmap paste anchor textcolor table fullscreen placeholder',
+      skin_url: 'https://cloud.tinymce.com/dev/skins/lightgray',
+      setup: function(editor) {
+        editor.on('FullscreenStateChanged', function (e) {
+          if (e.state) {
+            // going fullscreen - we need to hide the header because it overlaps the editor,
+            // even if we put z-index higher than the header (flex layouts!).
+            $("header[data-id='header']").hide();
+          } else {
+            // returning from fullscreen
+            $("header[data-id='header']").show();
+          }
+        });
+      }
+    });
   };
 
   //***** Public Methods *****//
@@ -95,7 +137,7 @@ var TextareaCard = function(appendTo, options) {
    * @return {String} The value in the textarea.
    */
   this.getValue = function() {
-    return textarea.val();
+    return tinymce.get(textarea.attr('id')).getContent();
   };
 
   /**
@@ -113,7 +155,7 @@ var TextareaCard = function(appendTo, options) {
    * @param {String} label The value to set as the label.
    */
   this.setLabel = function(label) {
-    innerBase.find('label').text(label);
+    $(innerBase).find('textarea').attr('placeholder', label)
   };
 
   /**

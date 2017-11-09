@@ -133,7 +133,6 @@ function browserifyBundle() {
  * @return {stream} the stream as the completion hint to the gulp engine
  */
 function buildGAS() {
-
     gulp.src('./src/client/html/**', {
             base: './src/client'
         })

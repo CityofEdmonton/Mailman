@@ -72,7 +72,7 @@ var MailMan = function(appendTo) {
 
     actionBar.init(header);
     snackbar.init(base);
-    mtListView = new MergeTemplatesView(base);
+    mtListView = new MergeTemplatesView(base, serviceFactory.getMetadataService());
     
     settingsView = new SettingsView(base, 
       serviceFactory.getSettingsService(),
