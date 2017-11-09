@@ -146,7 +146,7 @@ var TextareaCard = function(appendTo, options) {
    * @param {String} value The value to set in the textarea.
    */
   this.setValue = function(value) {
-    innerBase[0].MaterialTextfield.change(value);
+    tinymce.get(textarea.attr('id')).setContent(value);
   };
 
   /**
