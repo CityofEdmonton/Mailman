@@ -143,6 +143,13 @@ var MailMan = function(appendTo) {
       showCardsView();
     });
 
+    mtListView.setPreviewHandler(function(template) {
+      // var type = template.toConfig().mergeData.type;
+      // cardsView = createCardsView(base, TypeToHandler[type.toLowerCase()], template);
+      // showCardsView();
+
+    });  
+
     mtListView.setRunDialog(runDialog);
     mtListView.setRunHandler(function(template) {
       // This only occurs when the user clicks OK.

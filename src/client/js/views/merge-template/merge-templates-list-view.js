@@ -237,6 +237,10 @@ var MergeTemplatesListView = function(appendTo, metadataService) {
     deleteDialog = dialog;
   };
 
+  this.setPreviewHandler = function(dialog) {
+    
+  }
+
   this.init_(appendTo);
 };
 

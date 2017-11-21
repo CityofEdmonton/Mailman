@@ -24,6 +24,8 @@ require('tinymce/plugins/charmap');
 require('tinymce/plugins/anchor');
 require('tinymce/plugins/table');
 require('tinymce/plugins/textcolor');
+require('../util/tinymce-plugins/render');
+//require('../util/tinymce-plugins/preview');
 require('../util/tinymce-plugins/placeholder');
 
 var textareaHTML = require('./card-textarea.html');
@@ -70,24 +72,49 @@ var TextareaCard = function(appendTo, options) {
 
     componentHandler.upgradeElement(innerBase[0], 'MaterialTextfield');
 
+    // by default the Mainman settings bar in over top all else, including the
+    // rich text editor when it goes full screen. This hides the header when
+    // in full screen mode
+    var fullscreenFix = function(editor) {
+      editor.on('FullscreenStateChanged', function (e) {
+        if (e.state) {
+          // going fullscreen - we need to hide the header because it overlaps the editor,
+          // even if we put z-index higher than the header (flex layouts!).
+          $("header[data-id='header']").hide();
+        } else {
+          // returning from fullscreen
+          $("header[data-id='header']").show();
+        }
+      });
+    };
+
+    // provides context for the handlbars renderer and substitutes
+    // << for {{  and >> for }}
+    var handlebarsHook = function(editor) {
+      editor.on('Rendering', function (e) {
+        var state = e.state || {}, content = state.content || "", context = state.context || {};
+        state.content = content.replace(/&lt;&lt;|<<|&gt;&gt;|>>/gi, m => {
+          switch (m.toUpperCase()) {
+            case '<<': 
+            case '&LT;&LT;': return '{{';
+            case '>>':
+            case '&GT;&GT;': return '}}';
+          }
+        });
+      });
+    }
+
     tinymce.init({
       selector: 'textarea',
       toolbar: 'bold italic underline | forecolor backcolor | fullscreen',
-      menubar: 'edit view format insert table',
-      plugins: 'lists advlist autolink link image charmap paste anchor textcolor table fullscreen placeholder',
+      menubar: 'edit format insert table',
+      plugins: 'lists advlist autolink link image charmap paste anchor textcolor table fullscreen render placeholder',
       skin_url: 'https://cloud.tinymce.com/dev/skins/lightgray',
       setup: function(editor) {
-        editor.on('FullscreenStateChanged', function (e) {
-          if (e.state) {
-            // going fullscreen - we need to hide the header because it overlaps the editor,
-            // even if we put z-index higher than the header (flex layouts!).
-            $("header[data-id='header']").hide();
-          } else {
-            // returning from fullscreen
-            $("header[data-id='header']").show();
-          }
-        });
-      }
+        fullscreenFix(editor);
+        handlebarsHook(editor);
+      },
+      branding: false
     });
   };
 

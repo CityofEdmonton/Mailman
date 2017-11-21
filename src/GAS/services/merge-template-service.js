@@ -495,5 +495,17 @@ var MergeTemplateService = {
     newHeader.setValue(name);
 
     return newHeader;
+  },
+
+
+  /**
+   * Renders a merge template for the given sheet and row
+   * 
+   * @param {string} templateId The id of the template to render
+   * @param  {string} sheetName The name of the sheet to append the column to.
+   * @param  {number} rowNum The 1-based row index to add the header to.   * 
+   */
+  renderTemplate: function(templateId, sheetName, rowNum) {
+    return "TODO: render templates using templating engine (handlebars)";
   }
 };

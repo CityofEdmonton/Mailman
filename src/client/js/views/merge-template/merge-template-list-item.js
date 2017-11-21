@@ -38,13 +38,16 @@ var MergeTemplateListItem = function(appendTo, template,
   var deleteIcon = base.find('[data-id="delete"]');
   var runIcon = base.find('[data-id="run"]');
   var editIcon = base.find('[data-id="edit"]');
+  var previewIcon = base.find('[data-id="preview"]');
   var title = base.find('[data-id="title"]');
   var claimedUser = base.find('[data-id="claimed-user"]');
 
+  var previewTT = base.find('[data-id="preview-label"]');
   var editTT = base.find('[data-id="edit-label"]');
   var runTT = base.find('[data-id="run-label"]');
   var deleteTT = base.find('[data-id="delete-label"]');
   var repeatTT = base.find('[data-id="repeat-label"]');
+
 
   var REPEAT_ON_LABEL = 'Turn Off Repeat';
   var REPEAT_OFF_LABEL = 'Turn On Repeat';
@@ -73,6 +76,10 @@ var MergeTemplateListItem = function(appendTo, template,
     repeatButton.attr('id', id);
     repeatTT.attr('data-mdl-for', id);
 
+    id = ID();
+    previewIcon.attr('id', id);
+    previewTT.attr('data-mdl-for', id); 
+
     appendTo.append(base);
 
     componentHandler.upgradeElement(deleteIcon[0], 'MaterialButton');
@@ -83,7 +90,8 @@ var MergeTemplateListItem = function(appendTo, template,
     componentHandler.upgradeElement(runTT[0], 'MaterialTooltip');
     componentHandler.upgradeElement(deleteTT[0], 'MaterialTooltip');
     componentHandler.upgradeElement(repeatTT[0], 'MaterialTooltip');
-
+    componentHandler.upgradeElement(previewTT[0], 'MaterialTooltip');
+    
     metadataService.getUser().then(function(u) {
       user = u;
       lock();
@@ -173,6 +181,16 @@ var MergeTemplateListItem = function(appendTo, template,
     });
   };
 
+ /**
+  * Sets the handler for when the toggle button is clicked.
+  *
+  * @param {Function} callback The function to call.
+  */
+  this.setPreviewHandler = function(callback) {
+    previewIcon.on('click', template, callback);
+  };
+
+
   this.setRepeatDialog = function(dialog) {
     repeatDialog = dialog;
   };
@@ -199,6 +217,7 @@ var MergeTemplateListItem = function(appendTo, template,
     deleteIcon.attr('disabled', true);
     runIcon.attr('disabled', true);
     editIcon.attr('disabled', true);
+    previewIcon.attr('disabled', true);
   };
 
   /**
@@ -211,6 +230,7 @@ var MergeTemplateListItem = function(appendTo, template,
     deleteIcon.removeAttr('disabled');
     runIcon.removeAttr('disabled');
     editIcon.removeAttr('disabled');
+    previewIcon.removeAttr('disabled');
   };
 
   /**

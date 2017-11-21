@@ -82,6 +82,14 @@ var ServiceFactory = function() {
         }
         return this._emailService;
     }
+
+    this.getRenderService = function() {
+        if (!this._renderService) {
+            var RenderService = require('./services-dev/render-dev-service.js');
+            this._renderService = new RenderService();
+        }
+        return this._renderService;       
+    }    
 }
 
 

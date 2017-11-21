@@ -7,6 +7,8 @@
 
 
 var Provoke = require('../util/provoke.js');
+var renderService = new (require('./render-service'))();
+var Promise = require('promise');
 
 
 
@@ -27,7 +29,14 @@ var EmailService = function() {
    * @return {Promise} A promise.
    */
   this.sendTest = function(sheetName, headerRow, subject, body) {
-    return Provoke('EmailService', 'sendTest', sheetName, headerRow, subject, body);
+    console.log("Sending test email");
+    return new Promise((resolve, reject) => {
+      renderService.render(body, sheetName, headerRow).then(function(bodyText) {
+        console.log(bodyText);
+        Provoke('EmailService', 'sendTest', sheetName, headerRow, subject, bodyText)
+        .then(resolve, reject);
+      }, reject);        
+    });
   };
 
   /**

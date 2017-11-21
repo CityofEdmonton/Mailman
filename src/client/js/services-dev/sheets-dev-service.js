@@ -8,7 +8,7 @@
 
 var Provoke = require('../util/provoke.js');
 var Promise = require('promise');
-var gOAuthService = new (require('./google-oauth-service'))();
+var gOAuthService = require('./google-oauth-service');
 
 /**
  * Handles operations related to getting Sheet names.

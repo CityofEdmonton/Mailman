@@ -17,7 +17,6 @@ var Promise = require('promise');
 var GoogleOAuthService = function() {
 
   var self = this;
-  var GoogleAuth; // filled in when loaded
 
   var isAuthorized;
 
@@ -38,49 +37,49 @@ var GoogleOAuthService = function() {
     }
   };
 
-  _initClient = function(gapi) {
+  _initClient = function(gapi, config) {
     return new Promise((resolve, reject) => {
-      // from https://developers.google.com/identity/protocols/OAuth2UserAgent
-      // Retrieve the discovery document for version 3 of Google Drive API.
-      // In practice, your app can retrieve one or more discovery documents.
+      if (window["coeGoogleAuth"]) {
+        resolve();
+      } else {
 
-      // Initialize the gapi.client object, which app uses to make API requests.
-      // Get API key and client ID from API Console.
-      // 'scope' field specifies space-delimited list of access scopes.   
-      gapi.client.init({
-        'apiKey': self.apiKey, //'YOUR_API_KEY',
-        'discoveryDocs': [GAPI.sheets.discovery],
-        'clientId': self.clientId, // 'YOUR_CLIENT_ID',
-        'scope': GAPI.sheets.scopes.readwrite
-      }).then(function() {
-        GoogleAuth = gapi.auth2.getAuthInstance();
-        window["coeGoogleAuth"] = GoogleAuth; // reuse across services instances
-        resolve();        
-      }, function(err) {
-          reject(err);
-      });
+        // from https://developers.google.com/identity/protocols/OAuth2UserAgent
+        // Retrieve the discovery document for version 3 of Google Drive API.
+        // In practice, your app can retrieve one or more discovery documents.
+
+        // Initialize the gapi.client object, which app uses to make API requests.
+        // Get API key and client ID from API Console.
+        // 'scope' field specifies space-delimited list of access scopes.   
+        gapi.client.init({
+          'apiKey': config.apiKey, //'YOUR_API_KEY',
+          'discoveryDocs': [GAPI.sheets.discovery],
+          'clientId': config.clientId, // 'YOUR_CLIENT_ID',
+          'scope': GAPI.sheets.scopes.readwrite
+        }).then(function() {
+          window["coeGoogleAuth"] =  gapi.auth2.getAuthInstance(); // reuse across services instances
+          resolve();        
+        }, function(err) {
+            reject(err);
+        });
+      }
     });
   };
 
 
-  var _ensureAppSettings;
   var ensureAppSettings = function() {
-    if (!_ensureAppSettings) {
-      _ensureAppSettings = new Promise((resolve1, reject1) => {
-        $.getJSON("/appsettings-dev.json", function(json) {
-            try {
-                self.apiKey = json.integration.apiKey;
-                self.clientId = json.integration.oauth.clientId;
-                resolve1(json.integration.oauth);
-            }
-            catch (err11) {
-                reject1(err11);
-            }
-        })
-        .fail(function() { reject1(err1); });
-      });
-    }
-    return _ensureAppSettings;
+    return new Promise((resolve1, reject1) => {
+      $.getJSON("/appsettings-dev.json", function(json) {
+          try {
+              self.apiKey = json.integration.apiKey;
+              self.clientId = json.integration.oauth.clientId;
+              resolve1({ apiKey: self.apiKey, clientId: self.clientId});
+          }
+          catch (err11) {
+              reject1(err11);
+          }
+      })
+      .fail(function() { reject1(err1); });
+    });
   };
 
   var _ensureGApiScript;
@@ -108,48 +107,46 @@ var GoogleOAuthService = function() {
     return _ensureGApiScript;
   }
 
-  var _ensureGApi;
   var ensureGApi = function() {
-    if (!_ensureGApi) {
-      _ensureGApi = new Promise(function(resolve, reject) {
-        if (GoogleAuth) {
-          resolve(); 
-        } else if (window["coeGoogleAuth"]) {
-          // reuse across services instances
-          GoogleAuth = window["coeGoogleAuth"];
-          resolve(); 
-        } else {
-          Promise.all([ensureGApiScript(), ensureAppSettings()]).done(values => {
-              var gapi = values[0];
-              var config = values[1];
+    return new Promise(function(resolve, reject) {
+        Promise.all([ensureGApiScript(), ensureAppSettings()]).done(values => {
+            var gapi = values[0];
+            var config = values[1];
 
-              // Load the API's client and auth2 modules.
-              // Call the initClient function after the modules load.
-              gapi.load('client:auth2', function() {
-                  _initClient(gapi).then(function() {
-                    resolve();
-                  }, function(initClientError) {
-                    reject(initClientError);
-                  }
-                );
+            // Load the API's client and auth2 modules.
+            // Call the initClient function after the modules load.
+            gapi.load('client:auth2', function() {
+              _initClient(gapi, config).then(function() {
+                resolve(gapi);
+              }, initClientError => {
+                reject(initClientError);
               });
-          });
-        }
-      });
-    }
-    return _ensureGApi;
+            });
+        });
+      // }
+    });
   };
 
 
   this.ensureAuthorized = function(scope) {
     return new Promise((resolve, reject) => {
-      ensureGApi().then(function() {
+      ensureGApi().then(function(gapi) {
+        var GoogleAuth = window["coeGoogleAuth"];
         var isSignedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
         if (isSignedIn) {
-          var user = GoogleAuth.currentUser.get();
+          var user;
+          try {
+            user = GoogleAuth.currentUser.get();
+          } catch (userEx) {
+            reject({
+              message: "Unable to get user",
+              error: userEx
+            });
+            return;
+          }
           var isAuthorized = user.hasGrantedScopes(scope);
           if (isAuthorized) {
-            resolve();
+            resolve(gapi);
           } else {
             reject({ message: "Current user is signed in but not authorized to access the required scopes" });
           }
@@ -158,7 +155,7 @@ var GoogleOAuthService = function() {
             var user = GoogleAuth.currentUser.get();
             var isAuthorized = user.hasGrantedScopes(scope);
             if (isAuthorized) {
-              resolve();
+              resolve(gapi);
             } else {
               reject({ message: "Current user is signed in but not authorized to access the required scopes" });
             }
@@ -180,7 +177,7 @@ var GoogleOAuthService = function() {
 
   this.getSheetsApi = function() {
     return new Promise(function(resolve, reject) {
-      self.ensureAuthorized(GAPI.sheets.scopes.readwrite).then(function() {
+      self.ensureAuthorized(GAPI.sheets.scopes.readwrite).then(function(gapi) {
         resolve(gapi.client.sheets);
       }, function(err) {
         reject(err);
@@ -209,4 +206,4 @@ var GoogleOAuthService = function() {
 
 
 /** */
-module.exports = GoogleOAuthService;
+module.exports = new GoogleOAuthService();
