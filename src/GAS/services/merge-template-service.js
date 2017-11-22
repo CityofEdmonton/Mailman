@@ -502,10 +502,22 @@ var MergeTemplateService = {
    * Renders a merge template for the given sheet and row
    * 
    * @param {string} templateId The id of the template to render
-   * @param  {string} sheetName The name of the sheet to append the column to.
    * @param  {number} rowNum The 1-based row index to add the header to.   * 
    */
-  renderTemplate: function(templateId, sheetName, rowNum) {
-    return "TODO: render templates using templating engine (handlebars)";
+  renderTemplate: function(templateId, rowNum) {
+    var template = MergeTemplateService.getByID(templateId);
+    var mergeData = (template || {}).mergeData, data = (mergeData || {}).data;
+
+    var context = RenderService.getContext(mergeData.sheet, mergeData.headerRow, rowNum);
+    var renderOptions = { context: context };
+
+    var returnValue = {};
+    returnValue.to = data.to ? RenderService.render(data.to, renderOptions) : null;
+    returnValue.cc = data.cc ? RenderService.render(data.cc, renderOptions) : null;
+    returnValue.bcc = data.bcc ? RenderService.render(data.bcc, renderOptions) : null;
+    returnValue.subject = data.subject ? RenderService.render(data.subject, renderOptions) : null;
+    returnValue.body = data.body ? RenderService.render(data.body, renderOptions) : null;
+    
+    return returnValue;
   }
 };

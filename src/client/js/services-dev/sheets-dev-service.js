@@ -80,6 +80,20 @@ var SheetsService = function() {
     });
   };
 
+
+  var toggler = 2;
+  /**
+   * returns the currently active cell in the Sheet
+   * 
+   * @return {Promise} A Promise.
+   */  
+  this.getActiveCell = function() {
+    return new Promise(function(resolve, reject) {
+      // return A2 or A3, one after the other
+      resolve("Data!A" + (toggler++ % 2 + 2));
+    });
+  };
+
   self.init_();
 };
 

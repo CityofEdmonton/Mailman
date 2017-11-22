@@ -35,6 +35,16 @@ var SheetsService = function() {
     return Provoke('SheetsService', 'get');
   };
 
+
+  /**
+   * returns the currently active cell in the Sheet
+   * 
+   * @return {Promise} A Promise.
+   */
+  this.getActiveCell = function() {
+    return Provoke('SheetsService', 'getActiveCell');    
+  };  
+
   self.init_();
 };
 

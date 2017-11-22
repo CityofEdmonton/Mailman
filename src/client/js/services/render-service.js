@@ -55,7 +55,7 @@ var RenderService = function() {
       var compiler = handlebars.compile;
       if (typeof compiler === "function") {
         console.log("1");
-        getContext(sheetName, headerRowIndex).then(ctx => {
+        getContext(headerRowIndex, sheetName).then(ctx => {
           console.log(ctx);
           var text = preParseTemplateText(content);
           console.log(text);

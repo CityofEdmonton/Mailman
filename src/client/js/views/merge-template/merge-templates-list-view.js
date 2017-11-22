@@ -54,6 +54,7 @@ var MergeTemplatesListView = function(appendTo, metadataService) {
   // Event callbacks
   var deletionCallback;
   var editCallback;
+  var previewCallback;
   var runCallback;
   var emailCB;
   var documentCB;
@@ -80,6 +81,10 @@ var MergeTemplatesListView = function(appendTo, metadataService) {
   var itemEdit = function(e) {
     editCallback(e.data);
   };
+
+  var itemPreview = function(e) {
+    previewCallback(e.data);
+  }
 
   var newEmailTemplate = function(e) {
     emailCB(e);
@@ -141,6 +146,7 @@ var MergeTemplatesListView = function(appendTo, metadataService) {
     var item = new MergeTemplateListItem(list, template, metadataService);
     item.setDeleteHandler(deletionCallback);
     item.setEditHandler(itemEdit);
+    item.setPreviewHandler(itemPreview);
     item.setRunHandler(runCallback);
     item.setRepeatHandlers(repeatCB, unrepeatCB);
     item.setRepeatDialog(repeatDialog);
@@ -186,6 +192,15 @@ var MergeTemplatesListView = function(appendTo, metadataService) {
   this.setEditHandler = function(callback) {
     editCallback = callback;
   };
+
+  /**
+   * Sets the handler for previewing templates
+   * 
+   * @param {Function} callback 
+   */
+  this.setPreviewHandler = function(callback) {
+    previewCallback = callback;
+  }
 
   /**
    * Sets the handler for each list item run.
@@ -236,10 +251,6 @@ var MergeTemplatesListView = function(appendTo, metadataService) {
   this.setDeleteDialog = function(dialog) {
     deleteDialog = dialog;
   };
-
-  this.setPreviewHandler = function(dialog) {
-    
-  }
 
   this.init_(appendTo);
 };

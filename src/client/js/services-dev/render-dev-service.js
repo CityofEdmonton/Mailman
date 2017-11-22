@@ -114,7 +114,24 @@ var RenderService = function() {
         resolve(content); 
       }
     });
-  }
+  };
+
+  /**
+   * Renders all of a mergeTemplate
+   * @param {*} mergeTemplate 
+   */
+  this.renderTemplate = function(mergeTemplate) {
+    return new Promise((resolve, reject) => {
+      resolve({
+        to: "",
+        cc: "",
+        bcc: "",
+        subject: "",
+        body: "",
+       });
+    });    
+  };
+
   self.init_();
 };
 

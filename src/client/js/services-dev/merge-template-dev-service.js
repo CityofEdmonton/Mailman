@@ -8,6 +8,7 @@
 
 var Provoke = require('../util/provoke.js');
 var Promise = require('promise');
+var MergeTemplate = require('../data/merge-template/merge-template');
 
 
 
@@ -18,8 +19,9 @@ var Promise = require('promise');
  */
 var MergeTemplateService = function() {
 
-  // use an in-memory store of tamplates
+  // use an in-memory store of templates
   var templates = [];
+  var SERIALIZE_KEY = "MAILMAN_DEV";
 
   //***** private methods *****//
 
@@ -34,6 +36,15 @@ var MergeTemplateService = function() {
    */
   this.create = function(template) {
     templates.push(template);
+    // save to local storage to retrieve later
+    if (localStorage) {
+      var templatesSerialized = '[' +
+        templates.map(x => JSON.stringify(x.toConfig()))
+          .join(',') + ']';
+      if (templatesSerialized) {
+        localStorage.setItem(SERIALIZE_KEY, templatesSerialized);       
+      }
+    }
     return new Promise(function(resolve, reject) {
       resolve();
     });
@@ -46,6 +57,24 @@ var MergeTemplateService = function() {
    */
   this.getAll = function() {
     return new Promise(function(resolve, reject) {
+      if (localStorage) {
+        var serializedItems = localStorage.getItem(SERIALIZE_KEY);
+        if (serializedItems) {
+          try {
+            var items = JSON.parse(serializedItems);
+            if (items && items.length > 0) {
+               var loadedTemplates = items.map(x => new MergeTemplate(x));
+               if (loadedTemplates && loadedTemplates.length > 0) {
+                loadedTemplates.templates = items;
+                templates = loadedTemplates;
+               }
+            }
+          }
+          catch (ex) {
+            console.log("Unable to read templates from local storage");
+          }
+        }        
+      }
       resolve(templates);
     });
   };
@@ -138,6 +167,19 @@ var MergeTemplateService = function() {
     throw "Not Implemented";    
     //return Provoke(null, 'runAllMergeTemplates');
   }
+
+  /**
+   * Renders a merge template for the given sheet and row
+   * 
+   * @param {string} templateId The id of the template to render
+   * @param  {string} sheetName The name of the sheet to append the column to.
+   * @param  {number} rowNum The 1-based row index to add the header to.   * 
+   */
+  this.renderTemplate = function(templateId, rowNum) {
+    //return Provoke(MergeTemplateService, 'renderTemplate', templateId, sheetName, rowNum);
+    debugger;
+    throw "Not Implemented";
+  }  
 };
 
 

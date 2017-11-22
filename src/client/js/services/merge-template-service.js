@@ -114,6 +114,17 @@ var MergeTemplateService = function() {
   this.runMerges = function() {
     return Provoke(null, 'runAllMergeTemplates');
   }
+
+  /**
+   * Renders a merge template for the given sheet and row
+   * 
+   * @param {string} templateId The id of the template to render
+   * @param  {string} sheetName The name of the sheet to append the column to.
+   * @param  {number} rowNum The 1-based row index to add the header to.   * 
+   */
+  this.renderTemplate = function(templateId, rowNum) {
+    return Provoke('MergeTemplateService', 'renderTemplate', templateId, rowNum);
+  }
 };
 
 

@@ -33,5 +33,22 @@ var SheetsService = {
       log(e);
       throw e;
     }
+  },
+
+  /**
+   * Returns the active cell in the active sheet,
+   * e.g. Sheet1!A2
+   * 
+   */
+  getActiveCell: function() {
+    try {
+      var sheet = SpreadsheetApp.getActiveSheet(),   
+        cell = sheet.getActiveCell();    
+      return sheet.getName() + "!" + cell.getA1Notation();
+    }
+    catch (e) {
+      log(e);
+      throw e;
+    }
   }
 }
