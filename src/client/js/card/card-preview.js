@@ -30,7 +30,7 @@ var PreviewCard = function(appendTo, options) {
     bcc = appendTo.find("[data-id='preview-bcc']");
     subject = appendTo.find("[data-id='preview-subject']");
     body = appendTo.find("[data-id='preview-body']");
-    bodyRender = appendTo.find("[data-id='preview-body']").find(".preview-rendered").first();
+    bodyRender = appendTo.find("[data-id='preview-rendered']").first();
     
     $.each(appendTo.find(".mdl-textfield"), (i, x) => {
       componentHandler.upgradeElement(x, 'MaterialTextfield');
@@ -39,7 +39,6 @@ var PreviewCard = function(appendTo, options) {
 
   //***** Public Methods *****//
   this.setValue = function(data) {
-    debugger;
     var mergeData = data || {};
     // mdlObject[0].MaterialTextfield.change(value);
     to[0].MaterialTextfield.change(mergeData.to);

@@ -508,7 +508,7 @@ var MergeTemplateService = {
     var template = MergeTemplateService.getByID(templateId);
     var mergeData = (template || {}).mergeData, data = (mergeData || {}).data;
 
-    var context = RenderService.getContext(mergeData.sheet, mergeData.headerRow, rowNum);
+    var context = RenderService.getContext(null, mergeData.headerRow, rowNum);
     var renderOptions = { context: context };
 
     var returnValue = {};

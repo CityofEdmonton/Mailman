@@ -23,14 +23,14 @@ var RenderService = {
       var sheet = sheetName ? spreadsheet.getSheetByName(sheetName) : SpreadsheetApp.getActiveSheet();
 
       // startRow, startColumn, numRows, numColumns
-      var headerRowValues = sheet.getSheetValues(headerRowIndex && headerRowIndex === parseInt(headerRowIndex,10) ? headerRowIndex : 1, 1, 1, 128);
+      var headerRowValues = sheet.getSheetValues(headerRowIndex && headerRowIndex === parseInt(headerRowIndex,10) ? headerRowIndex : 1, 1, 1, 128)[0];
       var rowNum = dataRowIndex;
       if (!(rowNum && rowNum === parseInt(rowNum, 10))) {
         var cell = sheet.getActiveCell();
         rowNum = cell.getRow();
       }
      
-      var rowValues = sheet.getSheetValues(rowNum, 1, 1, 128);
+      var rowValues = sheet.getSheetValues(rowNum, 1, 1, 128)[0];
 
       var returnValue = {
         _meta: {
@@ -65,12 +65,13 @@ var RenderService = {
     
     // register help methods - this should be refactored into its own method
     if (!Handlebars._coeHelpersRegistered) {
+      console.log("registering coeHelpers");
       // register some helper stuff, like getData()
-      Handlebars.registerHelper('getData', function(context, options) {
+      Handlebars.registerHelper('range', function(context, options) {
         var sheet, range;
-        if (context && typeof context.indexOf === 'function' && context.indexOf('!' > 0)) {
-          sheet = Utility.getSpreadsheet().getSheetByName(context.substring(0, context.indexOf('!' > 0)));
-          range = context.substring(context.indexOf('!' > 0)+1);
+        if (context && typeof context.indexOf === 'function' && context.indexOf('!') > 0) {
+          sheet = Utility.getSpreadsheet().getSheetByName(context.substring(0, context.indexOf('!')));
+          range = context.substring(context.indexOf('!')+1);
         }
         else {
           sheet = SpreadsheetApp.getActive().getActiveSheet();
@@ -79,23 +80,31 @@ var RenderService = {
         
         var rangeObj = sheet.getRange ? sheet.getRange(range) : {};
         var rangeValues = rangeObj.getDisplayValues ? rangeObj.getDisplayValues() : {};
-        return rangeValues;
+        
+        var ret = "", data;
+        
+        if (options.data) {
+          data = Handlebars.createFrame(options.data);
+        }
+              
+        for(var i=0, j=rangeValues.length; i<j; i++) {
+          if (data) {
+            data.row = rangeValues[i];
+          }
+          ret = ret + options.fn(rangeValues[i], { data: data });
+        }
+        
+        return ret;
       });
     }
     
-    console.log('rendering template - preparsing...');
-    console.log(templateText);
-
     // convert << to {{[ and >> to ]}}
-    var parsedText = templateText.replace(/<<(.*?)>>|&lt;&lt;(.*?)&gt;&gt;/g, function(match, m1, m2, offset, string) {
+    var parsedText = templateText.replace(/<<\s*(.*?)\s*>>|&lt;&lt;\s*(.*?)\s*&gt;&gt;/g, function(match, m1, m2, offset, string) {
       if (m1)
         return '{{[' + m1 + ']}}';
       else if (m2)
         return '{{[' + m2 + ']}}';
     });
-    
-    console.log('rendering template - preparsing complete.');
-    console.log(parsedText);
     
     var template = Handlebars.compile(parsedText);
     return template(context);

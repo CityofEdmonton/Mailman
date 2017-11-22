@@ -24,6 +24,7 @@ require('tinymce/plugins/charmap');
 require('tinymce/plugins/anchor');
 require('tinymce/plugins/table');
 require('tinymce/plugins/textcolor');
+require('tinymce/plugins/code');
 require('../util/tinymce-plugins/render');
 //require('../util/tinymce-plugins/preview');
 require('../util/tinymce-plugins/placeholder');
@@ -106,9 +107,9 @@ var TextareaCard = function(appendTo, options) {
 
     tinymce.init({
       selector: 'textarea',
-      toolbar: 'bold italic underline | forecolor backcolor | fullscreen',
-      menubar: 'edit format insert table',
-      plugins: 'lists advlist autolink link image charmap paste anchor textcolor table fullscreen render placeholder',
+      toolbar: 'forecolor backcolor | numlist bullist | fullscreen',
+      menubar: 'edit format insert table tools',
+      plugins: 'lists advlist autolink link image charmap paste anchor textcolor table code fullscreen render placeholder',
       skin_url: 'https://cloud.tinymce.com/dev/skins/lightgray',
       setup: function(editor) {
         fullscreenFix(editor);
