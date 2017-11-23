@@ -67,9 +67,13 @@ var MergeTemplatesListView = function(appendTo, metadataService) {
   this.init_ = function(appendTo) {
     appendTo.append(base);
 
-    emailButton.on('click', newEmailTemplate);
-    documentButton.on('click', newDocumentTemplate);
-    fabButton.on('click', toggleSpeedDial);
+    // simply hooking up the main button to the plain-text cards,
+    // and leaving the From Document functionality and speed dial in,
+    // in case we want to put them back at some point -DC 2017.11.23
+    //emailButton.on('click', newEmailTemplate);
+    //documentButton.on('click', newDocumentTemplate);
+    //fabButton.on('click', toggleSpeedDial);
+    fabButton.on('click', newEmailTemplate);
 
     PubSub.subscribe('Rules.delete', rebuild);
     PubSub.subscribe('Rules.add', rebuild);

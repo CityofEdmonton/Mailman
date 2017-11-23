@@ -164,10 +164,10 @@ define(
 
               editor.getRenderedContent = function() {
                 // fire rendering event
-                var args = { content: editor.getContent()};
+                var args = { content: editor.getContent() };
                 Events.fireRendering(editor, args);
                 return renderService.render(args.content);
-              }
+              };
           });
       });
     

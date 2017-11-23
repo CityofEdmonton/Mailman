@@ -28,21 +28,6 @@ var RenderService = function() {
     return Provoke('RenderService', 'getContext', sheetName, headerRowIndex); 
   };
 
-  var preParseTemplateText = function(text) {
-    var value = text;
-    if (value && typeof value === "function") {
-      value = value.replace(/&lt;&lt;|<<|&gt;&gt;|>>/gi, m => {
-        switch (m.toUpperCase()) {
-          case '<<': 
-          case '&LT;&LT;': return '{{';
-          case '>>':
-          case '&GT;&GT;': return '}}';
-        }
-      });
-    }
-    return value;
-  };
-
 
  //**** public functions ****//
 
@@ -50,38 +35,7 @@ var RenderService = function() {
   * Renders the specified content in the default context (active row)
   */
   this.render = function(content, sheetName, headerRowIndex) {
-    return new Promise((resolve, reject) =>
-    {
-      var compiler = handlebars.compile;
-      if (typeof compiler === "function") {
-        console.log("1");
-        getContext(headerRowIndex, sheetName).then(ctx => {
-          console.log(ctx);
-          var text = preParseTemplateText(content);
-          console.log(text);
-          try {
-            var template = compiler(text);
-            if (typeof template === "function")
-              text = template(ctx);         
-            resolve(text);
-          }
-          catch (ex) {
-            reject({
-              message: "Error rendering content",
-              error: ex
-            });
-          }
-        }, err => {
-          console.log("2");
-          reject({
-            message: "Unable to get context to render",
-            error: err
-          });
-        });
-      } else {
-        resolve(content); 
-      }
-    });
+    return Provoke('RenderService', 'render', content, { sheetName: sheetName, headerRowIndex: headerRowIndex })
   }
   self.init_();
 };

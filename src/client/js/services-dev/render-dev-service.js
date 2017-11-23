@@ -90,7 +90,7 @@ var RenderService = function() {
     {
       var compiler = handlebars.compile;
       if (typeof compiler === "function") {
-        getContext(sheetName, headerRowIndex).then(ctx => {
+        getContent(sheetName, headerRowIndex).then(ctx => {
           var text = content;
           try {
             var template = compiler(text);

@@ -25,8 +25,7 @@ require('tinymce/plugins/anchor');
 require('tinymce/plugins/table');
 require('tinymce/plugins/textcolor');
 require('tinymce/plugins/code');
-require('../util/tinymce-plugins/render');
-//require('../util/tinymce-plugins/preview');
+require('../util/tinymce-plugins/preview');
 require('../util/tinymce-plugins/placeholder');
 
 var textareaHTML = require('./card-textarea.html');
@@ -89,33 +88,18 @@ var TextareaCard = function(appendTo, options) {
       });
     };
 
-    // provides context for the handlbars renderer and substitutes
-    // << for {{  and >> for }}
-    var handlebarsHook = function(editor) {
-      editor.on('Rendering', function (e) {
-        var state = e.state || {}, content = state.content || "", context = state.context || {};
-        state.content = content.replace(/&lt;&lt;|<<|&gt;&gt;|>>/gi, m => {
-          switch (m.toUpperCase()) {
-            case '<<': 
-            case '&LT;&LT;': return '{{';
-            case '>>':
-            case '&GT;&GT;': return '}}';
-          }
-        });
-      });
-    }
-
     tinymce.init({
       selector: 'textarea',
-      toolbar: 'forecolor backcolor | numlist bullist | fullscreen',
+      toolbar: 'forecolor backcolor | numlist bullist | code fullscreen preview',
       menubar: 'edit format insert table tools',
-      plugins: 'lists advlist autolink link image charmap paste anchor textcolor table code fullscreen render placeholder',
+      plugins: 'lists advlist autolink link image charmap paste anchor textcolor table code fullscreen preview placeholder',
       skin_url: 'https://cloud.tinymce.com/dev/skins/lightgray',
       setup: function(editor) {
         fullscreenFix(editor);
-        handlebarsHook(editor);
       },
-      branding: false
+      branding: false,
+      code_dialog_width: 250,
+      plugin_preview_width: 250
     });
   };
 

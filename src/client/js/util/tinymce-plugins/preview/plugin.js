@@ -1,6 +1,9 @@
 // inspired by built in preview plugin, 
 // modified for use with MailMan
 
+var serviceFactory = new (require('../../../ServiceFactory'))();
+
+
 (function () {
   
   var defs = {}; // id -> {dependencies, definition, instance (possibly undefined)}
@@ -181,6 +184,29 @@
       };
     }
   );
+/**
+ * Events.js
+ *
+ * Released under LGPL License.
+ * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+ *
+ * License: http://www.tinymce.com/license
+ * Contributing: http://www.tinymce.com/contributing
+ */
+
+define(
+'tinymce.plugins.render.api.Events',
+[
+],
+function () {
+  var fireRendering = function (editor, state) {
+    editor.fire('Rendering', { state: state });
+  };
+
+  return {
+    fireRendering: fireRendering
+  };
+});
   /**
    * IframeContent.js
    *
@@ -195,9 +221,10 @@
     'tinymce.plugins.preview.ui.IframeContent',
     [
       'tinymce.core.util.Tools',
-      'tinymce.plugins.preview.api.Settings'
+      'tinymce.plugins.preview.api.Settings',
+      'tinymce.plugins.render.api.Events'
     ],
-    function (Tools, Settings) {
+    function (Tools, Settings, Events) {
       var getPreviewHtml = function (editor) {
         var previewHtml, headHtml = '', encode = editor.dom.encode, contentStyle = Settings.getContentStyle(editor);
   
@@ -223,7 +250,7 @@
           bodyClass = bodyClass[editor.id] || '';
         }
   
-        var preventClicksOnLinksScript = (
+        var preventClicksOnLinksScript = 
           '<script>' +
           'document.addEventListener && document.addEventListener("click", function(e) {' +
           'for (var elm = e.target; elm; elm = elm.parentNode) {' +
@@ -232,19 +259,22 @@
           '}' +
           '}' +
           '}, false);' +
-          '</script> '
-        );
-  
+          '<' + '/' + 'script>';
+          
         var dirAttr = editor.settings.directionality ? ' dir="' + editor.settings.directionality + '"' : '';
 
-        var renderedContent = typeof editor.getRenderedContent === "function"
-          ? editor.getRenderedContent() : editor.getContent();
-  
+        var renderService = serviceFactory.getRenderService();
+
+        // fire rendering event
+        var args = { content: editor.getContent()};
+        Events.fireRendering(editor, args);
+        var renderedContent = renderService.render(args.content);
+
         var isRenderedContentAPromise = typeof ((renderedContent || {}).then === "function");
         if (isRenderedContentAPromise) {
-          return new Promise((resolve, reject) => {
-            renderedContent.then(text => {
-              previewHtml = (
+          return new Promise(function(resolve, reject)  {
+            renderedContent.then(function(text) {
+              previewHtml = 
                 '<!DOCTYPE html>' +
                 '<html>' +
                 '<head>' +
@@ -254,10 +284,9 @@
                 text +
                 preventClicksOnLinksScript +
                 '</body>' +
-                '</html>'
-              );  
+                '</html>';  
               resolve(previewHtml);
-            }, err => {
+            }, function(err) {
               reject({
                 message: "Error rendering text",
                 error: err
@@ -265,7 +294,7 @@
             });
           });
         } else {
-          previewHtml = (
+          previewHtml = 
             '<!DOCTYPE html>' +
             '<html>' +
             '<head>' +
@@ -275,8 +304,7 @@
             renderedContent +
             preventClicksOnLinksScript +
             '</body>' +
-            '</html>'
-          );  
+            '</html>';  
           return previewHtml;
         }  
       };
@@ -318,6 +346,8 @@
       };
     }
   );
+
+
   /**
    * Dialog.js
    *
