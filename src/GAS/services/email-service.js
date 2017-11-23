@@ -37,40 +37,44 @@ var EmailService = {
     var ss = Utility.getSpreadsheet();
     var sheet = ss.getSheetByName(template.mergeData.sheet);
     var range = sheet.getDataRange();
-    var header = HeaderService.get(template.mergeData.sheet, template.mergeData.headerRow);
+    var headerRow = template.mergeData.headerRow;
 
     for (var i = parseInt(template.mergeData.headerRow); i < range.getNumRows(); i++) {
-      var row = range.offset(i, 0, 1, range.getNumColumns());
+      
+      var rowNum = range.getRowIndex() + i;
+      var context = RenderService.getContext(template.mergeData.sheet, headerRow, rowNum);
+      var renderOptions = { context: context };
 
-      var emailProps = EmailService.getEmailFields(header, row.getDisplayValues()[0], template);
-      var to = emailProps.to;
-      var cc = emailProps.cc;
-      var bcc = emailProps.bcc;
-      var subject = emailProps.subject;
-      var body = emailProps.body;
-      var conditional = emailProps.conditional;
+      var conditional = template.mergeData.conditional ? RenderService.render(template.mergeData.conditional, renderOptions) : null;
+      if (conditional === 'true') {
+        var to = template.mergeData.data.to ? RenderService.render(template.mergeData.data.to, renderOptions) : null;
+        var cc = template.mergeData.data.cc ? RenderService.render(template.mergeData.data.cc, renderOptions) : null;
+        var bcc = template.mergeData.data.bcc ? RenderService.render(template.mergeData.data.bcc, renderOptions) : null;
+        var subject = template.mergeData.data.subject ? RenderService.render(template.mergeData.data.subject, renderOptions) : null;
+        var body = template.mergeData.data.body ? RenderService.render(template.mergeData.data.body, renderOptions) : null;
+      
+        try {
+          // We only timestamp when the email successfully sends.
+          if ((conditional === 'true') &&
+            EmailService.send(to, subject, body, cc, bcc, true)) {
 
-      try {
-        // We only timestamp when the email successfully sends.
-        if ((template.mergeData.conditional == null || conditional === 'true') &&
-          EmailService.send(to, subject, body, cc, bcc, true)) {
+            var timestampName = template.mergeData.timestampColumn.replace(/(<<|>>)/g, '');
+            var timeCell = row.getCell(1, header.indexOf(timestampName) + 1);
 
-          var timestampName = template.mergeData.timestampColumn.replace(/(<<|>>)/g, '');
-          var timeCell = row.getCell(1, header.indexOf(timestampName) + 1);
+            var currentDate = new Date();
+            var datetime = (currentDate.getMonth() + 1) + '/' +
+                    currentDate.getDate() + '/' +
+                    currentDate.getFullYear() + ' ' +
+                    currentDate.getHours() + ':' +
+                    currentDate.getMinutes() + ':' +
+                    currentDate.getSeconds();
 
-          var currentDate = new Date();
-          var datetime = (currentDate.getMonth() + 1) + '/' +
-                  currentDate.getDate() + '/' +
-                  currentDate.getFullYear() + ' ' +
-                  currentDate.getHours() + ':' +
-                  currentDate.getMinutes() + ':' +
-                  currentDate.getSeconds();
-
-          timeCell.setValue(datetime);
+            timeCell.setValue(datetime);
+          }
         }
-      }
-      catch (e) {
-        log(e);
+        catch (e) {
+          log(e);
+        }        
       }
     }
 
@@ -90,19 +94,14 @@ var EmailService = {
     var ss = Utility.getSpreadsheet();
     var sheet = ss.getSheetByName(sheetName);
     var range = sheet.getDataRange();
-    var header = HeaderService.get(sheetName, headerRow);
-    var row = range.offset(parseInt(headerRow), 0, 1, range.getNumColumns()).getDisplayValues()[0];
 
-    var combinedObj = {};
-    for (var j = 0; j < header.length; j++) {
-      combinedObj[header[j]] = row[j];
-    }
+    var context = RenderService.getContext(null, headerRow, range.getRowIndex()+1);
+    var renderOptions = { context: context };
 
-    // Convert <<>> tags to actual text.
-    var subject = EmailService.replaceTags(subject, combinedObj);
-    var body = EmailService.replaceTags(body, combinedObj);
+    var subjectRendered = subject ? RenderService.render(subject, renderOptions) : null;
+    var bodyRendered = body ? RenderService.render(body, renderOptions) : null;
 
-    EmailService.send(Session.getActiveUser().getEmail(), subject, body, null, null, true);
+    EmailService.send(Session.getActiveUser().getEmail(), subjectRendered, bodyRendered, null, null, true);
   },
 
   /**
