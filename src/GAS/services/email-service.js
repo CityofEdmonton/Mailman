@@ -45,7 +45,7 @@ var EmailService = {
       var context = RenderService.getContext(template.mergeData.sheet, headerRow, rowNum);
       var renderOptions = { context: context };
 
-      var conditional = template.mergeData.conditional ? RenderService.render(template.mergeData.conditional, renderOptions) : null;
+      var conditional = template.mergeData.conditional ? RenderService.render(template.mergeData.conditional, renderOptions) : 'true';
       if (conditional === 'true') {
         var to = template.mergeData.data.to ? RenderService.render(template.mergeData.data.to, renderOptions) : null;
         var cc = template.mergeData.data.cc ? RenderService.render(template.mergeData.data.cc, renderOptions) : null;

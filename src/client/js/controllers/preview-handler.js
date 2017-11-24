@@ -47,7 +47,7 @@ var PreviewHandler = function(parent, serviceFactory) {
     show(activeNode.data);
 
     // poll for previewing merge templates
-    this._previewPoll = setInterval(pollToPreviewActiveCell, 500);    
+    this._previewPoll = window.setInterval(pollToPreviewActiveCell, 500);    
   };
 
   var show = function(name) {
@@ -115,6 +115,19 @@ var PreviewHandler = function(parent, serviceFactory) {
   };
 
   //***** public functions *****//
+  /**
+   * Sets the parent CardsView
+   */
+  this.setCardsView = function(cardsView) {
+    this._cardsView = cardsView;
+    $(cardsView).on('navigatingBack', e => {
+      // remove the interval timer
+      if (self._previewPoll) {
+        window.clearInterval(self._previewPoll);
+        delete self._previewPoll;        
+      }
+    });
+  };
 
   /**
    * Sets the MergeTemplate to edit.

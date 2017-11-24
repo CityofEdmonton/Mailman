@@ -177,8 +177,11 @@ var MergeTemplateService = function() {
    */
   this.renderTemplate = function(templateId, rowNum) {
     //return Provoke(MergeTemplateService, 'renderTemplate', templateId, sheetName, rowNum);
-    debugger;
-    throw "Not Implemented";
+    // debugger;
+    // throw "Not Implemented";
+    return new Promise((resolve, reject) => {
+      resolve();
+    });
   }  
 };
 

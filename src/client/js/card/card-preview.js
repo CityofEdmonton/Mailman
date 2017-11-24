@@ -24,7 +24,7 @@ var PreviewCard = function(appendTo, options) {
 
   this.init_ = function(appendTo, options) {
     this.append(innerBase);
-    
+
     to = appendTo.find("[data-id='preview-to']");
     cc = appendTo.find("[data-id='preview-cc']");
     bcc = appendTo.find("[data-id='preview-bcc']");

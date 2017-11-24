@@ -7,7 +7,6 @@
 
 
 var Provoke = require('../util/provoke.js');
-var handlebars = require('handlebars');
 
 /**
 * Handles operations related to getting rendering templates.

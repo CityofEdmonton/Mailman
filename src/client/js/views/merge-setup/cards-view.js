@@ -48,6 +48,10 @@ var CardsView = function(appendTo, handler, data, serviceFactory) {
     appendTo.append(base);
   
     cards = handler.length >=2 ? new handler(contentArea, serviceFactory) : new handler(contentArea);
+    if (typeof cards.setCardsView === 'function') {
+      cards.setCardsView(self);
+    }
+
     if (data != null) {
       cards.setMergeTemplate(data);
     }
@@ -77,6 +81,10 @@ var CardsView = function(appendTo, handler, data, serviceFactory) {
   };
 
   var cancelClicked = function() {
+    if ($ && typeof $(self).trigger === 'function') {
+      try { $(self).trigger('navigatingBack'); }
+      catch (ex) { console.error("Error in navigatingBack event handler"); console.log(ex); }
+    }
     if (rejectCB != null) {
       rejectCB('cancelled');
     }
