@@ -195,7 +195,7 @@ var serviceFactory = new (require('../../../ServiceFactory'))();
  */
 
 define(
-'tinymce.plugins.render.api.Events',
+'tinymce.plugins.preview.api.Events',
 [
 ],
 function () {
@@ -222,7 +222,7 @@ function () {
     [
       'tinymce.core.util.Tools',
       'tinymce.plugins.preview.api.Settings',
-      'tinymce.plugins.render.api.Events'
+      'tinymce.plugins.preview.api.Events'
     ],
     function (Tools, Settings, Events) {
       var getPreviewHtml = function (editor) {

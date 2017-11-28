@@ -25,8 +25,10 @@ require('tinymce/plugins/anchor');
 require('tinymce/plugins/table');
 require('tinymce/plugins/textcolor');
 require('tinymce/plugins/code');
+require('tinymce/plugins/contextmenu');
 require('../util/tinymce-plugins/preview');
 require('../util/tinymce-plugins/placeholder');
+//require('../util/tinymce-plugins/suggestions');
 require('../util/tinymce-plugins/window');
 
 var textareaHTML = require('./card-textarea.html');
@@ -100,7 +102,13 @@ var TextareaCard = function(appendTo, options) {
       },
       branding: false,
       code_dialog_width: 250,
-      plugin_preview_width: 250
+      plugin_preview_width: 250,
+      contextmenu:  "link image inserttable | cell row column deletetable",
+      mentions: {
+        source: function (query, process, delimiter) {
+          process([{ name: "Dan"}, {name: "Jared"}]);
+        }
+      }
     });
   };
 
