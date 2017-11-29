@@ -42,8 +42,10 @@ var EmailService = {
     for (var i = parseInt(template.mergeData.headerRow); i < range.getNumRows(); i++) {
       
       var rowNum = range.getRowIndex() + i;
+      var row = range.offset(i, 0, 1, range.getNumColumns());
       var context = RenderService.getContext(template.mergeData.sheet, headerRow, rowNum);
       var renderOptions = { context: context };
+      var header = HeaderService.get(template.mergeData.sheet, template.mergeData.headerRow);
 
       var conditional = template.mergeData.conditional ? RenderService.render(template.mergeData.conditional, renderOptions) : 'true';
       if (conditional === 'true') {
@@ -73,7 +75,7 @@ var EmailService = {
           }
         }
         catch (e) {
-          log(e);
+          console.log(e);
         }        
       }
     }

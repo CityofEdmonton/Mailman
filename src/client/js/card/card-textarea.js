@@ -98,12 +98,7 @@ var TextareaCard = function(appendTo, options) {
       branding: false,
       code_dialog_width: 250,
       plugin_preview_width: 250,
-      contextmenu:  "link image inserttable | cell row column deletetable",
-      mentions: {
-        source: function (query, process, delimiter) {
-          process([{ name: "Dan"}, {name: "Jared"}]);
-        }
-      }
+      contextmenu:  "link image inserttable | cell row column deletetable"
     });
 
   };

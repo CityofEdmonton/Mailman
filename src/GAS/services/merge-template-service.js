@@ -121,6 +121,8 @@ var MergeTemplateService = {
       log('Done running merge templates.');
     }
     catch (e) {
+      console.log("Error running merge templates");
+      console.log(e);
       log(e);
       throw(e);
     }
