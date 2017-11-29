@@ -13,6 +13,8 @@ var textareaHTML = require('./card-textarea.html');
 var TitledCard = require('./card-titled.js');
 var AutocompleteConfig = require('./autocomplete-config.js');
 
+var serviceFactory = new (require('../ServiceFactory'))();
+
 // Import TinyMCE
 var tinymce = require('tinymce/tinymce');
 
@@ -39,24 +41,6 @@ var TextareaCard = function(appendTo, options) {
   var innerBase = $(textareaHTML);
   var textarea = innerBase.find('textarea');
   var acConfig;
-
-  // var tinymce = null;
-  
-
-  // //***** Private Methods *****//
-  // var getTinyMce = function() {
-  //   return new Promise((resolve, reject) => {
-  //     if (tinymce) {
-  //       resolve(tinymce);        
-  //     }
-  //     else {
-  //       Util.loadScript('https://gdev.edmonton.ca/mailman/tinymce/tinymce.js').then(function() {
-  //         tinymce = window.tinymce;
-  //         resolve(tinymce);
-  //       }, reject);  
-  //     }
-  //   });
-  // }
 
   this.init_ = function(appendTo, options) {
     this.append(innerBase);
@@ -89,17 +73,27 @@ var TextareaCard = function(appendTo, options) {
       });
     };
     
+   var setupOnPreviewing = function(editor) {
+    var renderService = serviceFactory.getRenderService();
+    editor.on('Previewing', function (e) {
+      if (e.state && e.state.content) {
+        e.state.content = renderService.render(e.state.content);        
+      }
+    });
+   };
+
 
     tinymce.baseURL = 'https://gdev.edmonton.ca/mailman/tinymce/';
      
     tinymce.init({
       selector: 'textarea',
-      toolbar: 'forecolor backcolor | numlist bullist | code fullscreen preview window ',
-      menubar: 'edit format insert table tools',
+      toolbar: 'forecolor backcolor | fullscreen window ',
+      menubar: false,
       plugins: 'lists advlist autolink link image charmap paste anchor textcolor table code fullscreen window preview placeholder',
       skin_url: 'https://cloud.tinymce.com/dev/skins/lightgray',
       setup: function(editor) {
         fullscreenFix(editor);
+        setupOnPreviewing(editor);
       },
       branding: false,
       code_dialog_width: 250,

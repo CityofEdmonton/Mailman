@@ -30,6 +30,9 @@ var RenderService = function() {
   var getContext = function(sheetName, headerRowIndex) {
     var sheet = "Data"; // we'll always use the sheet name "Data" in our dev service
     var row = 2; // we'll just always get our data from row 2 in our dev service
+    if (!headerRowIndex) {
+      headerRowIndex = 1;      
+    } 
     return new Promise(function(resolve, reject) {
       sheetsService.getTestSheetId().then(function(sheetId) {
         gOAuthService.getSheetsApi().then(function(sheets) {
@@ -90,8 +93,17 @@ var RenderService = function() {
     {
       var compiler = handlebars.compile;
       if (typeof compiler === "function") {
-        self.getContent(sheetName, headerRowIndex).then(ctx => {
+        getContext(sheetName, headerRowIndex).then(ctx => {
           var text = content;
+
+          // convert << to {{[ and >> to ]}}
+          text = text.replace(/<<\s*(.*?)\s*>>|&lt;&lt;\s*(.*?)\s*&gt;&gt;/g, function(match, m1, m2, offset, string) {
+            if (m1)
+              return '{{[' + m1 + ']}}';
+            else if (m2)
+              return '{{[' + m2 + ']}}';
+          });
+          
           try {
             var template = compiler(text);
             if (typeof template === "function")
