@@ -5,37 +5,19 @@
  * @module
  */
 
- // Import TinyMCE
-var tinymce = require('tinymce/tinymce');
 
-// A theme is also required
-require('tinymce/themes/modern/theme');
-
-// Any plugins you want to use has to be imported
-require('tinymce/plugins/paste');
-require('tinymce/plugins/link');
-require('tinymce/plugins/fullscreen');
-require('tinymce/plugins/lists');
-require('tinymce/plugins/advlist');
-require('tinymce/plugins/autolink');
-require('tinymce/plugins/link');
-require('tinymce/plugins/image');
-require('tinymce/plugins/charmap');
-require('tinymce/plugins/anchor');
-require('tinymce/plugins/table');
-require('tinymce/plugins/textcolor');
-require('tinymce/plugins/code');
-require('tinymce/plugins/contextmenu');
-require('../util/tinymce-plugins/preview');
-require('../util/tinymce-plugins/placeholder');
-//require('../util/tinymce-plugins/suggestions');
-require('../util/tinymce-plugins/window');
+var Promise = require('promise');
+var Util = require('../util/util');
 
 var textareaHTML = require('./card-textarea.html');
 var TitledCard = require('./card-titled.js');
 var AutocompleteConfig = require('./autocomplete-config.js');
 
+// Import TinyMCE
+var tinymce = require('tinymce/tinymce');
 
+// A theme is also required
+require('tinymce/themes/modern/theme');
 
 
 /**
@@ -58,7 +40,23 @@ var TextareaCard = function(appendTo, options) {
   var textarea = innerBase.find('textarea');
   var acConfig;
 
-  //***** Private Methods *****//
+  // var tinymce = null;
+  
+
+  // //***** Private Methods *****//
+  // var getTinyMce = function() {
+  //   return new Promise((resolve, reject) => {
+  //     if (tinymce) {
+  //       resolve(tinymce);        
+  //     }
+  //     else {
+  //       Util.loadScript('https://gdev.edmonton.ca/mailman/tinymce/tinymce.js').then(function() {
+  //         tinymce = window.tinymce;
+  //         resolve(tinymce);
+  //       }, reject);  
+  //     }
+  //   });
+  // }
 
   this.init_ = function(appendTo, options) {
     this.append(innerBase);
@@ -90,10 +88,13 @@ var TextareaCard = function(appendTo, options) {
         }
       });
     };
+    
 
+    tinymce.baseURL = 'https://gdev.edmonton.ca/mailman/tinymce/';
+     
     tinymce.init({
       selector: 'textarea',
-      toolbar: 'forecolor backcolor | numlist bullist | code fullscreen preview window',
+      toolbar: 'forecolor backcolor | numlist bullist | code fullscreen preview window ',
       menubar: 'edit format insert table tools',
       plugins: 'lists advlist autolink link image charmap paste anchor textcolor table code fullscreen window preview placeholder',
       skin_url: 'https://cloud.tinymce.com/dev/skins/lightgray',
@@ -110,6 +111,7 @@ var TextareaCard = function(appendTo, options) {
         }
       }
     });
+
   };
 
   //***** Public Methods *****//
@@ -167,7 +169,13 @@ var TextareaCard = function(appendTo, options) {
    * @param {String} value The value to set in the textarea.
    */
   this.setValue = function(value) {
-    tinymce.get(textarea.attr('id')).setContent(value);
+    var mce =  tinymce.get(textarea.attr('id'));
+    // if tincymce is loaded mce.parser will be something
+    if (mce && mce.parser) {
+      mce.setContent(value);
+    } else {
+      textarea.val(value);
+    }
   };
 
   /**

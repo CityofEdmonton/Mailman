@@ -2,6 +2,9 @@
 
 var Util = module.exports = function() {};
 
+var Promise = require('promise');
+
+
 
 $.fn.extend({
   insertAtCaret: function(myValue) {
@@ -190,6 +193,51 @@ Util.setVisibility = function(object, state) {
   else {
     object.addClass('invisible');
   }
+};
+ 
+Util.loadScript = function(url, location) {
+  if (!this._scripts) {
+    this._scripts = [];    
+  }
+
+  var scriptInfo = this._scripts[url];
+  if (!scriptInfo) {
+    scriptInfo = {
+      url: url,
+      state: "INITIALIZING",
+      scriptTag: null,
+      value: null
+    }
+  }
+
+  return new Promise((resolve, reject) => {
+    if (scriptInfo.state === "LOADED") {
+      resolve(scriptInfo.value);
+    } 
+    else {
+      if (scriptInfo.state === "INITIALIZING") {
+
+        scriptInfo.state = "LOADING";
+        $.getScript(url, function(data, textStatus, jqxhr) {
+          scriptInfo.value = data;
+          scriptInfo.state = "LOADED";
+          resolve(data);
+        });
+      }
+      else /* loading */ {
+        // set a timeout for the script to get loaded
+        var intervalCount = 0;
+        var checkInterval = window.setInterval(x => {
+          if (scriptInfo.state === "LOADED") {
+            resolve(scriptInfo.value);
+          }
+          else if (intervalCount++ > 10) {
+            reject("timeout waiting for script to load");
+          }
+        }, 500);
+      }
+    }
+  });
 };
 
 
