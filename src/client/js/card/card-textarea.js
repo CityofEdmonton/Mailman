@@ -82,18 +82,24 @@ var TextareaCard = function(appendTo, options) {
     });
    };
 
+   var setupSuggestions = function(editor) {
+    editor.on('getSuggestions', function (e) {
+      $(self).trigger("getSuggestions", e.state);
+    });
+   };
 
     tinymce.baseURL = 'https://gdev.edmonton.ca/mailman/tinymce/';
      
     tinymce.init({
       selector: 'textarea',
-      toolbar: 'forecolor backcolor | fullscreen window ',
+      toolbar: 'fullscreen | window ',
       menubar: false,
-      plugins: 'lists advlist autolink link image charmap paste anchor textcolor table code fullscreen window preview placeholder',
+      plugins: 'lists advlist autolink link image charmap paste anchor textcolor table code fullscreen window preview placeholder suggestions',
       skin_url: 'https://cloud.tinymce.com/dev/skins/lightgray',
       setup: function(editor) {
         fullscreenFix(editor);
         setupOnPreviewing(editor);
+        setupSuggestions(editor);
       },
       branding: false,
       code_dialog_width: 250,
@@ -140,7 +146,7 @@ var TextareaCard = function(appendTo, options) {
       textarea.on('focus', function() {textarea.autocomplete('search', self.getValue())});
     }
 
-    textarea.autocomplete(acConfig.getAutocompleteConfig(append, prepend, maxResults, trigger, options.getter));
+    //textarea.autocomplete(acConfig.getAutocompleteConfig(append, prepend, maxResults, trigger, options.getter));
   };
 
   /**

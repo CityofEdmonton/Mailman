@@ -32,8 +32,9 @@ var StandardMailHandler = function(parent, serviceFactory) {
   var activeNode;
   var contentArea = parent;
   var cardsList;
+  var headerService = serviceFactory.getHeaderService();
   var cardRepository = CardsConfig.buildCardRepo(contentArea,
-    serviceFactory.getHeaderService(),
+    headerService,
     serviceFactory.getSheetsService(),
     serviceFactory.getEmailService());
   var updateConfig = {};
@@ -51,6 +52,19 @@ var StandardMailHandler = function(parent, serviceFactory) {
       }
 
       return true;
+    });
+
+    $(cardRepository[CardNames.body]).on("getSuggestions", function(e, state) {
+      var sheet = cardRepository[CardNames.sheet].getValue();
+      var row = cardRepository[CardNames.row].getValue();
+      state.suggestions = new Promise((resolve, reject) => {
+        headerService.get(sheet, row).then(headerValues => {
+          resolve(headerValues);
+        }, headerError => {
+          reject(headerError);
+        });
+  
+      });
     });
 
     cardsList = buildEmailFlow();
