@@ -67,35 +67,7 @@ var RenderService = {
     if (!Handlebars._coeHelpersRegistered) {
       console.log("registering coeHelpers");
       // register some helper stuff, like getData()
-      Handlebars.registerHelper('range', function(innerContext, innerOptions) {
-        var sheet, range;
-        if (innerContext && typeof innerContext.indexOf === 'function' && innerContext.indexOf('!') > 0) {
-          sheet = Utility.getSpreadsheet().getSheetByName(innerContext.substring(0, innerContext.indexOf('!')));
-          range = innerContext.substring(innerContext.indexOf('!')+1);
-        }
-        else {
-          sheet = SpreadsheetApp.getActive().getActiveSheet();
-          range = innerContext;
-        }
-        
-        var rangeObj = sheet.getRange ? sheet.getRange(range) : {};
-        var rangeValues = rangeObj.getDisplayValues ? rangeObj.getDisplayValues() : {};
-        
-        var ret = "", data;
-        
-        if (innerOptions.data) {
-          data = Handlebars.createFrame(innerOptions.data);
-        }
-              
-        for(var i=0, j=rangeValues.length; i<j; i++) {
-          if (data) {
-            data.row = rangeValues[i];
-          }
-          ret = ret + innerOptions.fn(rangeValues[i], { data: data });
-        }
-        
-        return ret;
-      });
+      registerHandlebarsHelpers(Handlebars);
     }
     
     // convert << to {{[ and >> to ]}}

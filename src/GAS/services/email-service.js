@@ -48,6 +48,10 @@ var EmailService = {
       var header = HeaderService.get(template.mergeData.sheet, template.mergeData.headerRow);
 
       var conditional = template.mergeData.conditional ? RenderService.render(template.mergeData.conditional, renderOptions) : 'true';
+      if (conditional && typeof conditional.toLowerCase === 'function')
+        conditional = conditional.toLowerCase();
+      if (conditional === 'yes') // other keywords could be added here.
+        conditional = 'true';
       if (conditional === 'true') {
         var to = template.mergeData.data.to ? RenderService.render(template.mergeData.data.to, renderOptions) : null;
         var cc = template.mergeData.data.cc ? RenderService.render(template.mergeData.data.cc, renderOptions) : null;
