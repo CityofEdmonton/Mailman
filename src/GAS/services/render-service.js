@@ -77,6 +77,14 @@ var RenderService = {
       else if (m2)
         return '{{[' + m2 + ']}}';
     });
+
+    // unescape html contents between {{ and }}
+    parsedText = parsedText.replace(/{{\s*(.*?)\s*}}/g, function(match, m1, m2, offset, string) {
+      if (m1)
+        return '{{' + m1.replace("&nbsp;", ' ').replace("%20", ' ').replace("&amp;", '&').replace("&lt;", '<').replace("&gt;", '>') + '}}';
+      else if (m2)
+        return '{{' + m2.replace("&nbsp;", ' ').replace("%20", ' ').replace("&amp;", '&').replace("&lt;", '<').replace("&gt;", '>') + '}}';
+    });
     
     var template = Handlebars.compile(parsedText);
     return template(context);

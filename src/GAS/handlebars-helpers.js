@@ -355,6 +355,20 @@ function registerHandlebarsHelpers(handlebars) {
     });
   }
 
+  var html = {};
+
+  html.parseAttributes = function parseAttributes(hash) {
+    return Object.keys(hash).map(function(key) {
+      var val = String(hash[key]).replace(/^['"]|["']$/g, '');
+      return key + '="' + val + '"';
+    }).join(' ');
+  };
+
+  html.attr = function(options) {
+    var val = html.parseAttributes((options && options.hash) || {});
+    return val.trim() ? ' ' + val : '';
+  };
+
 
   /**
    * range - gets a range of data from the current active Google Sheet
@@ -371,21 +385,198 @@ function registerHandlebarsHelpers(handlebars) {
     }
     
     var rangeObj = sheet.getRange ? sheet.getRange(range) : {};
-    var rangeValues = rangeObj.getDisplayValues ? rangeObj.getDisplayValues() : {};
-    
+    var rows = (rangeObj.getDisplayValues ? rangeObj.getDisplayValues() : [[]])
+      .map(function(x) {
+        return { cells: x };
+      });
+      var rangeValues = { rows: rows };
+
     var ret = "", data;
     
     if (innerOptions.data) {
       data = Handlebars.createFrame(innerOptions.data);
     }
-          
-    for(var i=0, j=rangeValues.length; i<j; i++) {
-      if (data) {
-        data.row = rangeValues[i];
-      }
-      ret = ret + innerOptions.fn(rangeValues[i], { data: data });
-    }
     
+    if (data) {
+      data.range = rangeValues;      
+    }
+
+    ret = innerOptions.fn(rangeValues, { data: data });    
+    return ret;
+  });
+
+  Handlebars.registerHelper('fetch', function(url, options) {
+    if (!util.isString(url)) {
+      return {};
+    }
+
+    var returnValue, fetchOptions = extend({}, options), hash = fetchOptions.hash, ex;
+
+    if (hash) {
+      // currently only Authorization is supported (tested with github Personal Access Tokens)
+      if (hash.Authorization) {
+        if (!fetchOptions.headers) {
+          fetchOptions.headers = {};          
+        }
+        fetchOptions.headers.Authorization = hash.Authorization;
+        console.log("Authorization is " + hash.Authorization);
+      }
+    }
+
+    try {
+      if (fetchOptions.contentType ||
+        fetchOptions.headers ||
+        fetchOptions.method ||
+        fetchOptions.payload ||
+        fetchOptions.validateHttpsCertificates ||
+        fetchOptions.followRedirects ||
+        fetchOptions.muteHttpExceptions ||
+        fetchOptions.escaping) {
+        returnValue = UrlFetchApp.fetch(url, fetchOptions);
+      }
+      else {
+        returnValue = UrlFetchApp.fetch(url);
+      }
+    } catch (ex) {
+      console.log("Error reading from url");
+      console.error(ex);
+      return "Error reading from url" + ex;
+    }
+
+    var ret = "", data;   
+    var responseCode = returnValue.getResponseCode();
+    console.log("fetch helper returned something with status code " + responseCode);
+    if (responseCode == 200 && options.data) {
+      data = Handlebars.createFrame(options.data);
+      var responseText = returnValue.getContentText();
+      if (responseText && (responseText.substring(0,1 == "{" ||
+                           responseText.substring(0,1) == "["))) {
+        // we'll assume this is json
+        try {
+          data.fetchResult = JSON.parse(responseText);
+        } catch (ex) {
+          data.fetchResult = responseText;
+        }
+      } else {
+        data.fetchResult = responseText;
+      }
+      returnValue = data.fetchResult;     
+    } else {
+      console.log("fetch helper with url " + url + " returned with status code " + responseCode + ". Response was: " + returnValue.getContentText());
+    }
+
+    ret = options.fn(returnValue, { data: data });    
+    return ret;
+  });
+
+  Handlebars.registerHelper('htmlTag', function(context, tagName, options) {
+    if (!util.isString(tagName)) {
+      return "";
+    }
+
+    var data;
+    if (options.data) {
+      data = Handlebars.createFrame(options.data);
+    }
+    if (typeof context === 'function') { context = context.call(this); }
+
+    var ret = '<' + tagName + ' ' + html.parseAttributes(options.hash);
+    if (options && typeof options.fn === 'function') {
+      ret += '>';
+      ret += options.fn(context, {data: options.data });
+      ret += '</' + tagName + '>';
+    } else {
+      ret += '/>';
+    }
+    return ret;
+  });
+
+
+  Handlebars.registerHelper('formatDate', function(datetime, format) {
+    var d;
+    if (datetime instanceof Date) {
+      d = datetime;
+    } else if (typeof datetime === "string" && datetime.toUpperCase() === "NOW") {
+      d = new Date();
+    } else {
+      d = new Date(datetime);
+    }
+
+    return Utilities.formatDate(d, Session.getScriptTimeZone(), format);
+  });
+
+  Handlebars.registerHelper('getDate', function(datetime, options) {
+    var d;
+    if (datetime instanceof Date) {
+      d = datetime;
+    } else if (typeof datetime === "string" && datetime.toUpperCase() === "NOW") {
+      d = new Date();
+    } else {
+      d = new Date(datetime);
+    }
+
+    var hash = options.hash, num;
+    if (hash) {
+      var toNum = function(val) {
+        if (util.isNumber(val)) {
+          return parseFloat(val);
+        } else if (typeof val === 'function') {
+          var val2 = val();
+          if (util.isNumber(val2))
+            return val2 + 0;
+          else
+            return NaN;          
+        }
+      }
+      if (hash.addDays) {
+        num = toNum(hash.addDays);
+        if (util.isNumber(num))
+          d.setDate(d.getDate() + num);
+      }
+      if (hash.addMonths) {
+        num = toNum(hash.addMonths);
+        if (util.isNumber(num))
+          d.setMonth(d.getMonth() + num);
+      }
+      if (hash.addYears) {
+        num = toNum(hash.addYears);
+        if (util.isNumber(num))
+          d = new Date(d.getFullYear() + num, d.getMonth(), d.getDate());
+      }
+      if (hash.addHours) {
+        num = toNum(hash.addHours);
+        if (util.isNumber(num))
+          d.setHours(d.getHours() + num);
+      }      
+      if (hash.addMinutes) {
+        num = toNum(hash.addMinutes);
+        if (util.isNumber(num))
+          d.setMinutes(d.getMinutes() + num);
+      } 
+      if (hash.addSeconds) {
+        num = toNum(hash.addSeconds);
+        if (util.isNumber(num))
+          d.setSeconds(d.getSeconds() + num);
+      }      
+    }
+
+    return d;
+  });
+
+
+
+  Handlebars.registerHelper('debugObject', function(val) {
+    var ret = "", first = true;
+    if (val) {
+      for (var key in val) {
+        if (first) {
+          first = false;
+        } else {
+          ret += ", ";
+        }
+        ret += key + "=" + val;
+      }
+    }
     return ret;
   });
 
