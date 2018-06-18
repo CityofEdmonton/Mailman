@@ -19,3 +19,4 @@ Mailman guides you through the process of setting up your own mail merge. Just u
 *
 * Chrome requires the following extensions on the instance of chrome run by VSCode
 * https://chrome.google.com/webstore/detail/ignore-x-frame-headers/gleekbfjekiniecknbkamfmkohkpodhe
+* Open browser to http://localhost:8000/build/web/client/html/mailman-dev.html
