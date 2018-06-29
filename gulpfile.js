@@ -140,7 +140,7 @@ function buildGAS() {
             includeBase: './'
         }))
         .pipe(gulp.dest('./build/gas'));
-
+    gulp.src('./src/gas/*.json').pipe(gulp.dest('./build/gas'));
     // GAS
     return gulp.src('./src/gas/**/*.js')
         .pipe(gulp.dest('./build/gas/gas'));
@@ -254,7 +254,7 @@ function stopWeb(cb) {
  * @return {stream} the stream as the completion hint to the gulp engine
  */
 function deployGAS(cb) {
-    return exec('gapps push', function(err, stdout, stderr) {
+    return exec('clasp push', function(err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
         cb(err);
@@ -269,7 +269,7 @@ function deployGAS(cb) {
  * @return {stream} the stream as the completion hint to the gulp engine
  */
 function openGAS() {
-    var key = JSON.parse(fs.readFileSync('gapps.config.json', 'utf8')).fileId;
+    var key = JSON.parse(fs.readFileSync('.clasp.json', 'utf8')).scriptId;
     var url = 'https://script.google.com/a/edmonton.ca/d/' + key + '/edit';
 
     var browser = os.platform() === 'win32' ? 'chrome' : (
