@@ -31,6 +31,8 @@ var MergeData = function(config) {
   var data = config.data;
   var sheet = config.sheet;
   var conditional = config.conditional;
+  var onform = config.onform;
+
   var title = 'title';
   var headerRow = '1';
   var timestampColumn = Util.capitalize('<<Mailman ' + type + ' Timestamp>>');
@@ -90,7 +92,8 @@ var MergeData = function(config) {
       sheet: sheet,
       headerRow: headerRow,
       timestampColumn: timestampColumn,
-      conditional: conditional
+      conditional: conditional,
+      onform: onform
     };
   };
 

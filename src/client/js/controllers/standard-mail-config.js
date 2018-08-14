@@ -12,6 +12,8 @@ var InputCard = require('../card/card-input.js');
 var TitledCard = require('../card/card-titled.js');
 var TextareaCard = require('../card/card-textarea.js');
 var ConditionalInputCard = require('../card/conditional-input-card.js');
+var ConditionalCard = require('../card/conditional-card.js');
+
 var ToCard = require('../card/to-cc-bcc.js');
 var Snackbar = require('../views/snackbar/snackbar.js');
 var Util = require('../util/util.js');
@@ -201,6 +203,13 @@ CardsConfig.buildCardRepo = function(contentArea,
     },
     enabled: true,
     checkboxText: 'Use conditional sending?'
+  });
+
+
+  repo[CardNames.onform] = new ConditionalCard(contentArea, {
+    title: 'Onform submission sending?',
+    enabled: true,
+    checkboxText: 'Onform submission sending?'
   });
 
   return repo;

@@ -102,6 +102,7 @@ var StandardMailHandler = function(parent, serviceFactory) {
     cards.add(CardNames.subject);
     cards.add(CardNames.body);
     cards.add(CardNames.conditional);
+    cards.add(CardNames.onform);
     cards.add(CardNames.sendNow);
     return cards;
   };
@@ -127,6 +128,12 @@ var StandardMailHandler = function(parent, serviceFactory) {
     cardRepository[CardNames.subject].setValue(updateConfig.mergeData.data.subject);
     cardRepository[CardNames.body].setValue(updateConfig.mergeData.data.body);
 
+    if (updateConfig.mergeData.onform != null) {
+      cardRepository[CardNames.onform].check();
+    }
+    else {
+      cardRepository[CardNames.onform].uncheck();
+    }
 
     if (updateConfig.mergeData.conditional != null) {
       cardRepository[CardNames.conditional].check();
@@ -151,6 +158,7 @@ var StandardMailHandler = function(parent, serviceFactory) {
           sheet: cardRepository[CardNames.sheet].getValue(),
           headerRow: cardRepository[CardNames.row].getValue(),
           conditional: cardRepository[CardNames.conditional].getValue(),
+          onform:cardRepository[CardNames.onform].getValue(),
           type: type,
           data: {
             to: toVals.to,

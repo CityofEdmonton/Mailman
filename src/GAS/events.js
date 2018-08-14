@@ -29,7 +29,7 @@ function onOpen(e) {
 function openSidebar() {
   PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, SpreadsheetApp.getActiveSpreadsheet().getId());
 
-  var ui = HtmlService.createHtmlOutputFromFile('mailman')
+  var ui = HtmlService.createHtmlOutputFromFile('html/mailman')
       .setTitle(' ')
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 
@@ -45,7 +45,7 @@ function openSidebar() {
  *
  */
 function openFeedbackDialog() {
-  var ui = HtmlService.createHtmlOutputFromFile('feedback-dialog')
+  var ui = HtmlService.createHtmlOutputFromFile('html/feedback-dialog')
       .setTitle('Feedback')
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 

@@ -15,5 +15,6 @@ module.exports = {
   sendNow: 'Email',
   title: 'Title',
   conditional: 'Conditional',
+  onform:'Onform',
   documentSelector: 'Document'
 };
