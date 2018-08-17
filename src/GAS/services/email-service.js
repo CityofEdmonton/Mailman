@@ -32,7 +32,69 @@ var EmailService = {
       return;
     }
 
-    log('Starting merge template ' + template.id);
+    if (template.mergeData.onform == "enabled"){
+      EmailService.mergeOnformTemplate(template);
+    }
+    else{
+      EmailService.mergeAllTemplate(template);
+    }
+
+  },
+
+  mergeOnformTemplate: function(template) {
+    log('Starting merge onform template ' + template.id);
+
+    var ss = Utility.getSpreadsheet();
+    var sheet = ss.getSheetByName(template.mergeData.sheet);
+    var range = sheet.getDataRange();
+    var headerRow = template.mergeData.headerRow;
+      var i = range.getNumRows()-1;
+      var rowNum = range.getRowIndex() + i;
+      var row = range.offset(i, 0, 1, range.getNumColumns());
+      var context = RenderService.getContext(template.mergeData.sheet, headerRow, rowNum);
+      var renderOptions = { context: context };
+      var header = HeaderService.get(template.mergeData.sheet, template.mergeData.headerRow);
+
+      var conditional = template.mergeData.conditional ? RenderService.render(template.mergeData.conditional, renderOptions) : 'true';
+      if (conditional && typeof conditional.toLowerCase === 'function')
+        conditional = conditional.toLowerCase();
+      if (conditional === 'yes') // other keywords could be added here.
+        conditional = 'true';
+      if (conditional === 'true') {
+        var to = template.mergeData.data.to ? RenderService.render(template.mergeData.data.to, renderOptions) : null;
+        var cc = template.mergeData.data.cc ? RenderService.render(template.mergeData.data.cc, renderOptions) : null;
+        var bcc = template.mergeData.data.bcc ? RenderService.render(template.mergeData.data.bcc, renderOptions) : null;
+        var subject = template.mergeData.data.subject ? RenderService.render(template.mergeData.data.subject, renderOptions) : null;
+        var body = template.mergeData.data.body ? RenderService.render(template.mergeData.data.body, renderOptions) : null;
+      log('sending email to ' + template.mergeData.data.to);
+        try {
+          // We only timestamp when the email successfully sends.
+          if ((conditional === 'true') &&
+            EmailService.send(to, subject, body, cc, bcc, true)) {
+
+            var timestampName = template.mergeData.timestampColumn.replace(/(<<|>>)/g, '');
+            var timeCell = row.getCell(1, header.indexOf(timestampName) + 1);
+            var currentDate = new Date();
+            var datetime = (currentDate.getMonth() + 1) + '/' +
+                    currentDate.getDate() + '/' +
+                    currentDate.getFullYear() + ' ' +
+                    currentDate.getHours() + ':' +
+                    currentDate.getMinutes() + ':' +
+                    currentDate.getSeconds();
+
+            timeCell.setValue(datetime);
+          }
+        }
+        catch (e) {
+          console.log(e);
+        }        
+      }
+
+    log('Ending merge onform template...');
+  },
+
+  mergeAllTemplate: function(template) {
+    log('Starting merge auto template ' + template.id);
 
     var ss = Utility.getSpreadsheet();
     var sheet = ss.getSheetByName(template.mergeData.sheet);
@@ -66,7 +128,6 @@ var EmailService = {
 
             var timestampName = template.mergeData.timestampColumn.replace(/(<<|>>)/g, '');
             var timeCell = row.getCell(1, header.indexOf(timestampName) + 1);
-
             var currentDate = new Date();
             var datetime = (currentDate.getMonth() + 1) + '/' +
                     currentDate.getDate() + '/' +
@@ -84,7 +145,7 @@ var EmailService = {
       }
     }
 
-    log('Ending merge template...');
+    log('Ending merge auto template...');
   },
 
   /**

@@ -12,12 +12,12 @@ var BaseCard = require('./card-titled.js');
 
 
 /**
- * This Card extends the functionality of InputCard. It gives the ability of disabling the InputCard.
+ * This Card extends the functionality of BaseCard. It gives the ability of disabling the BaseCard.
  * This is useful in situations where you don't want the Card to be required.
  *
  * @constructor
  * @param {jquery} appendTo The div to append this Card to.
- * @param {Object} options The object that describes the Card functionality. See the parent object InputCard for details.
+ * @param {Object} options The object that describes the Card functionality. See the parent object BaseCard for details.
  * @param {boolean} enabled The default state of the checkbox.
  */
 var ConditionalCard = function(appendTo, options) {

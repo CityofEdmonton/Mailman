@@ -26,7 +26,7 @@ var MergeTemplate = require('../data/merge-template/merge-template.js');
  * @param {jQuery} parent The jquery object that will contain all the Cards.
  * @param serviceFactory The service factory to get services
  */
-var StandardMailHandler = function(parent, serviceFactory) {
+var StandardMailHandler = function (parent, serviceFactory) {
 
   var self = this;
   var activeNode;
@@ -42,11 +42,11 @@ var StandardMailHandler = function(parent, serviceFactory) {
 
   //***** private functions *****//
 
-  this.init_ = function() {
+  this.init_ = function () {
     cardRepository[CardNames.title].setValidation(cardValidator);
     cardRepository[CardNames.sheet].setValidation(cardValidator);
     cardRepository[CardNames.row].setValidation(cardValidator);
-    cardRepository[CardNames.conditional].setValidation(function() {
+    cardRepository[CardNames.conditional].setValidation(function () {
       if (cardRepository[CardNames.conditional].isEnabled() && cardRepository[CardNames.conditional].getValue() == '') {
         return false;
       }
@@ -54,7 +54,7 @@ var StandardMailHandler = function(parent, serviceFactory) {
       return true;
     });
 
-    $(cardRepository[CardNames.body]).on("getSuggestions", function(e, state) {
+    $(cardRepository[CardNames.body]).on("getSuggestions", function (e, state) {
       var sheet = cardRepository[CardNames.sheet].getValue();
       var row = cardRepository[CardNames.row].getValue();
       state.suggestions = new Promise((resolve, reject) => {
@@ -63,7 +63,7 @@ var StandardMailHandler = function(parent, serviceFactory) {
         }, headerError => {
           reject(headerError);
         });
-  
+
       });
     });
 
@@ -72,7 +72,7 @@ var StandardMailHandler = function(parent, serviceFactory) {
     show(activeNode.data);
   };
 
-  var cardValidator = function(card) {
+  var cardValidator = function (card) {
     if (card.getValue() == '') {
       return false;
     }
@@ -80,12 +80,12 @@ var StandardMailHandler = function(parent, serviceFactory) {
     return true;
   };
 
-  var show = function(name) {
+  var show = function (name) {
     hideAll();
     cardRepository[name].show();
   };
 
-  var hideAll = function() {
+  var hideAll = function () {
     for (var name in cardRepository) {
       if (cardRepository.hasOwnProperty(name)) {
         cardRepository[name].hide();
@@ -93,7 +93,7 @@ var StandardMailHandler = function(parent, serviceFactory) {
     }
   }
 
-  var buildEmailFlow = function() {
+  var buildEmailFlow = function () {
     var cards = new List();
     cards.add(CardNames.title);
     cards.add(CardNames.sheet);
@@ -114,7 +114,7 @@ var StandardMailHandler = function(parent, serviceFactory) {
    *
    * @param {MergeTemplate} template The template to make edits to.
    */
-  this.setMergeTemplate = function(template) {
+  this.setMergeTemplate = function (template) {
     updateConfig = template.toConfig();
 
     cardRepository[CardNames.title].setValue(updateConfig.mergeData.title);
@@ -149,7 +149,7 @@ var StandardMailHandler = function(parent, serviceFactory) {
    *
    * @return {MergeTemplate} The new MergeTemplate.
    */
-  this.getMergeTemplate = function() {
+  this.getMergeTemplate = function () {
     var toVals = cardRepository[CardNames.to].getValue();
     return new MergeTemplate(
       Object.assign({}, updateConfig, {
@@ -158,7 +158,7 @@ var StandardMailHandler = function(parent, serviceFactory) {
           sheet: cardRepository[CardNames.sheet].getValue(),
           headerRow: cardRepository[CardNames.row].getValue(),
           conditional: cardRepository[CardNames.conditional].getValue(),
-          onform:cardRepository[CardNames.onform].getValue(),
+          onform: cardRepository[CardNames.onform].getValue(),
           type: type,
           data: {
             to: toVals.to,
@@ -169,7 +169,7 @@ var StandardMailHandler = function(parent, serviceFactory) {
           }
         }
       }
-    ));
+      ));
   };
 
   /**
@@ -177,7 +177,7 @@ var StandardMailHandler = function(parent, serviceFactory) {
    *
    * @return {Node|undefined} The newly active Node.
    */
-  this.next = function() {
+  this.next = function () {
     if (self.isLast()) {
       return;
     }
@@ -194,7 +194,7 @@ var StandardMailHandler = function(parent, serviceFactory) {
    *
    * @return {Node|undefined} The newly active Node.
    */
-  this.back = function() {
+  this.back = function () {
     if (self.isFirst()) {
       return;
     }
@@ -211,7 +211,7 @@ var StandardMailHandler = function(parent, serviceFactory) {
    *
    * @return {boolean} True if the active Card is the first Card, false otherwise.
    */
-  this.isFirst = function() {
+  this.isFirst = function () {
     return activeNode === cardsList.head;
   };
 
@@ -220,7 +220,7 @@ var StandardMailHandler = function(parent, serviceFactory) {
    *
    * @return {boolean} Returns true if the active Card is the last Card.
    */
-  this.isLast = function() {
+  this.isLast = function () {
     return activeNode === cardsList.tail;
   };
 
@@ -229,7 +229,7 @@ var StandardMailHandler = function(parent, serviceFactory) {
    *
    * @return {boolean} Returns true if the active Card is valid, false if it is invalid.
    */
-  this.validateState = function() {
+  this.validateState = function () {
     if (cardRepository[activeNode.data].isValid !== undefined) {
       return cardRepository[activeNode.data].isValid();
     }

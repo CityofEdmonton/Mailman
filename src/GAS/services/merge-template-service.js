@@ -295,14 +295,23 @@ var MergeTemplateService = {
     try {
       var ss = Utility.getSpreadsheet();
       var triggers = ScriptApp.getUserTriggers(ss);
+      var onform = template.mergeData.onform;
+
+      if (onform != null){
+        var trigger_name = "onform"
+      }
+      else{
+        var trigger_name = "hourly"
+      }
 
       template.mergeRepeater = {
-        triggers: TriggerService.createTriggers(),
+        triggers: TriggerService.createTriggers(trigger_name),
         owner: Session.getEffectiveUser().getEmail(),
         events: [
           'Merge Repeater created.'
         ],
         sheetID: ss.getId()
+        
       };
 
       MergeTemplateService.update(template);

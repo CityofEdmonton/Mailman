@@ -1,8 +1,8 @@
 /**
  * @file A service focused on handling triggers.
  * @author {@link https://github.com/j-rewerts|Jared Rewerts}
- */
 
+ */
 
 /**
  * This service is meant for handling triggers that run MergeTemplates repeatedly.
@@ -79,18 +79,34 @@ var TriggerService = {
    *
    * @return {Array<string>} An array of all the trigger ids.
    */
-  createTriggers: function() {
+  createTriggers: function(trigger_name) {
     var handler = 'runAllMergeTemplates';
     var triggers = [];
 
-    var trigger = TriggerService.getTriggerByEventType(ScriptApp.EventType.CLOCK);
-    if (trigger == null) {
-      triggers.push(TriggerService.createTimeBasedTrigger_(handler).getUniqueId());
-    }
-    else {
-      triggers.push(trigger.getUniqueId());
+    if (trigger_name=="hourly"){
+      var trigger = TriggerService.getTriggerByEventType(ScriptApp.EventType.CLOCK);
+      if (trigger == null) {
+        log('Using hourly trigger, with '+trigger_name);
+
+        triggers.push(TriggerService.createTimeBasedTrigger_(handler).getUniqueId());
+      }
+      else {
+        triggers.push(trigger.getUniqueId());
+      }
     }
 
+    else if (trigger_name=="onform")
+    {
+      var trigger = TriggerService.getTriggerByEventType(ScriptApp.EventType.ON_FORM_SUBMIT);
+      if (trigger == null) {
+        log('Using Onform trigger, with '+trigger_name);
+
+        triggers.push(TriggerService.createFormTrigger_(handler).getUniqueId());
+      }
+      else {
+        triggers.push(trigger.getUniqueId());
+      }
+    }
     // TODO add for form trigger
 
     return triggers;
@@ -123,7 +139,6 @@ var TriggerService = {
   createFormTrigger_: function(handler) {
     log('Creating ON_FORM_SUBMIT trigger.');
     var ss = Utility.getSpreadsheet();
-
     return ScriptApp.newTrigger(handler)
       .forSpreadsheet(ss)
       .onFormSubmit()

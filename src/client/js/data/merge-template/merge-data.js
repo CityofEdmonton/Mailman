@@ -35,7 +35,7 @@ var MergeData = function(config) {
 
   var title = 'title';
   var headerRow = '1';
-  var timestampColumn = Util.capitalize('<<Mailman ' + type + ' Timestamp>>');
+  var timestampColumn = Util.capitalize('<<Mailman ' + config.title + ' Timestamp>>');
 
   //***** Private Methods *****//
 
