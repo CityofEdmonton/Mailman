@@ -38,10 +38,15 @@ var ConditionalCard = function(appendTo, options) {
   this.init_ = function(appendTo, options) {
     this.append(innerBase);
 
+    checkbox1.on('change', setcheckbox1);
+    checkbox2.on('change', setcheckbox2);
+    checkbox3.on('change', setcheckbox3);
+
+
     componentHandler.upgradeAllRegistered();
 
-    if (options.enabled !== undefined) {
-      if (options.enabled) {
+    if (options.enabled_checkboxText1 !== undefined) {
+      if (options.enabled_checkboxText1) {
         checkbox1.attr('checked');
       }
     }
@@ -49,8 +54,8 @@ var ConditionalCard = function(appendTo, options) {
       cbLabel1.text(options.checkboxText1);
     }
 
-    if (options.enabled !== undefined) {
-      if (options.enabled) {
+    if (options.enabled_checkboxText2 !== undefined) {
+      if (options.enabled_checkboxText2) {
         checkbox2.attr('checked');
       }
     }
@@ -58,8 +63,8 @@ var ConditionalCard = function(appendTo, options) {
       cbLabel2.text(options.checkboxText2);
     }
 
-    if (options.enabled !== undefined) {
-      if (options.enabled) {
+    if (options.enabled_checkboxText3 !== undefined) {
+      if (options.enabled_checkboxText3) {
         checkbox3.attr('checked');
       }
     }
@@ -69,6 +74,22 @@ var ConditionalCard = function(appendTo, options) {
 
 
   };
+
+  var setcheckbox1 = function(e) {
+      checkbox1.attr('checked');
+      checkbox2.attr('unchecked');
+      checkbox3.attr('unchecked');
+  };
+  var setcheckbox2 = function(e) {
+    checkbox1.attr('unchecked');
+    checkbox2.attr('checked');
+    checkbox3.attr('unchecked');
+};
+var setcheckbox3 = function(e) {
+  checkbox1.attr('unchecked');
+  checkbox2.attr('unchecked');
+  checkbox3.attr('checked');
+};
 
   //***** Public Functions *****//
 

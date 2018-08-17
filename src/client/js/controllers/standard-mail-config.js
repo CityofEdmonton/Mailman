@@ -209,7 +209,9 @@ CardsConfig.buildCardRepo = function(contentArea,
 
   repo[CardNames.repeater] = new ConditionalCard(contentArea, {
     title: 'Repeater Type?',
-    enabled: true,
+    enabled_checkboxText1: false,
+    enabled_checkboxText2: false,
+    enabled_checkboxText3: true,
     checkboxText1: 'Onform sending',
     checkboxText2: 'Auto sending',
     checkboxText3: 'No repeater'
