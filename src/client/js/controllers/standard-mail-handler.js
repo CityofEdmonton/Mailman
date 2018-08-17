@@ -172,6 +172,8 @@ var StandardMailHandler = function (parent, serviceFactory) {
       ));
   };
 
+  
+
   /**
    * Displays the next Card. If the Card is the last one, nothing happens.
    *
