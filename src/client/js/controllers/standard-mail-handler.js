@@ -102,7 +102,7 @@ var StandardMailHandler = function (parent, serviceFactory) {
     cards.add(CardNames.subject);
     cards.add(CardNames.body);
     cards.add(CardNames.conditional);
-    cards.add(CardNames.onform);
+    cards.add(CardNames.repeater);
     cards.add(CardNames.sendNow);
     return cards;
   };
@@ -128,11 +128,11 @@ var StandardMailHandler = function (parent, serviceFactory) {
     cardRepository[CardNames.subject].setValue(updateConfig.mergeData.data.subject);
     cardRepository[CardNames.body].setValue(updateConfig.mergeData.data.body);
 
-    if (updateConfig.mergeData.onform != null) {
-      cardRepository[CardNames.onform].check();
+    if (updateConfig.mergeData.repeater != null) {
+      cardRepository[CardNames.repeater].check();
     }
     else {
-      cardRepository[CardNames.onform].uncheck();
+      cardRepository[CardNames.repeater].uncheck();
     }
 
     if (updateConfig.mergeData.conditional != null) {
@@ -158,7 +158,7 @@ var StandardMailHandler = function (parent, serviceFactory) {
           sheet: cardRepository[CardNames.sheet].getValue(),
           headerRow: cardRepository[CardNames.row].getValue(),
           conditional: cardRepository[CardNames.conditional].getValue(),
-          onform: cardRepository[CardNames.onform].getValue(),
+          repeater: cardRepository[CardNames.repeater].getValue(),
           type: type,
           data: {
             to: toVals.to,
@@ -172,7 +172,7 @@ var StandardMailHandler = function (parent, serviceFactory) {
       ));
   };
 
-  
+
 
   /**
    * Displays the next Card. If the Card is the last one, nothing happens.

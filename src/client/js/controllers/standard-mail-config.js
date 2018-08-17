@@ -206,10 +206,13 @@ CardsConfig.buildCardRepo = function(contentArea,
   });
 
 
-  repo[CardNames.onform] = new ConditionalCard(contentArea, {
-    title: 'Onform submission sending?',
+
+  repo[CardNames.repeater] = new ConditionalCard(contentArea, {
+    title: 'Repeater Type?',
     enabled: true,
-    checkboxText: 'Onform submission sending?'
+    checkboxText1: 'Onform sending',
+    checkboxText2: 'Auto sending',
+    checkboxText3: 'No repeater'
   });
 
   return repo;

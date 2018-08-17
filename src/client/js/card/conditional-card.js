@@ -26,8 +26,12 @@ var ConditionalCard = function(appendTo, options) {
   // Private variables
   var self = this;
   var innerBase = $(conditionalHTML);
-  var checkbox = innerBase.find('[data-id="checkbox"]');
-  var cbLabel = innerBase.find('[data-id="checkbox-label"]');
+  var checkbox1 = innerBase.find('[data-id="checkbox1"]');
+  var cbLabel1 = innerBase.find('[data-id="checkbox-label1"]');
+  var checkbox2 = innerBase.find('[data-id="checkbox2"]');
+  var cbLabel2 = innerBase.find('[data-id="checkbox-label2"]');
+  var checkbox3 = innerBase.find('[data-id="checkbox3"]');
+  var cbLabel3 = innerBase.find('[data-id="checkbox-label3"]');
 
   //***** Private Methods *****//
 
@@ -38,12 +42,32 @@ var ConditionalCard = function(appendTo, options) {
 
     if (options.enabled !== undefined) {
       if (options.enabled) {
-        checkbox.attr('checked');
+        checkbox1.attr('checked');
       }
     }
-    if (options.checkboxText !== undefined) {
-      cbLabel.text(options.checkboxText);
+    if (options.checkboxText1 !== undefined) {
+      cbLabel1.text(options.checkboxText1);
     }
+
+    if (options.enabled !== undefined) {
+      if (options.enabled) {
+        checkbox2.attr('checked');
+      }
+    }
+    if (options.checkboxText2 !== undefined) {
+      cbLabel2.text(options.checkboxText2);
+    }
+
+    if (options.enabled !== undefined) {
+      if (options.enabled) {
+        checkbox3.attr('checked');
+      }
+    }
+    if (options.checkboxText3 !== undefined) {
+      cbLabel3.text(options.checkboxText3);
+    }
+
+
   };
 
   //***** Public Functions *****//

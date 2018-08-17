@@ -88,7 +88,7 @@ var DocumentMailHandler = function(parent, serviceFactory) {
     cards.add(CardNames.subject);
     cards.add(CardNames.documentSelector);
     cards.add(CardNames.conditional);
-    cards.add(CardNames.onform);
+    cards.add(CardNames.repeater);
     cards.add(CardNames.sendNow);
     return cards;
   };
@@ -114,11 +114,11 @@ var DocumentMailHandler = function(parent, serviceFactory) {
     cardRepository[CardNames.subject].setValue(updateConfig.mergeData.data.subject);
     cardRepository[CardNames.documentSelector].setValue(updateConfig.mergeData.data.documentID);
 
-    if (updateConfig.mergeData.onform != null) {
-      cardRepository[CardNames.onform].check();
+    if (updateConfig.mergeData.repeater != null) {
+      cardRepository[CardNames.repeater].check();
     }
     else {
-      cardRepository[CardNames.onform].uncheck();
+      cardRepository[CardNames.repeater].uncheck();
     }
 
 
@@ -145,7 +145,7 @@ var DocumentMailHandler = function(parent, serviceFactory) {
           sheet: cardRepository[CardNames.sheet].getValue(),
           headerRow: cardRepository[CardNames.row].getValue(),
           conditional: cardRepository[CardNames.conditional].getValue(),
-          onform:cardRepository[CardNames.onfrom].getValue(),
+          repeater:cardRepository[CardNames.repeater].getValue(),
           type: 'document',
           data: {
             to: toVals.to,
