@@ -25,71 +25,30 @@ var ConditionalCard = function(appendTo, options) {
 
   // Private variables
   var self = this;
-  var innerBase = $(conditionalHTML);
-  var checkbox1 = innerBase.find('[data-id="checkbox1"]');
-  var cbLabel1 = innerBase.find('[data-id="checkbox-label1"]');
-  var checkbox2 = innerBase.find('[data-id="checkbox2"]');
-  var cbLabel2 = innerBase.find('[data-id="checkbox-label2"]');
-  var checkbox3 = innerBase.find('[data-id="checkbox3"]');
-  var cbLabel3 = innerBase.find('[data-id="checkbox-label3"]');
+  var  innerBase = $(conditionalHTML);
+  var  RadioButtons1 = innerBase.find('[data-id="radio-button-option1"]');
+  var  rbLabel1 = innerBase.find('[data-id="radio__label-1"]');
+  var  RadioButtons2 = innerBase.find('[data-id="radio-button-option2"]');
+  var  rbLabel2 = innerBase.find('[data-id="radio__label-2"]');
+  var  RadioButtons3 = innerBase.find('[data-id="radio-button-option3"]');
+  var  rbLabel3 = innerBase.find('[data-id="radio__label-3"]');
 
   //***** Private Methods *****//
 
   this.init_ = function(appendTo, options) {
     this.append(innerBase);
-
-    checkbox1.on('change', setcheckbox1);
-    checkbox2.on('change', setcheckbox2);
-    checkbox3.on('change', setcheckbox3);
-
+    RadioButtons2.attr('checked');
 
     componentHandler.upgradeAllRegistered();
 
-    if (options.enabled_checkboxText1 !== undefined) {
-      if (options.enabled_checkboxText1) {
-        checkbox1.attr('checked');
-      }
-    }
-    if (options.checkboxText1 !== undefined) {
-      cbLabel1.text(options.checkboxText1);
-    }
-
-    if (options.enabled_checkboxText2 !== undefined) {
-      if (options.enabled_checkboxText2) {
-        checkbox2.attr('checked');
-      }
-    }
-    if (options.checkboxText2 !== undefined) {
-      cbLabel2.text(options.checkboxText2);
-    }
-
-    if (options.enabled_checkboxText3 !== undefined) {
-      if (options.enabled_checkboxText3) {
-        checkbox3.attr('checked');
-      }
-    }
-    if (options.checkboxText3 !== undefined) {
-      cbLabel3.text(options.checkboxText3);
-    }
-
+    RadioButtons3.attr('checked');
+  
 
   };
 
-  var setcheckbox1 = function(e) {
-      checkbox1.attr('checked');
-      checkbox2.attr('unchecked');
-      checkbox3.attr('unchecked');
-  };
-  var setcheckbox2 = function(e) {
-    checkbox1.attr('unchecked');
-    checkbox2.attr('checked');
-    checkbox3.attr('unchecked');
-};
-var setcheckbox3 = function(e) {
-  checkbox1.attr('unchecked');
-  checkbox2.attr('unchecked');
-  checkbox3.attr('checked');
-};
+  var test = function(buttonname){
+    RadioButtons2.attr('checked');
+  }
 
   //***** Public Functions *****//
 
