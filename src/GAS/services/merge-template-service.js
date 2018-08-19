@@ -295,29 +295,29 @@ var MergeTemplateService = {
     try {
       var ss = Utility.getSpreadsheet();
       var triggers = ScriptApp.getUserTriggers(ss);
-      var onform = template.mergeData.onform;
+      var repeater = template.mergeData.repeater;
 
-      if (onform != null){
-        var trigger_name = "onform"
+      if (repeater == "off"){
+        log('No repeater selected, please select a repeater type.');
       }
-      else{
-        var trigger_name = "hourly"
+      else  
+      {
+        template.mergeRepeater = {
+          triggers: TriggerService.createTriggers(repeater),
+          owner: Session.getEffectiveUser().getEmail(),
+          events: [
+            'Merge Repeater created.'
+          ],
+          sheetID: ss.getId()
+          
+        };
+  
+        MergeTemplateService.update(template);
+        log('MergeTemplate ' + template.id + ' now repeating.');
+        return template;
       }
-
-      template.mergeRepeater = {
-        triggers: TriggerService.createTriggers(trigger_name),
-        owner: Session.getEffectiveUser().getEmail(),
-        events: [
-          'Merge Repeater created.'
-        ],
-        sheetID: ss.getId()
-        
-      };
-
-      MergeTemplateService.update(template);
-      log('MergeTemplate ' + template.id + ' now repeating.');
-      return template;
     }
+
     catch (e) {
       log(e);
       throw e;

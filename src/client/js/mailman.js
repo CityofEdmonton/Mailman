@@ -159,8 +159,20 @@ var MailMan = function(appendTo) {
     mtListView.setRepeatDialog(repeatDialog);
     mtListView.setRepeatHandlers(
       function(template) {
-        snackbar.show('Turning ON repeated merge...');
+        if (template.toConfig().mergeData.repeater == "onform")
+        {
+        snackbar.show('Turning ON Onform repeated merge...');
         templatesContainer.toggleRepeat(template);
+        }
+        else if (template.toConfig().mergeData.repeater == "auto")
+        {
+        snackbar.show('Turning ON Auto repeated merge...');
+        templatesContainer.toggleRepeat(template);
+        }
+        else if (template.toConfig().mergeData.repeater == "off")
+        {
+        snackbar.show('No repeater selected, please select a repeater type....');
+        }
       },
       function(template) {
         snackbar.show('Turning OFF repeated merge...');

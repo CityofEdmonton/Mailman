@@ -32,10 +32,10 @@ var EmailService = {
       return;
     }
 
-    if (template.mergeData.onform == "enabled"){
+    if (template.mergeData.repeater == "onform"){
       EmailService.mergeOnformTemplate(template);
     }
-    else{
+    else if (template.mergeData.repeater == "auto"){
       EmailService.mergeAllTemplate(template);
     }
 

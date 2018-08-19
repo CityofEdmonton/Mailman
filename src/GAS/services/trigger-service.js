@@ -83,7 +83,7 @@ var TriggerService = {
     var handler = 'runAllMergeTemplates';
     var triggers = [];
 
-    if (trigger_name=="hourly"){
+    if (trigger_name=="auto"){
       var trigger = TriggerService.getTriggerByEventType(ScriptApp.EventType.CLOCK);
       if (trigger == null) {
         log('Using hourly trigger, with '+trigger_name);

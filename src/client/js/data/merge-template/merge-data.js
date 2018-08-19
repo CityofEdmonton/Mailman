@@ -31,7 +31,7 @@ var MergeData = function(config) {
   var data = config.data;
   var sheet = config.sheet;
   var conditional = config.conditional;
-  var onform = config.onform;
+  var repeater = config.repeater;
 
   var title = 'title';
   var headerRow = '1';
@@ -93,7 +93,7 @@ var MergeData = function(config) {
       headerRow: headerRow,
       timestampColumn: timestampColumn,
       conditional: conditional,
-      onform: onform
+      repeater: repeater
     };
   };
 

@@ -25,30 +25,27 @@ var ConditionalCard = function(appendTo, options) {
 
   // Private variables
   var self = this;
-  var  innerBase = $(conditionalHTML);
-  var  RadioButtons1 = innerBase.find('[data-id="radio-button-option1"]');
-  var  rbLabel1 = innerBase.find('[data-id="radio__label-1"]');
-  var  RadioButtons2 = innerBase.find('[data-id="radio-button-option2"]');
-  var  rbLabel2 = innerBase.find('[data-id="radio__label-2"]');
-  var  RadioButtons3 = innerBase.find('[data-id="radio-button-option3"]');
-  var  rbLabel3 = innerBase.find('[data-id="radio__label-3"]');
+  var innerBase = $(conditionalHTML);
+  var checkbox = innerBase.find('[data-id="checkbox"]');
+  var cbLabel = innerBase.find('[data-id="checkbox-label"]');
 
   //***** Private Methods *****//
 
   this.init_ = function(appendTo, options) {
     this.append(innerBase);
-    RadioButtons2.attr('checked');
 
     componentHandler.upgradeAllRegistered();
 
-    RadioButtons3.attr('checked');
-  
-
+    if (options.enabled !== undefined) {
+      if (options.enabled) {
+        checkbox.attr('checked');
+      }
+    }
+    if (options.checkboxText !== undefined) {
+      cbLabel.text(options.checkboxText);
+    }
   };
 
-  var test = function(buttonname){
-    RadioButtons2.attr('checked');
-  }
 
   //***** Public Functions *****//
 
@@ -84,9 +81,11 @@ var ConditionalCard = function(appendTo, options) {
    */
   this.getValue = function() {
     if (self.isEnabled()) {
-      return "enabled";
+      return "onform";
     }
-    return;
+    else{
+    return "off" ;
+    }
   }
 
   this.init_(appendTo, options);
