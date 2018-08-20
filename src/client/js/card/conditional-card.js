@@ -36,8 +36,6 @@ var ConditionalCard = function(appendTo, options) {
   //***** Private Methods *****//
 
   this.init_ = function(appendTo, options) {
-    //$(this).find('[data-id="radio-button-option1"]').attr("checked","true");
-    innerBase.find('[data-id="radio-button-option1"]').prop("checked","true");
     this.append(innerBase);
 
     if (options.checkboxText1 !== undefined) {
@@ -52,14 +50,20 @@ var ConditionalCard = function(appendTo, options) {
       rbLabel3.text(options.checkboxText3);
     }
 
-    //$(this).find('[data-id="radio-button-option1"]').prop("checked","true");
-    console.log("hahaha");
+    RadioButtons1.parent().on('click', setRadioOn);
+    RadioButtons2.parent().on('click', setRadioOn);
+    RadioButtons3.parent().on('click', setRadioOn);
     componentHandler.upgradeAllRegistered();
 
-    RadioButtons3.val("checked");
-  
+    // example to set radio 3:
+    //RadioButtons3.parent()[0].MaterialRadio.check();
 
   };
+
+  var setRadioOn = function(e) {
+    $(this)[0].MaterialRadio.check();
+  }
+
 
   var test = function(buttonname){
     RadioButtons2.attr('checked');
@@ -89,6 +93,7 @@ var ConditionalCard = function(appendTo, options) {
    *
    */
   this.uncheck = function() {
+    debugger;
     innerBase[0].MaterialCheckbox.uncheck();
   };
 
