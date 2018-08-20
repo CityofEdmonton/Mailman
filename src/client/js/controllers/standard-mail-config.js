@@ -209,9 +209,9 @@ CardsConfig.buildCardRepo = function(contentArea,
 
   repo[CardNames.repeater] = new ConditionalCard(contentArea, {
     title: 'Repeater Type?',
-    enabled_checkboxText1: false,
-    enabled_checkboxText2: false,
-    enabled_checkboxText3: true,
+    help: 'This column is used to determine what type of repeater you want to have. Onform sending will'+
+    'send the email once a new row submitted. '+
+    'Auto sending will send emails every hour',
     checkboxText1: 'Onform sending',
     checkboxText2: 'Auto sending',
     checkboxText3: 'No repeater'
