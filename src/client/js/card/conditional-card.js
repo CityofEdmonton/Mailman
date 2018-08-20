@@ -65,9 +65,6 @@ var ConditionalCard = function(appendTo, options) {
   }
 
 
-  var test = function(buttonname){
-    RadioButtons2.attr('checked');
-  }
 
   //***** Public Functions *****//
 
@@ -84,18 +81,21 @@ var ConditionalCard = function(appendTo, options) {
    * Checks and enables this Card.
    *
    */
-  this.check = function() {
-    innerBase[0].MaterialCheckbox.check();
+  this.setValue = function(name) {
+    console.log("name"+name);
+    if (name == "onform"){
+      RadioButtons1.parent()[0].MaterialRadio.check();
+    }
+
+    else if (name == "auto"){
+      RadioButtons2.parent()[0].MaterialRadio.check();
+    }
+
+    else if (name == "off"){
+      RadioButtons3.parent()[0].MaterialRadio.check();
+    }
   };
 
-  /**
-   * Unchecks and disables this Card.
-   *
-   */
-  this.uncheck = function() {
-    debugger;
-    innerBase[0].MaterialCheckbox.uncheck();
-  };
 
   /**
    * Gets the value associated with this Card.
@@ -103,12 +103,22 @@ var ConditionalCard = function(appendTo, options) {
    * @return {string} The value of this Card.
    */
   this.getValue = function() {
-    if (self.isEnabled()) {
+
+    if(RadioButtons1[0].checked){
+      console.log("first button selected");
       return "onform";
-      //return "auto";
-      //return "off";
     }
-    return;
+
+    else if(RadioButtons2[0].checked){
+      console.log("2 button selected");
+      return "auto";
+    }
+
+    else if(RadioButtons3[0].checked){
+      console.log("3 button selected");
+      return "off";
+    }
+  
   }
 
   this.init_(appendTo, options);
