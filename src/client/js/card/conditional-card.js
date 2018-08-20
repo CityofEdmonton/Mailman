@@ -25,27 +25,45 @@ var ConditionalCard = function(appendTo, options) {
 
   // Private variables
   var self = this;
-  var innerBase = $(conditionalHTML);
-  var checkbox = innerBase.find('[data-id="checkbox"]');
-  var cbLabel = innerBase.find('[data-id="checkbox-label"]');
+  var  innerBase = $(conditionalHTML);
+  var  RadioButtons1 = innerBase.find('[data-id="radio-button-option1"]');
+  var  rbLabel1 = innerBase.find('[data-id="radio__label-1"]');
+  var  RadioButtons2 = innerBase.find('[data-id="radio-button-option2"]');
+  var  rbLabel2 = innerBase.find('[data-id="radio__label-2"]');
+  var  RadioButtons3 = innerBase.find('[data-id="radio-button-option3"]');
+  var  rbLabel3 = innerBase.find('[data-id="radio__label-3"]');
 
   //***** Private Methods *****//
 
   this.init_ = function(appendTo, options) {
+    //$(this).find('[data-id="radio-button-option1"]').attr("checked","true");
+    innerBase.find('[data-id="radio-button-option1"]').prop("checked","true");
     this.append(innerBase);
 
+    if (options.checkboxText1 !== undefined) {
+      rbLabel1.text(options.checkboxText1);
+    }
+
+    if (options.checkboxText2 !== undefined) {
+      rbLabel2.text(options.checkboxText2);
+    }
+
+    if (options.checkboxText3 !== undefined) {
+      rbLabel3.text(options.checkboxText3);
+    }
+
+    //$(this).find('[data-id="radio-button-option1"]').prop("checked","true");
+    console.log("hahaha");
     componentHandler.upgradeAllRegistered();
 
-    if (options.enabled !== undefined) {
-      if (options.enabled) {
-        checkbox.attr('checked');
-      }
-    }
-    if (options.checkboxText !== undefined) {
-      cbLabel.text(options.checkboxText);
-    }
+    RadioButtons3.val("checked");
+  
+
   };
 
+  var test = function(buttonname){
+    RadioButtons2.attr('checked');
+  }
 
   //***** Public Functions *****//
 
@@ -82,10 +100,10 @@ var ConditionalCard = function(appendTo, options) {
   this.getValue = function() {
     if (self.isEnabled()) {
       return "onform";
+      //return "auto";
+      //return "off";
     }
-    else{
-    return "off" ;
-    }
+    return;
   }
 
   this.init_(appendTo, options);
