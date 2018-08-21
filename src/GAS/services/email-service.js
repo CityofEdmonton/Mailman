@@ -35,7 +35,7 @@ var EmailService = {
     if (template.mergeData.repeater == "onform"){
       EmailService.mergeOnformTemplate(template);
     }
-    else if (template.mergeData.repeater == "auto"){
+    else if (template.mergeData.repeater == "auto" || template.mergeData.repeater == "off"){
       EmailService.mergeAllTemplate(template);
     }
 
