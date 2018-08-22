@@ -1,0 +1,41 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build web",
+            "type": "gulp",
+            "task": "build-web",
+            "args": [
+                "--dev"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Serve web",
+            "type": "gulp",
+            "task": "serve-web", 
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "gulp",
+                "pattern": {
+                    "regexp": "^([^\\s].*)\\[\\d{1,2}:\\d{2}:\\d{2}(?: AM| PM)?\\]\\s+(error|warning|info)\\s+(TS\\d+)\\s*:\\s*(.*)$",
+                    "file": 1,
+                    "location": 2,
+                    "severity": 3,
+                    "code": 4,
+                    "message": 5
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^\\s*\\[\\d{1,2}:\\d{2}:\\d{2}(?: AM| PM)?\\]\\s+File changed detected",
+                    "endsPattern": "^\\s*\\[\\d{1,2}:\\d{2}:\\d{2}(?: AM| PM)?\\]\\s+Finished 'serve-web' after \\d*\\.\\d*\\ss"
+                }
+            }
+        }
+    ]
+}

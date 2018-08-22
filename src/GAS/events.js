@@ -1,6 +1,5 @@
 /**
  * Prepares the add on after a user has opted to install it.
- * TODO Test this
  *
  * @param {object} e The event object https://developers.google.com/apps-script/guides/triggers/events
  */
@@ -17,7 +16,7 @@ function onInstall(e) {
 function onOpen(e) {
   var menu = SpreadsheetApp.getUi().createAddonMenu();
 
-  menu.addItem('Setup', 'openSidebar')
+  menu.addItem('Start', 'openSidebar')
       .addItem('Feedback', 'openFeedbackDialog')
       .addToUi();
 }
@@ -30,15 +29,12 @@ function onOpen(e) {
 function openSidebar() {
   PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, SpreadsheetApp.getActiveSpreadsheet().getId());
 
-  var ui = HtmlService.createHtmlOutputFromFile('mailman')
-      .setTitle('Mailman')
+  var ui = HtmlService.createHtmlOutputFromFile('html/mailman')
+      .setTitle(' ')
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 
-  if (!validateTriggers()) {
-    deleteForThisSheet();
-    log('Triggers should be rebuilt.');
-    createTriggerBasedEmail(); // IMPORTANT
-  }
+  Utility.setupSheet();
+  TriggerService.deleteUnusedTriggers();
 
   SpreadsheetApp.getUi().showSidebar(ui);
 }
@@ -49,24 +45,9 @@ function openSidebar() {
  *
  */
 function openFeedbackDialog() {
-  var ui = HtmlService.createHtmlOutputFromFile('feedback-dialog')
+  var ui = HtmlService.createHtmlOutputFromFile('html/feedback-dialog')
       .setTitle('Feedback')
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 
   SpreadsheetApp.getUi().showModalDialog(ui, 'Feedback');
-}
-
-
-/**
- * Creates an HTML modal for creating/viewing Mailman email templates.
- *
- */
-function openModalDialog() {
-  var ui = HtmlService.createHtmlOutputFromFile('rich-text-editor')
-      .setTitle('Mailman')
-      .setSandboxMode(HtmlService.SandboxMode.IFRAME)
-      .setHeight(600)
-      .setWidth(750);
-
-  SpreadsheetApp.getUi().showModalDialog(ui, ' ');
 }

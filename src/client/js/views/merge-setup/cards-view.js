@@ -1,0 +1,194 @@
+/**
+ * This module exports the CardsView object.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
+
+var baseHTML = require('./cards-view.html');
+var Util = require('../../util/util.js');
+var PubSub = require('pubsub-js');
+var Promise = require('promise');
+var Snackbar = require('../snackbar/snackbar.js');
+var Disabler = require('../../util/disable.js');
+
+
+
+/**
+ * This view helps a user set up their own MergeTemplate. This view can be used for email merge, doc merge, draft merge,
+ * or any other merge, so long as it adheres to the Card-style creation process.
+ * This view publishes the following events: Mailman.CardsView.show.
+ *
+ * @constructor
+ * @param {jquery} appendTo The element this view should be appended to.
+ * @param {CardHandler} handler There are different types of CardHandlers. This needs to support them all.
+ */
+var CardsView = function(appendTo, handler, data, serviceFactory) {
+  // private variables
+  var self = this;
+  var base = $(baseHTML);
+  var validateInterval = 1000;
+  var timeoutID;
+  var cards;
+
+  // These are used to resolve the Promise in done.
+  var resolveCB;
+  var rejectCB;
+
+  // jQuery Objects
+  var contentArea = base.find('[data-id="content-area"]');
+  var back = base.find('[data-id="back"]');
+  var step = base.find('[data-id="step"]');
+  var done = base.find('[data-id="done"]');
+  var cancel = base.find('[data-id="cancel"]');
+
+  //***** private methods *****//
+  this.init_ = function(appendTo, handler, data) {
+    appendTo.append(base);
+  
+    cards = handler.length >=2 ? new handler(contentArea, serviceFactory) : new handler(contentArea);
+    if (typeof cards.setCardsView === 'function') {
+      cards.setCardsView(self);
+    }
+
+    if (data != null) {
+      cards.setMergeTemplate(data);
+    }
+    setButtonState();
+
+    step.on('click', self.next);
+    done.on('click', doneClicked);
+    back.on('click', self.back);
+    cancel.on('click', cancelClicked);
+
+    componentHandler.upgradeElement(step[0]);
+    componentHandler.upgradeElement(done[0]);
+    componentHandler.upgradeElement(back[0]);
+    componentHandler.upgradeElement(cancel[0]);
+
+    timeoutID = window.setInterval(function() {
+      validate();
+    }, validateInterval)
+  };
+
+  var doneClicked = function() {
+    if (resolveCB != null) {
+      Snackbar.show('Saving...', 1000);
+      Disabler(done, 10000);
+      resolveCB(cards.getMergeTemplate());
+    }
+  };
+
+  var cancelClicked = function() {
+    if ($ && typeof $(self).trigger === 'function') {
+      try { $(self).trigger('navigatingBack'); }
+      catch (ex) { console.error("Error in navigatingBack event handler"); console.log(ex); }
+    }
+    if (rejectCB != null) {
+      rejectCB('cancelled');
+    }
+  };
+
+  //***** public methods *****//
+
+  /**
+   * Cleans this CardsView up. This mostly just detaches it's HTMLElements.
+   *
+   */
+  this.cleanup = function() {
+    window.clearInterval(timeoutID);
+    base.remove();
+  };
+
+  /**
+   * This function goes to the next card.
+   *
+   * @param {event} event The event that triggered the function call.
+   */
+  this.next = function(event) {
+    cards.next();
+    setButtonState();
+  };
+
+  /**
+   * This function goes to the previous card.
+   *
+   * @param {event} event The event that triggered the function call.
+   */
+  this.back = function(event) {
+    cards.back();
+    setButtonState();
+  };
+
+  /**
+   * Gives a Promise that can be used to determine whether the CardsView is done or not.
+   *
+   * @return {Promise} A promise that doesn't resolve until the DONE button is clicked. The Promise is rejected if
+   * CANCEL is clicked.
+   */
+  this.done = function() {
+    return new Promise(function(resolve, reject) {
+      resolveCB = resolve;
+      rejectCB = reject;
+    });
+  };
+
+  /**
+   * Shows this view.
+   *
+   */
+  this.show = function() {
+    Util.setHidden(base, false);
+    PubSub.publish('Mailman.CardsView.show');
+  };
+
+  /**
+   * Hides this view.
+   *
+   */
+  this.hide = function() {
+    Util.setHidden(base, true);
+  };
+
+  //***** private methods *****//
+
+  /**
+   * Using the Cards handler, this sets the state of the buttons.
+   * Depending on the active Card, different buttons may be shown.
+   *
+   */
+  var setButtonState = function() {
+    // Default state
+    Util.setHidden(done, true);
+    Util.setHidden(step, false);
+    Util.setHidden(back, false);
+    Util.setHidden(cancel, true);
+
+    if (cards.isFirst()) {
+      Util.setHidden(back, true);
+      Util.setHidden(cancel, false);
+    }
+    else if (cards.isLast()) {
+      Util.setHidden(done, false);
+      Util.setHidden(step, true);
+    }
+
+    validate();
+  };
+
+  var validate = function() {
+    if (!cards.validateState()) {
+      step.attr('disabled', 'true');
+    }
+    else {
+      step.removeAttr('disabled');
+    }
+  };
+
+  this.init_(appendTo, handler, data, serviceFactory);
+};
+
+
+/** */
+module.exports = CardsView;

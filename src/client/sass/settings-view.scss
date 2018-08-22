@@ -1,0 +1,82 @@
+@import "_colors";
+
+.sv-list {
+  width: 100%;
+  margin: 0px;
+}
+
+.sv-list-item {
+  background: $white;
+  margin: 10px 0px;
+}
+
+.mdl-list__item--three-line {
+
+  .sv-primary {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.sv-icon-container {
+  margin-right: 16px;
+
+  .sv-list-avatar {
+    float: left;
+    height: 40px;
+    width: 40px;
+    font-size: 40px;
+    color: $icon-gray;
+  }
+
+  .version-text {
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    text-align: center;
+  }
+}
+
+.sv-log-label {
+  display: none;
+}
+
+.sv-clickable {
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(158, 158, 158, .2);
+  }
+  &:active {
+    background-color: rgba(158, 158, 158, .4);
+  }
+
+  & + .sv-log-label {
+    display: block;
+  }
+
+  .sv-list-avatar {
+    color: $weird-green;
+  }
+}
+
+.sv-main {
+  display: flex;
+  flex-direction: column;
+
+  .sv-spacer {
+    flex: 1;
+  }
+}
+
+.sv-secondary {
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.sv-footer {
+  margin: 16px 0px;
+  background-color: transparent;
+}
+
+.sv-run {
+  color: $success-green !important;
+}

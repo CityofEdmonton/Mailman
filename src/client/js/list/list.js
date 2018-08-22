@@ -1,13 +1,24 @@
+/**
+ * This module exports the {@link List} object.
+ * Used some of the code found 
+ * {@link https://code.tutsplus.com/articles/data-structures-with-javascript-singly-linked-list-and-doubly-linked-list--cms-23392|here:}
+ * It's worth noting that there are several errors in the list implementation on this site, so beware.
+ *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
+ */
+
+
 var Node = require('./node.js');
 
 
-// Used some of the code found here:
-// https://code.tutsplus.com/articles/data-structures-with-javascript-singly-linked-list-and-doubly-linked-list--cms-23392
-// It's worth noting that there are several errors in the list implementation on this site, so beware.
 
-
-
-/** @constructor */
+/**
+ * This is a basic Linked List implementation.
+ *
+ * @alias List
+ * @constructor
+ */
 var List = function() {
   this._length = 0;
   this.head = null;
@@ -16,6 +27,7 @@ var List = function() {
 
 
 // ***** Public Functions ***** //
+
 /**
  * Adds a new node to the end of the List.
  *

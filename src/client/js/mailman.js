@@ -1,296 +1,252 @@
 /**
- * Intercom: https://github.com/diy/intercom.js/
- * Tips on using intercom with GAS: https://github.com/googlesamples/apps-script-dialog2sidebar
+ * This module exports the MailMan object.
  *
- *
+ * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @module
  */
 
-var Util = require('./util.js');
-var Cards = require('./cards-handler.js');
-var NavBar = require('./nav/navigation-bar.js');
-var PubSub = require('pubsub-js');
-var Rules = require('./data/rule-container.js');
-var RuleTypes = require('./data/rule-types.js');
-var EmailRule = require('./data/email-rule.js');
-var Database = require('./data/database.js');
-var Keys = require('./data/prop-keys.js');
-var RulesListView = require('./rules/rules-list-view.js');
-//var Intercom = require('./intercom.js');
+ // ServiceFactory is injected by Gulp, either a mock implementation or the real thing
+ // depending on configuration (--dev or not)
+var ServiceFactory = require('./ServiceFactory.js');
 
-var MailMan = function() {
+
+var MergeTemplateContainer = require('./data/merge-template-container.js');
+var MergeTemplateService = require('./services/merge-template-service.js');
+var EmailService = require('./services/email-service.js');
+var MergeTemplatesView = require('./views/merge-template/merge-templates-list-view.js');
+var CardsView = require('./views/merge-setup/cards-view.js');
+var SettingsView = require('./views/settings/settings-view.js');
+var ActionBar = require('./views/action-bar/action-bar.js');
+var Snackbar = require('./views/snackbar/snackbar.js');
+var Dialog = require('./views/dialog/dialog.js');
+var LoadingScreen = require('./views/loading/loading-screen.js');
+var baseHTML = require('./main.html');
+var PubSub = require('pubsub-js');
+var StandardMailHandler = require('./controllers/standard-mail-handler.js');
+var DocumentMailHandler = require('./controllers/document-mail-handler.js');
+var TypeToHandler = require('./controllers/type-to-handler.js');
+
+
+/**
+ * The base Object for the app. It handles much of the event wiring, as well as app initialization.
+ *
+ * @constructor
+ * @param {jQuery} appendTo The region to append Mailman to.
+ */
+var MailMan = function(appendTo) {
 
   // ***** CONSTANTS ***** //
 
   //***** LOCAL VARIABLES *****//
 
-  var self;
+  var self = this;
+  var actionBar = ActionBar;
+  var snackbar = Snackbar;
+  var ls = LoadingScreen;
 
-  // The object used to communicate between the sidebar and the RTE (Rich Text Editor)
-  var intercom;
+  var serviceFactory = new ServiceFactory();
 
-	// How long to wait for the dialog to check-in before assuming it's been closed, in milliseconds.
-	var DIALOG_TIMEOUT_MS = 2000;
+  var mtService = serviceFactory.getMergeTemplateService();
+  var emailService = new EmailService();
+  var templatesContainer;
 
-  // This handles much of the configuration of the Cards.
-  var cards;
+  var mtListView;
+  var cardsView;
+  var settingsView;
+  var runDialog;
+  var deleteDialog;
+  var repeatDialog;
 
-  // This handles all the nav-bar navigation.
-  var navBar;
+  // jquery objects
+  var base = $(baseHTML);
+  var header = base.find('[data-id="header"]');
 
-  var database = new Database();
-
-	/**
-	 * Holds a mapping from dialog ID to the ID of the timeout that is used to
-	 * check if it was lost. This is needed so we can cancel the timeout when
-	 * the dialog is closed.
-	 */
-	var timeoutIds = {};
-
-  var rules;
-
-  var rulesListView;
-  var cardsView = $('#cards-view');
 
   //***** PUBLIC *****//
 
-  /**
-   * Performs basic set up of the Mailman environment.
-   *
-   * @constructor
-   */
-  this.init = function() {
-    self = this;
+  window.runAllTemplates = mtService.runMerges;
 
-    // UI Configuration
-    // All UI Bindings
-    $('#step').on('click', self.next);
-    $('#done').on('click', self.done);
-    $('#back').on('click', self.back);
-    $('#help').on('click', self.onHelpClick);
+  this.init = function(appendTo) {
 
-    intercom = Intercom.getInstance();
-    contentArea = $('#content-area');
-    rulesListView = new RulesListView($('#layout-container'));
-    cards = new Cards(contentArea, null);
+    appendTo.append(base);
 
-    rulesListView.setTriggerHandler(function(e) {
-      cards.setType(RuleTypes.TRIGGER);
+    actionBar.init(header);
+    snackbar.init(base);
+    mtListView = new MergeTemplatesView(base, serviceFactory.getMetadataService());
+    
+    settingsView = new SettingsView(base, 
+      serviceFactory.getSettingsService(),
+      serviceFactory.getMetadataService());
+      
+    runDialog = new Dialog(appendTo, 'Run this merge?', 'This will run your merge template. ' +
+      'Emails will be sent to everyone in your specified sheet. Are you sure you want to merge?');
 
-      setButtonState();
+    deleteDialog = new Dialog(appendTo, 'Delete this merge template?', 'This will remove this merge template. ' +
+      'You won\'t be able to send emails using it anymore. Are you sure you want to delete this merge template?');
 
-      navBar = new NavBar($('#nav-row'), 3, function(e) {
-        var node = e.data;
+    repeatDialog = new Dialog(appendTo, 'Repeatedly run this merge template?', 'This will cause this merge template ' +
+      'to run regularly. This is an advanced feature and requires training. Please see IT Knowledge Management for ' +
+      'tips on training and use. Are you sure you want to repeatedly run this merge template?');
 
-        cards.jumpTo(node.name);
-      });
-      navBar.buildNavTree(cards.getActiveNode());
+    // PubSub
+    PubSub.subscribe('Rules.add', function(msg, data) {
+      snackbar.show('Merge template created.');
 
-      rulesListView.hide();
-      Util.setHidden(cardsView, false);
-    });
+      showListView();
 
-    rulesListView.setInstantHandler(function(e) {
-      cards.setType(RuleTypes.INSTANT);
-
-      setButtonState();
-
-      navBar = new NavBar($('#nav-row'), 3, function(e) {
-        var node = e.data;
-
-        cards.jumpTo(node.name);
-      });
-      navBar.buildNavTree(cards.getActiveNode());
-
-      rulesListView.hide();
-      Util.setHidden(cardsView, false);
-    });
-
-    rulesListView.setDeleteHandler(function(rule) {
-      rules.remove(rule);
-    });
-
-    rulesListView.setEditHandler(function(rule) {
-      cards.setRule(rule);
-
-      setButtonState();
-
-      navBar = new NavBar($('#nav-row'), 3, function(e) {
-        var node = e.data;
-
-        cards.jumpTo(node.name);
-      });
-      navBar.buildNavTree(cards.getActiveNode());
-
-      rulesListView.hide();
-      Util.setHidden(cardsView, false);
-    });
-
-    database.load(Keys.RULE_KEY, function(config) {
-      try {
-        rules = new Rules(config);
+      if (cardsView != null) {
+        cardsView.cleanup();
       }
-      catch (e) {
-        // We don't need to fail if the rule isn't properly formatted. Just log and continue on.
-        console.log(e);
+    });
+    PubSub.subscribe('Rules.run', function(msg, data) {
+      snackbar.show('Running merge "' + data.mergeData.title + '".');
+    });
+    PubSub.subscribe('Rules.update', function(msg, data) {
+      snackbar.show('Merge template updated.');
+
+      showListView();
+
+      if (cardsView != null) {
+        cardsView.cleanup();
       }
-
-      rulesListView.setRulesContainer(rules);
-    }, function() {
-      rules = new Rules({});
-      rulesListView.setRulesContainer(rules);
     });
+    PubSub.subscribe('Rules.updateFailed', function(msg, data) {
+      snackbar.show('You don\'t have permission to edit that merge template.');
 
-    // PubSub bindings
+      showListView();
 
-    // It's important to note the flow of the program here.
-    // When cards.jumpTo is called, this pubsub function is called.
-    // jump to a card > rebuild the nav tree
-    PubSub.subscribe('Cards.jumpTo', function(msg, data) {
-      var activeNode = cards.getActiveNode();
-      navBar.buildNavTree(cards.getActiveNode());
-      setButtonState();
-    });
-  };
-
-  /**
-   * This function goes to the next card.
-   *
-   * TODO There is non-DRY code between this function and this.back.
-   * TODO Move this into the CardHandler or a CardsView.
-   * @param {event} event The event that triggered the function call.
-   */
-  this.next = function(event) {
-    var active = cards.next();
-    setButtonState();
-
-    navBar.buildNavTree(active);
-  };
-
-  /**
-   * This function goes to the previous card.
-   *
-   * TODO There is non-DRY code between this function and this.next.
-   * TODO Move this into the CardHandler or a CardsView.
-   * @param {event} event The event that triggered the function call.
-   */
-  this.back = function(event) {
-    var active = cards.back();
-    setButtonState();
-
-    navBar.buildNavTree(active);
-  };
-
-  /**
-   * Submits data back to google.
-   *
-   * TODO Move this into the CardHandler or a CardsView.
-   * @param {event} event The event that triggered the function call.
-   */
-  this.done = function(event) {
-    var rule = cards.getRule();
-
-    if (rules.indexOf(rule.getID()) !== -1) {
-      rules.update(rule);
-    }
-    else {
-      rules.add(rule.toConfig());
-    }
-
-    database.save(Keys.RULE_KEY, rules.toConfig(), function() {
-      if (cards.getRuleType() === RuleTypes.INSTANT) {
-        google.script.run
-            .instantEmail(rule.toConfig());
+      if (cardsView != null) {
+        cardsView.cleanup();
       }
-
-      setTimeout(function() {
-        rulesListView.show();
-        Util.setHidden(cardsView, true);
-
-        navBar.cleanup();
-        cards.cleanup();
-
-        // TODO reload rules
-      }, 1000);
     });
-  };
 
-  /**
-   * This function toggles the state of the help <p> tags.
-   *TODO
-   */
-  this.onHelpClick = function() {
-    cards.toggleHelp();
+    actionBar.setSettingsHandler(showSettingsView);
+
+    mtListView.setEmailHandler(function(e) {
+      cardsView = createCardsView(base, StandardMailHandler);
+      showCardsView();
+    });
+    mtListView.setDocumentHandler(function(e) {
+      cardsView = createCardsView(base, DocumentMailHandler);
+      showCardsView();
+    });
+
+    mtListView.setDeleteDialog(deleteDialog);
+    mtListView.setDeleteHandler(function(template) {
+      snackbar.show('Deleting merge template...');
+      templatesContainer.remove(template);
+    });
+
+    mtListView.setEditHandler(function(template) {
+      var type = template.toConfig().mergeData.type;
+      cardsView = createCardsView(base, TypeToHandler[type.toLowerCase()], template);
+      showCardsView();
+    });
+
+    mtListView.setPreviewHandler(function(template) {
+      var type = template.toConfig().mergeData.type;
+      cardsView = createCardsView(base, TypeToHandler["preview"], template);
+      showCardsView();
+    });  
+
+    mtListView.setRunDialog(runDialog);
+    mtListView.setRunHandler(function(template) {
+      // This only occurs when the user clicks OK.
+      emailService.send(template);
+      PubSub.publish('Rules.run', template.toConfig());
+    });
+
+    mtListView.setRepeatDialog(repeatDialog);
+    mtListView.setRepeatHandlers(
+      function(template) {
+        if (template.toConfig().mergeData.repeater == "onform")
+        {
+        snackbar.show('Turning ON Onform repeated merge...');
+        templatesContainer.toggleRepeat(template);
+        }
+        else if (template.toConfig().mergeData.repeater == "auto")
+        {
+        snackbar.show('Turning ON Auto repeated merge...');
+        templatesContainer.toggleRepeat(template);
+        }
+        else if (template.toConfig().mergeData.repeater == "off")
+        {
+        snackbar.show('No repeater selected, please select a repeater type....');
+        }
+      },
+      function(template) {
+        snackbar.show('Turning OFF repeated merge...');
+        templatesContainer.toggleRepeat(template);
+      });
+
+    mtService.getAll().then(
+      function(result) {
+        templatesContainer = new MergeTemplateContainer(result, serviceFactory);
+        mtListView.setContainer(templatesContainer);
+        ls.hide();
+      },
+      function(err) {
+        console.error(err);
+      }
+    ).done();
+
+    showListView();
   };
 
   //***** PRIVATE *****//
 
-  /**
-   * Using the Cards handler, this sets the state of the buttons.
-   * Depending on the active Card, different buttons may be shown.
-   *
-   */
-  var setButtonState = function() {
-    // Default state
-    Util.setHidden($('#done'), true);
-    Util.setHidden($('#step'), false);
-    Util.setHidden($('#back'), false);
+  var showListView = function() {
+    mtListView.show();
+    settingsView.hide();
 
-    if (cards.isFirst()) {
-      Util.setHidden($('#back'), true);
-    }
-    else if (cards.isLast()) {
-      Util.setHidden($('#done'), false);
-      Util.setHidden($('#step'), true);
+    if (cardsView != null) {
+      cardsView.hide();
     }
   };
 
-  var onRTEOpened = function(dialogId) {
+  var showSettingsView = function() {
+    settingsView.show();
+    mtListView.hide();
 
-    intercom.on(dialogId, function(data) {
-
-          switch (data.state) {
-            case 'done':
-              console.log('Dialog submitted.\n');
-
-              getNode('Body').data.setValue(data.message);
-
-              forget(dialogId);
-              break;
-            case 'checkIn':
-              forget(dialogId);
-              watch(dialogId);
-              break;
-            case 'lost':
-              console.log('Dialog lost.\n');
-              break;
-            default:
-              throw 'Unknown dialog state: ' + data.state;
-          }
-        });
-  };
-
-  /**
-   * Watch the given dialog, to detect when it's been X-ed out.
-   *
-   * @param {string} dialogId The ID of the dialog to watch.
-   */
-  var watch = function(dialogId) {
-    timeoutIds[dialogId] = window.setTimeout(function() {
-      intercom.emit(dialogId, 'lost');
-    }, DIALOG_TIMEOUT_MS);
-  };
-
-  /**
-   * Stop watching the given dialog.
-   * @param {string} dialogId The ID of the dialog to watch.
-   */
-  var forget = function(dialogId) {
-    if (timeoutIds[dialogId]) {
-      window.clearTimeout(timeoutIds[dialogId]);
+    if (cardsView != null) {
+      cardsView.hide();
     }
   };
 
-  this.init();
+  var showCardsView = function() {
+    mtListView.hide();
+    settingsView.hide();
+
+    if (cardsView != null) {
+      cardsView.show();
+    }
+  };
+
+  var createCardsView = function(base, handler, data) {
+
+    var view = new CardsView(base, handler, data, serviceFactory);
+
+    view.done().then(
+      function(template) {
+        if (templatesContainer.indexOf(template.toConfig().id) !== -1) {
+          templatesContainer.update(template);
+        }
+        else {
+          templatesContainer.add(template.toConfig());
+        }
+      },
+      function() {
+        view.cleanup();
+
+        mtListView.show();
+        view.hide();
+      }
+    ).done();
+
+    return view;
+  };
+
+  this.init(appendTo);
 };
 
 

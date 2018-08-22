@@ -49,3 +49,7 @@ bower_components
 
 # Static Files
 public/css
+
+# Documentation
+docs
+src/client/js/ServiceFactory.js
