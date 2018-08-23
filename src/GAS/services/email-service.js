@@ -69,10 +69,9 @@ var EmailService = {
           // We only timestamp when the email successfully sends.
           if ((conditional === 'true') &&
             EmailService.send(to, subject, body, cc, bcc, true)) {
-
             var timestampName = template.mergeData.timestampColumn.replace(/(<<|>>)/g, '');
             var timeCell = row.getCell(1, header.indexOf(timestampName) + 1);
-            var formattedDate = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "MM/dd/yyyy HH:mm:ss");
+            var formattedDate = Utilities.formatDate(new Date(), 'America/Edmonton', "MM/dd/yyyy HH:mm:ss");
             timeCell.setValue(formattedDate);
           }
         }
@@ -119,7 +118,7 @@ var EmailService = {
 
             var timestampName = template.mergeData.timestampColumn.replace(/(<<|>>)/g, '');
             var timeCell = row.getCell(1, header.indexOf(timestampName) + 1);
-            var formattedDate = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "MM/dd/yyyy HH:mm:ss");
+            var formattedDate = Utilities.formatDate(new Date(), 'America/Edmonton', "MM/dd/yyyy HH:mm:ss");
 
             timeCell.setValue(formattedDate);
           }
@@ -181,7 +180,7 @@ var EmailService = {
     }));
 
     if (isBodyHtml || /<html>/.test(body)) {
-      GmailAGmailApp.sendEmail(to, subject, body, {
+      GmailApp.sendEmail(to, subject, body, {
         htmlBody: body,
         cc: cc,
         bcc: bcc

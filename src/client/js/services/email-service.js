@@ -39,7 +39,7 @@ var EmailService = function() {
    * @return {Promise} A Promise.
    */
   this.send = function(template) {
-    return Provoke('EmailService', 'startMergeTemplate', template.toConfig());
+    return Provoke('EmailService', 'mergeAllTemplate', template.toConfig());
   };
 
 };
