@@ -149,7 +149,8 @@ CardsConfig.buildCardRepo = function(contentArea,
   repo[CardNames.subject] = new InputCard(contentArea, {
     title: 'What would you like your email subject to be?',
     paragraphs: [
-      'Tip: try typing <<'
+      'Tip: try typing <<',
+      'Warning: do not use "[" or "]" !'
     ],
     help: 'Recipients will see this as the subject line of the email. Type << to see a list of column names. ' +
       'Template tags will be swapped out with the associated values in the Sheet.',

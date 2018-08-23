@@ -42,22 +42,21 @@ var EmailService = {
   },
 
   mergeOnformTemplate: function(template) {
-    log('Starting merge onform template ' + template.id);
+    log('New onform submission... to template' + template.id);
 
     var ss = Utility.getSpreadsheet();
     var sheet = ss.getSheetByName(template.mergeData.sheet);
     var range = sheet.getDataRange();
     var headerRow = template.mergeData.headerRow;
-      var i = range.getNumRows()-1;
-      var rowNum = range.getRowIndex() + i;
-      var row = range.offset(i, 0, 1, range.getNumColumns());
-      var context = RenderService.getContext(template.mergeData.sheet, headerRow, rowNum);
-      var renderOptions = { context: context };
-      var header = HeaderService.get(template.mergeData.sheet, template.mergeData.headerRow);
-
-      var conditional = template.mergeData.conditional ? RenderService.render(template.mergeData.conditional, renderOptions) : 'true';
-      if (conditional && typeof conditional.toLowerCase === 'function')
-        conditional = conditional.toLowerCase();
+    var i = range.getNumRows()-1;
+    var rowNum = range.getRowIndex() + i;
+    var row = range.offset(i, 0, 1, range.getNumColumns());      
+    var context = RenderService.getContext(template.mergeData.sheet, headerRow, rowNum);
+    var renderOptions = { context: context };
+    var header = HeaderService.get(template.mergeData.sheet, template.mergeData.headerRow);
+    var conditional = template.mergeData.conditional ? RenderService.render(template.mergeData.conditional, renderOptions) : 'true';
+    if (conditional && typeof conditional.toLowerCase === 'function')
+       conditional = conditional.toLowerCase();
       if (conditional === 'yes') // other keywords could be added here.
         conditional = 'true';
       if (conditional === 'true') {
@@ -66,7 +65,6 @@ var EmailService = {
         var bcc = template.mergeData.data.bcc ? RenderService.render(template.mergeData.data.bcc, renderOptions) : null;
         var subject = template.mergeData.data.subject ? RenderService.render(template.mergeData.data.subject, renderOptions) : null;
         var body = template.mergeData.data.body ? RenderService.render(template.mergeData.data.body, renderOptions) : null;
-      log('sending email to ' + template.mergeData.data.to);
         try {
           // We only timestamp when the email successfully sends.
           if ((conditional === 'true') &&
@@ -74,23 +72,17 @@ var EmailService = {
 
             var timestampName = template.mergeData.timestampColumn.replace(/(<<|>>)/g, '');
             var timeCell = row.getCell(1, header.indexOf(timestampName) + 1);
-            var currentDate = new Date();
-            var datetime = (currentDate.getMonth() + 1) + '/' +
-                    currentDate.getDate() + '/' +
-                    currentDate.getFullYear() + ' ' +
-                    currentDate.getHours() + ':' +
-                    currentDate.getMinutes() + ':' +
-                    currentDate.getSeconds();
-
-            timeCell.setValue(datetime);
+            var formattedDate = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "MM/dd/yyyy HH:mm:ss");
+            timeCell.setValue(formattedDate);
           }
         }
+        
         catch (e) {
           console.log(e);
         }        
       }
 
-    log('Ending merge onform template...');
+    log('Ending onform submission sending...');
   },
 
   mergeAllTemplate: function(template) {
@@ -108,7 +100,6 @@ var EmailService = {
       var context = RenderService.getContext(template.mergeData.sheet, headerRow, rowNum);
       var renderOptions = { context: context };
       var header = HeaderService.get(template.mergeData.sheet, template.mergeData.headerRow);
-
       var conditional = template.mergeData.conditional ? RenderService.render(template.mergeData.conditional, renderOptions) : 'true';
       if (conditional && typeof conditional.toLowerCase === 'function')
         conditional = conditional.toLowerCase();
@@ -128,15 +119,9 @@ var EmailService = {
 
             var timestampName = template.mergeData.timestampColumn.replace(/(<<|>>)/g, '');
             var timeCell = row.getCell(1, header.indexOf(timestampName) + 1);
-            var currentDate = new Date();
-            var datetime = (currentDate.getMonth() + 1) + '/' +
-                    currentDate.getDate() + '/' +
-                    currentDate.getFullYear() + ' ' +
-                    currentDate.getHours() + ':' +
-                    currentDate.getMinutes() + ':' +
-                    currentDate.getSeconds();
+            var formattedDate = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "MM/dd/yyyy HH:mm:ss");
 
-            timeCell.setValue(datetime);
+            timeCell.setValue(formattedDate);
           }
         }
         catch (e) {
@@ -185,17 +170,18 @@ var EmailService = {
    */
   send: function(to, subject, body, cc, bcc, isBodyHtml) {
     if (to === '' || to == null) {
+      log('Unable send email, invalid email address... ');
       return false;
     }
-
-    log('Sending email to ' + JSON.stringify({
+    var sendTime = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "MM/dd/yyyy HH:mm:ss");
+    log('At '+sendTime+', Sending email to ' + JSON.stringify({
       to: to,
       cc: cc,
       bcc: bcc
     }));
 
     if (isBodyHtml || /<html>/.test(body)) {
-      GmailApp.sendEmail(to, subject, body, {
+      GmailAGmailApp.sendEmail(to, subject, body, {
         htmlBody: body,
         cc: cc,
         bcc: bcc
@@ -207,6 +193,7 @@ var EmailService = {
         bcc: bcc
       });
     }
+
 
     return true;
   },
