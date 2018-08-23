@@ -172,7 +172,7 @@ var EmailService = {
       log('Unable send email, invalid email address... ');
       return false;
     }
-    var sendTime = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "MM/dd/yyyy HH:mm:ss");
+    var sendTime = Utilities.formatDate(new Date(), 'America/Edmonton', "MM/dd/yyyy HH:mm:ss");
     log('At '+sendTime+', Sending email to ' + JSON.stringify({
       to: to,
       cc: cc,
