@@ -215,9 +215,9 @@ CardsConfig.buildCardRepo = function(contentArea,
     'send the email once a new row submitted. Please note Timestamp column may not work for onform sending, '+
     'please use Mailman logging to check Timestamp for onform submission sending. '+
     'Auto sending will send emails every hour. ',
-    checkboxText1: 'Immediately',
-    checkboxText2: 'Hourly',
-    checkboxText3: 'Manually'
+    checkboxText1: 'Immediately Sending',
+    checkboxText2: 'Hourly Sending',
+    checkboxText3: 'Manually Sending'
   });
 
   return repo;
