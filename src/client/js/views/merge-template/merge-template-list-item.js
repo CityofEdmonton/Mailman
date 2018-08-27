@@ -49,8 +49,12 @@ var MergeTemplateListItem = function(appendTo, template,
   var repeatTT = base.find('[data-id="repeat-label"]');
 
 
-  var REPEAT_ON_LABEL = 'Turn Off Repeat';
-  var REPEAT_OFF_LABEL = 'Turn On Repeat';
+  var REPEAT_ON_LABEL_AUTO = 'Turn Off Hourly Repeat';
+  var REPEAT_ON_LABEL_ONFORM = 'Turn Off Immediately Repeat';
+
+  var REPEAT_OFF_LABEL_AUTO = 'Turn On Hourly Repeat';
+  var REPEAT_OFF_LABEL_ONFORM = 'Turn On Immediately Repeat';
+
 
   //***** private methods *****//
 
@@ -103,16 +107,32 @@ var MergeTemplateListItem = function(appendTo, template,
 
     if (config.mergeRepeater == null) {
       repeatIcon.removeClass('rli-repeat');
-      repeatTT.text(REPEAT_OFF_LABEL);
+      if (config.mergeData.repeater == "off") {
+        repeatTT.text("Please select a repeater.");
+      }
+
+      else if (config.mergeData.repeater == "auto"){
+        repeatTT.text(REPEAT_OFF_LABEL_AUTO);
+      }
+      else if (config.mergeData.repeater == "onform"){
+        repeatTT.text(REPEAT_OFF_LABEL_ONFORM);
+      }
     }
     else {
       repeatIcon.addClass('rli-repeat');
-      repeatTT.text(REPEAT_ON_LABEL);
+
 
       if (config.mergeRepeater.owner !== user) {
         self.disable();
         claimedUser.text('Claimed by ' + config.mergeRepeater.owner);
         Util.setHidden(claimedUser, false);
+      }
+
+      else if (config.mergeData.repeater == "auto"){
+        repeatTT.text(REPEAT_ON_LABEL_AUTO);
+      }
+      else if (config.mergeData.repeater == "onform"){
+        repeatTT.text(REPEAT_ON_LABEL_ONFORM);
       }
     }
   };

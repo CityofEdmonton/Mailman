@@ -87,8 +87,8 @@ var DocumentMailHandler = function(parent, serviceFactory) {
     cards.add(CardNames.to);
     cards.add(CardNames.subject);
     cards.add(CardNames.documentSelector);
-    cards.add(CardNames.conditional);
     cards.add(CardNames.repeater);
+    cards.add(CardNames.conditional);
     cards.add(CardNames.sendNow);
     return cards;
   };
