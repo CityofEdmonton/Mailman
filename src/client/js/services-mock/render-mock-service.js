@@ -45,11 +45,19 @@ var RenderService = function() {
 
     // This must match <<these>> and &lt;&lt;these&gt;&gt; since we need to support HTML.
     var dataText = text.replace(/<<(.*?)>>|&lt;&lt;(.*?)&gt;&gt;/g, function(match, m1, m2, offset, string) {
-      if (m1 && headerToData[m1]) {
-        return headerToData[m1];
+      if (m1) {
+        // remove leading and trailing whitespace, including &nbsp;
+        m1 = m1.replace('&nbsp;', ' ').replace(/^\s+|\s+$/g, '');
+        if (headerToData[m1]) {
+          return headerToData[m1];
+        }
       }
-      else if (m2 && headerToData[m2]) {
-        return headerToData[m2];
+      if (m2) {
+        // remove leading and trailing whitespace, including &nbsp;
+        m2 = m2.replace('&nbsp;', ' ').replace(/^\s+|\s+$/g, '');
+        if (headerToData[m2]) {
+          return headerToData[m2];
+        }
       }
       return '';
     });
