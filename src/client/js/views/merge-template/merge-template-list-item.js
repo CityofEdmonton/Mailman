@@ -52,9 +52,6 @@ var MergeTemplateListItem = function(appendTo, template,
   var LABEL_AUTO = 'You are on Hourly Repeat';
   var LABEL_ONFORM = 'You are on Immediately Repeat';
   var LABEL_OFF = 'You do not have a auto merge';
-  var REPEAT_OFF_LABEL_AUTO = 'Turn On Hourly Repeat';
-  var REPEAT_OFF_LABEL_ONFORM = 'Turn On Immediately Repeat';
-
 
   //***** private methods *****//
 
@@ -109,6 +106,9 @@ var MergeTemplateListItem = function(appendTo, template,
       repeatIcon.removeClass('rli-repeat');
       if (config.mergeData.repeater == "off") {
         repeatTT.text(LABEL_OFF);
+      }
+      else{
+        repeatTT.text("No repeater turned on");
       }
     }
     else {

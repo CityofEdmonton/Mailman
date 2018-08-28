@@ -84,9 +84,9 @@ var MailMan = function(appendTo) {
     deleteDialog = new Dialog(appendTo, 'Delete this merge template?', 'This will remove this merge template. ' +
       'You won\'t be able to send emails using it anymore. Are you sure you want to delete this merge template?');
 
-    repeatDialog = new Dialog(appendTo, 'Repeatedly run this merge template?', 'This will cause this merge template ' +
-      'to run regularly. This is an advanced feature and requires training. Please see IT Knowledge Management for ' +
-      'tips on training and use. Are you sure you want to repeatedly run this merge template?');
+    //repeatDialog = new Dialog(appendTo, 'Repeatedly run this merge template?', 'This will cause this merge template ' +
+    //  'to run regularly. This is an advanced feature and requires training. Please see IT Knowledge Management for ' +
+    //  'tips on training and use. Are you sure you want to repeatedly run this merge template?');
 
     // PubSub
     PubSub.subscribe('Rules.add', function(msg, template) {
@@ -174,7 +174,7 @@ var MailMan = function(appendTo) {
       PubSub.publish('Rules.run', template.toConfig());
     });
 
-    mtListView.setRepeatDialog(repeatDialog);
+    //mtListView.setRepeatDialog(repeatDialog);
     // mtListView.setRepeatHandlers(
     //   function(template) {
     //     if (template.toConfig().mergeData.repeater == "onform")
