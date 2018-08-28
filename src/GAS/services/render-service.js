@@ -98,7 +98,7 @@ var RenderService = {
       context = RenderService.getContext(sheetName, headerRowIndex, dataRowIndex);
     }
     
-    return replaceTags(templateText, context);
+    return RenderService.replaceTags(templateText, context);
   }
 }
     
