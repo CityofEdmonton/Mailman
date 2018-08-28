@@ -100,7 +100,7 @@ var MergeTemplateContainer = function(config, serviceFactory) {
 
     service.create(template).then(
       function() {
-        PubSub.publish('Rules.add');
+        PubSub.publish('Rules.add', template);
       },
       function(e) {
         console.log(e);
@@ -120,7 +120,7 @@ var MergeTemplateContainer = function(config, serviceFactory) {
 
     service.update(template).then(
       function() {
-        PubSub.publish('Rules.update');
+        PubSub.publish('Rules.update', template);
       },
       function(e) {
         PubSub.publish('Rules.updateFailed');

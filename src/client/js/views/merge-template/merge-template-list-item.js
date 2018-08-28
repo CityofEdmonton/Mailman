@@ -49,9 +49,9 @@ var MergeTemplateListItem = function(appendTo, template,
   var repeatTT = base.find('[data-id="repeat-label"]');
 
 
-  var REPEAT_ON_LABEL_AUTO = 'Turn Off Hourly Repeat';
-  var REPEAT_ON_LABEL_ONFORM = 'Turn Off Immediately Repeat';
-
+  var LABEL_AUTO = 'You are on Hourly Repeat';
+  var LABEL_ONFORM = 'You are on Immediately Repeat';
+  var LABEL_OFF = 'You do not have a auto merge';
   var REPEAT_OFF_LABEL_AUTO = 'Turn On Hourly Repeat';
   var REPEAT_OFF_LABEL_ONFORM = 'Turn On Immediately Repeat';
 
@@ -108,19 +108,11 @@ var MergeTemplateListItem = function(appendTo, template,
     if (config.mergeRepeater == null) {
       repeatIcon.removeClass('rli-repeat');
       if (config.mergeData.repeater == "off") {
-        repeatTT.text("Please select a repeater.");
-      }
-
-      else if (config.mergeData.repeater == "auto"){
-        repeatTT.text(REPEAT_OFF_LABEL_AUTO);
-      }
-      else if (config.mergeData.repeater == "onform"){
-        repeatTT.text(REPEAT_OFF_LABEL_ONFORM);
+        repeatTT.text(LABEL_OFF);
       }
     }
     else {
       repeatIcon.addClass('rli-repeat');
-
 
       if (config.mergeRepeater.owner !== user) {
         self.disable();
@@ -129,10 +121,10 @@ var MergeTemplateListItem = function(appendTo, template,
       }
 
       else if (config.mergeData.repeater == "auto"){
-        repeatTT.text(REPEAT_ON_LABEL_AUTO);
+        repeatTT.text(LABEL_AUTO);
       }
       else if (config.mergeData.repeater == "onform"){
-        repeatTT.text(REPEAT_ON_LABEL_ONFORM);
+        repeatTT.text(LABEL_ONFORM);
       }
     }
   };
