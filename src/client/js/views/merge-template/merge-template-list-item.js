@@ -178,22 +178,22 @@ var MergeTemplateListItem = function(appendTo, template,
   * @param {Function} offCallback Called when the repeat icon is clicked off.
   */
   this.setRepeatHandlers = function(onCallback, offCallback) {
-    repeatButton.on('click', template, function() {
-      var config = template.toConfig();
+    // repeatButton.on('click', template, function() {
+    //   var config = template.toConfig();
 
-      if (config.mergeRepeater == null) {
-        repeatDialog.show().then(function() {
-          console.log('List item on');
-          Disabler(repeatButton, 10000);
-          onCallback(template);
-        }).done();
-      }
-      else {
-        console.log('List item off');
-        Disabler(repeatButton, 10000);
-        offCallback(template);
-      }
-    });
+    //   if (config.mergeRepeater == null) {
+    //     repeatDialog.show().then(function() {
+    //       console.log('List item on');
+    //       Disabler(repeatButton, 10000);
+    //       onCallback(template);
+    //     }).done();
+    //   }
+    //   else {
+    //     console.log('List item off');
+    //     Disabler(repeatButton, 10000);
+    //     offCallback(template);
+    //   }
+    // });
   };
 
  /**
