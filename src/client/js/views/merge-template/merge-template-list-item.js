@@ -126,6 +126,9 @@ var MergeTemplateListItem = function(appendTo, template,
       else if (config.mergeData.repeater == "onform"){
         repeatTT.text(LABEL_ONFORM);
       }
+      else{
+        repeatTT.text("You have Hourly repeater on from old Mailman, please update your template using the new Mailman. ");
+      }
     }
   };
 

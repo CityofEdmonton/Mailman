@@ -210,8 +210,8 @@ CardsConfig.buildCardRepo = function(contentArea,
 
 
   repo[CardNames.repeater] = new ConditionalCard(contentArea, {
-    title: 'Repeater Type?',
-    help: 'This column is used to determine what type of repeater you want to have. Onform sending will '+
+    title: 'How do you want to send email?',
+    help: 'This card is used to determine what type of repeater you want to have. Onform sending will '+
     'send the email once a new row submitted. Please note Timestamp column may not work for onform sending, '+
     'please use Mailman logging to check Timestamp for onform submission sending. '+
     'Auto sending will send emails every hour. ',
