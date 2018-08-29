@@ -149,6 +149,7 @@ var StandardMailHandler = function (parent, serviceFactory) {
       Object.assign({}, updateConfig, {
         mergeData: {
           title: cardRepository[CardNames.title].getValue(),
+          usetitle: cardRepository[CardNames.title].usetitle(),
           sheet: cardRepository[CardNames.sheet].getValue(),
           headerRow: cardRepository[CardNames.row].getValue(),
           conditional: cardRepository[CardNames.conditional].getValue(),

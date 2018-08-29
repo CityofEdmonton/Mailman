@@ -12,6 +12,8 @@ var InputCard = require('../card/card-input.js');
 var TitledCard = require('../card/card-titled.js');
 var TextareaCard = require('../card/card-textarea.js');
 var ConditionalInputCard = require('../card/conditional-input-card.js');
+var CheckboxAndInputCaed = require('../card/checkbox-and-input-card.js');
+
 var ConditionalCard = require('../card/conditional-card.js');
 
 var ToCard = require('../card/to-cc-bcc.js');
@@ -89,10 +91,12 @@ CardsConfig.buildCardRepo = function(contentArea,
 
   var getHeaders;
 
-  repo[CardNames.title] = new InputCard(contentArea, {
+  repo[CardNames.title] = new CheckboxAndInputCaed(contentArea, {
     title: 'What should this merge template be called?',
     help: 'This title will help you differentiate this merge from others.',
-    label: 'Title...'
+    label: 'Title...',
+    enabled: false,
+    checkboxText: 'Use this title as timestamp colume name?'
   });
 
   repo[CardNames.sheet] = new InputCard(contentArea, {
