@@ -18,6 +18,7 @@ var RenderService = {
    * @return {Array<any>} An array containing all of the Sheet names.
    */
   getContext: function(sheetName, headerRowIndex, dataRowIndex) {
+    console.log('RenderService.getContext() - BEGIN');
     try {
       var spreadsheet = sheetName ? Utility.getSpreadsheet() : SpreadsheetApp.getActive();
       var sheet = sheetName ? spreadsheet.getSheetByName(sheetName) : SpreadsheetApp.getActiveSheet();
@@ -30,7 +31,10 @@ var RenderService = {
         rowNum = cell.getRow();
       }
      
+      console.log('RenderService.getContext() - dataRowIndex=' + dataRowIndex + ', rowNum=' + rowNum);
       var rowValues = sheet.getSheetValues(rowNum, 1, 1, 128)[0];
+      console.log('RenderService.getContext() - rowValues:');
+      console.log(rowValues);
 
       var returnValue = {
         _meta: {
@@ -44,11 +48,16 @@ var RenderService = {
           returnValue[k] = v;
         }
       }
-      
+
+      console.log('RenderService.getContext() - returnValue:');
+      console.log(returnValue);
+
+      console.log('RenderService.getContext() - END');
       return returnValue;
     }
     catch (e) {
-      log(e);
+      console.log('RenderService.getContext() - ERROR');
+      console.log(e);
       throw e;
     }
   },
@@ -89,6 +98,7 @@ var RenderService = {
   },
 
   render: function(templateText, options) {
+    console.log('RenderService.render() - BEGIN');
     var opt = options || {};
     var context;
     if (opt.context)
@@ -98,7 +108,9 @@ var RenderService = {
       context = RenderService.getContext(sheetName, headerRowIndex, dataRowIndex);
     }
     
-    return RenderService.replaceTags(templateText, context);
+    var returnValue = RenderService.replaceTags(templateText, context);
+    console.log('RenderService.render() - END');
+    return returnValue;
   }
 }
     
