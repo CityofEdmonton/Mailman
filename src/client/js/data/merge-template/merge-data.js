@@ -32,7 +32,7 @@ var MergeData = function(config) {
   var sheet = config.sheet;
   var conditional = config.conditional;
   var repeater = config.repeater;
-
+  var usetitle = config.usetitle;
   var title = 'title';
   var headerRow = '1';
   var timestampColumn = Util.capitalize('<<Mailman ' + config.title + ' Timestamp>>');
@@ -93,7 +93,8 @@ var MergeData = function(config) {
       headerRow: headerRow,
       timestampColumn: timestampColumn,
       conditional: conditional,
-      repeater: repeater
+      repeater: repeater,
+      usetitle: usetitle
     };
   };
 

@@ -118,6 +118,9 @@ var StandardMailHandler = function (parent, serviceFactory) {
     updateConfig = template.toConfig();
 
     cardRepository[CardNames.title].setValue(updateConfig.mergeData.title);
+    if (updateConfig.mergeData.useTitle === true) {
+      cardRepository[CardNames.title].check();
+    }
     cardRepository[CardNames.sheet].setValue(updateConfig.mergeData.sheet);
     cardRepository[CardNames.row].setValue(updateConfig.mergeData.headerRow);
     cardRepository[CardNames.to].setValue({
@@ -149,7 +152,7 @@ var StandardMailHandler = function (parent, serviceFactory) {
       Object.assign({}, updateConfig, {
         mergeData: {
           title: cardRepository[CardNames.title].getValue(),
-          usetitle: cardRepository[CardNames.title].usetitle(),
+          usetitle: cardRepository[CardNames.title].useTitle(),
           sheet: cardRepository[CardNames.sheet].getValue(),
           headerRow: cardRepository[CardNames.row].getValue(),
           conditional: cardRepository[CardNames.conditional].getValue(),
