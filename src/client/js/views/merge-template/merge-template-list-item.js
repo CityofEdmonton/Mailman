@@ -49,12 +49,9 @@ var MergeTemplateListItem = function(appendTo, template,
   var repeatTT = base.find('[data-id="repeat-label"]');
 
 
-  var REPEAT_ON_LABEL_AUTO = 'Turn Off Hourly Repeat';
-  var REPEAT_ON_LABEL_ONFORM = 'Turn Off Immediately Repeat';
-
-  var REPEAT_OFF_LABEL_AUTO = 'Turn On Hourly Repeat';
-  var REPEAT_OFF_LABEL_ONFORM = 'Turn On Immediately Repeat';
-
+  var LABEL_AUTO = 'You are on Hourly Repeat';
+  var LABEL_ONFORM = 'You are on Immediately Repeat';
+  var LABEL_OFF = 'You do not have a auto merge';
 
   //***** private methods *****//
 
@@ -108,19 +105,14 @@ var MergeTemplateListItem = function(appendTo, template,
     if (config.mergeRepeater == null) {
       repeatIcon.removeClass('rli-repeat');
       if (config.mergeData.repeater == "off") {
-        repeatTT.text("Please select a repeater.");
+        repeatTT.text(LABEL_OFF);
       }
-
-      else if (config.mergeData.repeater == "auto"){
-        repeatTT.text(REPEAT_OFF_LABEL_AUTO);
-      }
-      else if (config.mergeData.repeater == "onform"){
-        repeatTT.text(REPEAT_OFF_LABEL_ONFORM);
+      else{
+        repeatTT.text("No repeater turned on");
       }
     }
     else {
       repeatIcon.addClass('rli-repeat');
-
 
       if (config.mergeRepeater.owner !== user) {
         self.disable();
@@ -129,10 +121,13 @@ var MergeTemplateListItem = function(appendTo, template,
       }
 
       else if (config.mergeData.repeater == "auto"){
-        repeatTT.text(REPEAT_ON_LABEL_AUTO);
+        repeatTT.text(LABEL_AUTO);
       }
       else if (config.mergeData.repeater == "onform"){
-        repeatTT.text(REPEAT_ON_LABEL_ONFORM);
+        repeatTT.text(LABEL_ONFORM);
+      }
+      else{
+        repeatTT.text("You have Hourly repeater on from old Mailman, please update your template using the new Mailman. ");
       }
     }
   };
@@ -183,22 +178,22 @@ var MergeTemplateListItem = function(appendTo, template,
   * @param {Function} offCallback Called when the repeat icon is clicked off.
   */
   this.setRepeatHandlers = function(onCallback, offCallback) {
-    repeatButton.on('click', template, function() {
-      var config = template.toConfig();
+    // repeatButton.on('click', template, function() {
+    //   var config = template.toConfig();
 
-      if (config.mergeRepeater == null) {
-        repeatDialog.show().then(function() {
-          console.log('List item on');
-          Disabler(repeatButton, 10000);
-          onCallback(template);
-        }).done();
-      }
-      else {
-        console.log('List item off');
-        Disabler(repeatButton, 10000);
-        offCallback(template);
-      }
-    });
+    //   if (config.mergeRepeater == null) {
+    //     repeatDialog.show().then(function() {
+    //       console.log('List item on');
+    //       Disabler(repeatButton, 10000);
+    //       onCallback(template);
+    //     }).done();
+    //   }
+    //   else {
+    //     console.log('List item off');
+    //     Disabler(repeatButton, 10000);
+    //     offCallback(template);
+    //   }
+    // });
   };
 
  /**

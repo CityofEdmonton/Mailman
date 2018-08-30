@@ -16,5 +16,6 @@ module.exports = {
   title: 'Title',
   conditional: 'Conditional',
   repeater:'Repeater',
+  usetitle:'useTitle',
   documentSelector: 'Document'
 };

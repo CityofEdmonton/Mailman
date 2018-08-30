@@ -84,27 +84,45 @@ var MailMan = function(appendTo) {
     deleteDialog = new Dialog(appendTo, 'Delete this merge template?', 'This will remove this merge template. ' +
       'You won\'t be able to send emails using it anymore. Are you sure you want to delete this merge template?');
 
-    repeatDialog = new Dialog(appendTo, 'Repeatedly run this merge template?', 'This will cause this merge template ' +
-      'to run regularly. This is an advanced feature and requires training. Please see IT Knowledge Management for ' +
-      'tips on training and use. Are you sure you want to repeatedly run this merge template?');
+    //repeatDialog = new Dialog(appendTo, 'Repeatedly run this merge template?', 'This will cause this merge template ' +
+    //  'to run regularly. This is an advanced feature and requires training. Please see IT Knowledge Management for ' +
+    //  'tips on training and use. Are you sure you want to repeatedly run this merge template?');
 
     // PubSub
-    PubSub.subscribe('Rules.add', function(msg, data) {
+    PubSub.subscribe('Rules.add', function(msg, template) {
       snackbar.show('Merge template created.');
-
       showListView();
-
-      if (cardsView != null) {
-        cardsView.cleanup();
+      if (template.toConfig().mergeData.repeater == "onform")
+      {
+      snackbar.show('Turning on Immediately Sending...');
+      templatesContainer.toggleRepeat(template);
       }
+      else if (template.toConfig().mergeData.repeater == "auto")
+      {
+      snackbar.show('Turning on Hourly Sending ...');
+      templatesContainer.toggleRepeat(template);
+      }
+
     });
+
     PubSub.subscribe('Rules.run', function(msg, data) {
       snackbar.show('Running merge "' + data.mergeData.title + '".');
     });
-    PubSub.subscribe('Rules.update', function(msg, data) {
-      snackbar.show('Merge template updated.');
 
+    PubSub.subscribe('Rules.update', function(msg, template) {
+      templatesContainer.toggleRepeat(template);
+      snackbar.show('Merge template updated.');
       showListView();
+      if (template.toConfig().mergeData.repeater == "onform")
+      {
+      snackbar.show('Turning on Immediately Sending...');
+      templatesContainer.toggleRepeat(template);
+      }
+      else if (template.toConfig().mergeData.repeater == "auto")
+      {
+      snackbar.show('Turning on Hourly Sending ...');
+      templatesContainer.toggleRepeat(template);
+      }
 
       if (cardsView != null) {
         cardsView.cleanup();
@@ -156,28 +174,28 @@ var MailMan = function(appendTo) {
       PubSub.publish('Rules.run', template.toConfig());
     });
 
-    mtListView.setRepeatDialog(repeatDialog);
-    mtListView.setRepeatHandlers(
-      function(template) {
-        if (template.toConfig().mergeData.repeater == "onform")
-        {
-        snackbar.show('Turning ON Onform repeated merge...');
-        templatesContainer.toggleRepeat(template);
-        }
-        else if (template.toConfig().mergeData.repeater == "auto")
-        {
-        snackbar.show('Turning ON Auto repeated merge...');
-        templatesContainer.toggleRepeat(template);
-        }
-        else if (template.toConfig().mergeData.repeater == "off")
-        {
-        snackbar.show('No repeater selected, please select a repeater type....');
-        }
-      },
-      function(template) {
-        snackbar.show('Turning OFF repeated merge...');
-        templatesContainer.toggleRepeat(template);
-      });
+    //mtListView.setRepeatDialog(repeatDialog);
+    // mtListView.setRepeatHandlers(
+    //   function(template) {
+    //     if (template.toConfig().mergeData.repeater == "onform")
+    //     {
+    //     snackbar.show('Turning ON Onform repeated merge...');
+    //     templatesContainer.toggleRepeat(template);
+    //     }
+    //     else if (template.toConfig().mergeData.repeater == "auto")
+    //     {
+    //     snackbar.show('Turning ON Auto repeated merge...');
+    //     templatesContainer.toggleRepeat(template);
+    //     }
+    //     else if (template.toConfig().mergeData.repeater == "off")
+    //     {
+    //     snackbar.show('No repeater selected, please select a repeater type....');
+    //     }
+    //   },
+    //   function(template) {
+    //     snackbar.show('Turning OFF repeated merge...');
+    //     templatesContainer.toggleRepeat(template);
+    //   });
 
     mtService.getAll().then(
       function(result) {

@@ -12,6 +12,8 @@ var InputCard = require('../card/card-input.js');
 var TitledCard = require('../card/card-titled.js');
 var TextareaCard = require('../card/card-textarea.js');
 var ConditionalInputCard = require('../card/conditional-input-card.js');
+var CheckboxAndInputCaed = require('../card/checkbox-and-input-card.js');
+
 var ConditionalCard = require('../card/conditional-card.js');
 
 var ToCard = require('../card/to-cc-bcc.js');
@@ -89,10 +91,12 @@ CardsConfig.buildCardRepo = function(contentArea,
 
   var getHeaders;
 
-  repo[CardNames.title] = new InputCard(contentArea, {
+  repo[CardNames.title] = new CheckboxAndInputCaed(contentArea, {
     title: 'What should this merge template be called?',
     help: 'This title will help you differentiate this merge from others.',
-    label: 'Title...'
+    label: 'Title...',
+    enabled: false,
+    checkboxText: 'Use this title as timestamp colume name?'
   });
 
   repo[CardNames.sheet] = new InputCard(contentArea, {
@@ -210,8 +214,8 @@ CardsConfig.buildCardRepo = function(contentArea,
 
 
   repo[CardNames.repeater] = new ConditionalCard(contentArea, {
-    title: 'Repeater Type?',
-    help: 'This column is used to determine what type of repeater you want to have. Onform sending will '+
+    title: 'How do you want to send email?',
+    help: 'This card is used to determine what type of repeater you want to have. Onform sending will '+
     'send the email once a new row submitted. Please note Timestamp column may not work for onform sending, '+
     'please use Mailman logging to check Timestamp for onform submission sending. '+
     'Auto sending will send emails every hour. ',

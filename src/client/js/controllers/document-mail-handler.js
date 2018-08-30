@@ -104,6 +104,12 @@ var DocumentMailHandler = function(parent, serviceFactory) {
     updateConfig = template.toConfig();
 
     cardRepository[CardNames.title].setValue(updateConfig.mergeData.title);
+    if (updateConfig.mergeData.usetitle == true) {
+      cardRepository[CardNames.title].check();
+    }
+    if (updateConfig.mergeData.use != null) {
+      cardRepository[CardNames.conditional].check();
+    }
     cardRepository[CardNames.sheet].setValue(updateConfig.mergeData.sheet);
     cardRepository[CardNames.row].setValue(updateConfig.mergeData.headerRow);
     cardRepository[CardNames.to].setValue({
@@ -135,6 +141,7 @@ var DocumentMailHandler = function(parent, serviceFactory) {
       Object.assign({}, updateConfig, {
         mergeData: {
           title: cardRepository[CardNames.title].getValue(),
+          usetitle: cardRepository[CardNames.title].useTitle(),
           sheet: cardRepository[CardNames.sheet].getValue(),
           headerRow: cardRepository[CardNames.row].getValue(),
           conditional: cardRepository[CardNames.conditional].getValue(),
