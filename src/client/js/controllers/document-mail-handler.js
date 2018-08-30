@@ -42,9 +42,6 @@ var DocumentMailHandler = function(parent, serviceFactory) {
 
   this.init_ = function() {
     cardRepository[CardNames.title].setValidation(cardValidator);
-    if (updateConfig.mergeData.useTitle === true) {
-      cardRepository[CardNames.title].check();
-    }
     cardRepository[CardNames.sheet].setValidation(cardValidator);
     cardRepository[CardNames.row].setValidation(cardValidator);
     cardRepository[CardNames.documentSelector].setValidation(cardValidator);
@@ -107,7 +104,9 @@ var DocumentMailHandler = function(parent, serviceFactory) {
     updateConfig = template.toConfig();
 
     cardRepository[CardNames.title].setValue(updateConfig.mergeData.title);
-
+    if (updateConfig.mergeData.usetitle == true) {
+      cardRepository[CardNames.title].check();
+    }
     if (updateConfig.mergeData.use != null) {
       cardRepository[CardNames.conditional].check();
     }
