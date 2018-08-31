@@ -9,7 +9,9 @@
  *
  */
 function runAllMergeTemplates() {
+  console.log('MergeTemplateService.runAllMergeTemplates() - BEGIN');
   MergeTemplateService.runAll();
+  console.log('MergeTemplateService.runAllMergeTemplates() - END');
 };
 
 
@@ -30,6 +32,7 @@ var MergeTemplateService = {
    * @return {string} A stringified array (<Array<MergeTemplate>).
    */
   getAll: function() {
+    console.log('MergeTemplateService.getAll() - BEGIN');
     try {
       var sheet = MergeTemplateService.getTemplateSheet();
       var range = sheet.getDataRange();
@@ -72,10 +75,12 @@ var MergeTemplateService = {
         }
       });
 
+      console.log('MergeTemplateService.getAll() - END');
       return rObj;
     }
     catch (e) {
-      log(e);
+      console.log('MergeTemplateService.getAll() - ERROR');
+      console.log(e);
       throw e;
     }
   },
@@ -89,17 +94,22 @@ var MergeTemplateService = {
    *
    */
   runAll: function() {
+    console.log('MergeTemplateService.runAll() - BEGIN');
     try {
       log('Running all merge templates.');
 
       var user = Session.getEffectiveUser().getEmail();
+      console.log('MergeTemplateService.runAll() - User is ' + user);
       var templates = MergeTemplateService.getAll().templates;
 
+      console.log('MergeTemplateService.runAll() - ' + templates.length + ' templates found');
       templates = templates.filter(function(template) {
         if (template.mergeRepeater == null) {
+          console.log('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because it has no mergeRepeater');
           return false;
         }
         if (template.mergeRepeater.owner !== user) {
+          console.log('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because the user ' + template.mergeRepeater.owner + ' != ' + user);
           return false;
         }
 
@@ -111,19 +121,19 @@ var MergeTemplateService = {
       templates.forEach(function(template) {
         var mergeData = template.mergeData;
         if (template.mergeData.type === "Email") {
+          console.log('MergeTemplateService.runAll() - running ' + template.mergeData.title + ' because the user ' + template.mergeRepeater.owner + ' == ' + user);
           EmailService.startMergeTemplate(template);
         }
         else {
-          log('Template attempting to run with type: ' + template.mergeData.type);
+          console.log('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because the mergeData.type == ' + template.mergeData.type);
         }
       });
 
-      log('Done running merge templates.');
+      log('MergeTemplateService.runAll() - END');
     }
     catch (e) {
-      console.log("Error running merge templates");
+      log('MergeTemplateService.runAll() - ERROR');
       console.log(e);
-      log(e);
       throw(e);
     }
   },

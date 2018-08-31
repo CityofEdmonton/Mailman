@@ -7,7 +7,6 @@
 
 
 var Provoke = require('../util/provoke.js');
-var handlebars = require('handlebars');
 var gOAuthService = require('./google-oauth-service');
 var sheetsService = new (require('./sheets-dev-service'))();
 var headerService = new (require('./header-dev-service'))();
@@ -83,6 +82,41 @@ var RenderService = function() {
     });    
   }
 
+  /**
+   * This function replaces  all instances of <<tags>> with the data in headerToData.
+   *
+   * @param {string} text The string that contains the tags.
+   * @param {Object} headerToData A key-value pair where the key is a column name and the value is the data in the
+   * column.
+   * @return {string} The text with all tags replaced with data.
+   */
+  var replaceTags = function(text, headerToData) {
+    if (text == null) {
+      text = '';
+    }
+
+    // This must match <<these>> and &lt;&lt;these&gt;&gt; since we need to support HTML.
+    var dataText = text.replace(/<<(.*?)>>|&lt;&lt;(.*?)&gt;&gt;/g, function(match, m1, m2, offset, string) {
+      if (m1) {
+        // remove leading and trailing whitespace, including &nbsp;
+        m1 = m1.replace('&nbsp;', ' ').replace(/^\s+|\s+$/g, '');
+        if (headerToData[m1]) {
+          return headerToData[m1];
+        }
+      }
+      if (m2) {
+        // remove leading and trailing whitespace, including &nbsp;
+        m2 = m2.replace('&nbsp;', ' ').replace(/^\s+|\s+$/g, '');
+        if (headerToData[m2]) {
+          return headerToData[m2];
+        }
+      }
+      return '';
+    });
+
+    return dataText;
+  }
+
  //**** public functions ****//
 
  /**
@@ -91,40 +125,14 @@ var RenderService = function() {
   this.render = function(content, sheetName, headerRowIndex) {
     return new Promise((resolve, reject) =>
     {
-      var compiler = handlebars.compile;
-      if (typeof compiler === "function") {
-        getContext(sheetName, headerRowIndex).then(ctx => {
-          var text = content;
-
-          // convert << to {{[ and >> to ]}}
-          text = text.replace(/<<\s*(.*?)\s*>>|&lt;&lt;\s*(.*?)\s*&gt;&gt;/g, function(match, m1, m2, offset, string) {
-            if (m1)
-              return '{{[' + m1 + ']}}';
-            else if (m2)
-              return '{{[' + m2 + ']}}';
-          });
-          
-          try {
-            var template = compiler(text);
-            if (typeof template === "function")
-              text = template(ctx);         
-            resolve(text);
-          }
-          catch (ex) {
-            reject({
-              message: "Error rendering content",
-              error: ex
-            });
-          }
-        }, err => {
-          reject({
-            message: "Unable to get context to render",
-            error: err
-          });
+      getContext(sheetName, headerRowIndex).then(ctx => {       
+        resolve(replaceTags(content, ctx));
+      }, err => {
+        reject({
+          message: "Unable to get context to render",
+          error: err
         });
-      } else {
-        resolve(content); 
-      }
+      });
     });
   };
 
@@ -143,6 +151,8 @@ var RenderService = function() {
        });
     });    
   };
+
+
 
   self.init_();
 };

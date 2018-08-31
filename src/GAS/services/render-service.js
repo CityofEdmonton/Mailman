@@ -1,5 +1,5 @@
 /**
- * @file A service focused on handling rendering text (using handlebars)
+ * @file A service focused on handling rendering text 
  * 
  * @author {@link https://github.com/dchenier|Dan Chenier}
  */
@@ -18,6 +18,7 @@ var RenderService = {
    * @return {Array<any>} An array containing all of the Sheet names.
    */
   getContext: function(sheetName, headerRowIndex, dataRowIndex) {
+    console.log('RenderService.getContext() - BEGIN');
     try {
       var spreadsheet = sheetName ? Utility.getSpreadsheet() : SpreadsheetApp.getActive();
       var sheet = sheetName ? spreadsheet.getSheetByName(sheetName) : SpreadsheetApp.getActiveSheet();
@@ -30,7 +31,10 @@ var RenderService = {
         rowNum = cell.getRow();
       }
      
+      console.log('RenderService.getContext() - dataRowIndex=' + dataRowIndex + ', rowNum=' + rowNum);
       var rowValues = sheet.getSheetValues(rowNum, 1, 1, 128)[0];
+      console.log('RenderService.getContext() - rowValues:');
+      console.log(rowValues);
 
       var returnValue = {
         _meta: {
@@ -44,16 +48,57 @@ var RenderService = {
           returnValue[k] = v;
         }
       }
-      
+
+      console.log('RenderService.getContext() - returnValue:');
+      console.log(returnValue);
+
+      console.log('RenderService.getContext() - END');
       return returnValue;
     }
     catch (e) {
-      log(e);
+      console.log('RenderService.getContext() - ERROR');
+      console.log(e);
       throw e;
     }
   },
 
+    /**
+   * This function replaces  all instances of <<tags>> with the data in headerToData.
+   *
+   * @param {string} text The string that contains the tags.
+   * @param {Object} headerToData A key-value pair where the key is a column name and the value is the data in the
+   * column.
+   * @return {string} The text with all tags replaced with data.
+   */
+  replaceTags: function(text, headerToData) {
+    if (text == null) {
+      text = '';
+    }
+
+    // This must match <<these>> and &lt;&lt;these&gt;&gt; since we need to support HTML.
+    var dataText = text.replace(/<<(.*?)>>|&lt;&lt;(.*?)&gt;&gt;/g, function(match, m1, m2, offset, string) {
+      if (m1) {
+        // remove leading and trailing whitespace, including &nbsp;
+        m1 = m1.replace('&nbsp;', ' ').replace(/^\s+|\s+$/g, '');
+        if (headerToData[m1]) {
+          return headerToData[m1];
+        }
+      }
+      if (m2) {
+        // remove leading and trailing whitespace, including &nbsp;
+        m2 = m2.replace('&nbsp;', ' ').replace(/^\s+|\s+$/g, '');
+        if (headerToData[m2]) {
+          return headerToData[m2];
+        }
+      }
+      return '';
+    });
+
+    return dataText;
+  },
+
   render: function(templateText, options) {
+    console.log('RenderService.render() - BEGIN');
     var opt = options || {};
     var context;
     if (opt.context)
@@ -63,31 +108,9 @@ var RenderService = {
       context = RenderService.getContext(sheetName, headerRowIndex, dataRowIndex);
     }
     
-    // register help methods - this should be refactored into its own method
-    if (!Handlebars._coeHelpersRegistered) {
-      console.log("registering coeHelpers");
-      // register some helper stuff, like getData()
-      registerHandlebarsHelpers(Handlebars);
-    }
-    
-    // convert << to {{[ and >> to ]}}
-    var parsedText = templateText.replace(/<<\s*(.*?)\s*>>|&lt;&lt;\s*(.*?)\s*&gt;&gt;/g, function(match, m1, m2, offset, string) {
-      if (m1)
-        return '{{[' + m1 + ']}}';
-      else if (m2)
-        return '{{[' + m2 + ']}}';
-    });
-
-    // unescape html contents between {{ and }}
-    parsedText = parsedText.replace(/{{\s*(.*?)\s*}}/g, function(match, m1, m2, offset, string) {
-      if (m1)
-        return '{{' + m1.replace("&nbsp;", ' ').replace("%20", ' ').replace("&amp;", '&').replace("&lt;", '<').replace("&gt;", '>') + '}}';
-      else if (m2)
-        return '{{' + m2.replace("&nbsp;", ' ').replace("%20", ' ').replace("&amp;", '&').replace("&lt;", '<').replace("&gt;", '>') + '}}';
-    });
-    
-    var template = Handlebars.compile(parsedText);
-    return template(context);
+    var returnValue = RenderService.replaceTags(templateText, context);
+    console.log('RenderService.render() - END');
+    return returnValue;
   }
 }
     
