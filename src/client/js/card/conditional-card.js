@@ -81,8 +81,11 @@ var ConditionalCard = function(appendTo, options) {
    * Checks and enables this Card.
    *
    */
+  this.setSheetId = function(options) {
+    console.log("form URL: "+options.sheet);
+  };
+
   this.setValue = function(name) {
-    console.log("name"+name);
     if (name == "onform"){
       RadioButtons1.parent()[0].MaterialRadio.check();
     }
@@ -105,17 +108,15 @@ var ConditionalCard = function(appendTo, options) {
   this.getValue = function() {
 
     if(RadioButtons1[0].checked){
-      console.log("first button selected");
       return "onform";
     }
 
     else if(RadioButtons2[0].checked){
-      console.log("2 button selected");
+
       return "auto";
     }
 
     else if(RadioButtons3[0].checked){
-      console.log("3 button selected");
       return "off";
     }
   

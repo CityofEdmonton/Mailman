@@ -52,7 +52,7 @@ CardsConfig.buildCardRepo = function(contentArea,
 
   var repo = {};
 
-  var setHeaders = function(sheet, row, getHeaders) {
+  var setHeaders = function(sheet, row, getHeaders, formURL) {
 
     repo[CardNames.to].setAutocomplete({
       trigger: '<<',
@@ -87,6 +87,10 @@ CardsConfig.buildCardRepo = function(contentArea,
       triggerOnFocus: true,
       getter: getHeaders
     });
+
+    repo[CardNames.repeater].setSheetId({
+      sheet: formURL
+    });
   };
 
   var getHeaders;
@@ -109,8 +113,10 @@ CardsConfig.buildCardRepo = function(contentArea,
     var row = repo[CardNames.row].getValue();
     var sheet = repo[CardNames.sheet].getValue();
     getHeaders = hService.get.bind(hService, sheet, row);
-    setHeaders(sheet, row, getHeaders);
+    var formURL = sService.getFormUrl(sheet);
+    setHeaders(sheet, row, getHeaders, formURL);
   });
+   
   repo[CardNames.sheet].setAutocomplete({
     maxResults: CardsConfig.maxResults,
     triggerOnFocus: true,
@@ -156,7 +162,6 @@ CardsConfig.buildCardRepo = function(contentArea,
     title: 'What would you like your email subject to be?',
     paragraphs: [
       'Tip: try typing <<',
-      'Warning: do not use "[" or "]" !'
     ],
     help: 'Recipients will see this as the subject line of the email. Type << to see a list of column names. ' +
       'Template tags will be swapped out with the associated values in the Sheet.',
@@ -167,7 +172,6 @@ CardsConfig.buildCardRepo = function(contentArea,
     title: 'What would you like your email body to be?',
     paragraphs: [
       'Tip: try typing <<',
-      'Warning: do not use "[" or "]" !'
     ],
     help: 'Recipients will see this as the body of the email. Type << to see a list of column names. ' +
     'Template tags will be swapped out with the associated values in the Sheet.',
