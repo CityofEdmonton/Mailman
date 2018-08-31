@@ -63,9 +63,9 @@ var EmailService = {
     var rowNum = range.getRowIndex() + i;
     console.log('Getting data from row ' + rowNum);
     var numColumns =  sheet.getDataRange().getNumColumns();
-    var row = range.offset(i, 1, 1,numColumns);
+    var row = range.offset(i, 0, 1,numColumns);
     var nextRow;
-    try { nextRow = sheet.getRange(rowNum+1, 0, 1, numColumns);} catch (e) { console.log(e) /* log and eat exceptions */ }
+    try { nextRow = sheet.getRange(rowNum+1, 1, 1, numColumns);} catch (e) { console.log(e) /* log and eat exceptions */ }
     if (nextRow) {
       EmailService.tryFillNewFormRowExtraColumns(row, nextRow, range.getNumColumns()+1, numColumns);
     } else {
