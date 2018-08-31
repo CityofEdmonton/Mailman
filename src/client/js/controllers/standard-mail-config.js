@@ -96,7 +96,7 @@ CardsConfig.buildCardRepo = function(contentArea,
     help: 'This title will help you differentiate this merge from others.',
     label: 'Title...',
     enabled: false,
-    checkboxText: 'Use this title as timestamp colume name?'
+    checkboxText: 'Use this title as timestamp column name?'
   });
 
   repo[CardNames.sheet] = new InputCard(contentArea, {
