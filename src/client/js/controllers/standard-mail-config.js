@@ -110,10 +110,12 @@ CardsConfig.buildCardRepo = function(contentArea,
   });
   repo[CardNames.sheet].attachEvent('card.hide', function(event, card) {
     // Set the header row
+    var formURL;
     var row = repo[CardNames.row].getValue();
     var sheet = repo[CardNames.sheet].getValue();
     getHeaders = hService.get.bind(hService, sheet, row);
-    var formURL = sService.getFormUrl(sheet);
+    sService.getFormUrl(sheet).then( formUrl => console.log(formUrl),  err => console.log(err));
+    console.log("test1"+formURL);
     setHeaders(sheet, row, getHeaders, formURL);
   });
    
