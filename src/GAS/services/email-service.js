@@ -18,7 +18,7 @@ var EmailService = {
    * @method
    * @param {MergeTemplate} template The MergeTemplate to run.
    */
-  startMergeTemplate: function(template) {
+  startMergeTemplate: function(template, options) {
     console.log('EmailService.startMergeTemplate() - BEGIN');
     try {
       MergeTemplateService.validate(template);
@@ -35,8 +35,15 @@ var EmailService = {
       return;
     }
 
-    if (template.mergeData.repeater == "onform"){
-      EmailService.mergeOnformTemplate(template);
+    if ((options || {}).type === 'OnFormSubmit' && template.mergeData.repeater == "onform"){
+      // ensure the form submitted is on the sheet the mergeTemplate is looking at
+      var range = ((options || {}).args || {}).range;
+      if (range && range.getSheet && range.getSheet().getName && range.getSheet().getName() === template.mergeData.sheet) {
+        console.log('EmailService.startMergeTemplate() - Starting mergeOnformTemplate because the sheet is a form sheet');
+        EmailService.mergeOnformTemplate(template, options.args);
+      } else {
+        console.log('EmailService.startMergeTemplate() - Not running mergeOnFormTemplate because the sheet specified in the mergeTemplate is not the one where the form data was submitted');
+      }
     }
     else if (template.mergeData.repeater == "auto" || template.mergeData.repeater == "off"){
       EmailService.mergeAllTemplate(template);
@@ -45,16 +52,25 @@ var EmailService = {
 
   },
 
-  mergeOnformTemplate: function(template) {
+  mergeOnformTemplate: function(template, args) {
     console.log('EmailService.mergeOnformTemplate() - BEGIN');
 
     var ss = Utility.getSpreadsheet();
     var sheet = ss.getSheetByName(template.mergeData.sheet);
-    var range = sheet.getDataRange();
+    var range = ((args || {}).range || sheet.getDataRange());
     var headerRow = template.mergeData.headerRow;
     var i = range.getNumRows()-1;
     var rowNum = range.getRowIndex() + i;
-    var row = range.offset(i, 0, 1, range.getNumColumns());      
+    console.log('Getting data from row ' + rowNum);
+    var numColumns =  sheet.getDataRange().getNumColumns();
+    var row = range.offset(i, 0, 1,numColumns);
+    var nextRow;
+    try { nextRow = sheet.getRange(rowNum+1, 1, 1, numColumns);} catch (e) { console.log(e) /* log and eat exceptions */ }
+    if (nextRow) {
+      EmailService.tryFillNewFormRowExtraColumns(row, nextRow, range.getNumColumns()+1, numColumns);
+    } else {
+      console.log('EmailService.mergeOnformTemplate() - not going to call tryFillNewFormRowExtraColumns() because a next row was not found');
+    }
     console.log('EmailService.mergeOnformTemplate() - i=' + i + ', rowNum=' + rowNum);
     var context = RenderService.getContext(template.mergeData.sheet, headerRow, rowNum);
     var renderOptions = { context: context };
@@ -92,6 +108,27 @@ var EmailService = {
       }
 
     console.log('EmailService.mergeOnformTemplate() - END');
+  },
+
+  tryFillNewFormRowExtraColumns: function(toRow, fromRow, startColumnIndex, endColumnIndex)
+  {
+    console.log('EmailService.tryFillNewFormRowExtraColumns() - BEGIN');
+    if (startColumnIndex > endColumnIndex) {
+      console.log('EmailService.tryFillNewFormRowExtraColumns() - Early exit because there are no cells to fill');
+      return;
+    }
+
+    console.log('EmailService.tryFillNewFormRowExtraColumns() - Copying from ' + fromRow.getA1Notation() + ' to ' + toRow.getA1Notation());
+    try {
+      var originRange = fromRow.offset(0, startColumnIndex, 1, endColumnIndex-startColumnIndex);
+      var target = toRow.offset(0, startColumnIndex, 1, endColumnIndex-startColumnIndex);
+      originRange.copyTo(target);  
+    } catch (ex) {
+      console.log('EmailService.tryFillNewFormRowExtraColumns() - Early exit because there are no cells to fill');
+      console.log(ex);
+    }
+
+    console.log('EmailService.tryFillNewFormRowExtraColumns() - END');
   },
 
   mergeAllTemplate: function(template) {
@@ -179,6 +216,7 @@ var EmailService = {
    * @return {boolean} true if the email was sent, false if it wasn't.
    */
   send: function(to, subject, body, cc, bcc, isBodyHtml) {
+    console.log('EmailService.send() - BEGIN');
     if (to === '' || to == null) {
       log('Unable send email, invalid email address... ');
       return false;
@@ -189,7 +227,7 @@ var EmailService = {
       cc: cc,
       bcc: bcc
     }));
-    console.log("Sending email to " + to);
+    console.log("EmailService.send() - Sending email to " + to);
 
     if (isBodyHtml || /<html>/.test(body)) {
       GmailApp.sendEmail(to, subject, body, {
@@ -205,7 +243,7 @@ var EmailService = {
       });
     }
 
-
+    console.log('EmailService.send() - END');
     return true;
   },
 

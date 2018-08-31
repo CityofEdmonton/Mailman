@@ -97,6 +97,7 @@ var TriggerService = {
 
     else if (trigger_name=="onform")
     {
+      handler = 'runOnFormSubmitTemplates';
       var trigger = TriggerService.getTriggerByEventType(ScriptApp.EventType.ON_FORM_SUBMIT);
       if (trigger == null) {
         log('Using Onform trigger, with '+trigger_name);

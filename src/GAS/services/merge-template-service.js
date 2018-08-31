@@ -10,8 +10,13 @@
  */
 function runAllMergeTemplates() {
   console.log('MergeTemplateService.runAllMergeTemplates() - BEGIN');
-  MergeTemplateService.runAll();
+  MergeTemplateService.runAll({ type: "runAll" });
   console.log('MergeTemplateService.runAllMergeTemplates() - END');
+};
+
+function runOnFormSubmitTemplates(e) {
+  console.log("start runOnFormSubmitTemplates");
+  MergeTemplateService.runAll({ type: "OnFormSubmit", args: e });
 };
 
 
@@ -93,7 +98,7 @@ var MergeTemplateService = {
    * - The triggerID this is called from matches the triggerIDs inside MergeRepeater.
    *
    */
-  runAll: function() {
+  runAll: function(options) {
     console.log('MergeTemplateService.runAll() - BEGIN');
     try {
       log('Running all merge templates.');
@@ -121,11 +126,22 @@ var MergeTemplateService = {
       templates.forEach(function(template) {
         var mergeData = template.mergeData;
         if (template.mergeData.type === "Email") {
-          console.log('MergeTemplateService.runAll() - running ' + template.mergeData.title + ' because the user ' + template.mergeRepeater.owner + ' == ' + user);
-          EmailService.startMergeTemplate(template);
+          if ((options || {}).type === 'OnFormSubmit') {
+            var repeater = ((template || {}).mergeData || {}).repeater;
+            if (repeater === 'onform') {
+              console.log('MergeTemplateService.runAll() - running ' + template.mergeData.title + ' because a new form was submitted ');
+              EmailService.startMergeTemplate(template, options);
+            } else {
+              console.log('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because the repeater != form (' + repeater + ')');
+            }
+          }
+          else {
+            console.log('MergeTemplateService.runAll() - running ' + template.mergeData.title);
+            EmailService.startMergeTemplate(template, options);
+          }
         }
         else {
-          console.log('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because the mergeData.type == ' + template.mergeData.type);
+          console.log('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because the mergeData.type != Email (' + template.mergeData.type + ')');
         }
       });
 
@@ -159,6 +175,9 @@ var MergeTemplateService = {
       var config;
       try {
         config = JSON.parse(value);
+        // set default value for version if it doesn't exist.
+        if (!config.version)
+          config.version = "1.0.0";
         MergeTemplateService.validate(config);
         return config;
       }
@@ -220,6 +239,9 @@ var MergeTemplateService = {
 
       var sheet = MergeTemplateService.getTemplateSheet();
 
+      // Add or update Version to template
+      template.version = MAILMAN_VERSION;
+
       sheet.appendRow([template.id, JSON.stringify(template)]);
     }
     catch (e) {
@@ -257,6 +279,9 @@ var MergeTemplateService = {
       if (row == null) {
         throw new Error('Template ' + template.id + ' does not exist.');
       }
+
+      // Add or update Version to template
+      template.version = MAILMAN_VERSION;
 
       var cell = row.getCell(1, MergeTemplateService.DATA_INDEX);
       cell.setValue(JSON.stringify(template));
