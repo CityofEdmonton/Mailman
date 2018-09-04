@@ -114,9 +114,11 @@ CardsConfig.buildCardRepo = function(contentArea,
     var row = repo[CardNames.row].getValue();
     var sheet = repo[CardNames.sheet].getValue();
     getHeaders = hService.get.bind(hService, sheet, row);
-    sService.getFormUrl(sheet).then( formUrl => console.log(formUrl),  err => console.log(err));
-    console.log("test1"+formURL);
-    setHeaders(sheet, row, getHeaders, formURL);
+    sService.getFormUrl(sheet).then(formUrl => 
+      {console.log(formUrl);
+        setHeaders(sheet, row, getHeaders, formUrl);
+      }
+    , err => console.log(err));
   });
    
   repo[CardNames.sheet].setAutocomplete({
