@@ -82,10 +82,10 @@ var ConditionalCard = function (appendTo, options) {
    *
    */
   this.setSheetId = function (options) {
-    console.log("the url is: "+options.formUrl);
     if (options.formUrl == undefined)
     {
       RadioButtons1.parent()[0].MaterialRadio.disable();
+
     }
   };
 
