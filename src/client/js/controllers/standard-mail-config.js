@@ -89,7 +89,10 @@ CardsConfig.buildCardRepo = function(contentArea,
     });
 
     repo[CardNames.repeater].setSheetId({
-      sheet: formURL
+      formUrl: formURL
+    });
+    repo[CardNames.conditional].setSheetId({
+      formUrl: formURL
     });
   };
 
@@ -115,7 +118,10 @@ CardsConfig.buildCardRepo = function(contentArea,
     var sheet = repo[CardNames.sheet].getValue();
     getHeaders = hService.get.bind(hService, sheet, row);
     sService.getFormUrl(sheet).then(formUrl => 
-      {console.log(formUrl);
+      {if (formUrl != undefined)
+        {
+          Snackbar.show('A form is linked to the sheet, conditional will be disabled.');
+        }
         setHeaders(sheet, row, getHeaders, formUrl);
       }
     , err => console.log(err));
@@ -159,7 +165,11 @@ CardsConfig.buildCardRepo = function(contentArea,
     var row = repo[CardNames.row].getValue();
     var sheet = repo[CardNames.sheet].getValue();
     getHeaders = hService.get.bind(hService, sheet, row);
-    setHeaders(sheet, row, getHeaders);
+    sService.getFormUrl(sheet).then(formUrl => 
+      {
+        setHeaders(sheet, row, getHeaders, formUrl);
+      }
+    , err => console.log(err));
   });
 
   repo[CardNames.subject] = new InputCard(contentArea, {

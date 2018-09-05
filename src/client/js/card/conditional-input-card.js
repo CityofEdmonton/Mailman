@@ -89,6 +89,15 @@ var ConditionalInputCard = function(appendTo, options) {
     enableCard();
   };
 
+  this.setSheetId = function (options) {
+    if (options.formUrl != undefined)
+    {
+      innerBase[0].MaterialCheckbox.uncheck();
+      innerBase[0].MaterialCheckbox.disable();
+      disableCard();
+    }
+  };
+
   /**
    * Unchecks and disables this Card.
    *
