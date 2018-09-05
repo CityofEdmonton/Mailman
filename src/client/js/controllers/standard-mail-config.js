@@ -52,7 +52,9 @@ CardsConfig.buildCardRepo = function(contentArea,
 
   var repo = {};
 
-  var setHeaders = function(sheet, row, getHeaders, formURL) {
+
+
+  var setHeaders = function(sheet, row, getHeaders) {
 
     repo[CardNames.to].setAutocomplete({
       trigger: '<<',
@@ -88,12 +90,6 @@ CardsConfig.buildCardRepo = function(contentArea,
       getter: getHeaders
     });
 
-    repo[CardNames.repeater].setSheetId({
-      formUrl: formURL
-    });
-    repo[CardNames.conditional].setSheetId({
-      formUrl: formURL
-    });
   };
 
   var getHeaders;
@@ -118,13 +114,13 @@ CardsConfig.buildCardRepo = function(contentArea,
     var sheet = repo[CardNames.sheet].getValue();
     getHeaders = hService.get.bind(hService, sheet, row);
     sService.getFormUrl(sheet).then(formUrl => 
-      {if (formUrl != undefined)
-        {
-          Snackbar.show('A form is linked to the sheet, conditional will be disabled.');
-        }
-        setHeaders(sheet, row, getHeaders, formUrl);
+      { 
+        repo[CardNames.repeater].setSheetId({
+          formUrl: formUrl
+        });
       }
     , err => console.log(err));
+    setHeaders(sheet, row, getHeaders);
   });
    
   repo[CardNames.sheet].setAutocomplete({
@@ -165,11 +161,7 @@ CardsConfig.buildCardRepo = function(contentArea,
     var row = repo[CardNames.row].getValue();
     var sheet = repo[CardNames.sheet].getValue();
     getHeaders = hService.get.bind(hService, sheet, row);
-    sService.getFormUrl(sheet).then(formUrl => 
-      {
-        setHeaders(sheet, row, getHeaders, formUrl);
-      }
-    , err => console.log(err));
+    setHeaders(sheet, row, getHeaders);
   });
 
   repo[CardNames.subject] = new InputCard(contentArea, {
@@ -215,6 +207,24 @@ CardsConfig.buildCardRepo = function(contentArea,
     Snackbar.show('Sending test email...');
   });
 
+  repo[CardNames.repeater] = new ConditionalCard(contentArea, {
+    title: 'How do you want to send email?',
+    help: 'This card is used to determine what type of repeater you want to have. Onform sending will '+
+    'send the email once a new row submitted. Please note Timestamp column may not work for onform sending, '+
+    'please use Mailman logging to check Timestamp for onform submission sending. '+
+    'Auto sending will send emails every hour. ',
+    checkboxText1: 'Immediately Sending',
+    checkboxText2: 'Hourly Sending',
+    checkboxText3: 'Manually Sending'
+  });
+
+  repo[CardNames.repeater].attachEvent('card.hide', function(event, card) {
+    var repeater = repo[CardNames.repeater].getValue();
+    repo[CardNames.conditional].setSheetId({
+      repeater: repeater
+    });
+  });
+
   repo[CardNames.conditional] = new ConditionalInputCard(contentArea, {
     title: 'Conditionally send this merge?',
     help: 'This column is used to determine when to send an email. If a given row reads TRUE, ' +
@@ -228,20 +238,6 @@ CardsConfig.buildCardRepo = function(contentArea,
     enabled: true,
     checkboxText: 'Use conditional sending?'
   });
-
-
-
-  repo[CardNames.repeater] = new ConditionalCard(contentArea, {
-    title: 'How do you want to send email?',
-    help: 'This card is used to determine what type of repeater you want to have. Onform sending will '+
-    'send the email once a new row submitted. Please note Timestamp column may not work for onform sending, '+
-    'please use Mailman logging to check Timestamp for onform submission sending. '+
-    'Auto sending will send emails every hour. ',
-    checkboxText1: 'Immediately Sending',
-    checkboxText2: 'Hourly Sending',
-    checkboxText3: 'Manually Sending'
-  });
-
   return repo;
 };
 

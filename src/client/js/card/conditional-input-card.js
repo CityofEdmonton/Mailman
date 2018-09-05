@@ -90,7 +90,8 @@ var ConditionalInputCard = function(appendTo, options) {
   };
 
   this.setSheetId = function (options) {
-    if (options.formUrl != undefined)
+    console.log("repeater is:"+options.repeater);
+    if (options.repeater == "onform")
     {
       innerBase[0].MaterialCheckbox.uncheck();
       innerBase[0].MaterialCheckbox.disable();
