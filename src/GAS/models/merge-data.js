@@ -47,7 +47,13 @@ var MergeData = function(config) {
   var conditional = config.conditional;
   var title = 'title';
   var headerRow = '1';
-  var timestampColumn = '<<Mailman ' + type + ' Timestamp>>';
+
+  if (config.usetitle == true){
+    var timestampColumn = '<<Mailman ' + config.title + ' Timestamp>>';
+  }
+  else{
+    var timestampColumn = '<<Mailman ' + type + ' Timestamp>>';
+  }
 
   //***** Private Methods *****//
 

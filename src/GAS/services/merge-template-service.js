@@ -9,7 +9,14 @@
  *
  */
 function runAllMergeTemplates() {
-  MergeTemplateService.runAll();
+  console.log('MergeTemplateService.runAllMergeTemplates() - BEGIN');
+  MergeTemplateService.runAll({ type: "runAll" });
+  console.log('MergeTemplateService.runAllMergeTemplates() - END');
+};
+
+function runOnFormSubmitTemplates(e) {
+  console.log("start runOnFormSubmitTemplates");
+  MergeTemplateService.runAll({ type: "OnFormSubmit", args: e });
 };
 
 
@@ -30,6 +37,7 @@ var MergeTemplateService = {
    * @return {string} A stringified array (<Array<MergeTemplate>).
    */
   getAll: function() {
+    console.log('MergeTemplateService.getAll() - BEGIN');
     try {
       var sheet = MergeTemplateService.getTemplateSheet();
       var range = sheet.getDataRange();
@@ -72,10 +80,12 @@ var MergeTemplateService = {
         }
       });
 
+      console.log('MergeTemplateService.getAll() - END');
       return rObj;
     }
     catch (e) {
-      log(e);
+      console.log('MergeTemplateService.getAll() - ERROR');
+      console.log(e);
       throw e;
     }
   },
@@ -88,18 +98,23 @@ var MergeTemplateService = {
    * - The triggerID this is called from matches the triggerIDs inside MergeRepeater.
    *
    */
-  runAll: function() {
+  runAll: function(options) {
+    console.log('MergeTemplateService.runAll() - BEGIN');
     try {
       log('Running all merge templates.');
 
       var user = Session.getEffectiveUser().getEmail();
+      console.log('MergeTemplateService.runAll() - User is ' + user);
       var templates = MergeTemplateService.getAll().templates;
 
+      console.log('MergeTemplateService.runAll() - ' + templates.length + ' templates found');
       templates = templates.filter(function(template) {
         if (template.mergeRepeater == null) {
+          console.log('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because it has no mergeRepeater');
           return false;
         }
         if (template.mergeRepeater.owner !== user) {
+          console.log('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because the user ' + template.mergeRepeater.owner + ' != ' + user);
           return false;
         }
 
@@ -111,19 +126,30 @@ var MergeTemplateService = {
       templates.forEach(function(template) {
         var mergeData = template.mergeData;
         if (template.mergeData.type === "Email") {
-          EmailService.startMergeTemplate(template);
+          if ((options || {}).type === 'OnFormSubmit') {
+            var repeater = ((template || {}).mergeData || {}).repeater;
+            if (repeater === 'onform') {
+              console.log('MergeTemplateService.runAll() - running ' + template.mergeData.title + ' because a new form was submitted ');
+              EmailService.startMergeTemplate(template, options);
+            } else {
+              console.log('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because the repeater != form (' + repeater + ')');
+            }
+          }
+          else {
+            console.log('MergeTemplateService.runAll() - running ' + template.mergeData.title);
+            EmailService.startMergeTemplate(template, options);
+          }
         }
         else {
-          log('Template attempting to run with type: ' + template.mergeData.type);
+          console.log('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because the mergeData.type != Email (' + template.mergeData.type + ')');
         }
       });
 
-      log('Done running merge templates.');
+      log('MergeTemplateService.runAll() - END');
     }
     catch (e) {
-      console.log("Error running merge templates");
+      log('MergeTemplateService.runAll() - ERROR');
       console.log(e);
-      log(e);
       throw(e);
     }
   },
@@ -149,6 +175,9 @@ var MergeTemplateService = {
       var config;
       try {
         config = JSON.parse(value);
+        // set default value for version if it doesn't exist.
+        if (!config.version)
+          config.version = "1.0.0";
         MergeTemplateService.validate(config);
         return config;
       }
@@ -210,6 +239,9 @@ var MergeTemplateService = {
 
       var sheet = MergeTemplateService.getTemplateSheet();
 
+      // Add or update Version to template
+      template.version = MAILMAN_VERSION;
+
       sheet.appendRow([template.id, JSON.stringify(template)]);
     }
     catch (e) {
@@ -247,6 +279,9 @@ var MergeTemplateService = {
       if (row == null) {
         throw new Error('Template ' + template.id + ' does not exist.');
       }
+
+      // Add or update Version to template
+      template.version = MAILMAN_VERSION;
 
       var cell = row.getCell(1, MergeTemplateService.DATA_INDEX);
       cell.setValue(JSON.stringify(template));

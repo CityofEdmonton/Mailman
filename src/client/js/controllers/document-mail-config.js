@@ -149,7 +149,7 @@ CardsConfig.buildCardRepo = function(contentArea,
   repo[CardNames.subject] = new InputCard(contentArea, {
     title: 'What would you like your email subject to be?',
     paragraphs: [
-      'Tip: try typing <<'
+      'Tip: try typing <<',
     ],
     help: 'Recipients will see this as the subject line of the email. Type << to see a list of column names. ' +
       'Template tags will be swapped out with the associated values in the Sheet.',
@@ -199,11 +199,15 @@ CardsConfig.buildCardRepo = function(contentArea,
   });
 
   repo[CardNames.repeater] = new ConditionalCard(contentArea, {
-    title: 'Repeater Type?',
-    enabled: true,
-    checkboxText1: 'Onform sending',
-    checkboxText2: 'Auto sending',
-    checkboxText3: 'No repeater'
+    title: 'How do you want to send email?',
+    help: 'This card is used to determine what type of repeater you want to have. Onform sending will '+
+    'send the email once a new row submitted. Please note Timestamp column may not work for onform sending, '+
+    'please use Mailman logging to check Timestamp for onform submission sending. '+
+    'Auto sending will send emails every hour. ',
+    checkboxText1: 'Immediately Sending',
+    checkboxText2: 'Hourly Sending',
+    checkboxText3: 'Manually Sending',
+    sheet: repo[CardNames.sheet].getValue()
   });
 
   return repo;

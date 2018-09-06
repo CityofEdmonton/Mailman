@@ -45,6 +45,11 @@ var SheetsService = function() {
     return Provoke('SheetsService', 'getActiveCell');    
   };  
 
+  this.getFormUrl = function(sheetName) {
+    return Provoke('SheetsService', 'getFormUrl', sheetName);    
+  }; 
+  
+
   self.init_();
 };
 

@@ -1,12 +1,12 @@
 /**
- * This module exports a ConditionalInputCard object.
+ * This module exports a CheckboxInput object.
  *
  * @author {@link https://github.com/j-rewerts|Jared Rewerts}
  * @module
  */
 
 
-var conditionalHTML = require('./conditional-input-card.html');
+var conditionalHTML = require('./checkbox-and-input-card.html');
 var InputCard = require('./card-input.js');
 
 
@@ -21,7 +21,7 @@ var InputCard = require('./card-input.js');
  * @param {Object} options The object that describes the Card functionality. See the parent object InputCard for details.
  * @param {boolean} enabled The default state of the checkbox.
  */
-var ConditionalInputCard = function(appendTo, options) {
+var CheckboxInput = function(appendTo, options) {
   InputCard.call(this, appendTo, options);
 
   // Private variables
@@ -35,8 +35,6 @@ var ConditionalInputCard = function(appendTo, options) {
   this.init_ = function(appendTo, options) {
     this.append(innerBase);
 
-    checkbox.on('change', setCardState);
-
     componentHandler.upgradeAllRegistered();
 
     if (options.enabled !== undefined) {
@@ -49,25 +47,9 @@ var ConditionalInputCard = function(appendTo, options) {
     }
   };
 
-  var setCardState = function(e) {
-    // NOTE MDL doesn't change the class until after this event is fired. That revereses our logic here.
-    if (!self.isEnabled()) {
-      enableCard();
-    }
-    else {
-      disableCard();
-    }
-  };
 
-  var disableCard = function() {
-    self.disableInput();
-  };
 
-  var enableCard = function() {
-    self.enableInput();
-  };
 
-  var oldGetValue = this.getValue;
 
   //***** Public Functions *****//
 
@@ -86,17 +68,6 @@ var ConditionalInputCard = function(appendTo, options) {
    */
   this.check = function() {
     innerBase[0].MaterialCheckbox.check();
-    enableCard();
-  };
-
-  this.setSheetId = function (options) {
-    console.log("repeater is:"+options.repeater);
-    if (options.repeater == "onform")
-    {
-      innerBase[0].MaterialCheckbox.uncheck();
-      innerBase[0].MaterialCheckbox.disable();
-      disableCard();
-    }
   };
 
   /**
@@ -105,14 +76,23 @@ var ConditionalInputCard = function(appendTo, options) {
    */
   this.uncheck = function() {
     innerBase[0].MaterialCheckbox.uncheck();
-    disableCard();
   };
+
+  var oldGetValue = this.getValue;
+
 
   /**
    * Gets the value associated with this Card.
    *
    * @return {string} The value of this Card.
    */
+  this.useTitle = function() {
+    if (self.isEnabled()) {
+      return true;
+    }
+    return false;
+  }
+
   this.getValue = function() {
     if (self.isEnabled()) {
       return oldGetValue();
@@ -125,9 +105,9 @@ var ConditionalInputCard = function(appendTo, options) {
 
 
 /** */
-ConditionalInputCard.prototype.constructor = ConditionalInputCard;
-ConditionalInputCard.prototype = Object.create(ConditionalInputCard.prototype);
+CheckboxInput.prototype.constructor = CheckboxInput;
+CheckboxInput.prototype = Object.create(CheckboxInput.prototype);
 
 
 /** */
-module.exports = ConditionalInputCard;
+module.exports = CheckboxInput;

@@ -20,22 +20,22 @@ var BaseCard = require('./card-titled.js');
  * @param {Object} options The object that describes the Card functionality. See the parent object BaseCard for details.
  * @param {boolean} enabled The default state of the checkbox.
  */
-var ConditionalCard = function(appendTo, options) {
+var ConditionalCard = function (appendTo, options) {
   BaseCard.call(this, appendTo, options);
 
   // Private variables
   var self = this;
-  var  innerBase = $(conditionalHTML);
-  var  RadioButtons1 = innerBase.find('[data-id="radio-button-option1"]');
-  var  rbLabel1 = innerBase.find('[data-id="radio__label-1"]');
-  var  RadioButtons2 = innerBase.find('[data-id="radio-button-option2"]');
-  var  rbLabel2 = innerBase.find('[data-id="radio__label-2"]');
-  var  RadioButtons3 = innerBase.find('[data-id="radio-button-option3"]');
-  var  rbLabel3 = innerBase.find('[data-id="radio__label-3"]');
+  var innerBase = $(conditionalHTML);
+  var RadioButtons1 = innerBase.find('[data-id="radio-button-option1"]');
+  var rbLabel1 = innerBase.find('[data-id="radio__label-1"]');
+  var RadioButtons2 = innerBase.find('[data-id="radio-button-option2"]');
+  var rbLabel2 = innerBase.find('[data-id="radio__label-2"]');
+  var RadioButtons3 = innerBase.find('[data-id="radio-button-option3"]');
+  var rbLabel3 = innerBase.find('[data-id="radio__label-3"]');
 
   //***** Private Methods *****//
 
-  this.init_ = function(appendTo, options) {
+  this.init_ = function (appendTo, options) {
     this.append(innerBase);
 
     if (options.checkboxText1 !== undefined) {
@@ -60,7 +60,7 @@ var ConditionalCard = function(appendTo, options) {
 
   };
 
-  var setRadioOn = function(e) {
+  var setRadioOn = function (e) {
     $(this)[0].MaterialRadio.check();
   }
 
@@ -73,7 +73,7 @@ var ConditionalCard = function(appendTo, options) {
    *
    * @returns {boolean} True if the Card is enabled. False if it isn't.
    */
-  this.isEnabled = function() {
+  this.isEnabled = function () {
     return innerBase.hasClass('is-checked');
   };
 
@@ -81,17 +81,24 @@ var ConditionalCard = function(appendTo, options) {
    * Checks and enables this Card.
    *
    */
-  this.setValue = function(name) {
-    console.log("name"+name);
-    if (name == "onform"){
+  this.setSheetId = function (options) {
+    if (options.formUrl == undefined)
+    {
+      RadioButtons1.parent()[0].MaterialRadio.disable();
+
+    }
+  };
+
+  this.setValue = function (name) {
+    if (name == "onform") {
       RadioButtons1.parent()[0].MaterialRadio.check();
     }
 
-    else if (name == "auto"){
+    else if (name == "auto") {
       RadioButtons2.parent()[0].MaterialRadio.check();
     }
 
-    else if (name == "off"){
+    else if (name == "off") {
       RadioButtons3.parent()[0].MaterialRadio.check();
     }
   };
@@ -102,23 +109,21 @@ var ConditionalCard = function(appendTo, options) {
    *
    * @return {string} The value of this Card.
    */
-  this.getValue = function() {
+  this.getValue = function () {
 
-    if(RadioButtons1[0].checked){
-      console.log("first button selected");
+    if (RadioButtons1[0].checked) {
       return "onform";
     }
 
-    else if(RadioButtons2[0].checked){
-      console.log("2 button selected");
+    else if (RadioButtons2[0].checked) {
+
       return "auto";
     }
 
-    else if(RadioButtons3[0].checked){
-      console.log("3 button selected");
+    else if (RadioButtons3[0].checked) {
       return "off";
     }
-  
+
   }
 
   this.init_(appendTo, options);

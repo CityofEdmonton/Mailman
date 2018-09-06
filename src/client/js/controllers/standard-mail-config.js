@@ -12,6 +12,8 @@ var InputCard = require('../card/card-input.js');
 var TitledCard = require('../card/card-titled.js');
 var TextareaCard = require('../card/card-textarea.js');
 var ConditionalInputCard = require('../card/conditional-input-card.js');
+var CheckboxAndInputCaed = require('../card/checkbox-and-input-card.js');
+
 var ConditionalCard = require('../card/conditional-card.js');
 
 var ToCard = require('../card/to-cc-bcc.js');
@@ -50,6 +52,8 @@ CardsConfig.buildCardRepo = function(contentArea,
 
   var repo = {};
 
+
+
   var setHeaders = function(sheet, row, getHeaders) {
 
     repo[CardNames.to].setAutocomplete({
@@ -85,14 +89,17 @@ CardsConfig.buildCardRepo = function(contentArea,
       triggerOnFocus: true,
       getter: getHeaders
     });
+
   };
 
   var getHeaders;
 
-  repo[CardNames.title] = new InputCard(contentArea, {
+  repo[CardNames.title] = new CheckboxAndInputCaed(contentArea, {
     title: 'What should this merge template be called?',
     help: 'This title will help you differentiate this merge from others.',
-    label: 'Title...'
+    label: 'Title...',
+    enabled: false,
+    checkboxText: 'Use this title as timestamp column name?'
   });
 
   repo[CardNames.sheet] = new InputCard(contentArea, {
@@ -102,11 +109,20 @@ CardsConfig.buildCardRepo = function(contentArea,
   });
   repo[CardNames.sheet].attachEvent('card.hide', function(event, card) {
     // Set the header row
+    var formURL;
     var row = repo[CardNames.row].getValue();
     var sheet = repo[CardNames.sheet].getValue();
     getHeaders = hService.get.bind(hService, sheet, row);
+    sService.getFormUrl(sheet).then(formUrl => 
+      { 
+        repo[CardNames.repeater].setSheetId({
+          formUrl: formUrl
+        });
+      }
+    , err => console.log(err));
     setHeaders(sheet, row, getHeaders);
   });
+   
   repo[CardNames.sheet].setAutocomplete({
     maxResults: CardsConfig.maxResults,
     triggerOnFocus: true,
@@ -151,7 +167,7 @@ CardsConfig.buildCardRepo = function(contentArea,
   repo[CardNames.subject] = new InputCard(contentArea, {
     title: 'What would you like your email subject to be?',
     paragraphs: [
-      'Tip: try typing <<'
+      'Tip: try typing <<',
     ],
     help: 'Recipients will see this as the subject line of the email. Type << to see a list of column names. ' +
       'Template tags will be swapped out with the associated values in the Sheet.',
@@ -161,7 +177,7 @@ CardsConfig.buildCardRepo = function(contentArea,
   repo[CardNames.body] = new TextareaCard(contentArea, {
     title: 'What would you like your email body to be?',
     paragraphs: [
-      'Tip: try typing <<'
+      'Tip: try typing <<',
     ],
     help: 'Recipients will see this as the body of the email. Type << to see a list of column names. ' +
     'Template tags will be swapped out with the associated values in the Sheet.',
@@ -191,6 +207,24 @@ CardsConfig.buildCardRepo = function(contentArea,
     Snackbar.show('Sending test email...');
   });
 
+  repo[CardNames.repeater] = new ConditionalCard(contentArea, {
+    title: 'How do you want to send email?',
+    help: 'This card is used to determine what type of repeater you want to have. Onform sending will '+
+    'send the email once a new row submitted. Please note Timestamp column may not work for onform sending, '+
+    'please use Mailman logging to check Timestamp for onform submission sending. '+
+    'Auto sending will send emails every hour. ',
+    checkboxText1: 'Immediately Sending',
+    checkboxText2: 'Hourly Sending',
+    checkboxText3: 'Manually Sending'
+  });
+
+  repo[CardNames.repeater].attachEvent('card.hide', function(event, card) {
+    var repeater = repo[CardNames.repeater].getValue();
+    repo[CardNames.conditional].setSheetId({
+      repeater: repeater
+    });
+  });
+
   repo[CardNames.conditional] = new ConditionalInputCard(contentArea, {
     title: 'Conditionally send this merge?',
     help: 'This column is used to determine when to send an email. If a given row reads TRUE, ' +
@@ -204,19 +238,6 @@ CardsConfig.buildCardRepo = function(contentArea,
     enabled: true,
     checkboxText: 'Use conditional sending?'
   });
-
-
-
-  repo[CardNames.repeater] = new ConditionalCard(contentArea, {
-    title: 'Repeater Type?',
-    help: 'This column is used to determine what type of repeater you want to have. Onform sending will '+
-    'send the email once a new row submitted. '+
-    'Auto sending will send emails every hour. ',
-    checkboxText1: 'Onform sending',
-    checkboxText2: 'Auto sending',
-    checkboxText3: 'No repeater'
-  });
-
   return repo;
 };
 

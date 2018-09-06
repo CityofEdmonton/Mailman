@@ -12,6 +12,7 @@ var PubSub = require('pubsub-js');
 var Promise = require('promise');
 var Snackbar = require('../snackbar/snackbar.js');
 var Disabler = require('../../util/disable.js');
+var MergeTemplateService = require('../../services/merge-template-service.js');
 
 
 

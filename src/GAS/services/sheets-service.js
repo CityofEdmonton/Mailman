@@ -50,5 +50,16 @@ var SheetsService = {
       log(e);
       throw e;
     }
+  },
+
+  getFormUrl: function(sheetName) {
+    console.log("test3"+sheetName);
+    var ss = Utility.getSpreadsheet();
+    var sheet = ss.getSheetByName(sheetName);
+    var formURL =sheet.getFormUrl();
+    console.log("url is : "+ formURL);
+    return formURL;
+
   }
+
 }
