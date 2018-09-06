@@ -220,6 +220,10 @@ CardsConfig.buildCardRepo = function(contentArea,
 
   repo[CardNames.repeater].attachEvent('card.hide', function(event, card) {
     var repeater = repo[CardNames.repeater].getValue();
+    if (repeater == "onform")
+    {
+      Snackbar.show('Immediately Sending selected, conditional sending will be disabled...');
+    }
     repo[CardNames.conditional].setSheetId({
       repeater: repeater
     });
