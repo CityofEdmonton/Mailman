@@ -94,10 +94,7 @@ var CheckboxInput = function(appendTo, options) {
   }
 
   this.getValue = function() {
-    if (self.isEnabled()) {
       return oldGetValue();
-    }
-    return;
   }
 
   this.init_(appendTo, options);
