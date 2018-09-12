@@ -60,7 +60,7 @@ var SettingsService = function() {
    * @return {Promise} A Promise.
    */
   this.getAdvancedMerge = function() {
-    console.log('Advanced merge is deprecated.');
+    logger.info("Advanced merge is deprecated");
     return Provoke('SettingsService', 'getAdvancedMerge');
   };
 
@@ -71,7 +71,7 @@ var SettingsService = function() {
    * @return {Promise} A Promise.
    */
   this.turnOnAdvancedMerge = function() {
-    console.log('Advanced merge is deprecated.');
+    logger.info("Advanced merge is deprecated");
     return Provoke('SettingsService', 'turnOnAdvancedMerge');
   };
 
@@ -82,7 +82,7 @@ var SettingsService = function() {
    * @return {Promise} A Promise.
    */
   this.turnOffAdvancedMerge = function() {
-    console.log('Advanced merge is deprecated.');
+    logger.info("Advanced merge is deprecated");
     return Provoke('SettingsService', 'turnOffAdvancedMerge');
   };
 };

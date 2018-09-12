@@ -119,7 +119,7 @@ CardsConfig.buildCardRepo = function(contentArea,
           formUrl: formUrl
         });
       }
-    , err => console.log(err));
+    , err => logger.error(err, "Error getting formUrl, {ErrorMessage}", err));
     setHeaders(sheet, row, getHeaders);
   });
    

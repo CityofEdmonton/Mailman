@@ -25,6 +25,8 @@ var PubSub = require('pubsub-js');
 var StandardMailHandler = require('./controllers/standard-mail-handler.js');
 var DocumentMailHandler = require('./controllers/document-mail-handler.js');
 var TypeToHandler = require('./controllers/type-to-handler.js');
+var logger = require('./services/logger-service.js')
+
 
 
 /**
@@ -156,14 +158,17 @@ var MailMan = function(appendTo) {
     });
 
     mtListView.setEditHandler(function(template) {
-      var type = template.toConfig().mergeData.type;
+      var templateConfig = template.toConfig();
+      var type = templateConfig.mergeData.type;
       cardsView = createCardsView(base, TypeToHandler[type.toLowerCase()], template);
+      logger.info('Opening MergeTemplate {MergeTemplate} for edit', templateConfig.mergeData.title);
       showCardsView();
     });
 
     mtListView.setPreviewHandler(function(template) {
       var type = template.toConfig().mergeData.type;
       cardsView = createCardsView(base, TypeToHandler["preview"], template);
+      logger.info('Opening preview window for MergeTemplate {MergeTemplate}', templateConfig.mergeData.title);
       showCardsView();
     });  
 

@@ -71,7 +71,7 @@ var MergeTemplateService = function() {
             }
           }
           catch (ex) {
-            console.log("Unable to read templates from local storage");
+            logger.error(ex, "Unable to read templates from local storage, {ErrorMessage}", ex);
           }
         }        
       }

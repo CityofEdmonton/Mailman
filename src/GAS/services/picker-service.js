@@ -4,10 +4,10 @@ PickerService.openDocument = function(writeTo) {
   var template = HtmlService
     .createTemplateFromFile('picker.html');
   template.oauthToken = getOAuthToken();
-  log(template.oauthToken);
+  log.debug("Retrieved OAuthToken={OAuthToken}", template.oauthToken);
   // template.fileType = google.picker.ViewId.DOCUMENTS;
   template.writeTo = writeTo;
-  log(template.writeTo);
+  log.debug("PickerServier writeTo={writeTo}", template.writeTo);
 
   var html = template.evaluate()
     .setWidth(600)

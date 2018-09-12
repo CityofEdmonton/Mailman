@@ -103,7 +103,7 @@ var MergeTemplateContainer = function(config, serviceFactory) {
         PubSub.publish('Rules.add', template);
       },
       function(e) {
-        console.log(e);
+        logger.error(e, "Error adding MergeTemplate {MergeTemplate}, {ErrorMessage}", template, e);
       }
     ).done();
   };
@@ -124,7 +124,7 @@ var MergeTemplateContainer = function(config, serviceFactory) {
       },
       function(e) {
         PubSub.publish('Rules.updateFailed');
-        console.log(e);
+        logger.error(e, "Error updating MergeTemplate {MergeTemplate}, {ErrorMessage}", template, e);
       }
     ).done();
   };
@@ -145,7 +145,7 @@ var MergeTemplateContainer = function(config, serviceFactory) {
         PubSub.publish('Rules.delete');
       },
       function(err) {
-        console.log(err);
+        logger.error(err, "Error deleting MergeTemplate {MergeTemplate}, {ErrorMessage}", template, err);
       }
     ).done();
 

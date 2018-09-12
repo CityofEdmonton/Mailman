@@ -86,7 +86,7 @@ var TriggerService = {
     if (trigger_name=="auto"){
       var trigger = TriggerService.getTriggerByEventType(ScriptApp.EventType.CLOCK);
       if (trigger == null) {
-        log('Using hourly trigger, with '+trigger_name);
+        logger.info('Creating hourly trigger, with {TriggerName}', trigger_name);
 
         triggers.push(TriggerService.createTimeBasedTrigger_(handler).getUniqueId());
       }
@@ -100,7 +100,7 @@ var TriggerService = {
       handler = 'runOnFormSubmitTemplates';
       var trigger = TriggerService.getTriggerByEventType(ScriptApp.EventType.ON_FORM_SUBMIT);
       if (trigger == null) {
-        log('Using Onform trigger, with '+trigger_name);
+        logger.info('Creating OnForm trigger, with {TriggerName}', trigger_name);
 
         triggers.push(TriggerService.createFormTrigger_(handler).getUniqueId());
       }
@@ -121,7 +121,7 @@ var TriggerService = {
 
     allTriggers.forEach(function(trigger) {
       if (!TriggerService.triggerExistsInRepeaters_(trigger, repeaters)) {
-        log('Deleting trigger ' + trigger.getUniqueId());
+        logger.info('Deleting trigger {TriggerId}', trigger.getUniqueId());
         ScriptApp.deleteTrigger(trigger);
       }
     });
@@ -130,7 +130,7 @@ var TriggerService = {
   //*** Private functions ***//
 
   createTimeBasedTrigger_: function(handler) {
-    log('Creating CLOCK trigger.');
+    logger.info('Creating CLOCK trigger');
     return ScriptApp.newTrigger(handler)
       .timeBased()
       .everyHours(1)
@@ -138,7 +138,7 @@ var TriggerService = {
   },
 
   createFormTrigger_: function(handler) {
-    log('Creating ON_FORM_SUBMIT trigger.');
+    logger.info('Creating ON_FORM_SUBMIT trigger');
     var ss = Utility.getSpreadsheet();
     return ScriptApp.newTrigger(handler)
       .forSpreadsheet(ss)

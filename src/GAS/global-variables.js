@@ -3,5 +3,7 @@ var RULE_KEY = 'MAILMAN_PROP_RULES';
 var MAILMAN_VERSION = '1.1.0';
 var APP_NAME = 'Mailman';
 var LAST_AUTH_KEY = 'MAILMAN_AUTH_EMAIL';
+var MAILMAN_SESSION_ID_KEY = 'MM_SESS_ID';
 
 var SPREADSHEET_ID = null;
+var MAILMAN_SESSION_ID = null; // set dynamically in logger

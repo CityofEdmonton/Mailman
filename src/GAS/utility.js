@@ -7,7 +7,7 @@ var Utility = {
       var ss = SpreadsheetApp.openById(id);
     }
     catch (e) {
-      log(e);
+      logger.error(e, 'Error getting spreadsheet, {ErrorMessage}', e);
       throw e;
     }
 
@@ -23,7 +23,7 @@ var Utility = {
     var sheet = ss.getSheetByName(MergeTemplateService.SHEET_NAME);
 
     if (sheet === null) {
-      log('Creating config sheet.');
+      logger.info('Creating config sheet');
       sheet = ss.insertSheet(MergeTemplateService.SHEET_NAME);
     }
 
@@ -38,5 +38,13 @@ var Utility = {
     var ss = Utility.getSpreadsheet();
     var sheet = ss.getSheetByName(MergeTemplateService.SHEET_NAME);
     sheet.clear();
+  },
+
+  createGuid: function () {
+    // from https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
   }
 };

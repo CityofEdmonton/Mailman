@@ -30,7 +30,7 @@ var SheetsService = {
       return names;
     }
     catch (e) {
-      log(e);
+      logger.error(e, 'Error getting sheet names, {ErrorMessage}', e);
       throw e;
     }
   },
@@ -47,17 +47,17 @@ var SheetsService = {
       return sheet.getName() + "!" + cell.getA1Notation();
     }
     catch (e) {
-      log(e);
+      logger.error(e, 'Error getting active cell, {ErrorMessage}', e);
       throw e;
     }
   },
 
   getFormUrl: function(sheetName) {
-    console.log("test3"+sheetName);
+    logger.debug('Getting formUrl for sheet {SheetName}', sheetName);
     var ss = Utility.getSpreadsheet();
     var sheet = ss.getSheetByName(sheetName);
     var formURL =sheet.getFormUrl();
-    console.log("url is : "+ formURL);
+    logger.debug('formUrl for {SheetName} is {FormUrl}', sheetName, formUrl);
     return formURL;
 
   }
