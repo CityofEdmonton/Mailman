@@ -31,7 +31,8 @@ function onOpen(e) {
 function openSidebar() {
   var ssId = SpreadsheetApp.getActiveSpreadsheet().getId();
   PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, ssId);
-  PropertiesService.getUserProperties().setProperty(MAILMAN_SESSION_ID, Utility.createGuid());
+  MAILMAN_SESSION_ID = Utility.createGuid();
+  PropertiesService.getUserProperties().setProperty(MAILMAN_SESSION_ID_KEY, MAILMAN_SESSION_ID);
 
   logger.info("Opening sidebar for {SpreadsheetId}", ssId);
 

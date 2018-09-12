@@ -66,14 +66,18 @@ function getLogger() {
       }
     }
 
-    var sessionId = PropertiesService.getUserProperties().getProperty(MAILMAN_SESSION_ID);
-    
     // final logging options and create the logger
     logConfig = logConfig.suppressErrors(false)
-      .enrich({
-        'Version': MAILMAN_VERSION,
-        'UserEmail': userEmail,
-        'SessionId': sessionId
+      .enrich(function() {
+        if (!MAILMAN_SESSION_ID) {
+          // this is normally set in events.openSidebar()
+          MAILMAN_SESSION_ID = PropertiesService.getUserProperties().getProperty(MAILMAN_SESSION_ID_KEY);
+        }
+        return {
+          'Version': MAILMAN_VERSION,
+          'UserEmail': userEmail,
+          'SessionId': MAILMAN_SESSION_ID  
+        };
       });
 
       logConfig = logConfig.writeTo(new structuredLog.ConsoleSink());
@@ -84,7 +88,8 @@ function getLogger() {
         url: props.getProperty("log-firebase-url"),
         projectId: props.getProperty("log-firebase-project-id"),
         email: props.getProperty("log-firebase-email"),
-        secret: props.getProperty("log-firebase-secret")
+        secret: props.getProperty("log-firebase-secret"),
+        restrictedToMinimumLevel: props.getProperty("log-firebase-min-level"),
       };
       // other options
       firebaseOptions.includeProperties = true;
@@ -95,7 +100,7 @@ function getLogger() {
       else if (!firebaseOptions.secret)
         console.warn("log-firebase-secret was not specified in project properties");
       else {
-        console.log("starting firebask sink...");
+        //console.log("starting firebase sink...");
         var firebaseSink = new structuredLog.FirebaseSink(firebaseOptions);
         logConfig = logConfig.writeTo(firebaseSink);
       }
@@ -108,7 +113,7 @@ function getLogger() {
       if (!seqOptions.url)
         console.warn("log-seq-url was not specified in project properties");
       else {
-        console.log("starting seq sink...");
+        //console.log("starting seq sink...");
         var mySeqSink = new SeqSink(seqOptions);
         logConfig = logConfig.writeTo(mySeqSink);
       }

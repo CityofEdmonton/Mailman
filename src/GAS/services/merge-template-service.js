@@ -9,14 +9,15 @@
  *
  */
 function runAllMergeTemplates() {
-  console.log('MergeTemplateService.runAllMergeTemplates() - BEGIN');
+  logger.debug('MergeTemplateService.runAllMergeTemplates() - BEGIN');
   MergeTemplateService.runAll({ type: "runAll" });
-  console.log('MergeTemplateService.runAllMergeTemplates() - END');
+  logger.debug('MergeTemplateService.runAllMergeTemplates() - END');
 };
 
 function runOnFormSubmitTemplates(e) {
-  console.log("start runOnFormSubmitTemplates");
+  logger.debug("MergeTemplateService.runOnFormSubmitTemplates - BEGIN");
   MergeTemplateService.runAll({ type: "OnFormSubmit", args: e });
+  logger.debug("MergeTemplateService.runOnFormSubmitTemplates - END");
 };
 
 
@@ -37,7 +38,7 @@ var MergeTemplateService = {
    * @return {string} A stringified array (<Array<MergeTemplate>).
    */
   getAll: function() {
-    console.log('MergeTemplateService.getAll() - BEGIN');
+    logger.debug('MergeTemplateService.getAll() - BEGIN');
     try {
       var sheet = MergeTemplateService.getTemplateSheet();
       var range = sheet.getDataRange();
@@ -61,10 +62,9 @@ var MergeTemplateService = {
         }
         catch (e) {
           // Potentially delete the template.
-          log(e);
+          logger.error(e, "Error validating mergeTemplate {MergeTemplate}, so deleting, {ErrorMessage}", config, e);
           sheet.appendRow(['']);
           sheet.deleteRow(row.getRowIndex());
-          log('Deleting invalid MergeTemplate.');
           i--;
         }
       }
@@ -74,18 +74,17 @@ var MergeTemplateService = {
           MergeTemplateService.validateMergeRepeater(template);
         }
         catch(e) {
-          log(e);
+          logger.error(e, "Invalid mergeRepeater {MergeTemplate}, {ErrorMessage}", template, e);
           template.mergeRepeater = null;
           MergeTemplateService.update(template);
         }
       });
 
-      console.log('MergeTemplateService.getAll() - END');
+      logger.debug('MergeTemplateService.getAll() - END');
       return rObj;
     }
     catch (e) {
-      console.log('MergeTemplateService.getAll() - ERROR');
-      console.log(e);
+      logger.error(e, "MergeTemplateService.getAll() - {ErrorMessage}", e);
       throw e;
     }
   },
@@ -99,22 +98,23 @@ var MergeTemplateService = {
    *
    */
   runAll: function(options) {
-    console.log('MergeTemplateService.runAll() - BEGIN');
+    logger.debug('MergeTemplateService.runAll() - BEGIN');
+    var startTime = new Date();
     try {
-      log('Running all merge templates.');
+      logger.info('Running all merge templates.');
 
       var user = Session.getEffectiveUser().getEmail();
-      console.log('MergeTemplateService.runAll() - User is ' + user);
+      logger.debug('MergeTemplateService.runAll() - User is ' + user);
       var templates = MergeTemplateService.getAll().templates;
 
-      console.log('MergeTemplateService.runAll() - ' + templates.length + ' templates found');
+      logger.debug('MergeTemplateService.runAll() - ' + templates.length + ' templates found');
       templates = templates.filter(function(template) {
         if (template.mergeRepeater == null) {
-          console.log('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because it has no mergeRepeater');
+          logger.debug('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because it has no mergeRepeater');
           return false;
         }
         if (template.mergeRepeater.owner !== user) {
-          console.log('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because the user ' + template.mergeRepeater.owner + ' != ' + user);
+          logger.debug('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because the user ' + template.mergeRepeater.owner + ' != ' + user);
           return false;
         }
 
@@ -129,29 +129,31 @@ var MergeTemplateService = {
           if ((options || {}).type === 'OnFormSubmit') {
             var repeater = ((template || {}).mergeData || {}).repeater;
             if (repeater === 'onform') {
-              console.log('MergeTemplateService.runAll() - running ' + template.mergeData.title + ' because a new form was submitted ');
+              logger.debug('MergeTemplateService.runAll() - running ' + template.mergeData.title + ' because a new form was submitted ');
               EmailService.startMergeTemplate(template, options);
             } else {
-              console.log('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because the repeater != form (' + repeater + ')');
+              logger.debug('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because the repeater != form (' + repeater + ')');
             }
           }
           else {
-            console.log('MergeTemplateService.runAll() - running ' + template.mergeData.title);
+            logger.debug('MergeTemplateService.runAll() - running ' + template.mergeData.title);
             EmailService.startMergeTemplate(template, options);
           }
         }
         else {
-          console.log('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because the mergeData.type != Email (' + template.mergeData.type + ')');
+          logger.debug('MergeTemplateService.runAll() - excluding ' + template.mergeData.title + ' because the mergeData.type != Email (' + template.mergeData.type + ')');
         }
       });
 
-      log('MergeTemplateService.runAll() - END');
+      logger.debug('MergeTemplateService.runAll() - END');
     }
     catch (e) {
-      log('MergeTemplateService.runAll() - ERROR');
-      console.log(e);
+      logger.error(e, 'MergeTemplateService.runAll() - {ErrorMesssage}', e);
       throw(e);
     }
+
+    var endTime = new Date();
+    logger.info('Ran all merge templates in {ElapsedMilliseconds}', endTime - startTime);
   },
 
   /**
@@ -166,7 +168,7 @@ var MergeTemplateService = {
       var sheet = MergeTemplateService.getTemplateSheet();
       var row = MergeTemplateService.getRowByID(id);
       if (row === null) {
-        log('MergeTemplate ' + id + ' doesn\'t exist.');
+        logger.warn('MergeTemplate {MergeTemplageId} doesn\'t exist.', id);
         return null;
       }
 
@@ -183,15 +185,14 @@ var MergeTemplateService = {
       }
       catch (e) {
         // Potentially delete the template.
-        log(e);
+        logger.warn('Deleting invalid MergeTemplate {MergeTemplate}, {ErrorMessage}', value, e);
         sheet.appendRow(['']);
         sheet.deleteRow(row.getRowIndex());
-        log('Deleting invalid MergeTemplate.');
         return null;
       }
     }
     catch (e) {
-      log(e);
+      logger.error(e, 'Unknown error getting MergeTemplate {MergeTemplateId}, {ErrorMessage}', id, e);
       throw e;
     }
   },
@@ -207,14 +208,14 @@ var MergeTemplateService = {
       var row = MergeTemplateService.getRowByID(id);
 
       if (row !== null) {
-        log('Deleting ' + id);
+        logger.debug('Deleting {MergeTemplateId}', id);
         sheet.appendRow(['']);
         sheet.deleteRow(row.getRowIndex());
       }
       TriggerService.deleteUnusedTriggers();
     }
     catch (e) {
-      log(e);
+      logger.error(e, 'Error deleting MergeTemplate {MergeTemplateId}, {ErrorMessage}', id, e);
       throw e;
     }
   },
@@ -245,7 +246,7 @@ var MergeTemplateService = {
       sheet.appendRow([template.id, JSON.stringify(template)]);
     }
     catch (e) {
-      log(e);
+      logger.error(e, 'Error creating MergeTemplate {MergeTemplate}, {ErrorMessage}', template, e);
       throw e;
     }
   },
@@ -268,7 +269,7 @@ var MergeTemplateService = {
         }
       }
 
-      log('updating: ' + template.id);
+      logger.info('Updateing MergeTemplate {MergeTemplateId}', template.id);
       // Verify the active user has permissions to edit this MergeTemplate.
       var oldTemplate = MergeTemplateService.getByID(template.id);
       if (oldTemplate === null) {
@@ -289,7 +290,7 @@ var MergeTemplateService = {
       TriggerService.deleteUnusedTriggers();
     }
     catch (e) {
-      log(e);
+      logger.error(e, 'Error updating MergeTemplate {MergeTemplate}, {ErrorMessage}', template, e);
       throw e;
     }
   },
@@ -315,7 +316,7 @@ var MergeTemplateService = {
       }
     }
     catch (e) {
-      log(e);
+      logger.error(e, 'Error getting MergeRepeater config, {ErrorMessage}', e);
       throw e;
     }
   },
@@ -333,7 +334,7 @@ var MergeTemplateService = {
       var repeater = template.mergeData.repeater;
 
       if (repeater == "off"){
-        log('No repeater selected, please select a repeater type.');
+        logger.warn('No repeater selected, please select a repeater type');
       }
       else  
       {
@@ -348,13 +349,13 @@ var MergeTemplateService = {
         };
   
         MergeTemplateService.update(template);
-        log('MergeTemplate ' + template.id + ' now repeating.');
+        logger.info('MergeTemplate {MergeTemplateId} is now repeating', template.id);
         return template;
       }
     }
 
     catch (e) {
-      log(e);
+      logger.error(e, 'Error adding MergeRepeater, {ErrorMessage}', e);
       throw e;
     }
   },
@@ -374,7 +375,7 @@ var MergeTemplateService = {
       return template;
     }
     catch (e) {
-      log(e);
+      logger.error(e, 'Error removing MergeRepeater, {ErrorMessage}', e);
       throw e;
     }
   },

@@ -11,6 +11,7 @@ var List = require('../list/list.js');
 var CardsConfig = require('./preview-config.js');
 var CardNames = require('./names.js');
 var MergeTemplate = require('../data/merge-template/merge-template.js');
+var logger = require('../services/logger-service.js')
 
 
 /**
@@ -39,6 +40,10 @@ var PreviewHandler = function(parent, serviceFactory) {
     //***** private functions *****//
 
   this.init_ = function() {
+
+    debugger;
+    var x = logger;
+    logger.info('test logging clientside.');
 
     // if we ever want more cards we can put them here
     cardsList = new List();
@@ -81,23 +86,21 @@ var PreviewHandler = function(parent, serviceFactory) {
                   if (rowIndexInStr && rowIndexInStr.index) {
                     var row = parseInt(cellRef.substr(rowIndexInStr.index));
                     mergeTemplateService.renderTemplate(self._mergeTemplateId, sheet, row).then(data => {
-                      console.log("Got rendered template!");
-                      console.log(data);
+                      logger.info("Got rendered template");
                       setPreviewData(data);
                     }, error => {
-                      console.log("Error rendering template");
-                      console.log(error);
+                      logger.error(error, "Error rendering template, {ErrorMessage}", error);
                     });
                   }
                 }  
               }
             } catch (ex) {
-              console.error("Error previewing template: " + ex);
+              logger.error(ex, "Error rendering template, {ErrorMessage}", ex);
             }
           }
         }
       }, err => {
-        console.log("Unable to get active cell to determine if we should be previewing merge template: " + err);
+        logger.error(err, "Unable to get active cell to determine if we should be previewing merge template, {ErrorMessage}", err);
       });
     }
   };

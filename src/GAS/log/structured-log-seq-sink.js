@@ -185,8 +185,12 @@
         }
 
         try {
+          //var startTime = new Date();
           var response = postToSeq(this.url, this.apiKey, this.compact, body, done);
           var json = JSON.parse(response.getContentText());
+          //var endTime = new Date();
+          //console.log('pushed message to seq in ' + (endTime - startTime) + 'ms');
+
           _this3.updateLogLevel(json);
           if (storageKey) localStorage.removeItem(storageKey);
         } catch (reason) {

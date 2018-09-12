@@ -107,7 +107,7 @@ var SettingsView = function(appendTo,
 
       logIcon.off();
       logIcon.on('click', function() {
-        console.log('opening: ' + url);
+        logger.info("opening {Url}", url);        
         window.open(url);
       });
     }

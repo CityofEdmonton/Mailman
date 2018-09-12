@@ -7,7 +7,7 @@ var Utility = {
       var ss = SpreadsheetApp.openById(id);
     }
     catch (e) {
-      log(e);
+      logger.error(e, 'Error getting spreadsheet, {ErrorMessage}', e);
       throw e;
     }
 
@@ -23,7 +23,7 @@ var Utility = {
     var sheet = ss.getSheetByName(MergeTemplateService.SHEET_NAME);
 
     if (sheet === null) {
-      log('Creating config sheet.');
+      logger.info('Creating config sheet');
       sheet = ss.insertSheet(MergeTemplateService.SHEET_NAME);
     }
 

@@ -17,24 +17,31 @@ var RenderService = {
    *
    * @return {Array<any>} An array containing all of the Sheet names.
    */
-  getContext: function(sheetName, headerRowIndex, dataRowIndex) {
-    console.log('RenderService.getContext() - BEGIN');
+  getContext: function(sheetName, headerRowIndex, dataRowIndex, sheetData) {
+    logger.debug('RenderService.getContext() - BEGIN, sheetName={SheetName}, headerRowIndex={HeaderRowIndex}, dataRowIndex={DataRowIndex}, sheetData.length={SheetDataLength}', sheetName, headerRowIndex, dataRowIndex, (sheetData || {}).length);
+    var startTime = new Date();
     try {
+      var headerRowValues, rowValues;
+      var nHeaderRowIndex = headerRowIndex && headerRowIndex === parseInt(headerRowIndex,10) ? headerRowIndex : 1;
       var spreadsheet = sheetName ? Utility.getSpreadsheet() : SpreadsheetApp.getActive();
-      var sheet = sheetName ? spreadsheet.getSheetByName(sheetName) : SpreadsheetApp.getActiveSheet();
-
-      // startRow, startColumn, numRows, numColumns
-      var headerRowValues = sheet.getSheetValues(headerRowIndex && headerRowIndex === parseInt(headerRowIndex,10) ? headerRowIndex : 1, 1, 1, 128)[0];
-      var rowNum = dataRowIndex;
-      if (!(rowNum && rowNum === parseInt(rowNum, 10))) {
-        var cell = sheet.getActiveCell();
-        rowNum = cell.getRow();
+      if (dataRowIndex && sheetData && sheetData.length > dataRowIndex && sheetData.length > nHeaderRowIndex) {
+        logger.debug('getContext() using provided sheetData');
+        headerRowValues = sheetData[nHeaderRowIndex-1]; // -1 because the array is zero-based
+        rowValues = sheetData[dataRowIndex-1]; // -1 because the array is zero-based
+      } else {
+        logger.debug('getContext() using SpreadSheetApp');
+        var sheet = sheetName ? spreadsheet.getSheetByName(sheetName) : SpreadsheetApp.getActiveSheet();
+  
+        // startRow, startColumn, numRows, numColumns
+        headerRowValues = sheet.getSheetValues(nHeaderRowIndex, 1, 1, 128)[0];
+        var rowNum = dataRowIndex;
+        if (!(rowNum && rowNum === parseInt(rowNum, 10))) {
+          var cell = sheet.getActiveCell();
+          rowNum = cell.getRow();
+        }
+       
+        rowValues = sheet.getSheetValues(rowNum, 1, 1, 128)[0];
       }
-     
-      console.log('RenderService.getContext() - dataRowIndex=' + dataRowIndex + ', rowNum=' + rowNum);
-      var rowValues = sheet.getSheetValues(rowNum, 1, 1, 128)[0];
-      console.log('RenderService.getContext() - rowValues:');
-      console.log(rowValues);
 
       var returnValue = {
         _meta: {
@@ -48,16 +55,14 @@ var RenderService = {
           returnValue[k] = v;
         }
       }
+      logger.debug('RenderService context retrived: {Context}', JSON.stringify(returnValue));
 
-      console.log('RenderService.getContext() - returnValue:');
-      console.log(returnValue);
-
-      console.log('RenderService.getContext() - END');
+      var endTime = new Date();
+      logger.debug('Retrieved RenderService context for row {RowNumber}, sheet {SheetName} in {ElapsedMilliseconds}ms', dataRowIndex, sheetName, endTime - startTime);
       return returnValue;
     }
     catch (e) {
-      console.log('RenderService.getContext() - ERROR');
-      console.log(e);
+      logger.error(e, 'Error retrieving RenderService context, {ErrorMessage}', e);
       throw e;
     }
   },
@@ -98,18 +103,18 @@ var RenderService = {
   },
 
   render: function(templateText, options) {
-    console.log('RenderService.render() - BEGIN');
+    logger.debug('RenderService.render() - BEGIN');
+    var startTime = new Date();
     var opt = options || {};
-    var context;
-    if (opt.context)
-      context = opt.context;
-    else {
-      var sheetName = opt.sheetName, headerRowIndex = opt.headerRowIndex, dataRowIndex = opt.dataRowIndex, context = opt.context || {};
+    var context = opt.context;
+    if (!context) {
+      var sheetName = opt.sheetName, headerRowIndex = opt.headerRowIndex, dataRowIndex = opt.dataRowIndex;
       context = RenderService.getContext(sheetName, headerRowIndex, dataRowIndex);
     }
     
     var returnValue = RenderService.replaceTags(templateText, context);
-    console.log('RenderService.render() - END');
+    var endTime = new Date();
+    logger.debug('Rendered {TemplateText} in {ElapsedMilliseconds}ms', templateText, endTime - startTime);
     return returnValue;
   }
 }

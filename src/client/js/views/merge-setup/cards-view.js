@@ -84,7 +84,9 @@ var CardsView = function(appendTo, handler, data, serviceFactory) {
   var cancelClicked = function() {
     if ($ && typeof $(self).trigger === 'function') {
       try { $(self).trigger('navigatingBack'); }
-      catch (ex) { console.error("Error in navigatingBack event handler"); console.log(ex); }
+      catch (ex) { 
+        logger.error(ex, "Error in navigatingBack event handler, {ErrorMessage}", ex);
+      }
     }
     if (rejectCB != null) {
       rejectCB('cancelled');

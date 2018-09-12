@@ -30,7 +30,7 @@ var HeaderService = {
       return sheet.getRange(row, 1, 1, sheet.getLastColumn()).getDisplayValues()[0];
     }
     catch (e) {
-      log(e);
+      logger.error(e, "Unable to get header, {ErrorMessage}", e);
       throw e;
     }
   }

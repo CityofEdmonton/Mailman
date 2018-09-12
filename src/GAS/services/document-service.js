@@ -33,7 +33,7 @@ var DocumentService = {
       muteHttpExceptions: true,
     };
     var html = UrlFetchApp.fetch(url, param).getContentText();
-    log('Loading Doc ' + id);
+    logger.info('Loading Doc {DocumentId}', id);
     DocumentService.openedDocuments[id] = html;
 
     return html;
