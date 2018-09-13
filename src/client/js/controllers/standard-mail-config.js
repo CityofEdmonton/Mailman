@@ -115,7 +115,7 @@ CardsConfig.buildCardRepo = function(contentArea,
     getHeaders = hService.get.bind(hService, sheet, row);
     sService.getFormUrl(sheet).then(formUrl => 
       { 
-        repo[CardNames.repeater].setSheetId({
+        repo[CardNames.repeater].setFormId({
           formUrl: formUrl
         });
       }
@@ -209,10 +209,11 @@ CardsConfig.buildCardRepo = function(contentArea,
 
   repo[CardNames.repeater] = new ConditionalCard(contentArea, {
     title: 'How do you want to send email?',
-    help: 'This card is used to determine what type of repeater you want to have. Onform sending will '+
-    'send the email once a new row submitted. Please note Timestamp column may not work for onform sending, '+
+    help: 'This card is used to determine what type of repeater you want to have. Immediately sending will '+
+    'send the email once a new row submitted. Please note Timestamp column may not work for Immediately sending, '+
     'please use Mailman logging to check Timestamp for onform submission sending. '+
-    'Auto sending will send emails every hour. ',
+    'Hourly sending will send emails every hour. '+
+    'Manually sending will send emails manually by the user. ',
     checkboxText1: 'Immediately Sending',
     checkboxText2: 'Hourly Sending',
     checkboxText3: 'Manually Sending'
@@ -222,9 +223,9 @@ CardsConfig.buildCardRepo = function(contentArea,
     var repeater = repo[CardNames.repeater].getValue();
     if (repeater == "onform")
     {
-      Snackbar.show('Immediately Sending selected, conditional sending will be disabled...');
+      Snackbar.show('Immediately Sending selected, conditional will be disabled...');
     }
-    repo[CardNames.conditional].setSheetId({
+    repo[CardNames.conditional].setFormId({
       repeater: repeater
     });
   });

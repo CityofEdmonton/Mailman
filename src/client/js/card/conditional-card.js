@@ -78,17 +78,20 @@ var ConditionalCard = function (appendTo, options) {
   };
 
   /**
-   * Checks and enables this Card.
+   * Check if the sheet links to a form
    *
    */
-  this.setSheetId = function (options) {
+  this.setFormId = function (options) {
     if (options.formUrl == undefined)
     {
       RadioButtons1.parent()[0].MaterialRadio.disable();
 
     }
   };
-
+  /**
+   * Set the repeater value
+   *
+   */
   this.setValue = function (name) {
     if (name == "onform") {
       RadioButtons1.parent()[0].MaterialRadio.check();
