@@ -216,7 +216,7 @@ CardsConfig.buildCardRepo = function(contentArea,
     'Manually sending will send emails manually by the user. ',
     checkboxText1: 'Immediately Sending',
     checkboxText2: 'Hourly Sending',
-    checkboxText3: 'Manually Sending',
+    checkboxText3: 'Manually Sending'
   });
 
   repo[CardNames.repeater].attachEvent('card.hide', function(event, card) {
