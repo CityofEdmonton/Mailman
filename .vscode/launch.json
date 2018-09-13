@@ -5,12 +5,41 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch mailman.html with VSCode debugging",
-            "type": "chrome",
+            "name": ".NET Core Launch (web)",
+            "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "Serve web",
-            "url": "http://localhost:8000/build/web/client/html/mailman-dev.html",
-            "webRoot": "${workspaceRoot}"
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/src/Mailman.Server/bin/Debug/netcoreapp2.1/Mailman.Server.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src",
+            "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart",
+            "launchBrowser": {
+                "enabled": true,
+                "args": "${auto-detect-url}",
+                "windows": {
+                    "command": "cmd.exe",
+                    "args": "/C start ${auto-detect-url}"
+                },
+                "osx": {
+                    "command": "open"
+                },
+                "linux": {
+                    "command": "xdg-open"
+                }
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:pickProcess}"
         }
     ]
 }
