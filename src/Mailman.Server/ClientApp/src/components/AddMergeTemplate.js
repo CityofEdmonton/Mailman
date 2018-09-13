@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { IconButton } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/AddCircle';
-
+import { Button } from '@material-ui/core';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 import { actionCreators } from '../store/MergeTemplates';
 
-class Home extends Component {
+class AddMergeTemplate extends Component {
   componentWillMount() {
     // This method runs when the component is first added to the page
     //const sheetId = ""; // TODO: get sheetId 
@@ -24,13 +23,14 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <p>Placeholder for mergeTemplates</p>
+        <p>Here you can add a new MergeTemplate.  This will be a sequence of cards.</p>
         <div>
-          <IconButton color="inherit">
-            <Link to="/addMergeTemplate">
-              <AddIcon />
-            </Link>
-          </IconButton>
+          <Button variant="contained">
+              Back
+          </Button>
+          <Button color="primary" variant="contained">
+              Save
+          </Button>
         </div>
       </div>
     );
@@ -42,4 +42,4 @@ class Home extends Component {
 export default connect(
   state => state.mergeTemplates,
   dispatch => bindActionCreators(actionCreators, dispatch)
-)(Home);
+)(AddMergeTemplate);
