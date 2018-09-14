@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Mailman.Services;
 
 namespace Mailman
 {
@@ -27,6 +28,8 @@ namespace Mailman
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            services.AddAuthentication().AddGoogle(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
