@@ -7,11 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mailman.Server", "Mailman.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mailman.Tests", "Mailman.Tests\Mailman.Tests.csproj", "{0FE7A12F-FF26-4D0C-B30D-8419DD89C59A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mailman.Data", "Mailman.Data\Mailman.Data.csproj", "{4B86BC8B-7DFA-4244-B616-3599CCEBC4DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mailman.Data", "Mailman.Data\Mailman.Data.csproj", "{4B86BC8B-7DFA-4244-B616-3599CCEBC4DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mailman.Services", "Mailman.Services\Mailman.Services.csproj", "{A9411A18-8F60-4770-8CEF-2D71488E20A4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel", "SharedKernel\SharedKernel.csproj", "{0FA85505-4531-40E7-94A5-87115BF628A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mailman.Services", "Mailman.Services\Mailman.Services.csproj", "{A9411A18-8F60-4770-8CEF-2D71488E20A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +33,6 @@ Global
 		{A9411A18-8F60-4770-8CEF-2D71488E20A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9411A18-8F60-4770-8CEF-2D71488E20A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9411A18-8F60-4770-8CEF-2D71488E20A4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0FA85505-4531-40E7-94A5-87115BF628A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0FA85505-4531-40E7-94A5-87115BF628A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0FA85505-4531-40E7-94A5-87115BF628A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0FA85505-4531-40E7-94A5-87115BF628A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

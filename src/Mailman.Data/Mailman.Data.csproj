@@ -8,8 +8,4 @@
     <PackageReference Include="Ensure.That" Version="8.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SharedKernel\SharedKernel.csproj" />
-  </ItemGroup>
-
 </Project>

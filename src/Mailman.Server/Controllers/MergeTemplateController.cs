@@ -24,9 +24,9 @@ namespace Mailman.Controllers
 
         // GET: api/MergeTemplate
         [HttpGet]
-        public IEnumerable<MergeTemplate> Get()
+        public Task<IEnumerable<MergeTemplate>> Get(string spreadsheetId)
         {
-            return _mergeTemplateRepository.GetMergeTemplates()?.Results;
+            return _mergeTemplateRepository.GetMergeTemplatesAsync(spreadsheetId);
         }
 
         // GET: api/MergeTemplate/5
