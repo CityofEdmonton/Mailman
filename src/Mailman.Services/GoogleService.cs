@@ -1,10 +1,15 @@
-﻿using System;
+﻿using Google.Apis.Auth.OAuth2;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Mailman.Services
 {
-    class GoogleService
+    internal class GoogleService : IGoogleService
     {
+
+        public void Test()
+        {
+        }
     }
 }
