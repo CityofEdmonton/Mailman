@@ -20,7 +20,8 @@ Is Mailman missing a feature you need? Let us know by filling [this](https://doc
 * Install donet sdk (2.1 or greater): https://www.microsoft.com/net/download
 * Install latest version of node: https://nodejs.org/en/
 * Install clasp: https://github.com/google/clasp
-* Run "clasp push" from the command line (one-time setup to create an apps script project).
+* [TODO: fix process to be able to use "clasp create --rootDir ./gas"]: modify the .clasp.json file to point to the correct scriptId
+* Run "clasp push" from the command line (one-time setup to push Code.js to an apps script project).
 
 ### UI Layer
 * VSCode is recommended: https://code.visualstudio.com/
