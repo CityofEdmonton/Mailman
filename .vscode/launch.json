@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/src/Mailman.Server/bin/Debug/netcoreapp2.1/Mailman.Server.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src",
+            "cwd": "${workspaceFolder}/src/Mailman.Server",
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart",
             "launchBrowser": {
