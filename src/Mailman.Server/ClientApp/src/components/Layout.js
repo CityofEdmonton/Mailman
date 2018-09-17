@@ -1,6 +1,6 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import ResponsiveNavMenu from './ResponsiveNavMenu'
+import ResponsiveNavMenu from './navigation/ResponsiveNavMenu'
 import ResponsiveDrawer from './navigation/Drawer'
 
 export default props => (
