@@ -1,7 +1,6 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import ResponsiveNavMenu from "./navigation/ResponsiveNavMenu";
-import ResponsiveDrawer from "./navigation/Drawer";
 import { withStyles } from "@material-ui/core/styles";
 
 const styles = theme => ({
@@ -14,7 +13,6 @@ const styles = theme => ({
 
 const Layout = props => (
   <div>
-    <ResponsiveDrawer />
     <ResponsiveNavMenu>
       <Grid container className={props.classes.root}>
         <Grid item xs={12}>

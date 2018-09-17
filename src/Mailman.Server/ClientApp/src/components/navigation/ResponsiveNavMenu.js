@@ -6,6 +6,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
+import ResponsiveDrawer from "./Drawer";
 
 // State Management
 import { bindActionCreators } from "redux";
@@ -17,7 +18,6 @@ const drawerWidth = 240;
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    height: 440,
     zIndex: 1,
     overflow: "hidden",
     position: "relative",
@@ -57,6 +57,7 @@ class ResponsiveNavMenu extends React.Component {
 
     return (
       <div className={classes.root}>
+        <ResponsiveDrawer />
         <AppBar className={classes.appBar}>
           <Toolbar>
             <IconButton
