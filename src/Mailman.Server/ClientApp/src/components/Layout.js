@@ -1,19 +1,17 @@
 import React from 'react';
-import { Col, Grid, Row } from 'react-bootstrap';
-import NavMenu from './NavMenu';
+import Grid from '@material-ui/core/Grid';
+import ResponsiveNavMenu from './ResponsiveNavMenu'
+import ResponsiveDrawer from './navigation/Drawer'
 
 export default props => (
   <div>
-  <NavMenu />
-  <Grid fluid>
-    <Row>
-      <Col sm={3}>
-      </Col>
-      <Col sm={9}>
-        {props.children}
-      </Col>
-    </Row>
-  </Grid>
-
+    <ResponsiveDrawer />
+    <ResponsiveNavMenu>
+      <Grid container spacing={24}>
+        <Grid item>
+          {props.children}
+        </Grid>
+      </Grid>
+    </ResponsiveNavMenu>
   </div>
 );
