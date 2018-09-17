@@ -7,7 +7,8 @@ export default props => (
   <div>
     <ResponsiveDrawer />
     <ResponsiveNavMenu>
-      <Grid container spacing={24}>
+      <Grid container spacing={24} direction="column">
+        <Grid item></Grid>
         <Grid item>
           {props.children}
         </Grid>
