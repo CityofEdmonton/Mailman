@@ -1,9 +1,34 @@
-const requestMergeTemplatesType = 'REQUEST_MERGE_TEMPLATES';
-const receiveMergeTemplatesType = 'RECEIVE_MERGE_TEMPLATES';
-const initialState = { mergeTemplates: [], isLoading: false };
+const requestMergeTemplatesType = "REQUEST_MERGE_TEMPLATES";
+const receiveMergeTemplatesType = "RECEIVE_MERGE_TEMPLATES";
+const initialState = {
+  mergeTemplates: [
+    {
+      mergeRepeater: null,
+      mergeData: {
+        type: "Email",
+        data: {
+          to: "a.person@edmonton.ca",
+          cc: "jared.rewerts@edmonton.ca",
+          bcc: "",
+          subject: "Early Bird Rate Extended - Open Data Summit || <<Name>>",
+          body: "<h3>TEST</h3>"
+        },
+        title: "Early Bird Rate - Demo",
+        sheet: "Notification Type Mailman",
+        headerRow: "1",
+        timestampColumn: "<<Mailman Email Timestamp>>",
+        conditional: "<<Final Validation>>"
+      },
+      createdBy: "Unknown user",
+      createdDatetime: "9/6/2018 12:17:13",
+      id: "_42ktles0m"
+    }
+  ],
+  isLoading: false
+};
 
 export const actionCreators = {
-  requestMergeTemplates: sheetId => async (dispatch, getState) => {    
+  requestMergeTemplates: sheetId => async (dispatch, getState) => {
     if (sheetId === getState().mergeTemplates.sheetId) {
       // Don't issue a duplicate request (we already have or are loading the requested data)
       return;
