@@ -2,14 +2,20 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
 
-const styles = theme => ({});
+const styles = theme => ({
+  paper: {
+    height: 140,
+    width: 100
+  }
+});
 
 const MergeTemplate = props => (
   <div>
-    <Grid item>
-      <h1>{props.title}</h1>
-    </Grid>
+    <Paper className={props.classes.paper}>
+      <p>{props.title}</p>
+    </Paper>
   </div>
 );
 

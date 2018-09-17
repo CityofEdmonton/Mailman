@@ -2,12 +2,15 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { withStyles } from "@material-ui/core/styles";
 import { IconButton } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/AddCircle";
 import Grid from "@material-ui/core/Grid";
 
 import { actionCreators } from "../store/MergeTemplates";
 import MergeTemplate from "./MergeTemplate";
+
+const styles = theme => ({});
 
 class Home extends Component {
   componentWillMount() {
@@ -27,13 +30,14 @@ class Home extends Component {
       <div>
         <p>Placeholder for mergeTemplates</p>
         <div>
-          <Grid container>
+          <Grid container spacing={16}>
             {this.props.mergeTemplates.map(mergeTemplate => (
-              <MergeTemplate
-                key={mergeTemplate.id}
-                title={mergeTemplate.mergeData.title}
-                to={mergeTemplate.mergeData.data.to}
-              />
+              <Grid key={mergeTemplate.id} item>
+                <MergeTemplate
+                  title={mergeTemplate.mergeData.title}
+                  to={mergeTemplate.mergeData.data.to}
+                />
+              </Grid>
             ))}
           </Grid>
           <IconButton color="inherit">
@@ -53,7 +57,9 @@ const mapStateToProps = state => {
   };
 };
 
+const exportWithStyles = withStyles(styles, { withTheme: true })(Home);
+
 export default connect(
   mapStateToProps,
   dispatch => bindActionCreators(actionCreators, dispatch)
-)(Home);
+)(exportWithStyles);

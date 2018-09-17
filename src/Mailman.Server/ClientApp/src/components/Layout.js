@@ -1,18 +1,28 @@
-import React from 'react';
-import Grid from '@material-ui/core/Grid';
-import ResponsiveNavMenu from './navigation/ResponsiveNavMenu'
-import ResponsiveDrawer from './navigation/Drawer'
+import React from "react";
+import Grid from "@material-ui/core/Grid";
+import ResponsiveNavMenu from "./navigation/ResponsiveNavMenu";
+import ResponsiveDrawer from "./navigation/Drawer";
+import { withStyles } from "@material-ui/core/styles";
 
-export default props => (
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    marginTop: "64px",
+    padding: "0px 16px 0px 16px"
+  }
+});
+
+const Layout = props => (
   <div>
     <ResponsiveDrawer />
     <ResponsiveNavMenu>
-      <Grid container spacing={24} direction="column">
-        <Grid item></Grid>
-        <Grid item>
+      <Grid container className={props.classes.root}>
+        <Grid item xs={12}>
           {props.children}
         </Grid>
       </Grid>
     </ResponsiveNavMenu>
   </div>
 );
+
+export default withStyles(styles, { withTheme: true })(Layout);
