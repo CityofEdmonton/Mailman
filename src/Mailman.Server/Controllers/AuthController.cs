@@ -8,11 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Mailman.Server.Controllers
 {
-    // see https://www.jerriepelser.com/blog/authenticate-oauth-aspnet-core-2/
-
     [Authorize]
     public class AuthController : Controller
     {
+        // placeholder just to trigger a oauth call
         public async Task<IActionResult> Index()
         {
 

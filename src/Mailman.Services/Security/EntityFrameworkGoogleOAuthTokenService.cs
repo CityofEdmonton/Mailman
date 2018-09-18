@@ -17,6 +17,7 @@ namespace Mailman.Services.Security
             ILogger logger)
         {
             _oAuthTokenContext = context;
+            _logger = logger;
         }
 
         public async Task UpdateOAuthTokens(AuthenticateResult auth)
@@ -56,9 +57,9 @@ namespace Mailman.Services.Security
                     tokenInfo.AccessToken = accessToken;
                     tokenInfo.RefreshToken = refreshToken;
                     tokenInfo.ExpiryUtc = expiryUtc;
+                    _oAuthTokenContext.Entry(tokenInfo).State = EntityState.Modified;
                     await _oAuthTokenContext.SaveChangesAsync();
                 }
-
             }
         }
     }
