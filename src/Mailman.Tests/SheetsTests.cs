@@ -24,7 +24,7 @@ namespace Mailman.Tests
             // Our build server downloads this secure file to this location
             string credFilePath = Environment.GetEnvironmentVariable("DOWNLOADSECUREFILE_SECUREFILEPATH");
             TEST_SHEET_ID = Environment.GetEnvironmentVariable("GOOGLE_TEST_SHEET");
-            var credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromJson(credFilePath);
+            var credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(credFilePath);
             
             var serviceInitializer = new Google.Apis.Services.BaseClientService.Initializer()
             {
