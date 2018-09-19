@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -23,8 +24,13 @@ namespace Mailman.Tests
         {
             // Our build server downloads this secure file to this location
             string credFilePath = Environment.GetEnvironmentVariable("DOWNLOADSECUREFILE_SECUREFILEPATH");
+            var serviceAccount = JObject.Parse(File.ReadAllText(credFilePath));
             TEST_SHEET_ID = Environment.GetEnvironmentVariable("GOOGLE_TEST_SHEET");
-            var credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(credFilePath);
+            
+            var credential = new ServiceAccountCredential(new ServiceAccountCredential.Initializer(serviceAccount.client_email)
+            {
+                Scopes = GetCredentialScopes()
+            }.FromPrivateKey(serviceAccount.private_key));
             
             var serviceInitializer = new Google.Apis.Services.BaseClientService.Initializer()
             {
@@ -41,6 +47,13 @@ namespace Mailman.Tests
                 .BuildServiceProvider();
 
             _sheetsController = services.GetRequiredService<SheetsController>();
+        }
+        
+        private static string[] GetCredentialScopes()
+        {
+            return new[] {
+                    SheetsService.Scope.Spreadsheets
+                };
         }
 
         private readonly SheetsController _sheetsController;
