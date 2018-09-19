@@ -24,7 +24,7 @@ namespace Mailman.Tests
         {
             // Our build server downloads this secure file to this location
             string credFilePath = Environment.GetEnvironmentVariable("DOWNLOADSECUREFILE_SECUREFILEPATH");
-            var serviceAccount = JObject.Parse(File.ReadAllText(credFilePath));
+            dynamic serviceAccount = JObject.Parse(File.ReadAllText(credFilePath));
             TEST_SHEET_ID = Environment.GetEnvironmentVariable("GOOGLE_TEST_SHEET");
             
             var credential = new ServiceAccountCredential(new ServiceAccountCredential.Initializer(serviceAccount.client_email)
