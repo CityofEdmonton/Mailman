@@ -21,8 +21,9 @@ namespace Mailman.Tests
     {
         public SheetsTests()
         {
-            var accessToken = "__redacted__";
-            var credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromAccessToken(accessToken);
+            string googleClientId = Environment.GetEnvironmentVariable("GOOGLE_SVC");
+            TEST_SHEET_ID = Environment.GetEnvironmentVariable("GOOGLE_TEST_SHEET");
+            var credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromJson(googleClientId);
             
             var serviceInitializer = new Google.Apis.Services.BaseClientService.Initializer()
             {
@@ -42,11 +43,12 @@ namespace Mailman.Tests
         }
 
         private readonly SheetsController _sheetsController;
+        private readonly string TEST_SHEET_ID;
 
         [Test]
         public async Task TestReadSheetNames()
         {
-            var sheetNames = (await _sheetsController.GetSheetNames("__redacted__")).ToList();
+            var sheetNames = (await _sheetsController.GetSheetNames(TEST_SHEET_ID)).ToList();
             sheetNames.Should().HaveCount(2);
             sheetNames.First().Should().Be("Data");
             sheetNames.ElementAt(1).Should().Be("Sheet5");
