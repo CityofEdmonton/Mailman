@@ -17,9 +17,16 @@ Is Mailman missing a feature you need? Let us know by filling [this](https://doc
 
 
 ## Dev Setup
-* VSCode requires the following extensions:
-* * https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome
-*
-* Chrome requires the following extensions on the instance of chrome run by VSCode
-* https://chrome.google.com/webstore/detail/ignore-x-frame-headers/gleekbfjekiniecknbkamfmkohkpodhe
-* Open browser to http://localhost:8000/build/web/client/html/mailman-dev.html
+* Install donet sdk (2.1 or greater): https://www.microsoft.com/net/download
+* Install latest version of node: https://nodejs.org/en/
+* Install clasp: https://github.com/google/clasp
+* Modify the .clasp.json file to point to the correct scriptId
+* Run "clasp push" from the command line (one-time setup to push Code.js to an apps script project).
+
+### UI Layer
+* VSCode is recommended: https://code.visualstudio.com/
+* Open the following folder in VSCode: {mailman_repo}/src/Mailman.Server/ClientApp
+* Run the "start web" task (in the menu select Terminal->Run task...)
+* Open the Apps script project deployed when you ran "clasp push"
+* Run the Apps script project as a Test Add-On
+* Happy Coding :) Any changes to the files in VSCode will automatically cause the add-on to refresh with the updated changes
