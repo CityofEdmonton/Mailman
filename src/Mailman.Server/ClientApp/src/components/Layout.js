@@ -1,19 +1,26 @@
-import React from 'react';
-import { Col, Grid, Row } from 'react-bootstrap';
-import NavMenu from './NavMenu';
+import React from "react";
+import Grid from "@material-ui/core/Grid";
+import ResponsiveNavMenu from "./navigation/ResponsiveNavMenu";
+import { withStyles } from "@material-ui/core/styles";
 
-export default props => (
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    marginTop: "64px",
+    padding: "0px 16px 0px 16px"
+  }
+});
+
+const Layout = props => (
   <div>
-  <NavMenu />
-  <Grid fluid>
-    <Row>
-      <Col sm={3}>
-      </Col>
-      <Col sm={9}>
-        {props.children}
-      </Col>
-    </Row>
-  </Grid>
-
+    <ResponsiveNavMenu>
+      <Grid container className={props.classes.root}>
+        <Grid item xs={12}>
+          {props.children}
+        </Grid>
+      </Grid>
+    </ResponsiveNavMenu>
   </div>
 );
+
+export default withStyles(styles, { withTheme: true })(Layout);
