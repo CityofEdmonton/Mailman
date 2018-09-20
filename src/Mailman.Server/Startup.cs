@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Mailman.Services;
 
 namespace Mailman
 {
@@ -20,6 +21,9 @@ namespace Mailman
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.ConfigureLogging("MailMan Server", Configuration);
+            services.AddMailmanServices(Configuration);
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // In production, the React files will be served from this directory
@@ -27,6 +31,7 @@ namespace Mailman
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +49,7 @@ namespace Mailman
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseMailmanAuthentication();
             app.UseSpaStaticFiles();
 
             app.UseMvc(routes =>
