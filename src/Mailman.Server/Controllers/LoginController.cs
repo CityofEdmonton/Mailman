@@ -54,6 +54,12 @@ namespace Mailman.Server.Controllers
         {
             // once here we can use the accessToken to get information about our user
             // and then issue a new ClaimsPrincipal on HttpContext.User
+
+            if (string.IsNullOrWhiteSpace(model?.AccessToken))
+                throw new ArgumentNullException("AccessToken");
+
+
+
             return new ContentResult()
             {
                 Content = "<html><body>\n<script>\nwindow.close();</script>\n</body></html>",

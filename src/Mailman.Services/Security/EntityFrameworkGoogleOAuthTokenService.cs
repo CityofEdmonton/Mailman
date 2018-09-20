@@ -27,16 +27,20 @@ namespace Mailman.Services.Security
             string email = auth.Principal?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
             string accessToken = auth.Properties?.GetTokenValue("access_token");
             string refreshToken = auth.Properties?.GetTokenValue("refresh_token");
-            DateTime expiryUtc = DateTime.Parse(auth.Properties?.GetTokenValue("expires_at")).ToUniversalTime();
+            string expiryDateString = auth.Properties?.GetTokenValue("expires_at");
+            DateTime expiryUtc = string.IsNullOrWhiteSpace(expiryDateString) ? DateTime.MinValue : DateTime.Parse(expiryDateString).ToUniversalTime();
 
             TokenInfo tokenInfo;
-            // note the use of the query rather than Find(...)
+                        // note the use of the query rather than Find(...)
             // this is to ensure we always get a fresh copy from the database
             try { tokenInfo = await _oAuthTokenContext.Tokens.AsNoTracking().FirstOrDefaultAsync(x => x.Email == email); }
             catch (Exception err)
             {
-                _logger.Error(err, "Unable to read from Token database");
-                throw;
+                _logger.Warning(err, "Unable to read from Token database");
+
+                // note that we currently eat the exception - this is so that in development
+                // we don't stop just because we haven't set up the database yet (it is not critical)
+                return;
             }
             if (tokenInfo == null)
             {
