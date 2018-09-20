@@ -90,7 +90,7 @@ namespace Mailman.Services
                 options.ClientSecret = googleClientSecret;
                 options.Scope.Add(SheetsService.Scope.Spreadsheets);
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.CallbackPath = "/auth/signin-google";
+                options.CallbackPath = "/login/signin-google";
                 options.SaveTokens = true;
                 options.AccessType = "offline";
             });
