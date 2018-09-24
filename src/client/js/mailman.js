@@ -168,7 +168,6 @@ var MailMan = function(appendTo) {
     mtListView.setPreviewHandler(function(template) {
       var type = template.toConfig().mergeData.type;
       cardsView = createCardsView(base, TypeToHandler["preview"], template);
-      logger.info('Opening preview window for MergeTemplate {MergeTemplate}', templateConfig.mergeData.title);
       showCardsView();
     });  
 
