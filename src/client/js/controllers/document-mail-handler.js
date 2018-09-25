@@ -119,7 +119,6 @@ var DocumentMailHandler = function(parent, serviceFactory) {
     });
     cardRepository[CardNames.subject].setValue(updateConfig.mergeData.data.subject);
     cardRepository[CardNames.documentSelector].setValue(updateConfig.mergeData.data.documentID);
-
     cardRepository[CardNames.repeater].setValue(updateConfig.mergeData.repeater);
     if (updateConfig.mergeData.conditional != null) {
       cardRepository[CardNames.conditional].check();

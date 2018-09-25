@@ -1,7 +1,7 @@
 /**
  * This module exports a CheckboxInput object.
  *
- * @author {@link https://github.com/j-rewerts|Jared Rewerts}
+ * @author {Jackson Chang}
  * @module
  */
 
