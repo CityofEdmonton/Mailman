@@ -12,7 +12,7 @@ var PubSub = require('pubsub-js');
 //var SettingsService = require('../../services/settings-service.js');
 var Snackbar = require('../snackbar/snackbar.js');
 //var MetadataService = require('../../services/metadata-service.js');
-
+var logger = require('../../services/logger-service.js')
 
 
 /**
