@@ -90,17 +90,19 @@ var ConditionalInputCard = function(appendTo, options) {
   };
 
   this.setFormId = function (options) {
-    if (options.repeater == "onform")
+    if (options.repeater == "onform" || options.conditional == null)
     {
       innerBase[0].MaterialCheckbox.uncheck();
       innerBase[0].MaterialCheckbox.disable();
       disableCard();
     }
-    else{
+    else if (options.repeater != "onform" && options.conditional != null){
       innerBase[0].MaterialCheckbox.check();
       innerBase[0].MaterialCheckbox.enable();
       enableCard();
     }
+
+
   };
 
   /**
