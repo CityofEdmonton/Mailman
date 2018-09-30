@@ -107,9 +107,6 @@ var DocumentMailHandler = function(parent, serviceFactory) {
     if (updateConfig.mergeData.usetitle == true) {
       cardRepository[CardNames.title].check();
     }
-    if (updateConfig.mergeData.use != null) {
-      cardRepository[CardNames.conditional].check();
-    }
     cardRepository[CardNames.sheet].setValue(updateConfig.mergeData.sheet);
     cardRepository[CardNames.row].setValue(updateConfig.mergeData.headerRow);
     cardRepository[CardNames.to].setValue({
