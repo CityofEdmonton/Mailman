@@ -37,6 +37,7 @@ var MergeTemplate = function(config) {
   var self = this;
   var createdBy = 'Unknown user';
   var createdDatetime;
+  var version;
   var id = ID();
 
   //***** Private Methods *****//
@@ -78,6 +79,12 @@ var MergeTemplate = function(config) {
 
     if (config.mergeRepeater != null) {
       repeater = new MergeRepeater(config.mergeRepeater);
+    }
+
+    if (config.version) {
+      version = config.version;
+    } else {
+      version = '1.0.0';
     }
   };
 
@@ -127,6 +134,7 @@ var MergeTemplate = function(config) {
       mergeData: data.toConfig(),
       createdBy: createdBy,
       createdDatetime: createdDatetime,
+      version: version,
       id: id
     };
   };
