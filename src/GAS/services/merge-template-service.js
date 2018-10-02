@@ -177,9 +177,6 @@ var MergeTemplateService = {
       var config;
       try {
         config = JSON.parse(value);
-        // set default value for version if it doesn't exist.
-        if (!config.version)
-          config.version = "1.0.0";
         MergeTemplateService.validate(config);
         return config;
       }

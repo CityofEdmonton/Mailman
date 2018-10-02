@@ -132,7 +132,13 @@ var StandardMailHandler = function (parent, serviceFactory) {
       bcc: updateConfig.mergeData.data.bcc
     });
     cardRepository[CardNames.subject].setValue(updateConfig.mergeData.data.subject);
-    cardRepository[CardNames.body].setValue(updateConfig.mergeData.data.body);
+
+    if (updateConfig.version === "1.0.0") {
+      // one time fix for "upgrading" to rich text version
+      cardRepository[CardNames.body].setValue(updateConfig.mergeData.data.body.replace(/\</g, '&lt;').replace(/\>/g, '&gt;'));
+    } else {    
+      cardRepository[CardNames.body].setValue(updateConfig.mergeData.data.body);
+    }
     cardRepository[CardNames.repeater].setValue(updateConfig.mergeData.repeater);
 
     if (updateConfig.mergeData.conditional != null) {
