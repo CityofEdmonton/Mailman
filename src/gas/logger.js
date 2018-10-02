@@ -36,7 +36,12 @@ function getLogger() {
     // try to get the current user 
     var userEmail =  Session.getActiveUser().getEmail();
     if (!userEmail) {
-      userEmail = PropertiesService.getUserProperties().getProperty("userEmail");
+      try {
+        userEmail = PropertiesService.getUserProperties().getProperty("userEmail");
+      } catch (ex1) {
+        // this can fail e.g. if the user hasn't granted this new scope yet.
+        // note a big deal, so eat the exception and continue.    
+      }
     }  
     if (!userEmail) {
       // the following "trick" is from https://stackoverflow.com/questions/12300777/determine-current-user-in-apps-script:
@@ -53,7 +58,13 @@ function getLogger() {
         userEmail = editors[0];
         // saving for better performance next run
         if (userEmail) {
-          PropertiesService.getUserProperties().setProperty("userEmail",userEmail);
+          try {
+            PropertiesService.getUserProperties().setProperty("userEmail",userEmail);
+          }
+          catch (ex2) {
+            // this can fail e.g. if the user hasn't granted this new scope yet.
+            // note a big deal, so eat the exception and continue.    
+          }
         }
       }
       catch (err) {
@@ -71,7 +82,13 @@ function getLogger() {
       .enrich(function() {
         if (!MAILMAN_SESSION_ID) {
           // this is normally set in events.openSidebar()
-          MAILMAN_SESSION_ID = PropertiesService.getUserProperties().getProperty(MAILMAN_SESSION_ID_KEY);
+          try {          
+            MAILMAN_SESSION_ID = PropertiesService.getUserProperties().getProperty(MAILMAN_SESSION_ID_KEY);
+          } catch (ex3) {
+            // this can fail e.g. if the user hasn't granted this new scope yet.
+            // note a big deal, so eat the exception and continue.    
+            MAILMAN_SESSION_ID = Utility.createGuid();
+          }
         }
         return {
           'Version': MAILMAN_VERSION,

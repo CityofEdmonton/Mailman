@@ -32,7 +32,13 @@ function openSidebar() {
   var ssId = SpreadsheetApp.getActiveSpreadsheet().getId();
   PropertiesService.getDocumentProperties().setProperty(PROPERTY_SS_ID, ssId);
   MAILMAN_SESSION_ID = Utility.createGuid();
-  PropertiesService.getUserProperties().setProperty(MAILMAN_SESSION_ID_KEY, MAILMAN_SESSION_ID);
+  
+  try {
+    PropertiesService.getUserProperties().setProperty(MAILMAN_SESSION_ID_KEY, MAILMAN_SESSION_ID);
+  } catch (ex) {
+    // this can fail e.g. if the user hasn't granted this new scope yet.
+    // note a big deal, so eat the exception and continue.    
+  }
 
   logger.info("Opening sidebar for {SpreadsheetId}", ssId);
 
