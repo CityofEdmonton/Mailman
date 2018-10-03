@@ -23,4 +23,10 @@
     <ProjectReference Include="..\Mailman.Services\Mailman.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Mailman-service-account.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
