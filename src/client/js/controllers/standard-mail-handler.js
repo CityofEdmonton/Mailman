@@ -135,7 +135,7 @@ var StandardMailHandler = function (parent, serviceFactory) {
 
     if (updateConfig.version === "1.0.0") {
       // one time fix for "upgrading" to rich text version
-      cardRepository[CardNames.body].setValue(updateConfig.mergeData.data.body.replace(/\</g, '&lt;').replace(/\>/g, '&gt;'));
+      cardRepository[CardNames.body].setValue(updateConfig.mergeData.data.body.replace(/\<\</g, '&lt;&lt;').replace(/\>\>/g, '&gt;&gt;'));
     } else {    
       cardRepository[CardNames.body].setValue(updateConfig.mergeData.data.body);
     }
