@@ -56,9 +56,9 @@ var SheetsService = {
     logger.debug('Getting formUrl for sheet {SheetName}', sheetName);
     var ss = Utility.getSpreadsheet();
     var sheet = ss.getSheetByName(sheetName);
-    var formURL =sheet.getFormUrl();
+    var formUrl =sheet.getFormUrl();
     logger.debug('formUrl for {SheetName} is {FormUrl}', sheetName, formUrl);
-    return formURL;
+    return formUrl;
 
   }
 
