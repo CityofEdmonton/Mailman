@@ -7,6 +7,7 @@ function onInstall(e) {
   onOpen(e);
 }
 
+
 /**
  * Called when the Spreadsheet is opened.
  *
@@ -31,7 +32,10 @@ function openSidebar() {
   var url = PropertiesService.getScriptProperties().getProperty("url");
 
   var ssId = SpreadsheetApp.getActiveSpreadsheet().getId();
-  var ui = HtmlService.createHtmlOutput('<script>var addonWindowInfo; window.addEventListener("message", function(e) { if ("' + url + '".startsWith(e.origin)) { addonWindowInfo = { window: e.source, origin: e.origin }; google.script.run.withSuccessHandler(onAddonLoaded).getAccessToken(); } });\nfunction onAddonLoaded(token) {\n addonWindowInfo.window.postMessage(token, addonWindowInfo.origin);\n}\n</script><iframe src="' + url + '?ssid=' + ssId + '" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>')
+  var template = HtmlService.createTemplateFromFile("Startup")
+  template.loginurl = url + '?ssid=' + ssId;
+
+  var ui = template.evaluate()
       .setTitle(' ')
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 
@@ -39,16 +43,14 @@ function openSidebar() {
 }
 
 
-
-
 /**
 * Opens the feedback to dialog which directs users to the form.
 *
 */
 function openFeedbackDialog() {
-  var url = PropertiesService.getScriptProperties().getProperty("feedbackUrl");
-  var ssId = SpreadsheetApp.getActiveSpreadsheet().getId();
-  var ui = HtmlService.createHtmlOutput('<script>window.location.replace(\'' + url + '?ssid=' + ssId + '\');</script>')
+var url = PropertiesService.getScriptProperties().getProperty("feedbackUrl");
+var ssId = SpreadsheetApp.getActiveSpreadsheet().getId();
+var ui = HtmlService.createHtmlOutput('<script>window.location.replace(\'' + url + '?ssid=' + ssId + '\');</script>')
     .setTitle('Feedback')
     .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 
@@ -58,4 +60,11 @@ SpreadsheetApp.getUi().showModalDialog(ui, 'Feedback');
 
 function getAccessToken() {
   return ScriptApp.getOAuthToken();
+}
+
+function getUserInfo() {
+  // this function is here just to make the app use the Plus+ scope, which the web application needs.
+  // Be sure to add this "Advanced Google Service" under the Resources menu
+  var me = Plus.People.get('me');
+  console.log('getUserInfo', me);
 }

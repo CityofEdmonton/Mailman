@@ -105,7 +105,7 @@ namespace Mailman.Tests
         [Test]
         public async Task TestReadSheetNames()
         {
-            var sheetNames = (await _sheetsController.GetSheetNames(TEST_SHEET_ID)).ToList();
+            var sheetNames = (await _sheetsController.SheetNames(TEST_SHEET_ID)).ToList();
             sheetNames.Should().HaveCount(2);
             sheetNames.First().Should().Be("Data");
             sheetNames.ElementAt(1).Should().Be("Sheet5");

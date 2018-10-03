@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace Mailman.Server.Controllers
 {
     [Authorize]
+    [Route("api/[controller]")]
     public class SheetsController : Controller
     {
         private readonly ISheetsServiceFactory _sheetsServiceFactory;
@@ -20,11 +21,22 @@ namespace Mailman.Server.Controllers
             _sheetsServiceFactory = sheetsServiceFactory;
         }
 
-        public async Task<IEnumerable<string>> GetSheetNames(string sheetId, bool includeHidden = false)
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<string>> SheetNames(string sheetId, bool includeHidden = false)
         {
             var service = await _sheetsServiceFactory.GetSheetsServiceAsync();
             var request = service.Spreadsheets.Get(sheetId);
-            var response = await request.ExecuteAsync();
+            Spreadsheet response;
+            try
+            {
+                response = await request.ExecuteAsync();
+            }
+            catch (Exception err)
+            {
+                // log error here.
+                System.Diagnostics.Debugger.Log(0, "", err.Message);
+                throw;
+            }
             IQueryable<Sheet> sheets = response.Sheets.AsQueryable();
             if (!includeHidden)
                 sheets = sheets.Where(x => !x.Properties.Hidden.HasValue || !x.Properties.Hidden.Value);

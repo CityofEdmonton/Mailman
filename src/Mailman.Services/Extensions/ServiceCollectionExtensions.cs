@@ -1,4 +1,5 @@
-﻿using Google.Apis.Sheets.v4;
+﻿using Google.Apis.Gmail.v1;
+using Google.Apis.Sheets.v4;
 using Mailman.Services.Security;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Serilog;
 using System;
 
@@ -45,10 +47,13 @@ namespace Mailman.Services
 
         public static IServiceCollection AddMailmanServices(this IServiceCollection services, IConfiguration configuration = null)
         {
+            // SheetsServiceFactory needs this:
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = AppScriptOAuthAuthenticationDefaults.AuthenticationScheme; //GoogleDefaults.AuthenticationScheme;
             })
                 .AddCookie(configuration)
                 .AddGoogle(configuration);
@@ -64,7 +69,10 @@ namespace Mailman.Services
 
         internal static AuthenticationBuilder AddCookie(this AuthenticationBuilder authenticationBuilder, IConfiguration configuration)
         {
-            authenticationBuilder.AddCookie(); // use all defaults
+           authenticationBuilder.AddCookie(options =>
+           {
+                
+           });
 
             return authenticationBuilder;
         }
@@ -89,10 +97,16 @@ namespace Mailman.Services
                 options.ClientId = googleClientId;
                 options.ClientSecret = googleClientSecret;
                 options.Scope.Add(SheetsService.Scope.Spreadsheets);
+                options.Scope.Add(GmailService.Scope.GmailSend);
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.CallbackPath = "/login/signin-google";
                 options.SaveTokens = true;
                 options.AccessType = "offline";
+            });
+
+            authenticationBuilder.AddAppScriptOAuth(options =>
+            {
+                // options can be added here
             });
 
             return authenticationBuilder;

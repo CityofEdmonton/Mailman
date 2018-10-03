@@ -1,0 +1,32 @@
+<html>
+<head>
+  <style>
+    html, body, iframe {
+      border: 0;
+      display: block;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+<body style="padding: 0; margin: 0">
+<script>
+  var addonWindowInfo; 
+  window.addEventListener("message", function(e) { 
+    if ("' + url + '".startsWith(e.origin)) { 
+      addonWindowInfo = { 
+        window: e.source, 
+        origin: e.origin 
+      }; 
+      google.script.run.withSuccessHandler(onAddonLoaded).getAccessToken(); 
+    } 
+  });
+  function onAddonLoaded(token) {
+    addonWindowInfo.window.postMessage(token, addonWindowInfo.origin);
+  }
+</script>
+<iframe src="<?= loginurl ?>" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"  allow="accelerometer *; ambient-light-sensor *; autoplay *; camera *; encrypted-media *; fullscreen *; geolocation *; gyroscope *; magnetometer *; microphone *; midi *; payment *; picture-in-picture *; speaker *; usb *; vibrate *; vr *" sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+</body>
+</html>

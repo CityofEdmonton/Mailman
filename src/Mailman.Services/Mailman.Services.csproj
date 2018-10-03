@@ -13,6 +13,8 @@
   <ItemGroup>
     <PackageReference Include="Ensure.That" Version="8.0.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.35.2" />
+    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.35.2.1342" />
+    <PackageReference Include="Google.Apis.Plus.v1" Version="1.35.2.1354" />
     <PackageReference Include="Google.Apis.Sheets.v4" Version="1.35.2.1352" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="2.1.2" />
