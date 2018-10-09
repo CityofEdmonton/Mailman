@@ -15,8 +15,8 @@ namespace Mailman.Tests
         public void BeforeTest(ITest test)
         {
             string isIntegrationTest = Environment.GetEnvironmentVariable("INTEGRATION_TESTS");
-            if (string.IsNullOrWhiteSpace(isIntegrationTest))
-                Assert.Ignore("The INTEGRATION_TESTS environment variable must be set to run integration tests");
+            //if (string.IsNullOrWhiteSpace(isIntegrationTest))
+            //    Assert.Ignore("The INTEGRATION_TESTS environment variable must be set to run integration tests");
         }
     }
 }

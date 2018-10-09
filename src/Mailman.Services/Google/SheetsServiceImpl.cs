@@ -14,24 +14,21 @@ using System.Threading.Tasks;
 
 namespace Mailman.Services.Google
 {
-    internal class SheetsServiceImpl : ISheetsService
+    internal class SheetsServiceImpl : GoogleServiceBase, ISheetsService
     {
-        private readonly IGoogleSheetsServiceAccessor _googleSheetsServiceAccessor;
         private readonly ILogger _logger;
 
         public SheetsServiceImpl(IGoogleSheetsServiceAccessor googleSheetsServiceAccessor,
-            ILogger logger) 
+            ILogger logger) : base(googleSheetsServiceAccessor, logger)
         {
-            EnsureArg.IsNotNull(googleSheetsServiceAccessor);
             EnsureArg.IsNotNull(logger);
-            _googleSheetsServiceAccessor = googleSheetsServiceAccessor;
             _logger = logger;
         }
 
         public async Task<IEnumerable<string>> GetSheetNames(string sheetId, bool includeHidden = false)
         {
             var watch = new Stopwatch();
-            using (var service = await _googleSheetsServiceAccessor.GetSheetsServiceAsync())
+            using (var service = await GetSheetsServiceAsync())
             {
                 _logger.Debug("Got sheets service in {EllapsedMilliseconds}", watch.ElapsedMilliseconds);
                 watch.Restart();

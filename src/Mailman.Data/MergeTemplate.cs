@@ -4,17 +4,19 @@ namespace Mailman.Data
 {
     public class MergeTemplate
     {
-        public string Name { get; set; }
+        public string Title { get; set; }
         public string SpreadSheetId { get; private set; }
 
-        public static MergeTemplate Create(string name, string spreadsheetId)
+        public static MergeTemplate Create(string title, string spreadsheetId)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentNullException("name", "name cannot by null or empty");
+            if (string.IsNullOrWhiteSpace(title))
+                throw new ArgumentNullException(nameof(title));
             if (string.IsNullOrWhiteSpace(spreadsheetId))
-                throw new ArgumentNullException("spreadsheetId", "spreadsheetId cannot be null or empty");
+                throw new ArgumentNullException(nameof(spreadsheetId));
 
-            return new MergeTemplate() { Name = name, SpreadSheetId = spreadsheetId };
+            return new MergeTemplate() { Title = title, SpreadSheetId = spreadsheetId };
         }
+
+        public static 
     }
 }

@@ -79,6 +79,8 @@ namespace Mailman.Services
             }
             services.AddScoped<ISheetsService, SheetsServiceImpl>();
 
+            services.AddScoped<IMergeTemplateRepository, MergeTemplateRepository>();
+
             return services;
         }
 

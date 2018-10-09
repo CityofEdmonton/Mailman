@@ -1,10 +1,9 @@
-﻿using Mailman.Data;
-using System;
+﻿using Mailman.Services.Data;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Mailman.Services
+namespace Mailman.Services.Google
 {
     public interface IMergeTemplateRepository
     {

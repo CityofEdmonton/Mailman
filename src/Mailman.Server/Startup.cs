@@ -9,6 +9,7 @@ using Mailman.Services;
 using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using AutoMapper;
 
 namespace Mailman
 {
@@ -40,7 +41,6 @@ namespace Mailman
                     options.InstrumentationKey = applicationInsightsInstrumentationKey;
                 });
 
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // In production, the React files will be served from this directory
@@ -49,6 +49,8 @@ namespace Mailman
                 configuration.RootPath = "ClientApp/build";
             });
 
+            // Add Automapper
+            services.AddAutoMapper();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

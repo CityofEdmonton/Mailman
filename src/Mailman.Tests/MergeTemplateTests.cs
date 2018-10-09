@@ -1,10 +1,6 @@
 ﻿using FluentAssertions;
-using Mailman.Services;
+using Mailman.Services.Data;
 using NUnit.Framework;
-using Moq;
-using Mailman.Data;
-using System.Threading.Tasks;
-using System.Threading;
 using System;
 
 namespace Mailman.Tests
@@ -24,26 +20,45 @@ namespace Mailman.Tests
         //    _mergeTemplateRepository = repo.Object;
         //}
 
-        [TestCase(null, null)]
-        [TestCase("", null)]
-        [TestCase(null, "")]
-        [TestCase("", "")]
-        [TestCase(null, "something")]
-        [TestCase("", "something")]
-        [TestCase("something", null)]
-        [TestCase("something", "")]
-        public void TestCreateEmptyMergeTemplateThrows(string name, string spreadsheetId)
+        [TestCase(null, null, null)]
+        [TestCase("", null, null)]
+        [TestCase(null, "", null)]
+        [TestCase("", "", null)]
+        [TestCase(null, "something", null)]
+        [TestCase("", "something", null)]
+        [TestCase("something", null, null)]
+        [TestCase("something", "", null)]
+        [TestCase("something", "someId", null)]
+        [TestCase(null, null, "")]
+        [TestCase("", null, "")]
+        [TestCase(null, "", "")]
+        [TestCase("", "", "")]
+        [TestCase(null, "someId", "")]
+        [TestCase("", "someId", "")]
+        [TestCase("someId", null, "")]
+        [TestCase("someId", "", "")]
+        [TestCase(null, null, "someone")]
+        [TestCase("", null, "someone")]
+        [TestCase(null, "", "someone")]
+        [TestCase("", "", "someone")]
+        [TestCase(null, "someId", "someone")]
+        [TestCase("", "someId", "someone")]
+        [TestCase("someId", null, "someone")]
+        [TestCase("someId", "", "someone")]
+        public void CreateEmptyMergeTemplateThrows(string name, string spreadsheetId, string createdBy)
         {
-            Action action = () => MergeTemplate.Create(name, spreadsheetId);
-            action.Should().Throw< ArgumentNullException>();
+            DateTime now = DateTime.UtcNow;
+            Action action = () => MergeTemplate.Create(name, spreadsheetId, createdBy, now);
+            action.Should().Throw<ArgumentNullException>();
         }
 
 
-        [TestCase("MergeTemplate1", "SpreadSheetId")]
-        [TestCase("MergeTemplate - example of a name of a merge template", "askdjaskldj-3423-sdfksfjnsdf=-dfkljsdf")]
-        public void TestCreateMergeTemplate(string name, string spreadsheetId)
+        [TestCase("MergeTemplate1", "SpreadSheetId", "Snow.White@edmonton.ca")]
+        [TestCase("MergeTemplate - example of a name of a merge template", "askdjaskldj-3423-sdfksfjnsdf=-dfkljsdf", "Snow.White@edmonton.ca")]
+        public void CreateMergeTemplate(string name, string spreadsheetId, string createdBy)
         {
-            MergeTemplate.Create(name, spreadsheetId).Should().NotBeNull();
+            MergeTemplate.Create(name, spreadsheetId, createdBy, DateTime.UtcNow).Should().NotBeNull();
         }
+
     }
 }
