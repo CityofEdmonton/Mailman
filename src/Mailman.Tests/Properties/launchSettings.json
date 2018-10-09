@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "Mailman.Tests": {
+      "commandName": "Project"
+    }
+  }
+}

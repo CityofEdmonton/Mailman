@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,25 +32,12 @@ namespace Mailman.Tests
             }
 
             var services = new ServiceCollection()
-                .AddScoped(x => SetupMockSheetsServiceFactory())
+                .AddSingleton<ILogger>(x => Log.Logger)
+                .AddMailmanServices(null, GetGoogleCredential())
                 .AddScoped<SheetsController>()
                 .BuildServiceProvider();
 
             _sheetsController = services.GetRequiredService<SheetsController>();
-        }
-
-        private static ISheetsServiceFactory SetupMockSheetsServiceFactory()
-        {
-            var serviceInitializer = new Google.Apis.Services.BaseClientService.Initializer()
-            {
-                HttpClientInitializer = GetGoogleCredential()
-            };
-            var sheetsService = Task.FromResult(new SheetsService(serviceInitializer));
-
-            var sheetsServiceFactory = new Mock<ISheetsServiceFactory>();
-            sheetsServiceFactory.Setup(x => x.GetSheetsServiceAsync()).Returns(sheetsService);
-
-            return sheetsServiceFactory.Object;
         }
 
 
@@ -103,6 +91,7 @@ namespace Mailman.Tests
         private readonly string TEST_SHEET_ID;
 
         [Test]
+        [IntegrationTest]
         public async Task TestReadSheetNames()
         {
             var sheetNames = (await _sheetsController.SheetNames(TEST_SHEET_ID)).ToList();

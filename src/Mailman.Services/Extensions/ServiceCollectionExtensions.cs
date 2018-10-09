@@ -1,5 +1,7 @@
 ﻿using Google.Apis.Gmail.v1;
+using Google.Apis.Http;
 using Google.Apis.Sheets.v4;
+using Mailman.Services.Google;
 using Mailman.Services.Security;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -45,11 +47,8 @@ namespace Mailman.Services
             return services;
         }
 
-        public static IServiceCollection AddMailmanServices(this IServiceCollection services, IConfiguration configuration = null)
+        public static IServiceCollection AddMailmanAuthentication(this IServiceCollection services, IConfiguration configuration = null)
         {
-            // SheetsServiceFactory needs this:
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -57,12 +56,28 @@ namespace Mailman.Services
             })
                 .AddCookie(configuration)
                 .AddGoogle(configuration);
-            
+
             // configure the service that saves the tokens to a cache
             services.ConfureGoogleOAuthTokenService(configuration);
 
+            return services;
+        }
+
+        public static IServiceCollection AddMailmanServices(this IServiceCollection services, 
+            IConfiguration configuration = null,
+            IConfigurableHttpClientInitializer googleCredentials = null)
+        {
             // configure the Google Sheets service
-            services.AddScoped<ISheetsServiceFactory, SheetsServiceFactory>();
+            if (googleCredentials == null)
+            {
+                services.AddScoped<IGoogleSheetsServiceAccessor, HttpAccessTokenGoogleSheetsServiceAccessor>();
+            }
+            else
+            {
+                // this support using static credentials for accessing Google Sheets (i.e. ServiceCredentials)
+                services.AddScoped<IGoogleSheetsServiceAccessor>(x => new StaticGoogleSheetsServiceAccessor(googleCredentials));
+            }
+            services.AddScoped<ISheetsService, SheetsServiceImpl>();
 
             return services;
         }

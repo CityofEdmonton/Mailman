@@ -1,5 +1,6 @@
 ﻿using Google.Apis.Sheets.v4.Data;
 using Mailman.Services;
+using Mailman.Services.Google;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,34 +15,17 @@ namespace Mailman.Server.Controllers
     [Route("api/[controller]")]
     public class SheetsController : Controller
     {
-        private readonly ISheetsServiceFactory _sheetsServiceFactory;
+        private readonly ISheetsService _sheetsService;
 
-        public SheetsController(ISheetsServiceFactory sheetsServiceFactory)
+        public SheetsController(ISheetsService sheetsService)
         {
-            _sheetsServiceFactory = sheetsServiceFactory;
+            _sheetsService = sheetsService;
         }
 
         [HttpGet("[action]")]
-        public async Task<IEnumerable<string>> SheetNames(string sheetId, bool includeHidden = false)
+        public Task<IEnumerable<string>> SheetNames(string sheetId, bool includeHidden = false)
         {
-            var service = await _sheetsServiceFactory.GetSheetsServiceAsync();
-            var request = service.Spreadsheets.Get(sheetId);
-            Spreadsheet response;
-            try
-            {
-                response = await request.ExecuteAsync();
-            }
-            catch (Exception err)
-            {
-                // log error here.
-                System.Diagnostics.Debugger.Log(0, "", err.Message);
-                throw;
-            }
-            IQueryable<Sheet> sheets = response.Sheets.AsQueryable();
-            if (!includeHidden)
-                sheets = sheets.Where(x => !x.Properties.Hidden.HasValue || !x.Properties.Hidden.Value);
-
-            return sheets.Select(x => x.Properties.Title);
+            return _sheetsService.GetSheetNames(sheetId, includeHidden);
         }
 
     }

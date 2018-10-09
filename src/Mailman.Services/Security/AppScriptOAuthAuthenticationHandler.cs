@@ -1,4 +1,5 @@
-﻿using Google.Apis.Plus.v1;
+﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Plus.v1;
 using Google.Apis.Plus.v1.Data;
 using Google.Apis.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -58,7 +59,6 @@ namespace Mailman.Services.Security
             var form = GetForm();
             if (form != null)
             {
-
                 string accessToken = form["AccessToken"];
                 if (!string.IsNullOrWhiteSpace(accessToken))
                 {
@@ -80,7 +80,7 @@ namespace Mailman.Services.Security
                     bool isSuccess = false;
                     using (var plusService = new PlusService(new BaseClientService.Initializer()
                     {
-                        HttpClientInitializer = Google.Apis.Auth.OAuth2.GoogleCredential.FromAccessToken(accessToken)
+                        HttpClientInitializer = GoogleCredential.FromAccessToken(accessToken)
                     }))
                     {
                         Person userInfo;
@@ -125,12 +125,11 @@ namespace Mailman.Services.Security
             }
         }
 
-        protected async override Task<AuthenticateResult> HandleAuthenticateAsync()
+        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             // this should never be called because the challenge method 
             // directly signs in users.
-
-            return AuthenticateResult.Fail("No token to authenticate");
+            return Task.FromResult(AuthenticateResult.Fail("No token to authenticate"));
         }
     }
 }

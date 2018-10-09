@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mailman.Services;
+using System;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Mailman
 {
@@ -22,7 +25,21 @@ namespace Mailman
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureLogging("MailMan Server", Configuration);
+
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddMailmanAuthentication(Configuration);
             services.AddMailmanServices(Configuration);
+
+            // Add Appication Insights, if available
+            string applicationInsightsInstrumentationKey = Environment.GetEnvironmentVariable("APP_INSIGHTS_KEY");
+            if (string.IsNullOrWhiteSpace(applicationInsightsInstrumentationKey))
+                applicationInsightsInstrumentationKey = Configuration["ApplicationInsights:InstrumentationKey"];
+            if (!string.IsNullOrWhiteSpace(applicationInsightsInstrumentationKey))
+                services.AddApplicationInsightsTelemetry(options =>
+                {
+                    options.InstrumentationKey = applicationInsightsInstrumentationKey;
+                });
+
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
