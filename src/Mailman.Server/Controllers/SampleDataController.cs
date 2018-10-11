@@ -6,7 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Mailman.Controllers
 {
+    /// <summary>
+    /// Sample class that got created when this project was created.
+    /// Will be removed eventually.
+    /// </summary>
     [Route("api/[controller]")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class SampleDataController : Controller
     {
         private static string[] Summaries = new[]
@@ -14,6 +19,11 @@ namespace Mailman.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
+        /// <summary>
+        /// To be removed.
+        /// </summary>
+        /// <param name="startDateIndex"></param>
+        /// <returns></returns>
         [HttpGet("[action]")]
         public IEnumerable<WeatherForecast> WeatherForecasts(int startDateIndex)
         {
@@ -26,12 +36,27 @@ namespace Mailman.Controllers
             });
         }
 
+        /// <summary>
+        /// To be removed
+        /// </summary>
         public class WeatherForecast
         {
+            /// <summary>
+            /// To be removed
+            /// </summary>
             public string DateFormatted { get; set; }
+            /// <summary>
+            /// To be removed
+            /// </summary>
             public int TemperatureC { get; set; }
+            /// <summary>
+            /// To be removed
+            /// </summary>
             public string Summary { get; set; }
 
+            /// <summary>
+            /// To be removed
+            /// </summary>
             public int TemperatureF
             {
                 get

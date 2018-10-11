@@ -32,13 +32,19 @@ namespace Mailman.Server.Controllers
         /// <summary>
         /// Retrieves the names of the tabs in a Google Sheet
         /// </summary>
-        /// <param name="sheetId"></param>
-        /// <param name="includeHidden"></param>
-        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///     GET /api/Sheets/SheetNames/1GnoG6twy6OC9jQw7-KeZBR02znTW8VkR7Yp2Wf2JlrY
+        /// </remarks>
+        /// <param name="spreadsheetId">The id of the spreadsheet, as in the url when editing a sheet.</param>
+        /// <param name="includeHidden">Specifies whether to include hidden tabs in the returned values.</param>
+        /// <returns>A list of strings with the names of the tabs</returns>
+        /// <response code="200">Returns the tab names of the Sheet</response>
+        /// <response code="404">If the Google Sheet cannot be found</response>
         [HttpGet("[action]")]
-        public Task<IEnumerable<string>> SheetNames(string sheetId, bool includeHidden = false)
+        public Task<IEnumerable<string>> SheetNames(string spreadsheetId, bool includeHidden = false)
         {
-            return _sheetsService.GetSheetNames(sheetId, includeHidden);
+            return _sheetsService.GetSheetNames(spreadsheetId, includeHidden);
         }
 
     }

@@ -16,22 +16,34 @@ using System.IO;
 
 namespace Mailman
 {
+    /// <summary>
+    /// Standard ASP.NET MVC Startup class.
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Constructor for the startup class.
+        /// </summary>
+        /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        /// <summary>
+        /// The configuration of the application. Combines config files,
+        /// Environment variables, and startup arguments.
+        /// </summary>
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// Configures the services required by Mailman.
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-
             // Add Automapper
             services.AddAutoMapper();
-
 
             services.ConfigureLogging("MailMan Server", Configuration);
 
@@ -58,10 +70,14 @@ namespace Mailman
             });
 
             // Add Swagger
-            services.ConfigureSwagger();
+            services.ConfigureSwagger(modelBaseClasses: new Type[] { typeof(Server.Models.MergeTemplate)});
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// Configures the ASP.NET web application. Standard ASP.NET stuff.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -81,6 +97,7 @@ namespace Mailman
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = "api/docs";
             });
 
 

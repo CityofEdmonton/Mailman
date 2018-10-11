@@ -15,7 +15,7 @@ namespace Mailman.Tests
     [TestFixture]
     public class MergeTemplateIntegrationTests : GoogleIntegrationTestBase
     {
-        private static string newline = Environment.NewLine;
+        private static readonly string newline = Environment.NewLine;
 
         public MergeTemplateIntegrationTests()
         {

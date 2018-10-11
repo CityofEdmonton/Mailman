@@ -9,7 +9,7 @@ namespace Mailman.Services.Data
         public EmailTemplate EmailTemplate { get; set; }
 
 
-        internal static MergeTemplate CreateFrom(string id, string spreadsheetId, string serialized)
+        internal new static MergeTemplate CreateFrom(string id, string spreadsheetId, string serialized)
         {
             var returnValue = new EmailMergeTemplate();
             Initialize(returnValue, id, spreadsheetId, serialized);

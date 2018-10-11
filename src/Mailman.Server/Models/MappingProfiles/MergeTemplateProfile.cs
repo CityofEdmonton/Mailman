@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace Mailman.Server.Models.MappingProfiles
 {
+    /// <summary>
+    /// Autmapper profile fo the Server.Models.Mergetemplate dto
+    /// </summary>
     public class MergeTemplateProfile : Profile
     {
+        /// <summary>
+        /// Constructor for automapper profile
+        /// </summary>
         public MergeTemplateProfile()
         {
             CreateMap<Services.Data.MergeTemplate, MergeTemplate>()

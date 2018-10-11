@@ -17,6 +17,7 @@ namespace Mailman.Server.Controllers
     /// </remarks>
     [Authorize]
     [Route("api/[controller]")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class LoginController : Controller
     {
         /// <summary>
@@ -73,7 +74,8 @@ namespace Mailman.Server.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Completes the AppScriptOAuth login flow by submitting an OAuth token from 
+        /// a parent appscript window
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
