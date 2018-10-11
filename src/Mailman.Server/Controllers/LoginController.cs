@@ -9,8 +9,15 @@ using System.Threading.Tasks;
 
 namespace Mailman.Server.Controllers
 {
+    /// <summary>
+    /// Controller for authorzation
+    /// </summary>
+    /// <remarks>
+    /// This will be replaced by middleware at some point in the future
+    /// </remarks>
     [Authorize]
     [Route("api/[controller]")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class LoginController : Controller
     {
         /// <summary>
@@ -67,7 +74,8 @@ namespace Mailman.Server.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Completes the AppScriptOAuth login flow by submitting an OAuth token from 
+        /// a parent appscript window
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -80,8 +88,14 @@ namespace Mailman.Server.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// structure for submitting an accessToken to the <see cref="SigninWithToken(SignInModel)">SigninWithToken</see> method
+        /// </summary>
         public class SignInModel
         {
+            /// <summary>
+            /// An OAuth 2.0 Access Token
+            /// </summary>
             public string AccessToken { get; set; }
         }
 

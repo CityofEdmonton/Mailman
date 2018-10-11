@@ -1,5 +1,7 @@
 ﻿using Google.Apis.Gmail.v1;
+using Google.Apis.Http;
 using Google.Apis.Sheets.v4;
+using Mailman.Services.Google;
 using Mailman.Services.Security;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -11,7 +13,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Serilog;
+using Swashbuckle.AspNetCore.Swagger;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace Mailman.Services
 {
@@ -45,11 +53,127 @@ namespace Mailman.Services
             return services;
         }
 
-        public static IServiceCollection AddMailmanServices(this IServiceCollection services, IConfiguration configuration = null)
+        public static IServiceCollection ConfigureSwagger(this IServiceCollection services,
+            IEnumerable<Type> modelBaseClasses = null)
         {
-            // SheetsServiceFactory needs this:
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", 
+                    new Info
+                    {
+                        Title = "Mailman API",
+                        Description = "API for interacting with Mailman templates and running mail merges",
+                        License = new License()
+                        {
+                            Name = "GNU General Public License",
+                            Url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
+                        },
+                        Version = "v1"
+                    });
 
+                c.DescribeAllEnumsAsStrings();
+
+                if (modelBaseClasses != null)
+                {
+                    // from https://stackoverflow.com/questions/34397349/how-do-i-include-subclasses-in-swagger-api-documentation-using-swashbuckle
+                    var documentFilterMethod = c.GetType().GetMethod("DocumentFilter");
+                    var schemaFilterMethod = c.GetType().GetMethod("SchemaFilter");
+                    foreach (var t in modelBaseClasses)
+                    {
+                        documentFilterMethod.MakeGenericMethod(
+                            typeof(PolymorphismDocumentFilter<>).MakeGenericType(t))
+                            .Invoke(c, new object[] { Array.Empty<object>() });
+
+                        schemaFilterMethod.MakeGenericMethod(
+                            typeof(PolymorphismSchemaFilter<>).MakeGenericType(t))
+                            .Invoke(c, new object[] { Array.Empty<object>() });
+                    }
+                }
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetEntryAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
+
+
+            return services;
+        }
+
+        private class PolymorphismSchemaFilter<T> : ISchemaFilter
+        {
+            private readonly Lazy<HashSet<Type>> derivedTypes = new Lazy<HashSet<Type>>(Init);
+
+            private static HashSet<Type> Init()
+            {
+                var abstractType = typeof(T);
+                var dTypes = abstractType.Assembly
+                                         .GetTypes()
+                                         .Where(x => abstractType != x && abstractType.IsAssignableFrom(x));
+
+                var result = new HashSet<Type>();
+
+                foreach (var item in dTypes)
+                    result.Add(item);
+
+                return result;
+            }
+
+            public void Apply(Schema model, SchemaFilterContext context)
+            {
+                if (!derivedTypes.Value.Contains(context.SystemType)) return;
+
+                var clonedSchema = new Schema
+                {
+                    Properties = model.Properties,
+                    Type = model.Type,
+                    Required = model.Required
+                };
+
+                //schemaRegistry.Definitions[typeof(T).Name]; does not work correctly in SwashBuckle
+                var parentSchema = new Schema { Ref = "#/definitions/" + typeof(T).Name };
+
+                model.AllOf = new List<Schema> { parentSchema, clonedSchema };
+
+                //reset properties for they are included in allOf, should be null but code does not handle it
+                model.Properties = new Dictionary<string, Schema>();
+            }
+        }
+
+        private class PolymorphismDocumentFilter<T> : IDocumentFilter
+        {
+            private static void RegisterSubClasses(ISchemaRegistry schemaRegistry, Type abstractType)
+            {
+                const string discriminatorName = "type";
+
+                var parentSchema = schemaRegistry.Definitions[abstractType.Name];
+
+                //set up a discriminator property (it must be required)
+                parentSchema.Discriminator = discriminatorName;
+                parentSchema.Required = new List<string> { discriminatorName };
+
+                if (!parentSchema.Properties.ContainsKey(discriminatorName))
+                    parentSchema.Properties.Add(discriminatorName, new Schema { Type = "string" });
+
+                //register all subclasses
+                var derivedTypes = abstractType.Assembly
+                                               .GetTypes()
+                                               .Where(x => abstractType != x && abstractType.IsAssignableFrom(x));
+
+                foreach (var item in derivedTypes)
+                    schemaRegistry.GetOrRegister(item);
+            }
+
+            public void Apply(SwaggerDocument swaggerDoc, DocumentFilterContext context)
+            {
+                RegisterSubClasses(context.SchemaRegistry, typeof(T));
+            }
+        }
+
+
+        public static IServiceCollection AddMailmanAuthentication(this IServiceCollection services, IConfiguration configuration = null)
+        {
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -57,12 +181,30 @@ namespace Mailman.Services
             })
                 .AddCookie(configuration)
                 .AddGoogle(configuration);
-            
+
             // configure the service that saves the tokens to a cache
             services.ConfureGoogleOAuthTokenService(configuration);
 
+            return services;
+        }
+
+        public static IServiceCollection AddMailmanServices(this IServiceCollection services, 
+            IConfiguration configuration = null,
+            IConfigurableHttpClientInitializer googleCredentials = null)
+        {
             // configure the Google Sheets service
-            services.AddScoped<ISheetsServiceFactory, SheetsServiceFactory>();
+            if (googleCredentials == null)
+            {
+                services.AddScoped<IGoogleSheetsServiceAccessor, HttpAccessTokenGoogleSheetsServiceAccessor>();
+            }
+            else
+            {
+                // this support using static credentials for accessing Google Sheets (i.e. ServiceCredentials)
+                services.AddScoped<IGoogleSheetsServiceAccessor>(x => new StaticGoogleSheetsServiceAccessor(googleCredentials));
+            }
+            services.AddScoped<ISheetsService, SheetsServiceImpl>();
+
+            services.AddScoped<IMergeTemplateRepository, MergeTemplateRepository>();
 
             return services;
         }
