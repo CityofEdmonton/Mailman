@@ -55,10 +55,16 @@ namespace Mailman.Services
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("Mailman 2.0", 
+                c.SwaggerDoc("v1", 
                     new Info
                     {
                         Title = "Mailman API",
+                        Description = "API for interacting with Mailman templates and running mail merges",
+                        License = new License()
+                        {
+                            Name = "GNU General Public License",
+                            Url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
+                        },
                         Version = "v1"
                     });
 
