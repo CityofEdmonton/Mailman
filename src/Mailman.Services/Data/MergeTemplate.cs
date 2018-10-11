@@ -62,8 +62,6 @@ namespace Mailman.Services.Data
         public DateTime CreatedDateUtc { get; private set; }
         //public string Version { get; set; }
 
-        //public string Title { get; set; }
-        //public string Sheet { get; set; }
         public int HeaderRowNumber { get; private set; }
 
         public TimestampColumn TimestampColumn { get; private set; }
@@ -72,11 +70,8 @@ namespace Mailman.Services.Data
             TimestampColumn = TimestampColumn.Create(columnTemplate, prefixWithMergeTemplateTitle, Title);
         }
 
-        //public string TimestampColumn { get; set; }
         //public string Conditional { get; set; }
         //public RepeaterType Repeater { get; set; }
-        //public bool ShouldTimestampColumnUseTitle { get; set; }
-
 
 
         public static MergeTemplate Create(string spreadsheetId, 
@@ -104,8 +99,9 @@ namespace Mailman.Services.Data
             };
         }
 
-        // Used by repository to create object from its store (in the Google Sheet)
-        internal static MergeTemplate CreateFrom(string id, string spreadsheetId, string serialized)
+
+        protected static void Initialize(MergeTemplate mergeTemplate,
+            string id, string spreadsheetId, string serialized)
         {
             dynamic value = Newtonsoft.Json.Linq.JObject.Parse(serialized);
             var mergeData = value.mergeData;
@@ -117,14 +113,13 @@ namespace Mailman.Services.Data
                 createdBy = "Unknown user";
             }
             DateTime createdDate = string.IsNullOrWhiteSpace(createdDateString)
-                ? DateTime.UtcNow 
-                : DateTime.ParseExact(createdDateString, 
-                    "M/d/yyyy H:m:s", 
+                ? DateTime.UtcNow
+                : DateTime.ParseExact(createdDateString,
+                    "M/d/yyyy H:m:s",
                     System.Globalization.CultureInfo.InvariantCulture);
             // hopefuly the servers are in the right time zone (MDT for City of Edmonton)
             var createdDateUtc = TimeZoneInfo.ConvertTimeToUtc(createdDate, TimeZoneInfo.Local);
 
-            string sheetName = mergeData.sheet;
             string headerRow = mergeData.headerRow;
             if (!int.TryParse(headerRow, out int headerRowNumber))
             {
@@ -134,18 +129,27 @@ namespace Mailman.Services.Data
             string useTitleString = mergeData.usetitle;
             bool.TryParse(useTitleString, out bool timestampColumnShouldUseTitle);
 
-            var returnValue = new MergeTemplate()
-            {
-                Id = id,
-                SpreadSheetId = spreadsheetId,
-                Title = mergeData.title,
-                CreatedBy = createdBy,
-                CreatedDateUtc = createdDateUtc,
-                SheetName = sheetName,
-                HeaderRowNumber = headerRowNumber
-            };
+            mergeTemplate.Id = id;
+            mergeTemplate.SpreadSheetId = spreadsheetId;
+            mergeTemplate.Title = mergeData.title;
+            mergeTemplate.CreatedBy = createdBy;
+            mergeTemplate.CreatedDateUtc = createdDateUtc;
+            mergeTemplate.SheetName = mergeData.sheet;
+            mergeTemplate.HeaderRowNumber = headerRowNumber;
+            mergeTemplate.SetTimestampColumn(timestampColumn, timestampColumnShouldUseTitle);
+        }
 
-            returnValue.SetTimestampColumn(timestampColumn, timestampColumnShouldUseTitle);
+        // Used by repository to create object from its store (in the Google Sheet)
+        internal static MergeTemplate CreateFrom(string id, string spreadsheetId, string serialized)
+        {
+            dynamic value = Newtonsoft.Json.Linq.JObject.Parse(serialized);
+            var mergeData = value.mergeData;
+
+            if (string.Equals((string)mergeData.type, "email", StringComparison.OrdinalIgnoreCase))
+                return EmailMergeTemplate.CreateFrom(id, spreadsheetId, serialized);         
+
+            var returnValue = new MergeTemplate();
+            Initialize(returnValue, id, spreadsheetId, serialized);
 
             return returnValue;
         }

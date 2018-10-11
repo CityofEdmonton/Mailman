@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Mailman.Controllers;
 using Mailman.Server.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using System;
@@ -14,6 +15,8 @@ namespace Mailman.Tests
     [TestFixture]
     public class MergeTemplateIntegrationTests : GoogleIntegrationTestBase
     {
+        private static string newline = Environment.NewLine;
+
         public MergeTemplateIntegrationTests()
         {
             var serviceCollection = new ServiceCollection();
@@ -32,7 +35,13 @@ namespace Mailman.Tests
         [IntegrationTest]
         public async Task ReadMergeTemplatesAsync()
         {
-            var mergeTemplates = await _mergeTemplatesController.Get(TEST_SHEET_ID);
+            var mergeTemplatesResult = await _mergeTemplatesController.Get(TEST_SHEET_ID);
+            mergeTemplatesResult.Should().BeOfType<OkObjectResult>();
+
+            var okMergeTemplatesResult = (OkObjectResult)mergeTemplatesResult;
+            okMergeTemplatesResult.Value.Should().BeAssignableTo<IEnumerable<MergeTemplate>>();
+
+            var mergeTemplates = (IEnumerable<MergeTemplate>)okMergeTemplatesResult.Value;
             mergeTemplates.Should().HaveCount(2);
 
             // First MergeTemplate
@@ -54,7 +63,10 @@ namespace Mailman.Tests
             emailTemplate1.Cc.Should().BeNull();
             emailTemplate1.Bcc.Should().BeNull();
             emailTemplate1.Subject.Should().Be("Hello <<Name>>!");
-            emailTemplate1.Body.Should().Be(@"<p>This is a test email to &lt;&lt;Name&gt;&gt;.</p>\n<p>&nbsp;</p>\n<p>Here are some notes: &lt;&lt;Notes&gt;&gt;</p>");
+            string bodyShouldBe = @"<p>This is a test email to &lt;&lt;Name&gt;&gt;.</p>" + newline +
+                "<p>&nbsp;</p>" + newline +
+                "<p>Here are some notes: &lt;&lt;Notes&gt;&gt;</p>";
+            emailTemplate1.Body.NormalizeLineEndings().Should().Be(bodyShouldBe.NormalizeLineEndings());
 
             // Second MergeTemplate
             mergeTemplates.Skip(1).First().Id.Should().Be("_3w5ri295a");

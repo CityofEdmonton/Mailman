@@ -10,8 +10,9 @@ namespace Mailman.Server.Models.MappingProfiles
     {
         public MergeTemplateProfile()
         {
-            CreateMap<Services.Data.MergeTemplate, MergeTemplate>();
-
+            CreateMap<Services.Data.MergeTemplate, MergeTemplate>()
+                .Include<Services.Data.EmailMergeTemplate, EmailMergeTemplate>();
+            CreateMap<Services.Data.EmailMergeTemplate, EmailMergeTemplate>();
         }
     }
 }

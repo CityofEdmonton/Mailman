@@ -13,7 +13,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Serilog;
+using Swashbuckle.AspNetCore.Swagger;
 using System;
+using System.IO;
+using System.Reflection;
 
 namespace Mailman.Services
 {
@@ -43,6 +46,28 @@ namespace Mailman.Services
                 return loggerConfig
                     .CreateLogger();
             });
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureSwagger(this IServiceCollection services)
+        {
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("Mailman 2.0", 
+                    new Info
+                    {
+                        Title = "Mailman API",
+                        Version = "v1"
+                    });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetEntryAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
+
 
             return services;
         }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EnsureThat;
+using Google;
 using Google.Apis.Sheets.v4.Data;
 using Mailman.Services.Data;
 using Newtonsoft.Json;
@@ -37,6 +38,10 @@ namespace Mailman.Services.Google
                 var request = service.Spreadsheets.Values.Get(spreadsheetId, mmConfigRange);
                 ValueRange response;
                 try { response = await request.ExecuteAsync(); }
+                catch (GoogleApiException gex)
+                {
+                    throw new SheetNotFoundException("Sheet $spreadsheetId not found", gex);
+                }
                 catch (Exception err)
                 {
                     _logger.Error(err, "Unable to read from Google Sheets: {ErrorMessage}", err.Message);

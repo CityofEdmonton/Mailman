@@ -10,6 +10,9 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using AutoMapper;
+using Swashbuckle.AspNetCore.Swagger;
+using System.Reflection;
+using System.IO;
 
 namespace Mailman
 {
@@ -25,6 +28,11 @@ namespace Mailman
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            // Add Automapper
+            services.AddAutoMapper();
+
+
             services.ConfigureLogging("MailMan Server", Configuration);
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -49,8 +57,8 @@ namespace Mailman
                 configuration.RootPath = "ClientApp/build";
             });
 
-            // Add Automapper
-            services.AddAutoMapper();
+            // Add Swagger
+            services.ConfigureSwagger();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +73,16 @@ namespace Mailman
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
