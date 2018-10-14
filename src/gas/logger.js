@@ -97,10 +97,13 @@ function getLogger() {
         };
       });
 
-      logConfig = logConfig.writeTo(new structuredLog.ConsoleSink());
+    logConfig = logConfig.writeTo(new structuredLog.ConsoleSink());
 
-      // set up Firestore as configured
-      var props = PropertiesService.getScriptProperties();
+    // set up Firestore as configured
+    var props;
+    try { props = PropertiesService.getScriptProperties(); } catch (ex4) { props = null;}
+
+    if (props) {
       var firebaseOptions = {
         url: props.getProperty("log-firebase-url"),
         projectId: props.getProperty("log-firebase-project-id"),
@@ -134,6 +137,7 @@ function getLogger() {
         var mySeqSink = new SeqSink(seqOptions);
         logConfig = logConfig.writeTo(mySeqSink);
       }
+    }
 
     // this initializes the Log variable set up in global-variables.js
     _logger = logConfig.create();
