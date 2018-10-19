@@ -51,7 +51,7 @@ var MergeTemplateListItem = function(appendTo, template,
 
   var LABEL_AUTO = 'You are on Hourly Repeat';
   var LABEL_ONFORM = 'You are on Immediately Repeat';
-  var LABEL_OFF = 'You do not have a auto merge';
+  var LABEL_OFF = 'You do not have an auto merge';
 
   //***** private methods *****//
 
