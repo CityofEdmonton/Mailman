@@ -49,9 +49,9 @@ var MergeTemplateListItem = function(appendTo, template,
   var repeatTT = base.find('[data-id="repeat-label"]');
 
 
-  var LABEL_AUTO = 'You are on Hourly Repeat';
-  var LABEL_ONFORM = 'You are on Immediately Repeat';
-  var LABEL_OFF = 'You do not have an auto merge';
+  var LABEL_AUTO = 'Hourly: Runs every hour';
+  var LABEL_ONFORM = 'Immediately: Runs when a form is submitted';
+  var LABEL_OFF = 'Manually: You do not have an auto merge';
 
   //***** private methods *****//
 

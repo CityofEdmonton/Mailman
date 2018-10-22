@@ -209,14 +209,15 @@ CardsConfig.buildCardRepo = function(contentArea,
 
   repo[CardNames.repeater] = new ConditionalCard(contentArea, {
     title: 'How do you want to send email?',
-    help: 'This card is used to determine what type of repeater you want to have. Immediately sending will '+
-    'send the email once a new row submitted. Please note Timestamp column may not work for Immediately sending, '+
-    'please use Mailman logging to check Timestamp for onform submission sending. '+
-    'Hourly sending will send emails every hour. '+
-    'Manually sending will send emails manually by the user. ',
-    checkboxText1: 'Immediately Sending',
-    checkboxText2: 'Hourly Sending',
-    checkboxText3: 'Manually Sending'
+    help: 'This card is used to determine what type of repeater you want to have. "Immediately" will '+
+    'send the email once a Google form linked to the sheet is submitted. Please note that if you choose'+
+    ' this option, you will not be able to set conditionals.'+
+    '"Hourly"  will send emails every hour; it is a good idea to combine this with a conditional, otherwise' +
+    ' every person listed in the spreadsheet will recieve an email whenever Mailman runs!' +
+    '"Manually" will send emails whenever the user manually presses the run button. ',
+    checkboxText1: 'Immediately',
+    checkboxText2: 'Hourly',
+    checkboxText3: 'Manually'
   });
 
   repo[CardNames.repeater].attachEvent('card.hide', function(event, card) {

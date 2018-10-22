@@ -96,12 +96,12 @@ var MailMan = function(appendTo) {
       showListView();
       if (template.toConfig().mergeData.repeater == "onform")
       {
-      snackbar.show('Turning on Immediately Sending...');
+      snackbar.show('Turning on Immediately Merge...');
       templatesContainer.toggleRepeat(template);
       }
       else if (template.toConfig().mergeData.repeater == "auto")
       {
-      snackbar.show('Turning on Hourly Sending ...');
+      snackbar.show('Turning on Hourly Merge ...');
       templatesContainer.toggleRepeat(template);
       }
 
@@ -117,12 +117,12 @@ var MailMan = function(appendTo) {
       showListView();
       if (template.toConfig().mergeData.repeater == "onform")
       {
-      snackbar.show('Turning on Immediately Sending...');
+      snackbar.show('Turning on Immediately Merge...');
       templatesContainer.toggleRepeat(template);
       }
       else if (template.toConfig().mergeData.repeater == "auto")
       {
-      snackbar.show('Turning on Hourly Sending ...');
+      snackbar.show('Turning on Hourly Merge ...');
       templatesContainer.toggleRepeat(template);
       }
 
