@@ -8,6 +8,11 @@
     <Compile Remove="Migrations\20180918175435_InitialCreate.cs" />
     <Compile Remove="Migrations\OAuth\20180918175739_InitialCreate.cs" />
     <Compile Remove="Migrations\OAuth\20180918180256_InitialCreate.cs" />
+    <Compile Remove="Properties\InternalsVisibleTo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Properties\InternalsVisibleTo.cs" />
   </ItemGroup>
 
   <ItemGroup>

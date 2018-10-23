@@ -48,7 +48,7 @@ namespace Mailman.Tests
         public void CreateEmptyMergeTemplateThrows(string name, string spreadsheetId, string createdBy)
         {
             DateTime now = DateTime.UtcNow;
-            Action action = () => MergeTemplate.Create(name, spreadsheetId, createdBy, now);
+            Action action = () => EmailMergeTemplate.Create(name, spreadsheetId, createdBy, now);
             action.Should().Throw<ArgumentNullException>();
         }
 
@@ -57,8 +57,26 @@ namespace Mailman.Tests
         [TestCase("MergeTemplate - example of a name of a merge template", "askdjaskldj-3423-sdfksfjnsdf=-dfkljsdf", "Snow.White@edmonton.ca")]
         public void CreateMergeTemplate(string name, string spreadsheetId, string createdBy)
         {
-            MergeTemplate.Create(name, spreadsheetId, createdBy, DateTime.UtcNow).Should().NotBeNull();
+            EmailMergeTemplate.Create(name, spreadsheetId, createdBy, DateTime.UtcNow).Should().NotBeNull();
         }
 
+
+        [TestCase]
+        public void CreateMergeTemplateWithInvalidDateThrows()
+        {
+            Action action = () => EmailMergeTemplate.Create("Test Merge Template", "Id123", "someone", DateTime.MinValue);
+            action.Should().Throw<ArgumentOutOfRangeException>();
+
+            Action action2 = () => EmailMergeTemplate.Create("Test Merge Template", "Id123", "someone", DateTime.UtcNow.AddHours(1));
+            action2.Should().Throw<ArgumentOutOfRangeException>();
+        }
+
+        [TestCase]
+        public void CreateMergeTemplateFromSerializedDataWithoutUser()
+        {
+            //var template = EmailMergeTemplate.CreateFrom("Id1", "SheetId", "");
+            //template.Should().NotBeNull();
+            //template.CreatedBy.Should().Be("Unknown user");
+        }
     }
 }

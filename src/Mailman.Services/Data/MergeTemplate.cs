@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Mailman.Services.Data
 {
-    public class MergeTemplate
+    public abstract class MergeTemplate
     {
         /// <summary>
         /// The Identifier for this MergeTemplate within the SpreadSheet
@@ -74,7 +74,7 @@ namespace Mailman.Services.Data
         //public RepeaterType Repeater { get; set; }
 
 
-        public static MergeTemplate Create(string spreadsheetId, 
+        protected void Initialize(string spreadsheetId,
             string title, string createdBy, DateTime createdDateUtc)
         {
             if (string.IsNullOrWhiteSpace(title))
@@ -89,19 +89,14 @@ namespace Mailman.Services.Data
             if (createdDateUtc > utcNow)
                 throw new ArgumentOutOfRangeException(nameof(createdDateUtc), createdDateUtc, "createdDateUtc cannot be in the future, it is now " + utcNow);
 
-            return new MergeTemplate()
-            {
-                Id = Guid.NewGuid().ToString(),
-                SpreadSheetId = spreadsheetId,
-                Title = title,
-                CreatedBy = createdBy,
-                CreatedDateUtc = createdDateUtc
-            };
+            Id = Guid.NewGuid().ToString();
+            SpreadSheetId = spreadsheetId;
+            Title = title;
+            CreatedBy = createdBy;
+            CreatedDateUtc = createdDateUtc;
         }
 
-
-        protected static void Initialize(MergeTemplate mergeTemplate,
-            string id, string spreadsheetId, string serialized)
+        protected void Initialize(string id, string spreadsheetId, string serialized)
         {
             dynamic value = Newtonsoft.Json.Linq.JObject.Parse(serialized);
             var mergeData = value.mergeData;
@@ -129,14 +124,14 @@ namespace Mailman.Services.Data
             string useTitleString = mergeData.usetitle;
             bool.TryParse(useTitleString, out bool timestampColumnShouldUseTitle);
 
-            mergeTemplate.Id = id;
-            mergeTemplate.SpreadSheetId = spreadsheetId;
-            mergeTemplate.Title = mergeData.title;
-            mergeTemplate.CreatedBy = createdBy;
-            mergeTemplate.CreatedDateUtc = createdDateUtc;
-            mergeTemplate.SheetName = mergeData.sheet;
-            mergeTemplate.HeaderRowNumber = headerRowNumber;
-            mergeTemplate.SetTimestampColumn(timestampColumn, timestampColumnShouldUseTitle);
+            Id = id;
+            SpreadSheetId = spreadsheetId;
+            Title = mergeData.title;
+            CreatedBy = createdBy;
+            CreatedDateUtc = createdDateUtc;
+            SheetName = mergeData.sheet;
+            HeaderRowNumber = headerRowNumber;
+            SetTimestampColumn(timestampColumn, timestampColumnShouldUseTitle);
         }
 
         // Used by repository to create object from its store (in the Google Sheet)
@@ -146,12 +141,9 @@ namespace Mailman.Services.Data
             var mergeData = value.mergeData;
 
             if (string.Equals((string)mergeData.type, "email", StringComparison.OrdinalIgnoreCase))
-                return EmailMergeTemplate.CreateFrom(id, spreadsheetId, serialized);         
-
-            var returnValue = new MergeTemplate();
-            Initialize(returnValue, id, spreadsheetId, serialized);
-
-            return returnValue;
+                return EmailMergeTemplate.CreateFrom(id, spreadsheetId, serialized);
+            else
+                throw new InvalidOperationException("Unable to find MergeTemplateType from serialized data");
         }
     }
 }

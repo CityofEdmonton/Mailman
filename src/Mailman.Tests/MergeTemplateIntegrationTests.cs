@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using Mailman.Controllers;
+using Mailman.Server.Controllers;
 using Mailman.Server.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -72,5 +72,12 @@ namespace Mailman.Tests
             mergeTemplates.Skip(1).First().Id.Should().Be("_3w5ri295a");
         }
 
+        [TestCase]
+        [IntegrationTest]
+        public async Task ReadNonexistentSheet()
+        {
+            var mergeTemplatesResult = await _mergeTemplatesController.Get("NotARealSheetId");
+            mergeTemplatesResult.Should().BeOfType<NotFoundResult>();
+        }
     }
 }
