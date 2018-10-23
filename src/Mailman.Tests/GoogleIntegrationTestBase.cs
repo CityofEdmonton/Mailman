@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Http;
 using Google.Apis.Sheets.v4;
 using Mailman.Server.Models.MappingProfiles;
 using Mailman.Services;
@@ -41,8 +42,8 @@ namespace Mailman.Tests
             return collection;
         }
 
-        private Google.Apis.Http.IConfigurableHttpClientInitializer _googleCredential;
-        protected Google.Apis.Http.IConfigurableHttpClientInitializer GetGoogleCredential()
+        private IConfigurableHttpClientInitializer _googleCredential;
+        protected IConfigurableHttpClientInitializer GetGoogleCredential()
         {
             if (_googleCredential == null)
             {
