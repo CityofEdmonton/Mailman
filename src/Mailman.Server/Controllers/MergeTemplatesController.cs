@@ -69,42 +69,6 @@ namespace Mailman.Server.Controllers
             }
             return Ok(_mapper.Map<IEnumerable<Services.Data.MergeTemplate>, IEnumerable<MergeTemplate>>(mergeTemplates));
         }
-       
-        /// <summary>
-        /// Does "A" and returns OK.
-        /// </summary>
-        /// <param name="paramA">Parameter A</param>
-        /// <returns>paramA</returns>
-        [HttpGet("a/{paramA}")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(string))]
-        public IActionResult ATask(string paramA)
-        {
-            return Ok(paramA);
-        }
-
-        /// <summary>
-        /// Does "C" and returns OK.
-        /// </summary>
-        /// <param name="paramC">Parameter C</param>
-        /// <returns>paramC</returns>
-        [HttpGet("c/{paramC}")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(string))]
-        public IActionResult CTask(string paramC)
-        {
-            return Ok(paramC);
-        }
-
-        /// <summary>
-        /// Does "B" and returns OK.
-        /// </summary>
-        /// <param name="paramB">Parameter B</param>
-        /// <returns>paramB</returns>
-        [HttpGet("b/{paramB}")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(string))]
-        public IActionResult BTask(string paramB)
-        {
-            return Ok(paramB);
-        }
 
         //// POST: api/MergeTemplate
         //[HttpPost]
