@@ -199,7 +199,7 @@ CardsConfig.buildCardRepo = function(contentArea,
   });
 
   repo[CardNames.repeater] = new ConditionalCard(contentArea, {
-    title: 'How do you want to send email?',
+    title: 'How do you want to send the email?',
     help: 'This card is used to determine what type of repeater you want to have. "Immediately" will '+
     'send the email once a Google form linked to the sheet is submitted. Please note that if you choose'+
     ' this option, you will not be able to set conditionals.'+
