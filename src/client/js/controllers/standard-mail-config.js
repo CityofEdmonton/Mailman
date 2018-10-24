@@ -215,9 +215,9 @@ CardsConfig.buildCardRepo = function(contentArea,
     '"Hourly"  will send emails every hour; it is a good idea to combine this with a conditional, otherwise' +
     ' every person listed in the spreadsheet will recieve an email whenever Mailman runs!' +
     '"Manually" will send emails whenever the user manually presses the run button. ',
-    checkboxText1: 'Immediately',
-    checkboxText2: 'Hourly',
-    checkboxText3: 'Manually'
+    checkboxText1: 'Immediately      ',
+    checkboxText2: 'Hourly      ',
+    checkboxText3: 'Manually      '
   });
 
   repo[CardNames.repeater].attachEvent('card.hide', function(event, card) {
