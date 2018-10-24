@@ -20,21 +20,19 @@ namespace Mailman.Tests
         public SheetsTests()
         {
             var serviceCollection = new ServiceCollection();
-            var services = AddBasicServices(serviceCollection)
+            _serviceProvider = AddBasicServices(serviceCollection)
                 .AddScoped<SheetsController>()
                 .BuildServiceProvider();
-
-            _sheetsController = services.GetRequiredService<SheetsController>();
         }
 
-
-        private readonly SheetsController _sheetsController;
+        private readonly IServiceProvider _serviceProvider;
 
         [TestCase]
         [IntegrationTest]
         public async Task TestReadSheetNames()
         {
-            var sheetNames = (await _sheetsController.SheetNames(TEST_SHEET_ID)).ToList();
+            var sheetsController = _serviceProvider.GetRequiredService<SheetsController>();
+            var sheetNames = (await sheetsController.SheetNames(TEST_SHEET_ID)).ToList();
             sheetNames.Should().HaveCount(2);
             sheetNames.First().Should().Be("Data");
             sheetNames.ElementAt(1).Should().Be("Sheet5");

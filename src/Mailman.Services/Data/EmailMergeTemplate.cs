@@ -13,12 +13,12 @@ namespace Mailman.Services.Data
             string title, string createdBy, DateTime createdDateUtc)
         {
             var returnValue = new EmailMergeTemplate();
-            returnValue.Initialize(spreadsheetId, title, createdBy, createdDateUtc);
+            returnValue.Initialize(spreadsheetId, MergeTemplateType.Email, title, createdBy, createdDateUtc);
 
             return returnValue;
         }
 
-        internal new static MergeTemplate CreateFrom(string id, string spreadsheetId, string serialized)
+        internal new static EmailMergeTemplate CreateFrom(string id, string spreadsheetId, string serialized)
         {
             var returnValue = new EmailMergeTemplate();
             returnValue.Initialize(id, spreadsheetId, serialized);

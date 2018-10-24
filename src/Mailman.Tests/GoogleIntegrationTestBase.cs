@@ -57,24 +57,25 @@ namespace Mailman.Tests
                 if (string.IsNullOrWhiteSpace(credFilePath))
                     throw new InvalidOperationException("A service credential must be specified by placing a file named 'Mailman-service-account.json' in the tests directory");
 
-                if (!File.Exists(credFilePath))
-                    throw new InvalidOperationException("A valid service credential must be specified (file specified but doesn't exist on disk): " + credFilePath);
-
-                try
+                if (File.Exists(credFilePath))
                 {
-                    dynamic serviceAccount = JObject.Parse(File.ReadAllText(credFilePath));
-
-                    string clientEmail = serviceAccount.client_email;
-                    string privateKey = serviceAccount.private_key;
-                    _googleCredential = new ServiceAccountCredential(new ServiceAccountCredential.Initializer(clientEmail)
+                    try
                     {
-                        Scopes = GetCredentialScopes()
-                    }.FromPrivateKey(privateKey));
+                        dynamic serviceAccount = JObject.Parse(File.ReadAllText(credFilePath));
+
+                        string clientEmail = serviceAccount.client_email;
+                        string privateKey = serviceAccount.private_key;
+                        _googleCredential = new ServiceAccountCredential(new ServiceAccountCredential.Initializer(clientEmail)
+                        {
+                            Scopes = GetCredentialScopes()
+                        }.FromPrivateKey(privateKey));
+                    }
+                    catch (Exception err)
+                    {
+                        throw new InvalidOperationException("A valid service credential must be specified (file specified but couldn't read json file correctly): " + err.Message, err);
+                    }
                 }
-                catch (Exception err)
-                {
-                    throw new InvalidOperationException("A valid service credential must be specified (file specified but couldn't read json file correctly): " + err.Message, err);
-                }
+
             }
 
             return _googleCredential;

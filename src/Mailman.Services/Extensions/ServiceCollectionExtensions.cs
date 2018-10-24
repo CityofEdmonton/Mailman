@@ -17,12 +17,15 @@ using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 
 namespace Mailman.Services
 {
+    // excluding from code coverage because this is all about ASP.NET setup
+    [ExcludeFromCodeCoverage()]
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection ConfigureLogging(this IServiceCollection services,

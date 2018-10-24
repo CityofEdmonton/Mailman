@@ -1,4 +1,5 @@
 ﻿using EnsureThat;
+using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4.Data;
@@ -25,7 +26,7 @@ namespace Mailman.Services.Google
             _logger = logger;
         }
 
-        public async Task<IEnumerable<string>> GetSheetNames(string sheetId, bool includeHidden = false)
+        public async Task<IEnumerable<string>> GetSheetNamesAsync(string sheetId, bool includeHidden = false)
         {
             var watch = new Stopwatch();
             using (var service = await GetSheetsServiceAsync())
@@ -50,6 +51,31 @@ namespace Mailman.Services.Google
 
                 return sheets.Select(x => x.Properties.Title);
             }
+        }
+
+        public async Task<IList<IList<object>>> GetValuesAsync(string sheetId, string range)
+        {
+            var watch = new Stopwatch();
+            IList<IList<object>> returnValue;
+            using (var service = await GetSheetsServiceAsync())
+            {
+                var request = service.Spreadsheets.Values.Get(sheetId, range);
+                ValueRange response;
+                try { response = await request.ExecuteAsync(); }
+                catch (GoogleApiException gex)
+                {
+                    throw new SheetNotFoundException("Sheet $spreadsheetId not found", gex);
+                }
+                catch (Exception err)
+                {
+                    _logger.Error(err, "Unable to read from Google Sheets: {ErrorMessage}", err.Message);
+                    throw new ReadGoogleSheetsException("Unable to read from Google Sheets", err);
+                }
+
+                returnValue = response.Values;
+            }
+
+            return returnValue;
         }
     }
 }

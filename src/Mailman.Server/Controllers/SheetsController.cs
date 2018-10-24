@@ -44,7 +44,7 @@ namespace Mailman.Server.Controllers
         [HttpGet("[action]")]
         public Task<IEnumerable<string>> SheetNames(string spreadsheetId, bool includeHidden = false)
         {
-            return _sheetsService.GetSheetNames(spreadsheetId, includeHidden);
+            return _sheetsService.GetSheetNamesAsync(spreadsheetId, includeHidden);
         }
 
     }

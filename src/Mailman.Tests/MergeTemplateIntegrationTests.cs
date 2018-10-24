@@ -20,22 +20,22 @@ namespace Mailman.Tests
         public MergeTemplateIntegrationTests()
         {
             var serviceCollection = new ServiceCollection();
-            var services = AddBasicServices(serviceCollection)
+            _serviceProvider = AddBasicServices(serviceCollection)
                 .AddScoped<MergeTemplatesController>()
                 .BuildServiceProvider();
 
-            _mergeTemplatesController = services.GetRequiredService<MergeTemplatesController>();
-
         }
 
-        private readonly MergeTemplatesController _mergeTemplatesController;
+        private readonly IServiceProvider _serviceProvider;
 
 
         [TestCase]
         [IntegrationTest]
         public async Task ReadMergeTemplatesAsync()
         {
-            var mergeTemplatesResult = await _mergeTemplatesController.Get(TEST_SHEET_ID);
+            var mergeTemplatesController = _serviceProvider.GetRequiredService<MergeTemplatesController>();
+
+            var mergeTemplatesResult = await mergeTemplatesController.Get(TEST_SHEET_ID);
             mergeTemplatesResult.Should().BeOfType<OkObjectResult>();
 
             var okMergeTemplatesResult = (OkObjectResult)mergeTemplatesResult;
@@ -76,7 +76,8 @@ namespace Mailman.Tests
         [IntegrationTest]
         public async Task ReadNonexistentSheet()
         {
-            var mergeTemplatesResult = await _mergeTemplatesController.Get("NotARealSheetId");
+            var mergeTemplatesController = _serviceProvider.GetRequiredService<MergeTemplatesController>();
+            var mergeTemplatesResult = await mergeTemplatesController.Get("NotARealSheetId");
             mergeTemplatesResult.Should().BeOfType<NotFoundResult>();
         }
     }
