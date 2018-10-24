@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using EnsureThat;
 using Mailman.Server.Models;
+using Mailman.Services;
 using Mailman.Services.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

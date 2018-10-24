@@ -74,7 +74,7 @@ namespace Mailman.Services.Data
         //public RepeaterType Repeater { get; set; }
 
 
-        protected void Initialize(string spreadsheetId,
+        protected void Initialize(string spreadsheetId, MergeTemplateType type,
             string title, string createdBy, DateTime createdDateUtc)
         {
             if (string.IsNullOrWhiteSpace(title))
@@ -88,6 +88,8 @@ namespace Mailman.Services.Data
             var utcNow = DateTime.UtcNow;
             if (createdDateUtc > utcNow)
                 throw new ArgumentOutOfRangeException(nameof(createdDateUtc), createdDateUtc, "createdDateUtc cannot be in the future, it is now " + utcNow);
+
+            Type = type;
 
             Id = Guid.NewGuid().ToString();
             SpreadSheetId = spreadsheetId;
@@ -107,18 +109,27 @@ namespace Mailman.Services.Data
                 // warning!
                 createdBy = "Unknown user";
             }
-            DateTime createdDate = string.IsNullOrWhiteSpace(createdDateString)
-                ? DateTime.UtcNow
-                : DateTime.ParseExact(createdDateString,
+
+            DateTime createdDateUtc;
+            if (string.IsNullOrWhiteSpace(createdDateString))
+            {
+                createdDateUtc = DateTime.UtcNow;
+            }
+            else
+            {
+                DateTime createdDate = DateTime.ParseExact(createdDateString,
                     "M/d/yyyy H:m:s",
                     System.Globalization.CultureInfo.InvariantCulture);
-            // hopefuly the servers are in the right time zone (MDT for City of Edmonton)
-            var createdDateUtc = TimeZoneInfo.ConvertTimeToUtc(createdDate, TimeZoneInfo.Local);
+
+                // hopefuly the servers are in the right time zone (MDT for City of Edmonton)
+                createdDateUtc = TimeZoneInfo.ConvertTimeToUtc(createdDate, TimeZoneInfo.Local);
+            }
 
             string headerRow = mergeData.headerRow;
             if (!int.TryParse(headerRow, out int headerRowNumber))
             {
                 // log warning that headerRow could not be determined.
+                headerRowNumber = 1;
             }
             string timestampColumn = mergeData.timestampColumn;
             string useTitleString = mergeData.usetitle;

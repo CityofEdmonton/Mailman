@@ -9,6 +9,8 @@ namespace Mailman.Services.Google
     // we decouple Google services from our application and provide this abstraction
     public interface ISheetsService
     {
-        Task<IEnumerable<string>> GetSheetNames(string sheetId, bool includeHidden = false);
+        Task<IEnumerable<string>> GetSheetNamesAsync(string sheetId, bool includeHidden = false);
+
+        Task<IList<IList<object>>> GetValuesAsync(string sheetId, string range);
     }
 }
