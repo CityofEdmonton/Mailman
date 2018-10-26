@@ -1,0 +1,6 @@
+language: csharp
+mono: none
+dotnet: 2.1.5
+script:
+  - dotnet build ./src/Mailman.Server/Mailman.Server.csproj
+  - dotnet test ./src/Mailman.Tests/Mailman.Tests.csproj
