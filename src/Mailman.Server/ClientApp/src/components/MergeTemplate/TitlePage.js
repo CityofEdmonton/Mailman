@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { Button } from '@material-ui/core';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import { Link } from "react-router-dom";
+// import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
-import { actionCreators } from '../store/MergeTemplates';
+import { actionCreators } from '../../store/MergeTemplates';
 
-class AddMergeTemplate extends Component {
+class TitlePage extends Component {
   componentWillMount() {
     // This method runs when the component is first added to the page
     //const sheetId = ""; // TODO: get sheetId 
-   //this.props.requestMergeTemplates(sheetId);
+  //  this.props.requestMergeTemplates(sheetId);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -42,4 +42,4 @@ class AddMergeTemplate extends Component {
 export default connect(
   state => state.mergeTemplates,
   dispatch => bindActionCreators(actionCreators, dispatch)
-)(AddMergeTemplate);
+)(TitlePage);

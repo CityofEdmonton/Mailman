@@ -8,7 +8,7 @@ import AddIcon from "@material-ui/icons/AddCircle";
 import Grid from "@material-ui/core/Grid";
 
 import { actionCreators } from "../store/MergeTemplates";
-import MergeTemplate from "./MergeTemplate";
+import InfoCard from "./MergeTemplate/InfoCard";
 
 const styles = theme => ({});
 
@@ -28,20 +28,21 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <p>Placeholder for mergeTemplates</p>
+        <p>TESTING MAILMAN</p>
         <div>
           <Grid container spacing={16}>
             {this.props.mergeTemplates.map(mergeTemplate => (
               <Grid key={mergeTemplate.id} item>
-                <MergeTemplate
+                <InfoCard
                   title={mergeTemplate.mergeData.title}
                   to={mergeTemplate.mergeData.data.to}
+                  id = {mergeTemplate.id}
                 />
               </Grid>
             ))}
           </Grid>
           <IconButton color="inherit">
-            <Link to="/addMergeTemplate">
+            <Link to="/mergeTemplate/title">
               <AddIcon />
             </Link>
           </IconButton>

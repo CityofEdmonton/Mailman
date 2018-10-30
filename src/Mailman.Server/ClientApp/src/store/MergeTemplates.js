@@ -1,31 +1,55 @@
-const requestMergeTemplatesType = "REQUEST_MERGE_TEMPLATES";
-const receiveMergeTemplatesType = "RECEIVE_MERGE_TEMPLATES";
+import { requestMergeTemplatesType, receiveMergeTemplatesType } from '../actionTypes';
+
+
 const initialState = {
-  mergeTemplates: [
-    {
-      mergeRepeater: null,
-      mergeData: {
-        type: "Email",
-        data: {
-          to: "a.person@edmonton.ca",
-          cc: "jared.rewerts@edmonton.ca",
-          bcc: "",
-          subject: "Early Bird Rate Extended - Open Data Summit || <<Name>>",
-          body: "<h3>TEST</h3>"
-        },
-        title: "Early Bird Rate - Demo",
-        sheet: "Notification Type Mailman",
-        headerRow: "1",
-        timestampColumn: "<<Mailman Email Timestamp>>",
-        conditional: "<<Final Validation>>"
-      },
-      createdBy: "Unknown user",
-      createdDatetime: "9/6/2018 12:17:13",
-      id: "_42ktles0m"
-    }
-  ],
-  isLoading: false
+  mergeTemplates: []
 };
+//   mergeTemplates: [
+//     {
+//       mergeRepeater: null,
+//       mergeData: {
+//         type: "Email",
+//         data: {
+//           to: "a.person@edmonton.ca",
+//           cc: "jared.rewerts@edmonton.ca",
+//           bcc: "",
+//           subject: "Early Bird Rate Extended - Open Data Summit || <<Name>>",
+//           body: "<h3>TEST</h3>"
+//         },
+//         title: "Early Bird Rate - Demo",
+//         sheet: "Notification Type Mailman",
+//         headerRow: "1",
+//         timestampColumn: "<<Mailman Email Timestamp>>",
+//         conditional: "<<Final Validation>>"
+//       },
+//       createdBy: "Unknown user",
+//       createdDatetime: "9/6/2018 12:17:13",
+//       id: "_42ktles0m"
+//     },
+//     {
+//       mergeRepeater: null,
+//       mergeData: {
+//         type: "Email",
+//         data: {
+//           to: "a.person@edmonton.ca",
+//           cc: "jared.rewerts@edmonton.ca",
+//           bcc: "",
+//           subject: "Early Bird Rate Extended - Open Data Summit || <<Name>>",
+//           body: "<h3>TEST</h3>"
+//         },
+//         title: "TESTING #2",
+//         sheet: "Notification Type Mailman",
+//         headerRow: "1",
+//         timestampColumn: "<<Mailman Email Timestamp>>",
+//         conditional: "<<Final Validation>>"
+//       },
+//       createdBy: "Unknown user",
+//       createdDatetime: "9/6/2018 12:17:13",
+//       id: "_42ktles0m"
+//     }
+//   ],
+//   isLoading: false
+// };
 
 export const actionCreators = {
   requestMergeTemplates: sheetId => async (dispatch, getState) => {
@@ -42,9 +66,11 @@ export const actionCreators = {
 
     dispatch({ type: receiveMergeTemplatesType, sheetId, mergeTemplates });
   }
+
+  //receive merge templates here
 };
 
-export const reducer = (state, action) => {
+export const reducer = (state, action) => { // state = initialState
   state = state || initialState;
 
   if (action.type === requestMergeTemplatesType) {
