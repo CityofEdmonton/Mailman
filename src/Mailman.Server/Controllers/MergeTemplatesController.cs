@@ -71,11 +71,18 @@ namespace Mailman.Server.Controllers
             return Ok(_mapper.Map<IEnumerable<Services.Data.MergeTemplate>, IEnumerable<MergeTemplate>>(mergeTemplates));
         }
 
-        //// POST: api/MergeTemplate
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
+        // POST: api/MergeTemplate
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> PostMergeTemplate([FromBody] MergeTemplate mergeTemplateData)
+        {
+            EnsureArg.IsNotNull(mergeTemplateData);
+            return CreatedAtAction("Getmergetemplate", null);
+
+
+        }
 
         //// PUT: api/MergeTemplate/5
         //[HttpPut("{id}")]
