@@ -9,6 +9,7 @@ using Google;
 using Google.Apis.Sheets.v4.Data;
 using Mailman.Services.Data;
 using Mailman.Services.Google;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace Mailman.Services
@@ -17,20 +18,27 @@ namespace Mailman.Services
     {
         private readonly ILogger _logger;
         private readonly ISheetsService _sheetsService;
+        private readonly MergeTemplateContext _mergeTemplateContext;
 
-        public MergeTemplateRepository(ISheetsService sheetsService,
+        public MergeTemplateRepository(MergeTemplateContext mergeTemplateContext,
+            ISheetsService sheetsService,
             ILogger logger)
         {
             EnsureArg.IsNotNull(sheetsService);
             EnsureArg.IsNotNull(logger);
+            EnsureArg.IsNotNull(mergeTemplateContext);
             _sheetsService = sheetsService;
             _logger = logger;
+            _mergeTemplateContext = mergeTemplateContext;
         }
 
-        //public Task<MergeTemplate> AddMergeTemplateAsync(MergeTemplate mergeTemplate, CancellationToken cancellationToken = default(CancellationToken))
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public async Task<MergeTemplate> AddMergeTemplateAsync(MergeTemplate mergeTemplate, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            _mergeTemplateContext.MergeTemplates.Add(mergeTemplate);
+            await _mergeTemplateContext.SaveChangesAsync(cancellationToken);
+
+            return mergeTemplate;
+        }
 
         internal const string ENTIRE_SHEET_RANGE = "A1:B5000";
 
@@ -51,6 +59,20 @@ namespace Mailman.Services
                 }
             }
             return returnValue;
+        }
+
+        public async Task<MergeTemplate> UpdateMergeTemplateAsync(MergeTemplate mergeTemplate, CancellationToken cancellationToken = default(CancellationToken))
+        {       
+            var entry = _mergeTemplateContext.Entry(mergeTemplate);
+            entry.State = EntityState.Modified;
+            await _mergeTemplateContext.SaveChangesAsync(cancellationToken);
+            return mergeTemplate;
+        }
+
+        public async Task DeleteMergeTemplateAsync(MergeTemplate mergeTemplate, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            _mergeTemplateContext.MergeTemplates.Remove(mergeTemplate);
+            await _mergeTemplateContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

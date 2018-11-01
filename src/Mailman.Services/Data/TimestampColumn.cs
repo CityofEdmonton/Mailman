@@ -11,7 +11,6 @@ namespace Mailman.Services.Data
         // no public constructors.
         private TimestampColumn() { }
 
-        [Key]
         public string Name { get; private set; }
         public bool ShouldPrefixNameWithMergeTemplateTitle { get; private set; }
         public string Title { get; private set; }
