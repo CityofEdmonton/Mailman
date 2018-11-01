@@ -102,6 +102,9 @@ namespace Mailman.Server.Controllers
         }
 
         // PUT: api/MergeTemplates/Email
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
         [HttpPut("Email")]
         public async Task<IActionResult> Put([FromBody] EmailMergeTemplate mergeTemplateData)
         {
@@ -126,6 +129,9 @@ namespace Mailman.Server.Controllers
         }
 
         // DELETE: api/ApiWithActions/5
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
         [HttpDelete("Email")]
         public async Task<IActionResult> Delete([FromBody] EmailMergeTemplate mergeTemplateData)
         
