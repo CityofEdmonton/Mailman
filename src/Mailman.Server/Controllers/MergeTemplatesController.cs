@@ -112,7 +112,7 @@ namespace Mailman.Server.Controllers
             
             if (!ModelState.IsValid)
             {
-                _logger.Warning("Unable to create MergeTemplate because model state is not valid: {ModelState}", ModelState);
+                _logger.Warning("Unable to update MergeTemplate because model state is not valid: {ModelState}", ModelState);
                 return BadRequest(ModelState);
             }
             var newMergeTemplate = _mapper.Map<Mailman.Services.Data.MergeTemplate> (mergeTemplateData); 
@@ -140,7 +140,7 @@ namespace Mailman.Server.Controllers
             
             if (!ModelState.IsValid)
             {
-                _logger.Warning("Unable to create MergeTemplate because model state is not valid: {ModelState}", ModelState);
+                _logger.Warning("Unable to delete MergeTemplate because model state is not valid: {ModelState}", ModelState);
                 return BadRequest(ModelState);
             }
             var oldMergeTemplate = _mapper.Map<Mailman.Services.Data.MergeTemplate> (mergeTemplateData); 
