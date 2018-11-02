@@ -70,7 +70,7 @@ namespace Mailman.Services.Data
             TimestampColumn = TimestampColumn.Create(columnTemplate, prefixWithMergeTemplateTitle, Title);
         }
 
-        //public string Conditional { get; set; }
+        public string Conditional { get; set; }
         //public RepeaterType Repeater { get; set; }
 
 
@@ -135,6 +135,8 @@ namespace Mailman.Services.Data
             string useTitleString = mergeData.usetitle;
             bool.TryParse(useTitleString, out bool timestampColumnShouldUseTitle);
 
+            string conditional = mergeData.conditional;
+
             Id = id;
             SpreadSheetId = spreadsheetId;
             Title = mergeData.title;
@@ -142,6 +144,7 @@ namespace Mailman.Services.Data
             CreatedDateUtc = createdDateUtc;
             SheetName = mergeData.sheet;
             HeaderRowNumber = headerRowNumber;
+            Conditional = conditional;
             SetTimestampColumn(timestampColumn, timestampColumnShouldUseTitle);
         }
 

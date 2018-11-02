@@ -3,11 +3,13 @@ using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using EnsureThat;
+using Mailman.Server.Hubs;
 using Mailman.Server.Models;
 using Mailman.Services;
 using Mailman.Services.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Serilog;
 
 namespace Mailman.Server.Controllers
@@ -22,6 +24,7 @@ namespace Mailman.Server.Controllers
     public class MergeTemplatesController : ControllerBase
     {
         private readonly IMergeTemplateRepository _mergeTemplateRepository;
+        private readonly IHubContext<MailmanHub> _mailmanHub;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
@@ -33,13 +36,16 @@ namespace Mailman.Server.Controllers
         /// <param name="logger">Serilog logger</param>
         public MergeTemplatesController(
             IMergeTemplateRepository mergeTemplateRepository,
+            IHubContext<MailmanHub> mailmanHub,
             IMapper mapper,
             ILogger logger)
         {
             EnsureArg.IsNotNull(mergeTemplateRepository, nameof(mergeTemplateRepository));
+            EnsureArg.IsNotNull(mailmanHub, nameof(mailmanHub));
             EnsureArg.IsNotNull(mapper, nameof(mapper));
             EnsureArg.IsNotNull(logger, nameof(logger));
             _mergeTemplateRepository = mergeTemplateRepository;
+            _mailmanHub = mailmanHub;
             _mapper = mapper;
             _logger = logger;
         }
@@ -88,5 +94,40 @@ namespace Mailman.Server.Controllers
         //public void Delete(int id)
         //{
         //}
+
+        [HttpPost("start")]
+        public async Task<IActionResult> StartMailMerge(StartMailMergeOptions options)
+        {
+
+        }
+
+        public async Task<IActionResult> RunMailMerge(RunMailMergeOptions options)
+        {
+
+        }
+
+        [HttpPost("run/updated")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task NotifyMailMergeUpdated([FromBody]MailMergeProgress progress)
+        {
+            //TODO; ensure only the "workers" can call this
+            if (!string.IsNullOrWhiteSpace(progress.ConnectionId))
+            {
+                await _mailmanHub.Clients.Clients(progress.ConnectionId)
+                    .SendAsync("mailMergeProgressUpdated", progress);
+            }
+        }
+
+        [HttpPost("run/completed")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task NotifyMailMergeCompleted([FromBody]MailMergeProgress progress)
+        {
+            //TODO; ensure only the "workers" can call this
+            if (!string.IsNullOrWhiteSpace(progress.ConnectionId))
+            {
+                await _mailmanHub.Clients.Clients(progress.ConnectionId)
+                    .SendAsync("mailMergeCompleted", progress);
+            }
+        }
     }
 }

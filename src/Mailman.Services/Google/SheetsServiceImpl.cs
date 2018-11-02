@@ -32,7 +32,7 @@ namespace Mailman.Services.Google
             _logger = logger;
         }
 
-        public async Task<IEnumerable<string>> GetSheetNamesAsync(string sheetId, bool includeHidden = false)
+        public async Task<IEnumerable<string>> GetSheetNamesAsync(string spreadsheetId, bool includeHidden = false)
         {
             var watch = new Stopwatch();
             using (var service = await GetSheetsServiceAsync())
@@ -40,7 +40,7 @@ namespace Mailman.Services.Google
                 _logger.Debug("Got sheets service in {EllapsedMilliseconds}", watch.ElapsedMilliseconds);
                 watch.Restart();
 
-                var request = service.Spreadsheets.Get(sheetId);
+                var request = service.Spreadsheets.Get(spreadsheetId);
                 Spreadsheet response;
                 try
                 {
@@ -48,7 +48,7 @@ namespace Mailman.Services.Google
                 }
                 catch (Exception err)
                 {
-                    _logger.Error(err, "Unable to read from spreadsheet {SpreadSheetId}: {ErrorMessage}", sheetId, err.Message);
+                    _logger.Error(err, "Unable to read from spreadsheet {SpreadsheetId}: {ErrorMessage}", spreadsheetId, err.Message);
                     throw;
                 }
                 IQueryable<Sheet> sheets = response.Sheets.AsQueryable();
@@ -59,13 +59,13 @@ namespace Mailman.Services.Google
             }
         }
 
-        public async Task<IList<IList<object>>> GetValuesAsync(string sheetId, string range)
+        public virtual async Task<IList<IList<object>>> GetValuesAsync(string spreadsheetId, string range)
         {
             var watch = new Stopwatch();
             IList<IList<object>> returnValue;
             using (var service = await GetSheetsServiceAsync())
             {
-                var request = service.Spreadsheets.Values.Get(sheetId, range);
+                var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
                 ValueRange response;
                 try { response = await request.ExecuteAsync(); }
                 catch (GoogleApiException gex)
@@ -85,8 +85,8 @@ namespace Mailman.Services.Google
         }
 
 
-        public async Task GetValuesAsDataPumpAsync(string sheetId, 
-            string range, 
+        public virtual async Task GetValuesAsDataPumpAsync(string spreadsheetId,
+            string range,
             Func<IList<object>, Task> dataPump)
         {
             if (dataPump == null)
@@ -97,12 +97,12 @@ namespace Mailman.Services.Google
 
             using (var service = await GetSheetsServiceAsync())
             {
-                var request = service.Spreadsheets.Values.Get(sheetId, range);
+                var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
                 Stream response;
                 try { response = await request.ExecuteAsStreamAsync(); }
                 catch (GoogleApiException gex)
                 {
-                    throw new SheetNotFoundException("Sheet $spreadsheetId not found", gex);
+                    throw new SheetNotFoundException($"Sheet {spreadsheetId} not found", gex);
                 }
                 catch (Exception err)
                 {
@@ -145,13 +145,67 @@ namespace Mailman.Services.Google
 
             // wait for all the pumps to finish
             await Task.WhenAll(pumpTasks);
+
+
+
+            /// OLD IDEA USING BATCHES:
+            //A1Notation a1Range, dataRange;
+            //try
+            //{
+            //    a1Range = new A1Notation(range);
+            //}
+            //catch (ArgumentException ae)
+            //{
+            //    throw new InvalidOperationException("Invalid range", ae);
+            //}
+
+            //if (string.IsNullOrWhiteSpace(a1Range.SheetName))
+            //{
+            //    throw new InvalidOperationException("Sheet Name must be specified before \"!\"");
+            //}
+
+            //using (var service = await GetSheetsServiceAsync())
+            //{
+            //    dataRange = await GetSheetRangeAsync(service, sheetId, a1Range.SheetName);
+
+            //    int startRow = a1Range.StartRow ?? 1;
+            //    string startColumn = string.IsNullOrWhiteSpace(a1Range.StartColumn)
+            //        ? dataRange.star
+            //    while (true)
+            //    {
+            //        if ((a1Range.EndRow.HasValue && startRow > a1Range.EndRow.Value) ||
+            //            startRow > dataRange.EndRow.Value)
+            //        {
+            //            break;
+            //        }
+
+            //        try
+            //        {
+            //            int endRow = startRow + batchSize;
+            //            if (a1Range.EndRow.HasValue && endRow > a1Range.EndRow.Value)
+            //                endRow = a1Range.EndRow.Value;
+            //            else if (endRow > dataRange.EndRow.Value)
+            //                endRow = dataRange.EndRow.Value;
+
+            //            // here we can go get the data
+            //            GetValuesAsync(sheetId, new A1Notation(a1Range.SheetName, ))
+            //        }
+            //        finally
+            //        {
+            //            // finally, increment startRow
+            //            startRow += batchSize;
+            //        }
+            //    }
+            //}
+
+
         }
 
-        public async Task GetValuesAsDictionaryDataPump(string sheetId, string range, Func<IDictionary<string, object>, Task> dataPump)
+        public async Task GetValuesAsDictionaryDataPump(string spreadsheetId, string range, Func<IDictionary<string, object>, Task> dataPump)
         {
             List<string> headers = null;
             List<Task> pumpTasks = new List<Task>();
-            await GetValuesAsDataPumpAsync(sheetId, range, row =>
+            await GetValuesAsDataPumpAsync(spreadsheetId, range, async row =>
             {
                 // assume first row is headers
                 if (headers == null)
@@ -161,16 +215,44 @@ namespace Mailman.Services.Google
                 else
                 {
                     var dict = new Dictionary<string, object>();
-                    for (int i=0; i< headers.Count; i++)
+                    for (int i = 0; i < headers.Count; i++)
                     {
                         if (i < row.Count)
                             dict[headers[i]] = row[i];
                     }
                     pumpTasks.Add(dataPump(dict));
                 }
-                return Task.CompletedTask;
             });
             await Task.WhenAll(pumpTasks);
+        }
+
+        public virtual async Task<A1Notation> GetDataRangeAsync(string spreadsheetId, string sheetName)
+        {
+            using (var service = await GetSheetsServiceAsync())
+            {
+                var request = service.Spreadsheets.GetByDataFilter(new GetSpreadsheetByDataFilterRequest()
+                {
+                    DataFilters = new List<DataFilter>()
+                        {
+                            new DataFilter() { A1Range = sheetName }
+                        }
+                }, spreadsheetId);
+                try
+                {
+                    var response = await request.ExecuteAsync();
+                    if (response.Sheets.Count == 0)
+                        throw new InvalidOperationException($"Unable to find sheet with name {sheetName}");
+                    else if (response.Sheets.Count != 1)
+                        throw new InvalidOperationException($"Unexpected number of sheets info returned from Sheets Service. Got {response.Sheets.Count} but expected 1");
+                    var dataProperties = response.Sheets[0].Properties?.GridProperties;
+                    return new A1Notation(sheetName, 1, 1, dataProperties.ColumnCount, dataProperties.RowCount);
+                }
+                catch (Exception e)
+                {
+                    _logger.Error(e, "Unexpected error reading from google sheet: {ErrorMessage}", e.Message);
+                    throw;
+                }
+            }
         }
     }
 }

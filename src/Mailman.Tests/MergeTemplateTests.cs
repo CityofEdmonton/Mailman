@@ -61,29 +61,6 @@ namespace Mailman.Tests
             EmailMergeTemplate.Create(name, spreadsheetId, createdBy, DateTime.UtcNow).Should().NotBeNull();
         }
 
-        internal const string SAMPLE_MM_JSON = @"{  
-   ""mergeData"":{  
-      ""type"":""Email"",
-      ""data"":{
-         ""to"":""<<Email>>"",
-         ""cc"":null,
-         ""bcc"":null,
-         ""subject"":""Hello <<Name>>!"",
-         ""body"":""<p>This is a test email to &lt;&lt;Name&gt;&gt;.</p>\n<p>&nbsp;</p>\n<p>Here are some notes: &lt;&lt;Notes&gt;&gt;</p>""
-      },
-      ""title"":""test2"",
-      ""sheet"":""Data"",
-      ""headerRow"":""1"",
-      ""timestampColumn"":""<<Mailman test2 Timestamp>>"",
-      ""conditional"":null,
-      ""repeater"":""off"",
-      ""usetitle"":true
-   },
-   ""createdBy"":""Unknown user"",
-   ""createdDatetime"":""8/15/2018 9:24:11"",
-   ""id"":""_lif0ru2r8"",
-   ""version"":""1.2.3""
-}";
 
         [TestCase]
         public void CreateMergeTemplateWithInvalidDateThrows()
@@ -99,7 +76,7 @@ namespace Mailman.Tests
         [TestCase(false)]
         public void CreateMergeTemplateFromSerializedData(bool timeStampShouldPrefixNameWithMergeTemplateTitle)
         {
-            dynamic templateJsonObject = JObject.Parse(SAMPLE_MM_JSON);
+            dynamic templateJsonObject = JObject.Parse(Mocks.SAMPLE_MM_JSON);
 
             // set "usetitle" as per the timeStampShouldPrefixNameWithMergeTemplateTitle parameter
             templateJsonObject.mergeData.usetitle = timeStampShouldPrefixNameWithMergeTemplateTitle ? "true" : "false";
@@ -113,7 +90,7 @@ namespace Mailman.Tests
         [TestCase]
         public void CreateMergeTempalteFromSerializedDataWithInvalidTypeThrows()
         {
-            dynamic templateJsonObject = JObject.Parse(SAMPLE_MM_JSON);
+            dynamic templateJsonObject = JObject.Parse(Mocks.SAMPLE_MM_JSON);
             templateJsonObject.mergeData.type = "badType";
             string templateJson = templateJsonObject.ToString();
 
@@ -126,11 +103,11 @@ namespace Mailman.Tests
         [TestCase]
         public void CreateMergeTemplateFromSerializedDataWithoutUser()
         {
-            var template = MergeTemplate.CreateFrom("Id1", "SheetId", SAMPLE_MM_JSON);
+            var template = MergeTemplate.CreateFrom("Id1", "SheetId", Mocks.SAMPLE_MM_JSON);
             template.Should().NotBeNull();
             template.CreatedBy.Should().Be("Unknown user");
 
-            dynamic templateJsonObject = JObject.Parse(SAMPLE_MM_JSON);
+            dynamic templateJsonObject = JObject.Parse(Mocks.SAMPLE_MM_JSON);
             templateJsonObject.createdBy = null;
             string templateJson = templateJsonObject.ToString();
 
@@ -142,7 +119,7 @@ namespace Mailman.Tests
         [TestCase]
         public void CreateMergeTemplateFromSerializedDataWithBadHeaderRowNumber()
         {
-            dynamic templateJsonObject = JObject.Parse(SAMPLE_MM_JSON);
+            dynamic templateJsonObject = JObject.Parse(Mocks.SAMPLE_MM_JSON);
             templateJsonObject.mergeData.headerRow = "NotANumber";
             string templateJson = templateJsonObject.ToString();
 
@@ -153,7 +130,7 @@ namespace Mailman.Tests
         [TestCase]
         public void CreateMergeTemplateFromSerializedDataWithWithoutCreatedDate()
         {
-            dynamic templateJsonObject = JObject.Parse(SAMPLE_MM_JSON);
+            dynamic templateJsonObject = JObject.Parse(Mocks.SAMPLE_MM_JSON);
             templateJsonObject.createdDatetime = null;
             string templateJson = templateJsonObject.ToString();
 
@@ -167,7 +144,7 @@ namespace Mailman.Tests
         [TestCase]
         public void SetMergeTemplateTitle()
         {
-            var template = EmailMergeTemplate.CreateFrom("Id1", "SheetId", SAMPLE_MM_JSON);
+            var template = EmailMergeTemplate.CreateFrom("Id1", "SheetId", Mocks.SAMPLE_MM_JSON);
             template.Should().NotBeNull();
             template.SetTitle("New Title");
         }

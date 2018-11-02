@@ -9,5 +9,6 @@ namespace Mailman.Services
     {
         //Task<MergeTemplate> AddMergeTemplateAsync(MergeTemplate mergeTemplate, CancellationToken cancellationToken = default(CancellationToken));
         Task<IEnumerable<MergeTemplate>> GetMergeTemplatesAsync(string spreadsheetId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<MergeTemplate> GetMergeTemplate(string id);
     }
 }

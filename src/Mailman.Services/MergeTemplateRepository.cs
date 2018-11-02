@@ -32,12 +32,12 @@ namespace Mailman.Services
         //    throw new NotImplementedException();
         //}
 
-        internal const string ENTIRE_SHEET_RANGE = "A1:B5000";
+        internal const string MM_CONFIG_ENTIRE_SHEET_RANGE = "A1:B5000";
 
         public async Task<IEnumerable<MergeTemplate>> GetMergeTemplatesAsync(string spreadsheetId, CancellationToken cancellationToken = default(CancellationToken))
         {
             var returnValue = new List<MergeTemplate>();
-            foreach (var row in await _sheetsService.GetValuesAsync(spreadsheetId, range: string.Concat("mm-config!", ENTIRE_SHEET_RANGE)))
+            foreach (var row in await _sheetsService.GetValuesAsync(spreadsheetId, range: string.Concat("mm-config!", MM_CONFIG_ENTIRE_SHEET_RANGE)))
             {
                 if (row.Count == 0)
                     _logger.Warning("Row {RowNumber} had no data, not contributing to returned merge templates", returnValue.Count + 1);
@@ -51,6 +51,11 @@ namespace Mailman.Services
                 }
             }
             return returnValue;
+        }
+
+        public Task<MergeTemplate> GetMergeTemplate(string id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
