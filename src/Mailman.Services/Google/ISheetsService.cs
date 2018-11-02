@@ -12,5 +12,11 @@ namespace Mailman.Services.Google
         Task<IEnumerable<string>> GetSheetNamesAsync(string sheetId, bool includeHidden = false);
 
         Task<IList<IList<object>>> GetValuesAsync(string sheetId, string range);
+
+        Task GetValuesAsDataPumpAsync(string sheetId, string range, 
+            Func<IList<object>, Task> dataPump);
+
+        Task GetValuesAsDictionaryDataPump(string sheetId, string range,
+            Func<IDictionary<string, object>, Task> dataPump);
     }
 }
