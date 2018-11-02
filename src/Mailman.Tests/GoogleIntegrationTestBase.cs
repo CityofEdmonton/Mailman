@@ -31,7 +31,7 @@ namespace Mailman.Tests
         protected virtual IServiceCollection AddBasicServices(IServiceCollection collection)
         {
             collection.AddSingleton<ILogger>(x => Log.Logger)
-                .AddMailmanServices(null, GetGoogleCredential())
+                .AddMailmanServices(null, googleCredentials: GetGoogleCredential())
                 //.AddAutoMapper();
                 .AddScoped<IMapper>(s => {
                     var config = (Action<IMapperConfigurationExpression>)(cfg => cfg.AddProfile(new MergeTemplateProfile()));
