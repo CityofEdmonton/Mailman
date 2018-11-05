@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,7 +43,35 @@ namespace Mailman.Services
 
         internal const string MM_CONFIG_ENTIRE_SHEET_RANGE = "A1:B5000";
 
-        public async Task<IEnumerable<MergeTemplate>> GetMergeTemplatesAsync(string spreadsheetId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<MergeTemplate>> GetMergeTemplatesAsync(string spreadsheetId,
+            bool upgradeFromLegacyMailmanIfFirstRead = true,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var values = await _mergeTemplateContext.MergeTemplates.Where(x => x.SpreadSheetId == spreadsheetId).ToListAsync();
+            if (values == null || !values.Any())
+            {
+                // it could be that we've never read from the sheet before,
+                // if so, we'll create a new entry here
+                var spreadsheetInfo = await _mergeTemplateContext.SpreadSheets.FindAsync(new object[] { spreadsheetId }, cancellationToken);;
+                if (spreadsheetInfo == null)
+                {
+                    _logger.Information("Reading from legacy mailman (mm-config) into Mailman 2.0 database");
+                    var legacyValues = await GetLegacyMergeTemplates(spreadsheetId, cancellationToken);
+                    if (legacyValues != null)
+                    {
+                        foreach (var val in legacyValues)
+                            _mergeTemplateContext.MergeTemplates.Add(val);
+                        _mergeTemplateContext.SpreadSheets.Add(new SpreadsheetInfo() { Id = spreadsheetId, ImportDateUtc = DateTime.UtcNow });
+                        await _mergeTemplateContext.SaveChangesAsync();
+                        values = legacyValues.ToList();
+                    }
+                }
+            }
+            return values.AsEnumerable();
+        }
+
+        private async Task<IEnumerable<MergeTemplate>> GetLegacyMergeTemplates(string spreadsheetId,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             var returnValue = new List<MergeTemplate>();
             foreach (var row in await _sheetsService.GetValuesAsync(spreadsheetId, range: string.Concat("mm-config!", MM_CONFIG_ENTIRE_SHEET_RANGE)))
@@ -60,6 +89,7 @@ namespace Mailman.Services
             }
             return returnValue;
         }
+    
 
         public async Task<MergeTemplate> UpdateMergeTemplateAsync(MergeTemplate mergeTemplate, CancellationToken cancellationToken = default(CancellationToken))
         {       
@@ -73,6 +103,11 @@ namespace Mailman.Services
         {
             _mergeTemplateContext.MergeTemplates.Remove(mergeTemplate);
             await _mergeTemplateContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public Task<MergeTemplate> GetMergeTemplate(string id)
+        {
+            return _mergeTemplateContext.MergeTemplates.FindAsync(id);
         }
     }
 }

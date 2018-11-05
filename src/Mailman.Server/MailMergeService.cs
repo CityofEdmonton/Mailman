@@ -8,20 +8,25 @@ using EnsureThat;
 using Mailman.Server.Models;
 using Mailman.Services;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace Mailman.Server
 {
     internal class MailMergeService : IMailMergeService
     {
-        public MailMergeService(IOptions<MailMergeServiceOptions> options)
+        public MailMergeService(IOptions<MailMergeServiceOptions> options,
+            ILogger logger)
         {
             EnsureArg.IsNotNull(options);
+            EnsureArg.IsNotNull(logger);
             _options = options.Value;
+            _logger = logger;
             EnsureArg.IsNotNullOrWhiteSpace(_options.MailmanWorkerServerBaseUrl);
             _httpClient.BaseAddress = new Uri(_options.MailmanWorkerServerBaseUrl);
         }
 
         private readonly MailMergeServiceOptions _options;
+        private readonly ILogger _logger;
         private static HttpClient _httpClient = new HttpClient();
 
 
@@ -34,14 +39,22 @@ namespace Mailman.Server
             if (string.IsNullOrWhiteSpace(options.MergeTemplateId))
                 throw new ArgumentNullException("options.MergeTemplateId", "MergeTempalteId cannot be null or empty");
 
-            var response = await _httpClient.PostAsJsonAsync(
-                "api/MailMerge/run",
-                new RunMailMergeOptions()
-                {
-                    MergeTemplateId = options.MergeTemplateId,
-                    ConnectionId = options.ConnectionId
-                },
-                cancellationToken);
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync(
+                    "api/MailMerge/run",
+                    new RunMailMergeOptions()
+                    {
+                        MergeTemplateId = options.MergeTemplateId,
+                        ConnectionId = options.ConnectionId
+                    },
+                    cancellationToken);
+            }
+            catch (Exception err)
+            {
+                _logger.Error(err, "Unable to communicate with worker process");
+                throw;
+            }
 
             //TODO; form the response as a RunMergeTemplateProgress object
             //response.Content.

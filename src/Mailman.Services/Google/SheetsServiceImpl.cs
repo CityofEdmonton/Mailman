@@ -25,7 +25,7 @@ namespace Mailman.Services.Google
     {
         private readonly ILogger _logger;
 
-        public SheetsServiceImpl(IGoogleSheetsServiceAccessor googleSheetsServiceAccessor,
+        public SheetsServiceImpl(IGoogleServicesAccessor googleSheetsServiceAccessor,
             ILogger logger) : base(googleSheetsServiceAccessor, logger)
         {
             EnsureArg.IsNotNull(logger);
@@ -94,6 +94,7 @@ namespace Mailman.Services.Google
 
             var watch = new Stopwatch();
             var pumpTasks = new ConcurrentBag<Task>();
+            List<Exception> errors = new List<Exception>();
 
             using (var service = await GetSheetsServiceAsync())
             {
@@ -133,7 +134,15 @@ namespace Mailman.Services.Google
 
                                     // read the single row and pump it out.
                                     row = serializer.Deserialize<List<object>>(reader);
-                                    pumpTasks.Add(dataPump(row));
+                                    try
+                                    {
+                                        pumpTasks.Add(dataPump(row));
+                                    }
+                                    catch (Exception err)
+                                    {
+                                        _logger.Error(err, "Error calling dataPump: {ErorMessage}", err.Message);
+                                        errors.Add(err);
+                                    }
                                 }
                                 break;
                             }
@@ -146,66 +155,17 @@ namespace Mailman.Services.Google
             // wait for all the pumps to finish
             await Task.WhenAll(pumpTasks);
 
-
-
-            /// OLD IDEA USING BATCHES:
-            //A1Notation a1Range, dataRange;
-            //try
-            //{
-            //    a1Range = new A1Notation(range);
-            //}
-            //catch (ArgumentException ae)
-            //{
-            //    throw new InvalidOperationException("Invalid range", ae);
-            //}
-
-            //if (string.IsNullOrWhiteSpace(a1Range.SheetName))
-            //{
-            //    throw new InvalidOperationException("Sheet Name must be specified before \"!\"");
-            //}
-
-            //using (var service = await GetSheetsServiceAsync())
-            //{
-            //    dataRange = await GetSheetRangeAsync(service, sheetId, a1Range.SheetName);
-
-            //    int startRow = a1Range.StartRow ?? 1;
-            //    string startColumn = string.IsNullOrWhiteSpace(a1Range.StartColumn)
-            //        ? dataRange.star
-            //    while (true)
-            //    {
-            //        if ((a1Range.EndRow.HasValue && startRow > a1Range.EndRow.Value) ||
-            //            startRow > dataRange.EndRow.Value)
-            //        {
-            //            break;
-            //        }
-
-            //        try
-            //        {
-            //            int endRow = startRow + batchSize;
-            //            if (a1Range.EndRow.HasValue && endRow > a1Range.EndRow.Value)
-            //                endRow = a1Range.EndRow.Value;
-            //            else if (endRow > dataRange.EndRow.Value)
-            //                endRow = dataRange.EndRow.Value;
-
-            //            // here we can go get the data
-            //            GetValuesAsync(sheetId, new A1Notation(a1Range.SheetName, ))
-            //        }
-            //        finally
-            //        {
-            //            // finally, increment startRow
-            //            startRow += batchSize;
-            //        }
-            //    }
-            //}
-
-
+            if (errors.Count > 0)
+            {
+                throw new AggregateException(errors);
+            }
         }
 
         public async Task GetValuesAsDictionaryDataPump(string spreadsheetId, string range, Func<IDictionary<string, object>, Task> dataPump)
         {
             List<string> headers = null;
             List<Task> pumpTasks = new List<Task>();
-            await GetValuesAsDataPumpAsync(spreadsheetId, range, async row =>
+            await GetValuesAsDataPumpAsync(spreadsheetId, range, row =>
             {
                 // assume first row is headers
                 if (headers == null)
@@ -222,6 +182,7 @@ namespace Mailman.Services.Google
                     }
                     pumpTasks.Add(dataPump(dict));
                 }
+                return Task.CompletedTask;
             });
             await Task.WhenAll(pumpTasks);
         }

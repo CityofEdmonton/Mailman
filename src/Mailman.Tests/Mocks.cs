@@ -63,8 +63,9 @@ namespace Mailman.Tests
                     var template2 = MergeTemplate.CreateFrom(Template2Id, Spreadsheet1Id, SAMPLE_MM_JSON);
                     mockRepository.Setup(x => x.GetMergeTemplatesAsync(
                         It.Is<string>(s => s.Equals(Spreadsheet1Id, StringComparison.OrdinalIgnoreCase)),
+                        It.IsAny<bool>(),
                         It.IsAny<CancellationToken>()))
-                        .Returns<string, CancellationToken>((sheetId, ct) => Task.FromResult(
+                        .Returns<string, bool, CancellationToken>((sheetId, shouldUpgrade, ct) => Task.FromResult(
                             (IEnumerable<MergeTemplate>)(new List<MergeTemplate>() { template1, template2 })
                         ));
                     _mergeTemplateRepository = mockRepository.Object;

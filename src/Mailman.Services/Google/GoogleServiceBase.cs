@@ -10,10 +10,10 @@ namespace Mailman.Services.Google
 {
     internal class GoogleServiceBase
     {
-        private readonly IGoogleSheetsServiceAccessor _googleSheetsServiceAccessor;
+        private readonly IGoogleServicesAccessor _googleSheetsServiceAccessor;
         private readonly ILogger _logger;
 
-        public GoogleServiceBase(IGoogleSheetsServiceAccessor googleSheetsServiceAccessor,
+        public GoogleServiceBase(IGoogleServicesAccessor googleSheetsServiceAccessor,
             ILogger logger)
         {
             EnsureArg.IsNotNull(googleSheetsServiceAccessor);

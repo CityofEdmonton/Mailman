@@ -13,6 +13,8 @@ using AutoMapper;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Reflection;
 using System.IO;
+using Mailman.Server.Hubs;
+using Mailman.Server;
 
 namespace Mailman
 {
@@ -71,6 +73,25 @@ namespace Mailman
 
             // Add Swagger
             services.ConfigureSwagger(modelBaseClasses: new Type[] { typeof(Server.Models.MergeTemplate)});
+
+            // Add SignalR
+            services.AddSignalR();
+            AddMailMergeService(services);
+        }
+
+        private void AddMailMergeService(IServiceCollection services)
+        {
+            // Add MailMergeService
+            string workerUrl = Environment.GetEnvironmentVariable("WORKER_URL");
+            if (string.IsNullOrWhiteSpace(workerUrl))
+            {
+                workerUrl = "https://localhost:5003/";
+            }
+            services.Configure<MailMergeServiceOptions>(x =>
+            {
+                x.MailmanWorkerServerBaseUrl = workerUrl;
+            });
+            services.AddScoped<IMailMergeService, MailMergeService>();
         }
 
         /// <summary>
@@ -105,6 +126,10 @@ namespace Mailman
             app.UseStaticFiles();
             app.UseMailmanAuthentication();
             app.UseSpaStaticFiles();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<MailmanHub>("/hub");
+            });
 
             app.UseMvc(routes =>
             {

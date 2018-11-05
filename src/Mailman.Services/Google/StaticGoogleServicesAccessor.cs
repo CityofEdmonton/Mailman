@@ -1,4 +1,5 @@
 ﻿using EnsureThat;
+using Google.Apis.Gmail.v1;
 using Google.Apis.Http;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
@@ -9,14 +10,24 @@ using System.Threading.Tasks;
 
 namespace Mailman.Services.Google
 {
-    internal class StaticGoogleSheetsServiceAccessor : IGoogleSheetsServiceAccessor
+    internal class StaticGoogleServicesAccessor : IGoogleServicesAccessor
     {
         private IConfigurableHttpClientInitializer _credentials;
 
-        public StaticGoogleSheetsServiceAccessor(IConfigurableHttpClientInitializer credentials)
+        public StaticGoogleServicesAccessor(IConfigurableHttpClientInitializer credentials)
         {
             EnsureArg.IsNotNull(credentials);
             _credentials = credentials;
+        }
+
+        public Task<GmailService> GetGmailServiceAsync()
+        {
+            return Task.FromResult(
+                new GmailService(
+                    new BaseClientService.Initializer()
+                    {
+                        HttpClientInitializer = _credentials
+                    }));
         }
 
         public Task<SheetsService> GetSheetsServiceAsync()

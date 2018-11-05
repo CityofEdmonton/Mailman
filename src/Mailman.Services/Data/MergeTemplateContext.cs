@@ -13,6 +13,8 @@ namespace Mailman.Services.Data
         public MergeTemplateContext(DbContextOptions<MergeTemplateContext> options) : base(options) { }
 
         public DbSet<MergeTemplate> MergeTemplates {get;set;} 
+        public DbSet<SpreadsheetInfo> SpreadSheets { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             var emailMergeTemplate = builder.Entity<EmailMergeTemplate>(); 

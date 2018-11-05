@@ -194,27 +194,31 @@ namespace Mailman.Services
 
         public static IServiceCollection AddMailmanServices(this IServiceCollection services, 
             IConfiguration configuration = null,
-            string dbConnectionString = null,
+            Action<DbContextOptionsBuilder> dbOptionsAction = null,
             IConfigurableHttpClientInitializer googleCredentials = null)
         {
             // configure the Google Sheets service
             if (googleCredentials == null)
             {
-                services.AddScoped<IGoogleSheetsServiceAccessor, HttpAccessTokenGoogleSheetsServiceAccessor>();
+                services.AddScoped<IGoogleServicesAccessor, HttpAccessTokenGoogleServicesAccessor>();
             }
             else
             {
                 // this support using static credentials for accessing Google Sheets (i.e. ServiceCredentials)
-                services.AddScoped<IGoogleSheetsServiceAccessor>(x => new StaticGoogleSheetsServiceAccessor(googleCredentials));
+                services.AddScoped<IGoogleServicesAccessor>(x => new StaticGoogleServicesAccessor(googleCredentials));
             }
             services.AddScoped<ISheetsService, SheetsServiceImpl>();
 
-            if (string.IsNullOrWhiteSpace(dbConnectionString))
+            if (dbOptionsAction == null)
             {
-                dbConnectionString = "Data Source=mergetemplate.db";
-            }
-            services.AddDbContext<MergeTemplateContext>(options => options.UseSqlite(dbConnectionString));
+                dbOptionsAction = new Action<DbContextOptionsBuilder>(options =>
+                {
+                    if (!options.IsConfigured)
+                        options.UseSqlite("Data Source=mergetemplate.db");
 
+                });
+            }
+            services.AddDbContext<MergeTemplateContext>(dbOptionsAction);
             services.AddScoped<IMergeTemplateRepository, MergeTemplateRepository>();
 
             return services;

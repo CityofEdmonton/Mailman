@@ -38,8 +38,8 @@ namespace Mailman.Tests
         private readonly IServiceProvider _serviceProvider;
 
 
-        //[TestCase]
-        //[IntegrationTest]
+        [TestCase]
+        [IntegrationTest]
         public async Task ReadMergeTemplatesAsync()
         {
             var mergeTemplatesController = _serviceProvider.GetRequiredService<MergeTemplatesController>();
@@ -81,13 +81,20 @@ namespace Mailman.Tests
             mergeTemplates.Skip(1).First().Id.Should().Be("_3w5ri295a");
         }
 
-        //[TestCase]
+        [TestCase]
         [IntegrationTest]
         public async Task ReadNonexistentSheet()
         {
             var mergeTemplatesController = _serviceProvider.GetRequiredService<MergeTemplatesController>();
             var mergeTemplatesResult = await mergeTemplatesController.Get("NotARealSheetId");
             mergeTemplatesResult.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestCase]
+        [IntegrationTest]
+        public async Task RunMailMerge()
+        {
+
         }
     }
 }

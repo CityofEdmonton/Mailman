@@ -1,4 +1,5 @@
-﻿using Google.Apis.Sheets.v4;
+﻿using Google.Apis.Gmail.v1;
+using Google.Apis.Sheets.v4;
 using Mailman.Services.Google;
 using Moq;
 using Serilog;
@@ -13,7 +14,7 @@ namespace Mailman.Tests
     {
         public MockSheetService() : base(MockGoogleSheetsServiceAccessor, Log.Logger) { }
 
-        private static IGoogleSheetsServiceAccessor MockGoogleSheetsServiceAccessor
+        private static IGoogleServicesAccessor MockGoogleSheetsServiceAccessor
         {
             get
             {
@@ -128,8 +129,13 @@ namespace Mailman.Tests
         }
 
 
-        private class MockGoogleSheetServiceAccessor : IGoogleSheetsServiceAccessor
+        private class MockGoogleSheetServiceAccessor : IGoogleServicesAccessor
         {
+            public Task<GmailService> GetGmailServiceAsync()
+            {
+                throw new NotImplementedException();
+            }
+
             public Task<SheetsService> GetSheetsServiceAsync()
             {
                 throw new NotSupportedException();

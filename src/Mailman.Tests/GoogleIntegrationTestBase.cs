@@ -4,6 +4,7 @@ using Google.Apis.Http;
 using Google.Apis.Sheets.v4;
 using Mailman.Server.Models.MappingProfiles;
 using Mailman.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using Serilog;
@@ -31,7 +32,9 @@ namespace Mailman.Tests
         protected virtual IServiceCollection AddBasicServices(IServiceCollection collection)
         {
             collection.AddSingleton<ILogger>(x => Log.Logger)
-                .AddMailmanServices(null, googleCredentials: GetGoogleCredential())
+                .AddMailmanServices(null, 
+                    dbOptionsAction: options => options.UseInMemoryDatabase(databaseName: "whatever"),
+                    googleCredentials: GetGoogleCredential())
                 //.AddAutoMapper();
                 .AddScoped<IMapper>(s => {
                     var config = (Action<IMapperConfigurationExpression>)(cfg => cfg.AddProfile(new MergeTemplateProfile()));

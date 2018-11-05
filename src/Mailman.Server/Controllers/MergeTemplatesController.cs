@@ -88,6 +88,7 @@ namespace Mailman.Server.Controllers
 
         // POST: api/MergeTemplates/Email
         /// <summary>
+        /// Create a new merge template and save it to the database
         /// </summary>
         /// <returns></returns>
         [HttpPost("Email")]
@@ -116,6 +117,7 @@ namespace Mailman.Server.Controllers
 
         // PUT: api/MergeTemplates/Email
         /// <summary>
+        /// Updates a merge template with new values
         /// </summary>
         /// <returns></returns>
         [HttpPut("Email")]
@@ -143,6 +145,7 @@ namespace Mailman.Server.Controllers
 
         // DELETE: api/ApiWithActions/5
         /// <summary>
+        /// Deletes a merge template
         /// </summary>
         /// <returns></returns>
         [HttpDelete("Email")]
@@ -202,6 +205,7 @@ namespace Mailman.Server.Controllers
         /// </param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
+        [HttpPost("run")]
         public async Task<IActionResult> RunMailMerge(RunMailMergeOptions options,
             CancellationToken cancellationToken = default(CancellationToken))
         {
