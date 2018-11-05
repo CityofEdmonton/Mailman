@@ -21,6 +21,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Mailman.Services.Data;
 
 namespace Mailman.Services
 {
@@ -193,6 +194,7 @@ namespace Mailman.Services
 
         public static IServiceCollection AddMailmanServices(this IServiceCollection services, 
             IConfiguration configuration = null,
+            string dbConnectionString = null,
             IConfigurableHttpClientInitializer googleCredentials = null)
         {
             // configure the Google Sheets service
@@ -206,6 +208,12 @@ namespace Mailman.Services
                 services.AddScoped<IGoogleSheetsServiceAccessor>(x => new StaticGoogleSheetsServiceAccessor(googleCredentials));
             }
             services.AddScoped<ISheetsService, SheetsServiceImpl>();
+
+            if (string.IsNullOrWhiteSpace(dbConnectionString))
+            {
+                dbConnectionString = "Data Source=mergetemplate.db";
+            }
+            services.AddDbContext<MergeTemplateContext>(options => options.UseSqlite(dbConnectionString));
 
             services.AddScoped<IMergeTemplateRepository, MergeTemplateRepository>();
 

@@ -33,12 +33,23 @@ namespace Mailman.Server.Models
         /// </summary>
         [Required]
         public string CreatedBy { get; set; }
-
+        private DateTime createdDateUtc;
         /// <summary>
         /// The date and time the merge tempalte was creatd.
         /// </summary>
         [Required]
-        public DateTime CreatedDateUtc { get; set; }
+        public DateTime CreatedDateUtc
+        {
+            get => createdDateUtc;
+            set
+            {          
+                if (value > DateTime.MinValue && value <= DateTime.UtcNow)
+                    createdDateUtc = value;
+                else
+                    throw new ArgumentOutOfRangeException(nameof(CreatedDateUtc), value, "CreatedDateUtc cannot be in the future");
+            }            
+        }
+
 
         /// <summary>
         /// The version of Mailman at the time this merge 

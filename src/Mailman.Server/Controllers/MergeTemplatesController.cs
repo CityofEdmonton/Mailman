@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using Mailman.Services.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json.Linq;
 using Serilog;
 
 namespace Mailman.Server.Controllers
@@ -84,24 +86,88 @@ namespace Mailman.Server.Controllers
             return Ok(_mapper.Map<IEnumerable<Services.Data.MergeTemplate>, IEnumerable<MergeTemplate>>(mergeTemplates));
         }
 
-        //// POST: api/MergeTemplate
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
+        // POST: api/MergeTemplates/Email
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("Email")]
+        public async Task<IActionResult> PostMergeTemplate([FromBody] EmailMergeTemplate mergeTemplateData)
+        {
+            EnsureArg.IsNotNull(mergeTemplateData);
+            
+            if (!ModelState.IsValid)
+            {
+                _logger.Warning("Unable to create MergeTemplate because model state is not valid: {ModelState}", ModelState);
+                return BadRequest(ModelState);
+            }
 
-        //// PUT: api/MergeTemplate/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+            var newMergeTemplate = _mapper.Map<Mailman.Services.Data.MergeTemplate> (mergeTemplateData); 
+            try
+            {
+                await _mergeTemplateRepository.AddMergeTemplateAsync(newMergeTemplate);
+            }
+            catch (Exception e){
+                _logger.Error(e, "Unable to save the data to datbase");
+                throw e;
+            }
+            return CreatedAtAction("Created", newMergeTemplate);
+        }
 
-        //// DELETE: api/ApiWithActions/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
 
+        // PUT: api/MergeTemplates/Email
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("Email")]
+        public async Task<IActionResult> Put([FromBody] EmailMergeTemplate mergeTemplateData)
+        {
+            EnsureArg.IsNotNull(mergeTemplateData);
+            
+            if (!ModelState.IsValid)
+            {
+                _logger.Warning("Unable to update MergeTemplate because model state is not valid: {ModelState}", ModelState);
+                return BadRequest(ModelState);
+            }
+            var newMergeTemplate = _mapper.Map<Mailman.Services.Data.MergeTemplate> (mergeTemplateData); 
+            try
+            {
+                await _mergeTemplateRepository.UpdateMergeTemplateAsync(newMergeTemplate);
+            }
+            catch (Exception e){
+                _logger.Error(e, "Unable to save the data to datbase");
+                throw e;
+            }
+    
+             return Ok(newMergeTemplate);
+        }
+
+        // DELETE: api/ApiWithActions/5
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("Email")]
+        public async Task<IActionResult> Delete([FromBody] EmailMergeTemplate mergeTemplateData)
+        
+        {
+            EnsureArg.IsNotNull(mergeTemplateData);
+            
+            if (!ModelState.IsValid)
+            {
+                _logger.Warning("Unable to delete MergeTemplate because model state is not valid: {ModelState}", ModelState);
+                return BadRequest(ModelState);
+            }
+            var oldMergeTemplate = _mapper.Map<Mailman.Services.Data.MergeTemplate> (mergeTemplateData); 
+            try
+            {
+                await _mergeTemplateRepository.DeleteMergeTemplateAsync(oldMergeTemplate);
+            }
+            catch (Exception e){
+                _logger.Error(e, "Unable to save the data to datbase");
+                throw e;
+            }
+    
+             return Ok(oldMergeTemplate);
+        }        
 
         /// <summary>
         /// Starts a new mail merge in a new worker process and returns immediately
