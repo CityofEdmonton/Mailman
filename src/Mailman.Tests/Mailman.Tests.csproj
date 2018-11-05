@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Mailman.Server\Mailman.Server.csproj" />
     <ProjectReference Include="..\Mailman.Services\Mailman.Services.csproj" />
+    <ProjectReference Include="..\Mailman.Worker\Mailman.Worker.csproj" />
   </ItemGroup>
 
   <ItemGroup>

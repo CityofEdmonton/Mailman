@@ -3,6 +3,9 @@ using Mailman.Server;
 using Mailman.Server.Controllers;
 using Mailman.Server.Hubs;
 using Mailman.Server.Models;
+using Mailman.Services;
+using Mailman.Services.Google;
+using Mailman.Worker.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +34,8 @@ namespace Mailman.Tests
                 .AddScoped(x => hubContextMock.Object)
                 .AddScoped(x => mailMergeServiceMock.Object)
                 .AddScoped<MergeTemplatesController>()
+                .AddScoped<IEmailService, GmailServiceImpl>()
+                .AddScoped<IMergeTemplateService, MergeTemplateService>()
                 .BuildServiceProvider();
 
         }
@@ -94,7 +99,17 @@ namespace Mailman.Tests
         [IntegrationTest]
         public async Task RunMailMerge()
         {
-
+            var mergeTemplateService = _serviceProvider.GetRequiredService<IMergeTemplateService>();
+            await mergeTemplateService.RunMergeTemplateAsync(
+                new Services.Data.EmailMergeTemplate()
+                {
+                    // TODO: add some mock data
+                    Id = "SomeId",
+                    SpreadSheetId = "SomeSpreadSheet",
+                    SheetName = "SomeSheet",
+                    CreatedBy = "somebody",
+                    EmailTemplate = new Services.Data.EmailTemplate() { }
+                });
         }
     }
 }
