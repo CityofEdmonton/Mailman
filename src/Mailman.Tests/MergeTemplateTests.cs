@@ -49,7 +49,7 @@ namespace Mailman.Tests
         public void CreateEmptyMergeTemplateThrows(string name, string spreadsheetId, string createdBy)
         {
             DateTime now = DateTime.UtcNow;
-            Action action = () => EmailMergeTemplate.Create(name, spreadsheetId, createdBy, now);
+            Action action = () => new EmailMergeTemplate() {SheetName = name, SpreadSheetId = spreadsheetId, CreatedBy = createdBy, CreatedDateUtc = now};
             action.Should().Throw<ArgumentNullException>();
         }
 
@@ -58,7 +58,7 @@ namespace Mailman.Tests
         [TestCase("MergeTemplate - example of a name of a merge template", "askdjaskldj-3423-sdfksfjnsdf=-dfkljsdf", "Snow.White@edmonton.ca")]
         public void CreateMergeTemplate(string name, string spreadsheetId, string createdBy)
         {
-            EmailMergeTemplate.Create(name, spreadsheetId, createdBy, DateTime.UtcNow).Should().NotBeNull();
+            new EmailMergeTemplate() {SheetName = name, SpreadSheetId = spreadsheetId, CreatedBy = createdBy, CreatedDateUtc = DateTime.UtcNow}.Should().NotBeNull();
         }
 
         internal const string SAMPLE_MM_JSON = @"{  
@@ -88,10 +88,10 @@ namespace Mailman.Tests
         [TestCase]
         public void CreateMergeTemplateWithInvalidDateThrows()
         {
-            Action action = () => EmailMergeTemplate.Create("Test Merge Template", "Id123", "someone", DateTime.MinValue);
+            Action action = () => new EmailMergeTemplate() {SheetName = "Test Merge Template", SpreadSheetId = "Id123", CreatedBy = "someone", CreatedDateUtc = DateTime.MinValue};
             action.Should().Throw<ArgumentOutOfRangeException>();
 
-            Action action2 = () => EmailMergeTemplate.Create("Test Merge Template", "Id123", "someone", DateTime.UtcNow.AddHours(1));
+            Action action2 = () => new EmailMergeTemplate() {SheetName = "Test Merge Template", SpreadSheetId = "Id123", CreatedBy = "someone", CreatedDateUtc = DateTime.UtcNow.AddHours(1)};
             action2.Should().Throw<ArgumentOutOfRangeException>();
         }
 
@@ -169,7 +169,7 @@ namespace Mailman.Tests
         {
             var template = EmailMergeTemplate.CreateFrom("Id1", "SheetId", SAMPLE_MM_JSON);
             template.Should().NotBeNull();
-            template.SetTitle("New Title");
+            template.Title = "New Title";
         }
 
 
