@@ -22,7 +22,7 @@ namespace Mailman.Services.Google
         }
 
 
-        public Task SendEmailAsync(string to, 
+        public async Task SendEmailAsync(string to, 
             string cc, 
             string bcc, 
             string subject, 
