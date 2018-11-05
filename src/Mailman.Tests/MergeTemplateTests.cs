@@ -88,10 +88,10 @@ namespace Mailman.Tests
         [TestCase]
         public void CreateMergeTemplateWithInvalidDateThrows()
         {
-            Action action = () => new EmailMergeTemplate() {SheetName = "Test Merge Template", SpreadSheetId = "Id123", CreatedBy = "someone", DateTime.MinValue};
+            Action action = () => new EmailMergeTemplate() {SheetName = "Test Merge Template", SpreadSheetId = "Id123", CreatedBy = "someone", CreatedDateUtc = DateTime.MinValue};
             action.Should().Throw<ArgumentOutOfRangeException>();
 
-            Action action2 = () => new EmailMergeTemplate() {SheetName = "Test Merge Template", SpreadSheetId = "Id123", CreatedBy = "someone",  DateTime.UtcNow.AddHours(1)};
+            Action action2 = () => new EmailMergeTemplate() {SheetName = "Test Merge Template", SpreadSheetId = "Id123", CreatedBy = "someone", CreatedDateUtc = DateTime.UtcNow.AddHours(1)};
             action2.Should().Throw<ArgumentOutOfRangeException>();
         }
 

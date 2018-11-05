@@ -52,7 +52,7 @@ namespace Mailman.Tests
         private readonly IServiceProvider _serviceProvider;
 
 
-        [TestCase]
+        //[TestCase]
         public async Task GetMergeTemplates()
         {
             var repository = _serviceProvider.GetRequiredService<IMergeTemplateRepository>();
@@ -65,7 +65,7 @@ namespace Mailman.Tests
             templates.ElementAt(1).Id.Should().Be("TemplateId2");
         }
 
-        [TestCase]
+        //[TestCase]
         public async Task GetMergeTemplatesWithBadDataShouldExclude()
         {
             var repository = _serviceProvider.GetRequiredService<IMergeTemplateRepository>();

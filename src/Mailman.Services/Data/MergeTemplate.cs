@@ -19,7 +19,7 @@ namespace Mailman.Services.Data
         /// The title of this merge template, for display purposes
         /// </summary>
         public string Title { get; set; }
-    
+        private string spreadSheetId;
         /// <summary>
         /// This id of the Google Sheet this merge template belongs to
         /// </summary>
@@ -27,12 +27,30 @@ namespace Mailman.Services.Data
         /// This is the same id as shown in the address bar of a browser when
         /// editing the Google Sheet
         /// </remarks>
-        public string SpreadSheetId { get; set; }
-
+        public string SpreadSheetId { 
+            get => spreadSheetId;
+            set
+            {          
+                if (!string.IsNullOrWhiteSpace(value))
+                    spreadSheetId = value;
+                else
+                    throw new ArgumentNullException(nameof(SpreadSheetId));
+            } 
+        }
+        private string sheetName;
         /// <summary>
         /// The name of the sheet that this merge template gets its data from
         /// </summary>
-        public string SheetName { get; set; }
+        public string SheetName {             
+            get => sheetName;
+            set
+            {          
+                if (!string.IsNullOrWhiteSpace(value))
+                    sheetName = value;
+                else
+                    throw new ArgumentNullException(nameof(SheetName));
+            }
+        }
 
         /// <summary>
         /// The type of merge template
@@ -42,16 +60,39 @@ namespace Mailman.Services.Data
         /// hold values like "Document" or "Gmail"
         /// </remarks>
         public MergeTemplateType Type { get; set; } = MergeTemplateType.Email;
-
+        private string createdBy;
         /// <summary>
         /// The user who created the merge template
         /// </summary>
-        public string CreatedBy { get; set; }
+        public string CreatedBy { 
+            get => createdBy;
+            set
+            {          
+                if (!string.IsNullOrWhiteSpace(value))
+                    createdBy = value;
+                else
+                    throw new ArgumentNullException(nameof(CreatedBy));
+            }
+        }
 
         /// <summary>
         /// The date and time this merge template was originally create, in UTC
         /// </summary>
-        public DateTime CreatedDateUtc { get; set; }
+        private DateTime createdDateUtc;
+        /// <summary>
+        /// The date and time the merge tempalte was creatd.
+        /// </summary>
+        public DateTime CreatedDateUtc
+        {
+            get => createdDateUtc;
+            set
+            {          
+                if (value > DateTime.MinValue && value <= DateTime.UtcNow)
+                    createdDateUtc = value;
+                else
+                    throw new ArgumentOutOfRangeException(nameof(CreatedDateUtc), value, "CreatedDateUtc cannot be in the future");
+            }            
+        }
         //public string Version { get; set; }
 
         public int HeaderRowNumber { get; set; }
@@ -106,8 +147,7 @@ namespace Mailman.Services.Data
             CreatedDateUtc = createdDateUtc;
             SheetName = mergeData.sheet;
             HeaderRowNumber = headerRowNumber;
-            
-            //SetTimestampColumn(timestampColumn, timestampColumnShouldUseTitle);
+            TimestampColumn =  TimestampColumn.Create(timestampColumn, timestampColumnShouldUseTitle, Title);
         }
 
         // Used by repository to create object from its store (in the Google Sheet)
