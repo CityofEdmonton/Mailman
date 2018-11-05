@@ -10,11 +10,14 @@ namespace Mailman.Services.Google
     internal class GmailServiceImpl : GoogleServiceBase, IEmailService
     {
         private readonly ILogger _logger;
+        private readonly IGoogleServicesAccessor _googleSheetsServiceAccessor;
 
         public GmailServiceImpl(IGoogleServicesAccessor googleSheetsServiceAccessor,
             ILogger logger) : base(googleSheetsServiceAccessor, logger)
         {
+            EnsureArg.IsNotNull(googleSheetsServiceAccessor);
             EnsureArg.IsNotNull(logger);
+            _googleSheetsServiceAccessor = googleSheetsServiceAccessor;
             _logger = logger;
         }
 
@@ -25,7 +28,11 @@ namespace Mailman.Services.Google
             string subject, 
             string body)
         {
-            throw new NotImplementedException();
+            using (var gmailservice = await _googleSheetsServiceAccessor.GetGmailServiceAsync())
+            {
+                throw new NotImplementedException();
+            }
+
         }
     }
 }
