@@ -1,8 +1,12 @@
 ﻿using FluentAssertions;
+using Mailman.Server;
 using Mailman.Server.Controllers;
+using Mailman.Server.Hubs;
 using Mailman.Server.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -19,8 +23,13 @@ namespace Mailman.Tests
 
         public MergeTemplateIntegrationTests()
         {
+            var hubContextMock = new Mock<IHubContext<MailmanHub>>();
+            var mailMergeServiceMock = new Mock<IMailMergeService>();
+
             var serviceCollection = new ServiceCollection();
             _serviceProvider = AddBasicServices(serviceCollection)
+                .AddScoped(x => hubContextMock.Object)
+                .AddScoped(x => mailMergeServiceMock.Object)
                 .AddScoped<MergeTemplatesController>()
                 .BuildServiceProvider();
 

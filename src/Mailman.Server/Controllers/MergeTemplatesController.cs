@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using EnsureThat;
@@ -25,6 +26,7 @@ namespace Mailman.Server.Controllers
     {
         private readonly IMergeTemplateRepository _mergeTemplateRepository;
         private readonly IHubContext<MailmanHub> _mailmanHub;
+        private readonly IMailMergeService _mailMergeService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
@@ -32,20 +34,25 @@ namespace Mailman.Server.Controllers
         /// Constructor for merge templates
         /// </summary>
         /// <param name="mergeTemplateRepository">Service to merge template persistance store.</param>
+        /// <param name="mailmanHub"></param>
+        /// <param name="mailMergeService"></param>
         /// <param name="mapper">Automapper instance</param>
         /// <param name="logger">Serilog logger</param>
         public MergeTemplatesController(
             IMergeTemplateRepository mergeTemplateRepository,
             IHubContext<MailmanHub> mailmanHub,
+            IMailMergeService mailMergeService,
             IMapper mapper,
             ILogger logger)
         {
             EnsureArg.IsNotNull(mergeTemplateRepository, nameof(mergeTemplateRepository));
             EnsureArg.IsNotNull(mailmanHub, nameof(mailmanHub));
+            EnsureArg.IsNotNull(mailMergeService, nameof(mailMergeService));
             EnsureArg.IsNotNull(mapper, nameof(mapper));
             EnsureArg.IsNotNull(logger, nameof(logger));
             _mergeTemplateRepository = mergeTemplateRepository;
             _mailmanHub = mailmanHub;
+            _mailMergeService = mailMergeService;
             _mapper = mapper;
             _logger = logger;
         }
@@ -95,39 +102,96 @@ namespace Mailman.Server.Controllers
         //{
         //}
 
+
+        /// <summary>
+        /// Starts a new mail merge in a new worker process and returns immediately
+        /// </summary>
+        /// <param name="options">
+        /// Parameters to start a mail merge, 
+        /// including MergeTemplateId and optionally a SignalR connectionId 
+        /// for proress notifications on the merge.
+        /// </param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPost("start")]
-        public async Task<IActionResult> StartMailMerge(StartMailMergeOptions options)
+        public async Task<IActionResult> StartMailMerge(RunMailMergeOptions options,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            await _mailMergeService.StartMailMergeAsync(options, cancellationToken);
+            return Ok();
         }
 
-        public async Task<IActionResult> RunMailMerge(RunMailMergeOptions options)
+        /// <summary>
+        /// Starts a new mail merge and blocks until the merge is complete
+        /// </summary>
+        /// <param name="options">
+        /// Parameters to start a mail merge, 
+        /// including MergeTemplateId and optionally a SignalR connectionId 
+        /// for proress notifications on the merge.
+        /// </param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> RunMailMerge(RunMailMergeOptions options,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            var result = await _mailMergeService.RunMailMergeAsync(options, cancellationToken);
+            return Ok(result);
         }
 
+        /// <summary>
+        /// Callback for MailMan workers to update clients of progress
+        /// </summary>
+        /// <param name="progress">The amount of progress made on the mail merge</param>
+        /// <returns></returns>
         [HttpPost("run/updated")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task NotifyMailMergeUpdated([FromBody]MailMergeProgress progress)
+        public async Task<IActionResult> NotifyMailMergeUpdated([FromBody]MailMergeProgress progress)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             //TODO; ensure only the "workers" can call this
             if (!string.IsNullOrWhiteSpace(progress.ConnectionId))
             {
                 await _mailmanHub.Clients.Clients(progress.ConnectionId)
                     .SendAsync("mailMergeProgressUpdated", progress);
             }
+            return Ok();
         }
 
+        /// <summary>
+        /// Callback for MailMan workers to notify clients a mail merge has completed
+        /// </summary>
+        /// <param name="progress">A <see cref="MailMergeProgress"/> object with the merge results</param>
+        /// <returns></returns>
         [HttpPost("run/completed")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task NotifyMailMergeCompleted([FromBody]MailMergeProgress progress)
+        public async Task<IActionResult> NotifyMailMergeCompleted([FromBody]MailMergeProgress progress)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             //TODO; ensure only the "workers" can call this
             if (!string.IsNullOrWhiteSpace(progress.ConnectionId))
             {
                 await _mailmanHub.Clients.Clients(progress.ConnectionId)
                     .SendAsync("mailMergeCompleted", progress);
             }
+            return Ok();
         }
     }
 }

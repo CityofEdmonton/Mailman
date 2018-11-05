@@ -26,16 +26,20 @@ namespace Mailman.Server
 
 
         public async Task<RunMergeTemplateProgress> RunMailMergeAsync(
-            string mergeTemplateId,
-            string connectionId,
+            RunMailMergeOptions options,
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+            if (string.IsNullOrWhiteSpace(options.MergeTemplateId))
+                throw new ArgumentNullException("options.MergeTemplateId", "MergeTempalteId cannot be null or empty");
+
             var response = await _httpClient.PostAsJsonAsync(
                 "api/MailMerge/run",
                 new RunMailMergeOptions()
                 {
-                    MergeTemplateId = mergeTemplateId,
-                    ConnectionId = connectionId
+                    MergeTemplateId = options.MergeTemplateId,
+                    ConnectionId = options.ConnectionId
                 },
                 cancellationToken);
 
@@ -46,16 +50,20 @@ namespace Mailman.Server
 
 
         public Task StartMailMergeAsync(
-            string mergeTemplateId,
-            string connectionId,
+            RunMailMergeOptions options,
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+            if (string.IsNullOrWhiteSpace(options.MergeTemplateId))
+                throw new ArgumentNullException("options.MergeTemplateId", "MergeTempalteId cannot be null or empty");
+
             _httpClient.PostAsJsonAsync(
                 "api/MailMerge/run",
                 new RunMailMergeOptions()
                 {
-                    MergeTemplateId = mergeTemplateId,
-                    ConnectionId = connectionId
+                    MergeTemplateId = options.MergeTemplateId,
+                    ConnectionId = options.ConnectionId
                 },
                 cancellationToken);
             return Task.CompletedTask;
