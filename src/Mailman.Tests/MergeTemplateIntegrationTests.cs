@@ -1,8 +1,15 @@
 ﻿using FluentAssertions;
+using Mailman.Server;
 using Mailman.Server.Controllers;
+using Mailman.Server.Hubs;
 using Mailman.Server.Models;
+using Mailman.Services;
+using Mailman.Services.Google;
+using Mailman.Worker.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -19,9 +26,16 @@ namespace Mailman.Tests
 
         public MergeTemplateIntegrationTests()
         {
+            var hubContextMock = new Mock<IHubContext<MailmanHub>>();
+            var mailMergeServiceMock = new Mock<IMailMergeService>();
+
             var serviceCollection = new ServiceCollection();
             _serviceProvider = AddBasicServices(serviceCollection)
+                .AddScoped(x => hubContextMock.Object)
+                .AddScoped(x => mailMergeServiceMock.Object)
                 .AddScoped<MergeTemplatesController>()
+                .AddScoped<IEmailService, GmailServiceImpl>()
+                .AddScoped<IMergeTemplateService, MergeTemplateService>()
                 .BuildServiceProvider();
 
         }
@@ -29,8 +43,8 @@ namespace Mailman.Tests
         private readonly IServiceProvider _serviceProvider;
 
 
-        //[TestCase]
-        //[IntegrationTest]
+        [TestCase]
+        [IntegrationTest]
         public async Task ReadMergeTemplatesAsync()
         {
             var mergeTemplatesController = _serviceProvider.GetRequiredService<MergeTemplatesController>();
@@ -72,13 +86,30 @@ namespace Mailman.Tests
             mergeTemplates.Skip(1).First().Id.Should().Be("_3w5ri295a");
         }
 
-        //[TestCase]
+        [TestCase]
         [IntegrationTest]
         public async Task ReadNonexistentSheet()
         {
             var mergeTemplatesController = _serviceProvider.GetRequiredService<MergeTemplatesController>();
             var mergeTemplatesResult = await mergeTemplatesController.Get("NotARealSheetId");
             mergeTemplatesResult.Should().BeOfType<NotFoundResult>();
+        }
+
+        [TestCase]
+        [IntegrationTest]
+        public async Task RunMailMerge()
+        {
+            var mergeTemplateService = _serviceProvider.GetRequiredService<IMergeTemplateService>();
+            await mergeTemplateService.RunMergeTemplateAsync(
+                new Services.Data.EmailMergeTemplate()
+                {
+                    // TODO: add some mock data
+                    Id = "SomeId",
+                    SpreadSheetId = "SomeSpreadSheet",
+                    SheetName = "SomeSheet",
+                    CreatedBy = "somebody",
+                    EmailTemplate = new Services.Data.EmailTemplate() { }
+                });
         }
     }
 }

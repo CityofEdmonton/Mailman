@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
     <PackageReference Include="Ensure.That" Version="8.0.0" />
     <PackageReference Include="FluentAssertions" Version="5.4.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.1.4" />
     <PackageReference Include="Moq" Version="4.10.0" />
     <PackageReference Include="nunit" Version="3.11.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
@@ -22,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Mailman.Server\Mailman.Server.csproj" />
     <ProjectReference Include="..\Mailman.Services\Mailman.Services.csproj" />
+    <ProjectReference Include="..\Mailman.Worker\Mailman.Worker.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -19,6 +19,7 @@ namespace Mailman.Services.Data
         /// The title of this merge template, for display purposes
         /// </summary>
         public string Title { get; set; }
+
         private string spreadSheetId;
         /// <summary>
         /// This id of the Google Sheet this merge template belongs to
@@ -37,6 +38,7 @@ namespace Mailman.Services.Data
                     throw new ArgumentNullException(nameof(SpreadSheetId));
             } 
         }
+        
         private string sheetName;
         /// <summary>
         /// The name of the sheet that this merge template gets its data from
@@ -60,6 +62,7 @@ namespace Mailman.Services.Data
         /// hold values like "Document" or "Gmail"
         /// </remarks>
         public MergeTemplateType Type { get; set; } = MergeTemplateType.Email;
+
         private string createdBy;
         /// <summary>
         /// The user who created the merge template
@@ -75,9 +78,6 @@ namespace Mailman.Services.Data
             }
         }
 
-        /// <summary>
-        /// The date and time this merge template was originally create, in UTC
-        /// </summary>
         private DateTime createdDateUtc;
         /// <summary>
         /// The date and time the merge tempalte was creatd.
@@ -99,7 +99,7 @@ namespace Mailman.Services.Data
 
         public TimestampColumn TimestampColumn { get; set; }
 
-        //public string Conditional { get; set; }
+        public string Conditional { get; set; }
         //public RepeaterType Repeater { get; set; }
 
 
@@ -140,6 +140,8 @@ namespace Mailman.Services.Data
             string useTitleString = mergeData.usetitle;
             bool.TryParse(useTitleString, out bool timestampColumnShouldUseTitle);
 
+            string conditional = mergeData.conditional;
+
             Id = id;
             SpreadSheetId = spreadsheetId;
             Title = mergeData.title;
@@ -147,6 +149,7 @@ namespace Mailman.Services.Data
             CreatedDateUtc = createdDateUtc;
             SheetName = mergeData.sheet;
             HeaderRowNumber = headerRowNumber;
+            Conditional = conditional;
             TimestampColumn =  TimestampColumn.Create(timestampColumn, timestampColumnShouldUseTitle, Title);
         }
 

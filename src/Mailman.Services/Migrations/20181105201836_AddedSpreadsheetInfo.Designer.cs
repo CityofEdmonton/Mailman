@@ -3,14 +3,16 @@ using System;
 using Mailman.Services.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Mailman.Services.Migrations
 {
     [DbContext(typeof(MergeTemplateContext))]
-    partial class MergeTemplateContextModelSnapshot : ModelSnapshot
+    [Migration("20181105201836_AddedSpreadsheetInfo")]
+    partial class AddedSpreadsheetInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

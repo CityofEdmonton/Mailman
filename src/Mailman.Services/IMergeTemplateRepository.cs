@@ -7,9 +7,12 @@ namespace Mailman.Services
 {
     public interface IMergeTemplateRepository
     {
+        Task<IEnumerable<MergeTemplate>> GetMergeTemplatesAsync(string spreadsheetId,
+            bool upgradeFromLegacyMailmanIfFirstRead = true,
+            CancellationToken cancellationToken = default(CancellationToken));
+        Task<MergeTemplate> GetMergeTemplate(string id);
         Task<MergeTemplate> AddMergeTemplateAsync(MergeTemplate mergeTemplate, CancellationToken cancellationToken = default(CancellationToken));
         Task<MergeTemplate> UpdateMergeTemplateAsync(MergeTemplate mergeTemplate, CancellationToken cancellationToken = default(CancellationToken));
         Task DeleteMergeTemplateAsync(MergeTemplate mergeTemplate, CancellationToken cancellationToken = default(CancellationToken));
-        Task<IEnumerable<MergeTemplate>> GetMergeTemplatesAsync(string spreadsheetId, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
