@@ -1,0 +1,31 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<script>
+    window.addEventListener('message', function (e) {
+        var messageData = JSON.parse(e.data) || {};
+        if (typeof messageData.response === 'string') {
+            switch (messageData.response) {
+                case "accessToken": 
+                    console.log('got accessToken, now to POST it to /api/signin');
+                    document.getElementById('accessToken').value = messageData.data;
+                    document.getElementById('signinform').submit();
+            }
+        }
+
+    });
+    console.log('asking parent for OAuth token');
+    if (typeof (window.parent || {}).postMessage === 'function') {
+        window.parent.postMessage(JSON.stringify({ get: 'accessToken' }), '*');
+    } else {
+        consoole.log('no parent frame to get credentials from');
+    }
+</script>
+
+<form action="/api/login/signin" method="post" id="signinform">
+    <input type="hidden" name="AccessToken" id="accessToken" />
+    <input type="hidden" name="ReturnUrl" id="returnUrl" value="/" />
+</form>
