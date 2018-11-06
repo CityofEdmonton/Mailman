@@ -27,7 +27,7 @@ namespace Mailman.Tests
         public MergeTemplateIntegrationTests()
         {
             var hubContextMock = new Mock<IHubContext<MailmanHub>>();
-            var mailMergeServiceMock = new Mock<IMailMergeService>();
+            var mailMergeServiceMock = new Mock<IMailmanServicesProxy>();
 
             var serviceCollection = new ServiceCollection();
             _serviceProvider = AddBasicServices(serviceCollection)

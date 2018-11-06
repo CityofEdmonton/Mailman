@@ -1,6 +1,8 @@
-﻿using Mailman.Services.Security;
+﻿using Mailman.Services.Data;
+using Mailman.Services.Security;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -34,6 +36,18 @@ namespace Mailman.Services
 
                 await Task.WhenAll(ensureTokensUpdatedTask, next.Invoke());
             });
+        }
+
+        public static void EnsureMailmanDbCreated(this IApplicationBuilder app)
+        {
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<MergeTemplateContext>();
+                dbContext.Database.Migrate();
+                var oauthContext = scope.ServiceProvider.GetRequiredService<OAuthTokenContext>();
+                oauthContext.Database.Migrate();
+            }
+
         }
     }
 }

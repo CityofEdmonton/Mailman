@@ -1,6 +1,6 @@
 ﻿using EnsureThat;
 using Mailman.Services;
-using Mailman.Worker.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 //using Serilog;
 using System;
@@ -18,21 +18,22 @@ namespace Mailman.Worker.Controllers
         public MailMergeController(
             IMergeTemplateRepository mergeTemplateRepository,
             IMergeTemplateService mergeTemplateService,
-            IMailMergeNotificationService mailMergeNotificationService)
+            IMailmanServicesProxy servicesProxy)
         {
             EnsureArg.IsNotNull(mergeTemplateRepository);
             EnsureArg.IsNotNull(mergeTemplateService);
-            EnsureArg.IsNotNull(mailMergeNotificationService);
+            EnsureArg.IsNotNull(servicesProxy);
             _mergeTemplateRepository = mergeTemplateRepository;
             _mergeTemplateService = mergeTemplateService;
-            _mailMergeNotificationService = mailMergeNotificationService;
+            _servicesProxy = servicesProxy;
         }
 
         private readonly IMergeTemplateRepository _mergeTemplateRepository;
         private readonly IMergeTemplateService _mergeTemplateService;
-        private readonly IMailMergeNotificationService _mailMergeNotificationService;
+        private readonly IMailmanServicesProxy _servicesProxy;
 
         // POST api/values
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme )]
         [HttpPost("run")]
         public async Task<IActionResult> Run([FromBody] RunMailMergeOptions options,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -60,7 +61,7 @@ namespace Mailman.Worker.Controllers
                     if (!string.IsNullOrWhiteSpace(options.ConnectionId) &&
                         notifyProgressUpdatedTask.IsCompleted)
                     {
-                        notifyProgressUpdatedTask = _mailMergeNotificationService
+                        notifyProgressUpdatedTask = _servicesProxy
                             .NotifyMailMergeUpdatedAsync(
                                 options.MergeTemplateId, 
                                 options.ConnectionId,
@@ -72,7 +73,7 @@ namespace Mailman.Worker.Controllers
 
             if (!string.IsNullOrWhiteSpace(options.ConnectionId))
             {
-                await _mailMergeNotificationService
+                await _servicesProxy
                     .NotifyMailMergeCompletedAsync(options.MergeTemplateId,
                         options.ConnectionId,
                         result, 
