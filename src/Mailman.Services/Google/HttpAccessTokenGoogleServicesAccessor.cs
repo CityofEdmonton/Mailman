@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EnsureThat;
@@ -27,7 +28,7 @@ namespace Mailman.Services.Google
             _logger = logger;
         }
 
-        public async Task<GmailService> GetGmailServiceAsync()
+        private async Task<string> GetAccessTokenAsync()
         {
             var context = _httpContextAccessor.HttpContext;
             if (context == null)
@@ -35,7 +36,21 @@ namespace Mailman.Services.Google
                 _logger.Error("Unable to get current HttpContext");
                 throw new InvalidOperationException("Unable to get current HttpContext");
             }
-            var accessToken = await context.GetTokenAsync("access_token");
+
+            // The Mailman server/Worker service uses JWT authentication with 
+            // the OAuth token as a claim.  Check there first.
+            //if (context.User.Identity.AuthenticationType == "Jwt")
+            string accessToken = context.User.Claims?.FirstOrDefault(c => c.Type == "access_token")?.Value;
+
+            if (string.IsNullOrWhiteSpace(accessToken))
+                accessToken = await context.GetTokenAsync("access_token");
+
+            return accessToken;
+        }
+
+        public async Task<GmailService> GetGmailServiceAsync()
+        {
+            string accessToken = await GetAccessTokenAsync();
             var credential = GoogleCredential.FromAccessToken(accessToken);
             var serviceInitializer = new BaseClientService.Initializer() { HttpClientInitializer = credential };
             return new GmailService(serviceInitializer);
@@ -43,13 +58,7 @@ namespace Mailman.Services.Google
 
         public async Task<SheetsService> GetSheetsServiceAsync()
         {
-            var context = _httpContextAccessor.HttpContext;
-            if (context == null)
-            {
-                _logger.Error("Unable to get current HttpContext");
-                throw new InvalidOperationException("Unable to get current HttpContext");
-            }
-            var accessToken = await context.GetTokenAsync("access_token");
+            string accessToken = await GetAccessTokenAsync();
             var credential = GoogleCredential.FromAccessToken(accessToken);
             var serviceInitializer = new BaseClientService.Initializer() { HttpClientInitializer = credential };
             return new SheetsService(serviceInitializer);

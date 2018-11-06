@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Mailman.Worker</name>
+    </assembly>
+    <members>
+        <member name="P:Mailman.Worker.Startup.Configuration">
+            <summary>
+            The configuration of the application. Combines config files,
+            Environment variables, and startup arguments.
+            </summary>
+        </member>
+        <member name="P:Mailman.Worker.Startup.HostingEnvironment">
+            <summary>
+            Provides information about the web hosting environment an application is running in. 
+            </summary>
+        </member>
+    </members>
+</doc>
