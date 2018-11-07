@@ -29,7 +29,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="4.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.4" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.3.0" />
-
+    <PackageReference Include="AE.Net.Mail" Version="1.7.10" />
+    
   </ItemGroup>
 
 
