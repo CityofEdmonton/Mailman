@@ -173,6 +173,7 @@ namespace Mailman.Services
             {
                 workerUrl = configuration["WorkerServiceUrl"];
             }
+
             return workerUrl;
         }
 
@@ -183,6 +184,7 @@ namespace Mailman.Services
             {
                 serverUrl = configuration["ServerUrl"];
             }
+
             return serverUrl;
         }
 
@@ -193,6 +195,7 @@ namespace Mailman.Services
             {
                 authKey = configuration["Security:AuthKey"];
             }
+
             return authKey;
         }
 
