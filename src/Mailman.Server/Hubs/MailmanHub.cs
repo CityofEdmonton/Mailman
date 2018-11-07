@@ -39,7 +39,7 @@ namespace Mailman.Server.Hubs
             CancellationToken cancellationToken = default(CancellationToken))
         {
             await _mergeTemplatesController.StartMailMerge(
-                new Models.RunMailMergeOptions()
+                new RunMailMergeOptions()
                 {
                     MergeTemplateId = mergeTemplateId,
                     ConnectionId = Context.ConnectionId

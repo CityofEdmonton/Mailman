@@ -28,7 +28,7 @@ namespace Mailman.Server.Controllers
     {
         private readonly IMergeTemplateRepository _mergeTemplateRepository;
         private readonly IHubContext<MailmanHub> _mailmanHub;
-        private readonly IMailMergeService _mailMergeService;
+        private readonly IMailmanServicesProxy _servicesProxy;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
@@ -37,24 +37,24 @@ namespace Mailman.Server.Controllers
         /// </summary>
         /// <param name="mergeTemplateRepository">Service to merge template persistance store.</param>
         /// <param name="mailmanHub"></param>
-        /// <param name="mailMergeService"></param>
+        /// <param name="servicesProxy"></param>
         /// <param name="mapper">Automapper instance</param>
         /// <param name="logger">Serilog logger</param>
         public MergeTemplatesController(
             IMergeTemplateRepository mergeTemplateRepository,
             IHubContext<MailmanHub> mailmanHub,
-            IMailMergeService mailMergeService,
+            IMailmanServicesProxy servicesProxy,
             IMapper mapper,
             ILogger logger)
         {
             EnsureArg.IsNotNull(mergeTemplateRepository, nameof(mergeTemplateRepository));
             EnsureArg.IsNotNull(mailmanHub, nameof(mailmanHub));
-            EnsureArg.IsNotNull(mailMergeService, nameof(mailMergeService));
+            EnsureArg.IsNotNull(servicesProxy, nameof(servicesProxy));
             EnsureArg.IsNotNull(mapper, nameof(mapper));
             EnsureArg.IsNotNull(logger, nameof(logger));
             _mergeTemplateRepository = mergeTemplateRepository;
             _mailmanHub = mailmanHub;
-            _mailMergeService = mailMergeService;
+            _servicesProxy = servicesProxy;
             _mapper = mapper;
             _logger = logger;
         }
@@ -191,7 +191,11 @@ namespace Mailman.Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _mailMergeService.StartMailMergeAsync(options, cancellationToken);
+            var mergeTemplate = await _mergeTemplateRepository.GetMergeTemplate(options.MergeTemplateId);
+            if (mergeTemplate == null)
+                return NotFound($"Merge template with id {options.MergeTemplateId} not found");            
+
+            await _servicesProxy.StartMailMergeAsync(options, cancellationToken);
             return Ok();
         }
 
@@ -214,7 +218,11 @@ namespace Mailman.Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _mailMergeService.RunMailMergeAsync(options, cancellationToken);
+            var mergeTemplate = await _mergeTemplateRepository.GetMergeTemplate(options.MergeTemplateId);
+            if (mergeTemplate == null)
+                return NotFound($"Merge template with id {options.MergeTemplateId} not found");
+
+            var result = await _servicesProxy.RunMailMergeAsync(options, cancellationToken);
             return Ok(result);
         }
 

@@ -22,6 +22,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Mailman.Services.Data;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Mailman.Services
 {
@@ -80,18 +82,22 @@ namespace Mailman.Services
 
                 if (modelBaseClasses != null)
                 {
+
+
                     // from https://stackoverflow.com/questions/34397349/how-do-i-include-subclasses-in-swagger-api-documentation-using-swashbuckle
-                    var documentFilterMethod = c.GetType().GetMethod("DocumentFilter");
-                    var schemaFilterMethod = c.GetType().GetMethod("SchemaFilter");
+                    var documentFilterMethod = typeof(SwaggerGenOptionsExtensions).GetMethod("DocumentFilter");
+                    //var documentFilterMethod = c.GetType().GetMethod("DocumentFilter");
+                    var schemaFilterMethod = typeof(SwaggerGenOptionsExtensions).GetMethod("SchemaFilter");
+                    //var schemaFilterMethod = c.GetType().GetMethod("SchemaFilter");
                     foreach (var t in modelBaseClasses)
                     {
                         documentFilterMethod.MakeGenericMethod(
                             typeof(PolymorphismDocumentFilter<>).MakeGenericType(t))
-                            .Invoke(c, new object[] { Array.Empty<object>() });
+                            .Invoke(null, new object[] { c, Array.Empty<object>() });
 
                         schemaFilterMethod.MakeGenericMethod(
                             typeof(PolymorphismSchemaFilter<>).MakeGenericType(t))
-                            .Invoke(c, new object[] { Array.Empty<object>() });
+                            .Invoke(c, new object[] { c, Array.Empty<object>() });
                     }
                 }
 
@@ -105,91 +111,24 @@ namespace Mailman.Services
             return services;
         }
 
-        private class PolymorphismSchemaFilter<T> : ISchemaFilter
+
+
+        public static AuthenticationBuilder AddMailmanAuthentication(this IServiceCollection services, 
+            IConfiguration configuration = null)
         {
-            private readonly Lazy<HashSet<Type>> derivedTypes = new Lazy<HashSet<Type>>(Init);
-
-            private static HashSet<Type> Init()
-            {
-                var abstractType = typeof(T);
-                var dTypes = abstractType.Assembly
-                                         .GetTypes()
-                                         .Where(x => abstractType != x && abstractType.IsAssignableFrom(x));
-
-                var result = new HashSet<Type>();
-
-                foreach (var item in dTypes)
-                    result.Add(item);
-
-                return result;
-            }
-
-            public void Apply(Schema model, SchemaFilterContext context)
-            {
-                if (!derivedTypes.Value.Contains(context.SystemType)) return;
-
-                var clonedSchema = new Schema
-                {
-                    Properties = model.Properties,
-                    Type = model.Type,
-                    Required = model.Required
-                };
-
-                //schemaRegistry.Definitions[typeof(T).Name]; does not work correctly in SwashBuckle
-                var parentSchema = new Schema { Ref = "#/definitions/" + typeof(T).Name };
-
-                model.AllOf = new List<Schema> { parentSchema, clonedSchema };
-
-                //reset properties for they are included in allOf, should be null but code does not handle it
-                model.Properties = new Dictionary<string, Schema>();
-            }
-        }
-
-        private class PolymorphismDocumentFilter<T> : IDocumentFilter
-        {
-            private static void RegisterSubClasses(ISchemaRegistry schemaRegistry, Type abstractType)
-            {
-                const string discriminatorName = "type";
-
-                var parentSchema = schemaRegistry.Definitions[abstractType.Name];
-
-                //set up a discriminator property (it must be required)
-                parentSchema.Discriminator = discriminatorName;
-                parentSchema.Required = new List<string> { discriminatorName };
-
-                if (!parentSchema.Properties.ContainsKey(discriminatorName))
-                    parentSchema.Properties.Add(discriminatorName, new Schema { Type = "string" });
-
-                //register all subclasses
-                var derivedTypes = abstractType.Assembly
-                                               .GetTypes()
-                                               .Where(x => abstractType != x && abstractType.IsAssignableFrom(x));
-
-                foreach (var item in derivedTypes)
-                    schemaRegistry.GetOrRegister(item);
-            }
-
-            public void Apply(SwaggerDocument swaggerDoc, DocumentFilterContext context)
-            {
-                RegisterSubClasses(context.SchemaRegistry, typeof(T));
-            }
-        }
-
-
-        public static IServiceCollection AddMailmanAuthentication(this IServiceCollection services, IConfiguration configuration = null)
-        {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = AppScriptOAuthAuthenticationDefaults.AuthenticationScheme; //GoogleDefaults.AuthenticationScheme;
+            var authenticationBuilder = services.AddAuthentication(options =>
+           {
+               options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+               options.DefaultChallengeScheme = AppScriptOAuthAuthenticationDefaults.AuthenticationScheme; //GoogleDefaults.AuthenticationScheme;
             })
                 .AddCookie(configuration)
+                .AddServiceAuth(configuration)
                 .AddGoogle(configuration);
 
             // configure the service that saves the tokens to a cache
             services.ConfureGoogleOAuthTokenService(configuration);
 
-            return services;
+            return authenticationBuilder;
         }
 
         public static IServiceCollection AddMailmanServices(this IServiceCollection services, 
@@ -213,14 +152,81 @@ namespace Mailman.Services
             {
                 dbOptionsAction = new Action<DbContextOptionsBuilder>(options =>
                 {
-                    if (!options.IsConfigured)
-                        options.UseSqlite("Data Source=mergetemplate.db");
-
+                    options.UseSqlite("Data Source=../mergetemplate.db");
                 });
             }
             services.AddDbContext<MergeTemplateContext>(dbOptionsAction);
             services.AddScoped<IMergeTemplateRepository, MergeTemplateRepository>();
 
+            services.AddScoped<IEmailService, GmailServiceImpl>();
+            services.AddScoped<IMergeTemplateService, MergeTemplateService>();
+
+            services.AddMailMergeProxyServices(configuration);
+
+            return services;
+        }
+
+        private static string GetMailmanWorkerServiceUrl(IConfiguration configuration)
+        {
+            string workerUrl = Environment.GetEnvironmentVariable("MAILMAN_WORKER_URL");
+            if (string.IsNullOrWhiteSpace(workerUrl) && configuration != null)
+            {
+                workerUrl = configuration["WorkerServiceUrl"];
+            }
+
+            return workerUrl;
+        }
+
+        private static string GetMailmanServerUrl(IConfiguration configuration)
+        {
+            string serverUrl = Environment.GetEnvironmentVariable("MAILMAN_SERVER_URL");
+            if (string.IsNullOrWhiteSpace(serverUrl) && configuration != null)
+            {
+                serverUrl = configuration["ServerUrl"];
+            }
+
+            return serverUrl;
+        }
+
+        private static string GetAuthKey(IConfiguration configuration)
+        {
+            string authKey = Environment.GetEnvironmentVariable("MAILMAN_AUTH_KEY");
+            if (string.IsNullOrWhiteSpace(authKey) && configuration != null)
+            {
+                authKey = configuration["Security:AuthKey"];
+            }
+
+            return authKey;
+        }
+
+        internal static IServiceCollection AddMailMergeProxyServices(this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            string mailmanWorkerServiceUrl = GetMailmanWorkerServiceUrl(configuration);
+            string serverUrl = GetMailmanServerUrl(configuration);
+
+            if (string.IsNullOrWhiteSpace(mailmanWorkerServiceUrl) ||
+                string.IsNullOrWhiteSpace(serverUrl))
+            {
+                System.Diagnostics.Trace.TraceWarning("MAILMAN_WORKER_URL or MAILMAN_SERVER_URL environment variables not set, will run mail merges in process instead of worker service");
+                services.AddScoped<IMailmanServicesProxy, MailmanServicesLocalProxy>();
+            }
+            else
+            {
+                string authKey = GetAuthKey(configuration);
+                if (string.IsNullOrWhiteSpace(authKey))
+                {
+                    throw new InvalidOperationException("Cannot specify MAILMAN_WORKER_URL and MAILMAN_SERVER_URL without specifying MAILMAN_AUTH_KEY");
+                }
+
+                services.Configure<MailmanServicesProxyOptions>(x =>
+                {
+                    x.MailmanWorkerServerBaseUrl = mailmanWorkerServiceUrl;
+                    x.MailmanServerBaseUrl = serverUrl;
+                    x.AuthKey = authKey;
+                });
+                services.AddScoped<IMailmanServicesProxy, MailmanServicesProxy>();
+            }
             return services;
         }
 
@@ -234,7 +240,27 @@ namespace Mailman.Services
             return authenticationBuilder;
         }
 
-        internal static AuthenticationBuilder AddGoogle(this AuthenticationBuilder authenticationBuilder, IConfiguration configuration)
+        internal static AuthenticationBuilder AddServiceAuth(
+            this AuthenticationBuilder authenticationBuilder, 
+            IConfiguration configuration)
+        {
+            authenticationBuilder.AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(GetAuthKey(configuration)))
+                };
+            });
+            return authenticationBuilder;
+        }
+
+        internal static AuthenticationBuilder AddGoogle(
+            this AuthenticationBuilder authenticationBuilder, IConfiguration configuration)
         {
             // Environment variables take precendence
             string googleClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
@@ -283,11 +309,82 @@ namespace Mailman.Services
                 if (string.IsNullOrWhiteSpace(connectionString))
                     connectionString = configuration.GetConnectionString("GoogleTokenCache");
                 if (string.IsNullOrWhiteSpace(connectionString))
-                    connectionString = "Data Source=oauth.db";
+                    connectionString = "Data Source=../oauth.db";
                 services.AddDbContext<OAuthTokenContext>(options => options.UseSqlite(connectionString));
                 services.AddScoped<IGoogleOAuthTokenService, EntityFrameworkGoogleOAuthTokenService>();
             }
-
         }
+
+        #region Helper classes
+        private class PolymorphismDocumentFilter<T> : IDocumentFilter
+        {
+            private static void RegisterSubClasses(ISchemaRegistry schemaRegistry, Type abstractType)
+            {
+                const string discriminatorName = "type";
+
+                var parentSchema = schemaRegistry.Definitions[abstractType.Name];
+
+                //set up a discriminator property (it must be required)
+                parentSchema.Discriminator = discriminatorName;
+                parentSchema.Required = new List<string> { discriminatorName };
+
+                if (!parentSchema.Properties.ContainsKey(discriminatorName))
+                    parentSchema.Properties.Add(discriminatorName, new Schema { Type = "string" });
+
+                //register all subclasses
+                var derivedTypes = abstractType.Assembly
+                                               .GetTypes()
+                                               .Where(x => abstractType != x && abstractType.IsAssignableFrom(x));
+
+                foreach (var item in derivedTypes)
+                    schemaRegistry.GetOrRegister(item);
+            }
+
+            public void Apply(SwaggerDocument swaggerDoc, DocumentFilterContext context)
+            {
+                RegisterSubClasses(context.SchemaRegistry, typeof(T));
+            }
+        }
+
+        private class PolymorphismSchemaFilter<T> : ISchemaFilter
+        {
+            private readonly Lazy<HashSet<Type>> derivedTypes = new Lazy<HashSet<Type>>(Init);
+
+            private static HashSet<Type> Init()
+            {
+                var abstractType = typeof(T);
+                var dTypes = abstractType.Assembly
+                                         .GetTypes()
+                                         .Where(x => abstractType != x && abstractType.IsAssignableFrom(x));
+
+                var result = new HashSet<Type>();
+
+                foreach (var item in dTypes)
+                    result.Add(item);
+
+                return result;
+            }
+
+            public void Apply(Schema model, SchemaFilterContext context)
+            {
+                if (!derivedTypes.Value.Contains(context.SystemType)) return;
+
+                var clonedSchema = new Schema
+                {
+                    Properties = model.Properties,
+                    Type = model.Type,
+                    Required = model.Required
+                };
+
+                //schemaRegistry.Definitions[typeof(T).Name]; does not work correctly in SwashBuckle
+                var parentSchema = new Schema { Ref = "#/definitions/" + typeof(T).Name };
+
+                model.AllOf = new List<Schema> { parentSchema, clonedSchema };
+
+                //reset properties for they are included in allOf, should be null but code does not handle it
+                model.Properties = new Dictionary<string, Schema>();
+            }
+        }
+#endregion
     }
 }
