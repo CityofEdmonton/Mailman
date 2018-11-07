@@ -160,6 +160,7 @@ namespace Mailman.Services
 
             services.AddScoped<IEmailService, GmailServiceImpl>();
             services.AddScoped<IMergeTemplateService, MergeTemplateService>();
+
             services.AddMailMergeProxyServices(configuration);
 
             return services;
@@ -172,10 +173,7 @@ namespace Mailman.Services
             {
                 workerUrl = configuration["WorkerServiceUrl"];
             }
-            if (string.IsNullOrWhiteSpace(workerUrl))
-            {
-                workerUrl = "https://localhost:5003/";
-            }
+
             return workerUrl;
         }
 
@@ -186,10 +184,7 @@ namespace Mailman.Services
             {
                 serverUrl = configuration["ServerUrl"];
             }
-            if (string.IsNullOrWhiteSpace(serverUrl))
-            {
-                serverUrl = "https://localhost:5001";
-            }
+
             return serverUrl;
         }
 
@@ -200,25 +195,38 @@ namespace Mailman.Services
             {
                 authKey = configuration["Security:AuthKey"];
             }
-            if (string.IsNullOrWhiteSpace(authKey))
-            {
-                System.Diagnostics.Trace.TraceWarning("MAILMAN_AUTH_KEY should be set before starting application");
-                authKey = "b0477f3f415949f1a392e8323e996431182441688af04ab7b7df6078b88971416e03879653434c8bba1eb056dcdb35ffc6a69d988de9479984ce81fa400f8dcc";
-            }
+
             return authKey;
         }
 
         internal static IServiceCollection AddMailMergeProxyServices(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.Configure<MailmanServicesProxyOptions>(x =>
-            {
-                x.MailmanWorkerServerBaseUrl = GetMailmanWorkerServiceUrl(configuration);
-                x.MailmanServerBaseUrl = GetMailmanServerUrl(configuration);
-                x.AuthKey = GetAuthKey(configuration);
-            });
-            services.AddScoped<IMailmanServicesProxy, MailmanServicesProxy>();
+            string mailmanWorkerServiceUrl = GetMailmanWorkerServiceUrl(configuration);
+            string serverUrl = GetMailmanServerUrl(configuration);
 
+            if (string.IsNullOrWhiteSpace(mailmanWorkerServiceUrl) ||
+                string.IsNullOrWhiteSpace(serverUrl))
+            {
+                System.Diagnostics.Trace.TraceWarning("MAILMAN_WORKER_URL or MAILMAN_SERVER_URL environment variables not set, will run mail merges in process instead of worker service");
+                services.AddScoped<IMailmanServicesProxy, MailmanServicesLocalProxy>();
+            }
+            else
+            {
+                string authKey = GetAuthKey(configuration);
+                if (string.IsNullOrWhiteSpace(authKey))
+                {
+                    throw new InvalidOperationException("Cannot specify MAILMAN_WORKER_URL and MAILMAN_SERVER_URL without specifying MAILMAN_AUTH_KEY");
+                }
+
+                services.Configure<MailmanServicesProxyOptions>(x =>
+                {
+                    x.MailmanWorkerServerBaseUrl = mailmanWorkerServiceUrl;
+                    x.MailmanServerBaseUrl = serverUrl;
+                    x.AuthKey = authKey;
+                });
+                services.AddScoped<IMailmanServicesProxy, MailmanServicesProxy>();
+            }
             return services;
         }
 
