@@ -214,6 +214,10 @@ namespace Mailman.Server.Controllers
                 return BadRequest(ModelState);
             }
 
+            var mergeTemplate = await _mergeTemplateRepository.GetMergeTemplate(options.MergeTemplateId);
+            if (mergeTemplate == null)
+                return NotFound($"Merge template with id {options.MergeTemplateId} not found");
+
             var result = await _servicesProxy.RunMailMergeAsync(options, cancellationToken);
             return Ok(result);
         }
