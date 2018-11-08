@@ -7,7 +7,7 @@ namespace Mailman.Services
 {
     public interface IEmailService
     {
-        Task SendEmailAsync(string to, string cc, string bcc,
+        Task SendEmailAsync(IEnumerable <string> to, IEnumerable <string> cc, IEnumerable <string> bcc,
             string subject, string body);
     }
 }

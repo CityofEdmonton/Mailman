@@ -8,6 +8,7 @@ using Google.Apis.Gmail.v1.Data;
 using Google.Apis.Gmail.v1;
 using System.Net.Mail;
 using System.IO;
+using System.Collections;
 
 namespace Mailman.Services.Google
 {
@@ -26,40 +27,66 @@ namespace Mailman.Services.Google
         }
 
 
-        public async Task SendEmailAsync(string to, 
-            string cc, 
-            string bcc, 
+        public async Task SendEmailAsync(
+            IEnumerable <string> to, 
+            IEnumerable <string> cc, 
+            IEnumerable <string> bcc, 
             string subject, 
             string body)
         {   
         
             using (var gmailservice = await _googleSheetsServiceAccessor.GetGmailServiceAsync())
             {    
+                Boolean noReciver = true;
                 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
                 var msg = new AE.Net.Mail.MailMessage {
                     Subject = subject,
                     Body = body,
                 };
-                msg.To.Add(new MailAddress(to));
-
-                Message message;
-                using (var msgStr = new StringWriter())
+                foreach (var address in to)
                 {
-                    msg.Save(msgStr);
-                    message = new Message {Raw = Base64UrlEncode(msgStr.ToString())};
+                    if (!string.IsNullOrEmpty(address)){
+                        noReciver = false;
+                        msg.To.Add(new MailAddress(address));
+                    }
+                }
+                foreach (var address in cc)
+                {                    
+                    if (!string.IsNullOrEmpty(address)){
+                        noReciver = false;
+                        msg.Cc.Add(new MailAddress(address));
+                    }
+                }
+                foreach (var address in bcc)
+                {
+                    if (!string.IsNullOrEmpty(address)){
+                        noReciver = false;
+                        msg.Bcc.Add(new MailAddress(address));
+                    }
                 }
 
-                // Context is a separate bit of code that provides OAuth context;
-                // your construction of GmailService will be different from mine.
-                try
-                { 
-                    var result =  gmailservice.Users.Messages.Send(message, "me").Execute();
-                    _logger.Information("Just sent the email");
-
-                }
-                catch (Exception e)
+                if (noReciver != true)  
                 {
-                    _logger.Error("An error occurred: " + e.Message);
+                    Message message;
+                    using (var msgStr = new StringWriter())
+                    {
+                        msg.Save(msgStr);
+                        message = new Message {Raw = Base64UrlEncode(msgStr.ToString())};
+                    }
+
+                    try
+                    { 
+                        var result =  gmailservice.Users.Messages.Send(message, "me").Execute();
+                        _logger.Information("Just sent the email");
+
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.Error("An error occurred: " + e.Message);
+                    }
+                }
+                else if (noReciver == true){
+                    _logger.Warning("No recivers for this email");
                 }
             }
 
