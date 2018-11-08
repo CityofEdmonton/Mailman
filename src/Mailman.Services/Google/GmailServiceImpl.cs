@@ -31,24 +31,29 @@ namespace Mailman.Services.Google
             string bcc, 
             string subject, 
             string body)
-        {
+        {   
+        
             using (var gmailservice = await _googleSheetsServiceAccessor.GetGmailServiceAsync())
-            {
+            {    
+                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
                 var msg = new AE.Net.Mail.MailMessage {
                     Subject = subject,
                     Body = body,
                 };
                 msg.To.Add(new MailAddress(to));
-                var msgStr = new StringWriter();
-                msg.Save(msgStr);
+
+                Message message;
+                using (var msgStr = new StringWriter())
+                {
+                    msg.Save(msgStr);
+                    message = new Message {Raw = Base64UrlEncode(msgStr.ToString())};
+                }
 
                 // Context is a separate bit of code that provides OAuth context;
                 // your construction of GmailService will be different from mine.
-
-                var message = new Message {Raw = Base64UrlEncode(msgStr.ToString())};
                 try
-                {   var service = new GmailService(); // should be var service = new GmailService(Google authorization token);
-                    var result =  service.Users.Messages.Send(message, "me").Execute();
+                { 
+                    var result =  gmailservice.Users.Messages.Send(message, "me").Execute();
                     _logger.Information("Just sent the email");
 
                 }
