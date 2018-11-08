@@ -22,6 +22,11 @@ namespace Mailman.Tests
             return Task.CompletedTask;
         }
 
+        public Task SendEmailAsync(IEnumerable<string> to, IEnumerable<string> cc, IEnumerable<string> bcc, string subject, string body)
+        {
+            throw new NotImplementedException();
+        }
+
         public class Email
         {
             public Email(string to, string cc, string bcc, string subject, string body)
