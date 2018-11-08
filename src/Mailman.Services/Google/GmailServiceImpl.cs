@@ -10,6 +10,8 @@ using System.Net.Mail;
 using System.IO;
 using System.Collections;
 using System.Text.RegularExpressions;
+using System.Net;
+using MimeKit;
 
 namespace Mailman.Services.Google
 {
@@ -40,11 +42,10 @@ namespace Mailman.Services.Google
             {    
                 Boolean noReciver = true;
                 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-                var bodyText = HtmlToPlainText(body);
-
-                var msg = new AE.Net.Mail.MailMessage {
+                var msg = new MailMessage() {
                     Subject = subject,
-                    Body = bodyText,
+                    Body = body,
+                    IsBodyHtml = true
                 };
 
                 foreach (var address in to)
@@ -58,7 +59,7 @@ namespace Mailman.Services.Google
                 {                    
                     if (!string.IsNullOrEmpty(address)){
                         noReciver = false;
-                        msg.Cc.Add(new MailAddress(address));
+                        msg.CC.Add(new MailAddress(address));
                     }
                 }
                 foreach (var address in bcc)
@@ -68,16 +69,17 @@ namespace Mailman.Services.Google
                         msg.Bcc.Add(new MailAddress(address));
                     }
                 }
+                //foreach (string path in attachments)
+                //{
+                //    Attachment attachment = new Attachment(path);
+                //    msg.Attachments.Add(attachment);
+                //}
 
                 if (noReciver != true)  
                 {
-                    Message message;
-                    using (var msgStr = new StringWriter())
-                    {
-                        msg.Save(msgStr);
-                        message = new Message {Raw = Base64UrlEncode(msgStr.ToString())};
-                    }
-
+                    MimeKit.MimeMessage mimeMessage = MimeMessage.CreateFromMailMessage(msg);
+                    Message message = new Message();
+                    message = new Message {Raw = Base64UrlEncode(mimeMessage.ToString())};
                     try
                     { 
                         var result =  gmailservice.Users.Messages.Send(message, "me").Execute();
