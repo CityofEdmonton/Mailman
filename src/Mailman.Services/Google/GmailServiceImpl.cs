@@ -78,13 +78,11 @@ namespace Mailman.Services.Google
                 if (noReciver != true)  
                 {
                     MimeKit.MimeMessage mimeMessage = MimeMessage.CreateFromMailMessage(msg);
-                    Message message = new Message();
-                    message = new Message {Raw = Base64UrlEncode(mimeMessage.ToString())};
+                    Message message = new Message(){Raw = Base64UrlEncode(mimeMessage.ToString())};
                     try
                     { 
                         var result =  gmailservice.Users.Messages.Send(message, "me").Execute();
                         _logger.Information("Just sent the email");
-
                     }
                     catch (Exception e)
                     {
