@@ -114,10 +114,25 @@ namespace Mailman.Services
         private Task ProcessMergeTemplateAsync(EmailTemplate template, 
             IDictionary<string, object> values)
         {
+            var to = new List<string>();
+            var cc = new List<string>();
+            var bcc = new List<string>();
+            if (!string.IsNullOrEmpty(template.To))
+            {
+                to = template.To.Split(',').Select(x => Render(x, values)).ToList();
+            }
+            if (!string.IsNullOrEmpty(template.Cc))
+            {
+                cc = template.Cc.Split(',').Select(x => Render(x, values)).ToList();
+            }
+            if (!string.IsNullOrEmpty(template.Bcc)){
+                bcc = template.Bcc.Split(',').Select(x => Render(x, values)).ToList();
+            }
+
             return _emailService.SendEmailAsync(
-                to: Render(template.To, values),
-                cc: Render(template.Cc, values),
-                bcc: Render(template.Bcc, values),
+                to,
+                cc,
+                bcc,
                 subject: Render(template.Subject, values),
                 body: Render(template.Body, values)
             );

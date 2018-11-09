@@ -15,8 +15,7 @@ namespace Mailman.Tests
 
         public IList<Email> SentEmails { get; }
 
-
-        public Task SendEmailAsync(string to, string cc, string bcc, string subject, string body)
+        public Task SendEmailAsync(IEnumerable<string> to, IEnumerable<string> cc, IEnumerable<string> bcc, string subject, string body)
         {
             SentEmails.Add(new Email(to, cc, bcc, subject, body));
             return Task.CompletedTask;
@@ -24,7 +23,7 @@ namespace Mailman.Tests
 
         public class Email
         {
-            public Email(string to, string cc, string bcc, string subject, string body)
+            public Email(IEnumerable<string> to, IEnumerable<string> cc, IEnumerable<string> bcc, string subject, string body)
             {
                 To = to;
                 Cc = cc;
@@ -33,9 +32,9 @@ namespace Mailman.Tests
                 Body = body;
             }
 
-            public string To { get; private set; }
-            public string Cc { get; private set; }
-            public string Bcc { get; private set; }
+            public IEnumerable<string> To { get; private set; }
+            public IEnumerable<string> Cc { get; private set; }
+            public IEnumerable<string> Bcc { get; private set; }
             public string Subject { get; private set; }
             public string Body { get; private set; }
         }
