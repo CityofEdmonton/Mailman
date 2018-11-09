@@ -1,0 +1,25 @@
+# How to build this image:
+# From the parent folder enter:
+# docker image build -t mailman:ui -f ./Dockerfile.UI .
+
+FROM microsoft/dotnet:2.1-sdk AS builder
+ARG Configuration=Debug
+
+# set up node
+ENV NODE_VERSION 11.1.0
+ENV NODE_DOWNLOAD_SHA 52289a646a27511f5808290357798c7ebd4b5132a8fc3bf7d5bf53183b89c668
+RUN curl -SL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz" --output nodejs.tar.gz \
+    && echo "$NODE_DOWNLOAD_SHA nodejs.tar.gz" | sha256sum -c - \
+    && tar -xzf "nodejs.tar.gz" -C /usr/local --strip-components=1 \
+    && rm nodejs.tar.gz \
+    && ln -s /usr/local/bin/node /usr/local/bin/nodejs
+
+# build the app
+WORKDIR /usr/src/mailman
+COPY ./src/ .
+WORKDIR /usr/src/mailman/Mailman.Server
+RUN dotnet publish --configuration $Configuration
+
+FROM nginx:1.15-alpine
+ARG Configuration=Debug
+COPY --from=builder /usr/src/mailman/Mailman.Server/bin/$Configuration/netcoreapp2.1/publish/ClientApp/build  /usr/share/nginx/html

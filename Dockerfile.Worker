@@ -1,0 +1,34 @@
+# How to build this image:
+# From the parent folder enter:
+# docker image build -t mailman:server -f ./Dockerfile.Server .
+
+FROM microsoft/dotnet:2.1-sdk AS builder
+ARG Configuration=Debug
+ARG TlsPrivateKey=Str0ngPassw0rd!!
+
+#create a certificate for HTTPS
+# see https://github.com/dotnet/dotnet-docker/blob/master/samples/aspnetapp/aspnetcore-docker-https.md
+RUN dotnet dev-certs https -ep /usr/aspnetapp.pfx -p $TlsPrivateKey
+
+# build the app
+WORKDIR /usr/src/mailman
+COPY ./src/ .
+WORKDIR /usr/src/mailman/Mailman.Worker
+RUN dotnet publish --configuration $Configuration
+
+FROM microsoft/dotnet:2.1.5-aspnetcore-runtime-alpine
+ARG Configuration=Debug
+ARG TlsPrivateKey=Str0ngPassw0rd!!
+WORKDIR /app
+COPY --from=builder /usr/src/mailman/Mailman.Worker/bin/$Configuration/netcoreapp2.1/publish  .
+COPY --from=builder /usr/aspnetapp.pfx /https/aspnetapp.pfx
+
+# ASPNET default environment variables
+#ENV ASPNETCORE_URLS "https://+;http://+"
+ENV ASPNETCORE_URLS "http://+"
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password $TlsPrivateKey
+ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+
+EXPOSE 80/tcp
+EXPOSE 443/tcp
+CMD dotnet Mailman.Worker.dll
