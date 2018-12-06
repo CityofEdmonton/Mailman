@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Mailman.Controllers
+namespace Mailman.Server.Controllers
 {
     /// <summary>
     /// Sample class that got created when this project was created.

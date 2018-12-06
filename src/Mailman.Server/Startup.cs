@@ -13,6 +13,8 @@ using AutoMapper;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Reflection;
 using System.IO;
+using Mailman.Server.Hubs;
+using Mailman.Server;
 
 namespace Mailman
 {
@@ -25,9 +27,12 @@ namespace Mailman
         /// Constructor for the startup class.
         /// </summary>
         /// <param name="configuration"></param>
-        public Startup(IConfiguration configuration)
+        /// <param name="hostingEnvironment"></param>
+        public Startup(IConfiguration configuration,
+            IHostingEnvironment hostingEnvironment)
         {
             Configuration = configuration;
+            HostingEnvironment = hostingEnvironment;
         }
 
         /// <summary>
@@ -35,6 +40,11 @@ namespace Mailman
         /// Environment variables, and startup arguments.
         /// </summary>
         public IConfiguration Configuration { get; }
+
+        /// <summary>
+        /// Provides information about the web hosting environment an application is running in. 
+        /// </summary>
+        public IHostingEnvironment HostingEnvironment { get; }
 
         /// <summary>
         /// Configures the services required by Mailman.
@@ -71,7 +81,11 @@ namespace Mailman
 
             // Add Swagger
             services.ConfigureSwagger(modelBaseClasses: new Type[] { typeof(Server.Models.MergeTemplate)});
+
+            // Add SignalR
+            services.AddSignalR();
         }
+
 
         /// <summary>
         /// Configures the ASP.NET web application. Standard ASP.NET stuff.
@@ -105,6 +119,10 @@ namespace Mailman
             app.UseStaticFiles();
             app.UseMailmanAuthentication();
             app.UseSpaStaticFiles();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<MailmanHub>("/hub");
+            });
 
             app.UseMvc(routes =>
             {
@@ -122,6 +140,8 @@ namespace Mailman
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+
+            app.EnsureMailmanDbCreated();
         }
     }
 }

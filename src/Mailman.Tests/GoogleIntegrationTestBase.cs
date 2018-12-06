@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Http;
 using Google.Apis.Sheets.v4;
 using Mailman.Server.Models.MappingProfiles;
 using Mailman.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using Serilog;
@@ -30,7 +32,9 @@ namespace Mailman.Tests
         protected virtual IServiceCollection AddBasicServices(IServiceCollection collection)
         {
             collection.AddSingleton<ILogger>(x => Log.Logger)
-                .AddMailmanServices(null, GetGoogleCredential())
+                .AddMailmanServices(null, 
+                    dbOptionsAction: options => options.UseInMemoryDatabase(databaseName: "whatever"),
+                    googleCredentials: GetGoogleCredential())
                 //.AddAutoMapper();
                 .AddScoped<IMapper>(s => {
                     var config = (Action<IMapperConfigurationExpression>)(cfg => cfg.AddProfile(new MergeTemplateProfile()));
@@ -41,8 +45,8 @@ namespace Mailman.Tests
             return collection;
         }
 
-        private Google.Apis.Http.IConfigurableHttpClientInitializer _googleCredential;
-        protected Google.Apis.Http.IConfigurableHttpClientInitializer GetGoogleCredential()
+        private IConfigurableHttpClientInitializer _googleCredential;
+        protected IConfigurableHttpClientInitializer GetGoogleCredential()
         {
             if (_googleCredential == null)
             {
@@ -56,24 +60,25 @@ namespace Mailman.Tests
                 if (string.IsNullOrWhiteSpace(credFilePath))
                     throw new InvalidOperationException("A service credential must be specified by placing a file named 'Mailman-service-account.json' in the tests directory");
 
-                if (!File.Exists(credFilePath))
-                    throw new InvalidOperationException("A valid service credential must be specified (file specified but doesn't exist on disk): " + credFilePath);
-
-                try
+                if (File.Exists(credFilePath))
                 {
-                    dynamic serviceAccount = JObject.Parse(File.ReadAllText(credFilePath));
-
-                    string clientEmail = serviceAccount.client_email;
-                    string privateKey = serviceAccount.private_key;
-                    _googleCredential = new ServiceAccountCredential(new ServiceAccountCredential.Initializer(clientEmail)
+                    try
                     {
-                        Scopes = GetCredentialScopes()
-                    }.FromPrivateKey(privateKey));
+                        dynamic serviceAccount = JObject.Parse(File.ReadAllText(credFilePath));
+
+                        string clientEmail = serviceAccount.client_email;
+                        string privateKey = serviceAccount.private_key;
+                        _googleCredential = new ServiceAccountCredential(new ServiceAccountCredential.Initializer(clientEmail)
+                        {
+                            Scopes = GetCredentialScopes()
+                        }.FromPrivateKey(privateKey));
+                    }
+                    catch (Exception err)
+                    {
+                        throw new InvalidOperationException("A valid service credential must be specified (file specified but couldn't read json file correctly): " + err.Message, err);
+                    }
                 }
-                catch (Exception err)
-                {
-                    throw new InvalidOperationException("A valid service credential must be specified (file specified but couldn't read json file correctly): " + err.Message, err);
-                }
+
             }
 
             return _googleCredential;
