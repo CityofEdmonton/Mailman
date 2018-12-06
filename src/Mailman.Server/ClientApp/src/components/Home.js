@@ -13,7 +13,19 @@ import InfoCard from "./MergeTemplate/InfoCard";
 const styles = theme => ({});
 
 class Home extends Component {
-  componentWillMount() {
+
+  constructor(props){
+    super(props)
+    this.state = {
+      mergeTemplates: []
+    }
+
+  }
+  // 
+  componentDidMount() {
+    // console.log('HOW HOW HOW HOW HOW HOW HOW HOW');
+    // console.log(this.props);
+    // console.log('DOWN WITH IT')
     // This method runs when the component is first added to the page
     //const sheetId = ""; // TODO: get sheetId
     //this.props.requestMergeTemplates(sheetId);
@@ -34,8 +46,8 @@ class Home extends Component {
             {this.props.mergeTemplates.map(mergeTemplate => (
               <Grid key={mergeTemplate.id} item>
                 <InfoCard
-                  title={mergeTemplate.mergeData.title}
-                  to={mergeTemplate.mergeData.data.to}
+                  title={mergeTemplate.title}
+                  to='{mergeTemplate.mergeData.data.to}'
                   id = {mergeTemplate.id}
                 />
               </Grid>
@@ -62,5 +74,5 @@ const exportWithStyles = withStyles(styles, { withTheme: true })(Home);
 
 export default connect(
   mapStateToProps,
-  dispatch => bindActionCreators(actionCreators, dispatch)
+  dispatch => bindActionCreators(actionCreators, dispatch) //should we be using bindActionCreators? check back
 )(exportWithStyles);

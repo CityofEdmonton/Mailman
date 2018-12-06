@@ -27,5 +27,5 @@
 
 <form action="/api/login/signin" method="post" id="signinform">
     <input type="hidden" name="AccessToken" id="accessToken" />
-    <input type="hidden" name="ReturnUrl" id="returnUrl" value="/" />
+    <input type="hidden" name="ReturnUrl" id="returnUrl" value='/?ssid=@(Context.Request.Query["ssid"])'/>
 </form>

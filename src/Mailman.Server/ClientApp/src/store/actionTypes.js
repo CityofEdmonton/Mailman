@@ -1,2 +1,7 @@
-const requestMergeTemplatesType = "REQUEST_MERGE_TEMPLATES";
-const receiveMergeTemplatesType = "RECEIVE_MERGE_TEMPLATES";
+ export const requestMergeTemplatesType = "REQUEST_MERGE_TEMPLATES";
+ export const receiveMergeTemplatesType = "RECEIVE_MERGE_TEMPLATES";
+
+ export const FETCH_MERGE_TEMPLATES_REQUEST   = 'FETCH_MERGE_TEMPLATES_REQUEST';
+ export const FETCH_MERGE_TEMPLATES_SUCCESS = 'FETCH_MERGE_TEMPLATES_SUCCESS';
+ export const FETCH_MERGE_TEMPLATES_FAILURE = 'FETCH_MERGE_TEMPLATES_FAILURE';
+ 
