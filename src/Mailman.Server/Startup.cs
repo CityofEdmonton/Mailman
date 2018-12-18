@@ -84,6 +84,7 @@ namespace Mailman
 
             // Add SignalR
             services.AddSignalR();
+            services.AddCors();
         }
 
 
@@ -103,7 +104,8 @@ namespace Mailman
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
-
+            app.UseCors(builder =>
+                builder.WithOrigins("https://docs.google.com"));
             app.UseSwagger();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 

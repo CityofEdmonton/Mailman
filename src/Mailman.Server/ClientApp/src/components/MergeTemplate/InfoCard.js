@@ -13,26 +13,32 @@ import { Link } from "react-router-dom";
 
 const styles = theme => ({
   paper: {
-    height: 140,
-    width: 100
-  }
+    height: 160,
+    width: 200
+  },
+  largeIcon: {
+    width: 30,
+    height: 30,
+  },
+ 
 });
 
 const InfoCard = props => (
   <div>
     <Paper className={props.classes.paper}>
-      <p>{props.title}</p>
-      <MailIcon></MailIcon>
-      <IconButton color="inherit">
+      <h1>{props.title}</h1>
+      <p>{props.id}</p>
+      <MailIcon iconStyle={styles.largeIcon} />
+      <br/>
             <Link to={`/mergeTemplate/title/${props.id}`}>
             <CreateIcon/>
             </Link>
-          </IconButton>
-      <aside>
-      <DeleteIcon></DeleteIcon>
-      <PlayIcon></PlayIcon>
+         
+
+     <DeleteIcon/>
+      <PlayIcon/>
       
-      </aside>
+    
 
     </Paper>
   </div>

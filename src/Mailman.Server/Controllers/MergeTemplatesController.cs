@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json.Linq;
 using Serilog;
+using Microsoft.AspNetCore.Cors;
 
 namespace Mailman.Server.Controllers
 {
@@ -24,6 +25,7 @@ namespace Mailman.Server.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
+  
     public class MergeTemplatesController : ControllerBase
     {
         private readonly IMergeTemplateRepository _mergeTemplateRepository;
@@ -40,6 +42,8 @@ namespace Mailman.Server.Controllers
         /// <param name="servicesProxy"></param>
         /// <param name="mapper">Automapper instance</param>
         /// <param name="logger">Serilog logger</param>
+     
+
         public MergeTemplatesController(
             IMergeTemplateRepository mergeTemplateRepository,
             IHubContext<MailmanHub> mailmanHub,

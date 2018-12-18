@@ -69,7 +69,7 @@ class ResponsiveNavMenu extends React.Component {
               <MenuIcon />
             </IconButton>
             <Typography variant="title" color="inherit" noWrap>
-              Responsive drawer
+              Mailman
             </Typography>
           </Toolbar>
         </AppBar>

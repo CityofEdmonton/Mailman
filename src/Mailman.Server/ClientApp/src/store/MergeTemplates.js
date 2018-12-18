@@ -1,15 +1,32 @@
-import { requestMergeTemplatesType, receiveMergeTemplatesType, FETCH_MERGE_TEMPLATES_REQUEST, FETCH_MERGE_TEMPLATES_SUCCESS, FETCH_MERGE_TEMPLATES_FAILURE } from './actionTypes';
+import { REQUEST_MERGE_TEMPLATES, RECEIVE_MERGE_TEMPLATES, FETCH_MERGE_TEMPLATES_REQUEST, FETCH_MERGE_TEMPLATES_SUCCESS, FETCH_MERGE_TEMPLATES_FAILURE } from './actionTypes';
 //import fetch from 'cross-fetch'; //most browsers don't natively support fetch yet, should install the npm package
 
 const initialState = {
   mergeTemplates: [
     {
-      "id": "string",
+      "id": "21234",
       "type": "Email",
       "createdBy": "string",
       "createdDateUtc": "2018-11-28T21:40:16.876Z",
       "version": "string",
-      "title": "string",
+      "title": "Test",
+      "sheetName": "string",
+      "headerRowNumber": 0,
+      "timestampColumn": {
+        "name": "string",
+        "shouldPrefixNameWithMergeTemplateTitle": true,
+        "title": "string"
+      },
+      "conditional": "string",
+      "repeater": "Off"
+    },
+    {
+      "id": "2234442",
+      "type": "Email",
+      "createdBy": "string",
+      "createdDateUtc": "2018-11-28T21:40:16.876Z",
+      "version": "string",
+      "title": "Test2",
       "sheetName": "string",
       "headerRowNumber": 0,
       "timestampColumn": {
@@ -26,40 +43,73 @@ const initialState = {
 };
 
 
-const fetchMergeTemplatesRequest = () => ( {
-  type: FETCH_MERGE_TEMPLATES_REQUEST
+const requestMergeTemplates = (spreadsheetId) => ( {
+  type: REQUEST_MERGE_TEMPLATES,
+  spreadsheetId
 });
 
-const fetchMergeTemplatesSuccess = mergeTemplates => ({
-  type: FETCH_MERGE_TEMPLATES_SUCCESS,
-  payload: { mergeTemplates }
+const receiveMergeTemplates = (spreadsheetId, json) => ({
+  type: RECEIVE_MERGE_TEMPLATES,
+  
+  payload: {
+    mergeTemplates: json,
+    spreadsheetId: spreadsheetId}
+
 });
 
-const fetchMergeTemplatesFailure = error => ({
-  type: FETCH_MERGE_TEMPLATES_FAILURE,
-  payload: { error }
-});
+// const fetchMergeTemplatesFailure = error => ({
+//   type: FETCH_MERGE_TEMPLATES_FAILURE,
+//   payload: { error }
+// });
 
 //change into ES6 syntax
+// export function fetchMergeTemplates(spreadsheetId) {
+//   console.log('Made it here (fetchMergeTemplates)!')
+//   return dispatch => {
+//     dispatch(fetchMergeTemplatesRequest());
+//     return fetch(`/api/MergeTemplates/${spreadsheetId}`)
+//       .then(handleErrors)
+//       .then(res => {
+//         console.log('here')
+//         return res.json()})
+//       .then(data => {
+//         console.log('howdy')
+//         dispatch(fetchMergeTemplatesSuccess(data.mergeTemplates));
+//         return data.mergeTemplates;
+//       })
+//       .catch(error => dispatch(fetchMergeTemplatesFailure(error)));
+//   };
+// }
+
+const config = {
+  method: 'GET',
+  //mode: 'cors',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+ };
+
 export function fetchMergeTemplates(spreadsheetId) {
-  
+  //var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
   return dispatch => {
-    dispatch(fetchMergeTemplatesRequest());
-    return fetch(`/api/MergeTemplates/${spreadsheetId}`)
-      .then(handleErrors)
-      .then(res => res.json())
-      .then(data => {
-        dispatch(fetchMergeTemplatesSuccess(data.mergeTemplates));
-        return data.mergeTemplates;
-      })
-      .catch(error => dispatch(fetchMergeTemplatesFailure(error)));
+    dispatch(requestMergeTemplates(spreadsheetId));
+    return fetch(`https://localhost:5001/api/MergeTemplates/${spreadsheetId}`, config)
+      .then(response => {
+        console.log(response)
+        return response.text()})
+      .then(json => {
+        //debugger
+        console.log('Made it to this part! ', json[0]);
+        dispatch(receiveMergeTemplates(spreadsheetId, json))})
   };
 }
 
 function handleErrors(response) {
   if (!response.ok) {
+    console.log('Failed');
     throw Error(response.statusText);
   }
+
   return response;
 }
 
@@ -71,8 +121,8 @@ function shouldFetchMergeTemplates() {
   return true;
 }
 
-function fetchMergeTemplatesIfNeeded(spreadsheetId) {
-
+export function fetchMergeTemplatesIfNeeded(spreadsheetId) {
+  console.log('fetchMerge')
   return (dispatch, getState) => {
 
     if(shouldFetchMergeTemplates(spreadsheetId)) {
@@ -84,24 +134,24 @@ function fetchMergeTemplatesIfNeeded(spreadsheetId) {
 
 }
 
-export const actionCreators = {
-  requestMergeTemplates: sheetId => async (dispatch, getState) => {
-    if (sheetId === getState().mergeTemplates.sheetId) {
-      // Don't issue a duplicate request (we already have or are loading the requested data)
-      return;
-    }
+// export const actionCreators = {
+//   requestMergeTemplates: sheetId => async (dispatch, getState) => {
+//     if (sheetId === getState().mergeTemplates.sheetId) {
+//       // Don't issue a duplicate request (we already have or are loading the requested data)
+//       return;
+//     }
 
-    dispatch({ type: requestMergeTemplatesType, sheetId });
+//     dispatch({ type: requestMergeTemplatesType, sheetId });
 
-    const url = `api/MergeTemplates?sheet=${sheetId}`;
-    const response = await fetch(url);
-    const mergeTemplates = await response.json();
+//     const url = `api/MergeTemplates?sheet=${sheetId}`;
+//     const response = await fetch(url);
+//     const mergeTemplates = await response.json();
 
-    dispatch({ type: receiveMergeTemplatesType, sheetId, mergeTemplates });
-  }
+//     dispatch({ type: receiveMergeTemplatesType, sheetId, mergeTemplates });
+//   }
 
   //receive merge templates here
-};
+// };
 
 
 
@@ -109,24 +159,24 @@ export const actionCreators = {
 
 export const reducer = (state, action) => { // state = initialState
   state = state || initialState;
-
+  
   switch (action.type) {
 
     case FETCH_MERGE_TEMPLATES_REQUEST:
       return {
         ...state,
-        sheetId: action.payload.sheetId, //will you need to map merge templates to something?
+        //sheetId: action.payload.sheetId, //will you need to map merge templates to something?
         isLoading: true
       }
 
     case FETCH_MERGE_TEMPLATES_SUCCESS:
       return {
         ...state,
-        sheetId: action.payload.sheetId, //think about payload
+        sheetId: action.payload.spreadsheetId, //think about payload
         mergeTemplates: action.payload.mergeTemplates,
         isLoading: false
       };
   }
-
+  //case failure 
   return state;
 };
