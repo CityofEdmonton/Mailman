@@ -58,7 +58,9 @@ class Home extends Component {
   }
 
   render() {
-   
+   console.log(this.props);
+   console.log(typeof this.props.mergeTemplates);
+   console.log('Piano');
     return (
       <div>
         <div>

@@ -57,50 +57,26 @@ const receiveMergeTemplates = (spreadsheetId, json) => ({
 
 });
 
-// const fetchMergeTemplatesFailure = error => ({
-//   type: FETCH_MERGE_TEMPLATES_FAILURE,
-//   payload: { error }
-// });
-
-//change into ES6 syntax
-// export function fetchMergeTemplates(spreadsheetId) {
-//   console.log('Made it here (fetchMergeTemplates)!')
-//   return dispatch => {
-//     dispatch(fetchMergeTemplatesRequest());
-//     return fetch(`/api/MergeTemplates/${spreadsheetId}`)
-//       .then(handleErrors)
-//       .then(res => {
-//         console.log('here')
-//         return res.json()})
-//       .then(data => {
-//         console.log('howdy')
-//         dispatch(fetchMergeTemplatesSuccess(data.mergeTemplates));
-//         return data.mergeTemplates;
-//       })
-//       .catch(error => dispatch(fetchMergeTemplatesFailure(error)));
-//   };
-// }
-
 const config = {
   method: 'GET',
-  //mode: 'cors',
   headers: {
     'Content-Type': 'application/json'
   }
  };
 
 export function fetchMergeTemplates(spreadsheetId) {
-  //var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+
   return dispatch => {
     dispatch(requestMergeTemplates(spreadsheetId));
     return fetch(`https://localhost:5001/api/MergeTemplates/${spreadsheetId}`, config)
       .then(response => {
         console.log(response)
-        return response.text()})
+        return response.json()})
       .then(json => {
         //debugger
         console.log('Made it to this part! ', json[0]);
-        dispatch(receiveMergeTemplates(spreadsheetId, json))})
+        dispatch(receiveMergeTemplates(spreadsheetId, json))
+        return json;})
   };
 }
 
@@ -162,14 +138,14 @@ export const reducer = (state, action) => { // state = initialState
   
   switch (action.type) {
 
-    case FETCH_MERGE_TEMPLATES_REQUEST:
+    case REQUEST_MERGE_TEMPLATES:
       return {
         ...state,
         //sheetId: action.payload.sheetId, //will you need to map merge templates to something?
         isLoading: true
       }
 
-    case FETCH_MERGE_TEMPLATES_SUCCESS:
+    case RECEIVE_MERGE_TEMPLATES:
       return {
         ...state,
         sheetId: action.payload.spreadsheetId, //think about payload

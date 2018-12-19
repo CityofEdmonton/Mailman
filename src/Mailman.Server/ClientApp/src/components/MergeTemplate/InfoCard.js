@@ -4,9 +4,11 @@ import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import MailIcon from "@material-ui/icons/Mail";
-import DeleteIcon from "@material-ui/icons/DeleteTwoTone";
-import PlayIcon from "@material-ui/icons/PlayArrowTwoTone";
-import CreateIcon from "@material-ui/icons/CreateTwoTone";
+import DeleteIcon from "@material-ui/icons/Delete";
+import PlayIcon from "@material-ui/icons/PlayArrow";
+import CreateIcon from "@material-ui/icons/Create";
+import ViewIcon from "@material-ui/icons/Visibility";
+
 import { IconButton } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
@@ -14,35 +16,44 @@ import { Link } from "react-router-dom";
 const styles = theme => ({
   paper: {
     height: 160,
-    width: 200
+    width: 230
   },
   largeIcon: {
-    width: 30,
-    height: 30,
+    width: 50,
+    height: 50,
   },
  
 });
-
-const InfoCard = props => (
-  <div>
+//maybe have the button section be a seperate comopnent
+const InfoCard = props => {
+  const { classes } = props;
+  return(<div>
     <Paper className={props.classes.paper}>
-      <h1>{props.title}</h1>
-      <p>{props.id}</p>
-      <MailIcon iconStyle={styles.largeIcon} />
+      <span><h1>{props.title}</h1>
+      <MailIcon className={classes.largeIcon} /></span>
+      
       <br/>
-            <Link to={`/mergeTemplate/title/${props.id}`}>
-            <CreateIcon/>
-            </Link>
+           
          
-
-     <DeleteIcon/>
-      <PlayIcon/>
+    <aside>
+    <IconButton> 
+       <Link to={`/mergeTemplate/title/${props.id}`}>
+            <CreateIcon/>
+        </Link>
+      </IconButton>
+     <IconButton color="error"><DeleteIcon/></IconButton>
+     <IconButton><PlayIcon/></IconButton>
+     <IconButton><ViewIcon/></IconButton>
+      
+    </aside>
+     
       
     
 
     </Paper>
-  </div>
-);
+  </div>)
+  
+  }
 
 InfoCard.propTypes = {
   classes: PropTypes.object.isRequired,

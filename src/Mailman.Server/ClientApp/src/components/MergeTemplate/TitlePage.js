@@ -26,6 +26,7 @@ class TitlePage extends Component {
   }
 
   render() {
+    console.log(this.props); //what we could do is get the id from the path... or do something else??
     return (
       <div>
         <Paper>
@@ -75,4 +76,5 @@ const mapDispatchToProps = dispatch => {
   export default connect(
     state => state.mergeTemplates,
     mapDispatchToProps
-  )(TitlePage);
+  )(TitlePage); //Styles??
+  

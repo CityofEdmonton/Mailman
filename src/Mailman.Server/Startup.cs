@@ -105,7 +105,7 @@ namespace Mailman
                 app.UseHsts();
             }
             app.UseCors(builder =>
-                builder.WithOrigins("https://docs.google.com"));
+                builder.WithOrigins("https://docs.google.com", "https://localhost:5001"));
             app.UseSwagger();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
