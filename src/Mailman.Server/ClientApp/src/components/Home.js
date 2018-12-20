@@ -48,10 +48,10 @@ class Home extends Component {
    // console.log(spreadsheetId);
     const {dispatch} = this.props;
     //const {fetchMergeTemplatesIfNeeded} = this.props;
-    // spreadsheetId = '1MiRwI8yIQSmnzBXjtFFSHqmU8t5TaOMqcnZG3aszn6o'
-    // if (spreadsheetId ){
-    //   dispatch(fetchMergeTemplatesIfNeeded(spreadsheetId));
-    // }
+    //spreadsheetId = '1MiRwI8yIQSmnzBXjtFFSHqmU8t5TaOMqcnZG3aszn6o'
+    if (spreadsheetId ){
+      dispatch(fetchMergeTemplatesIfNeeded(spreadsheetId));
+    }
     //'1GnoG6twy6OC9jQw7-KeZBR02znTW8VkR7Yp2Wf2JlrY'
     //console.log(test);
  

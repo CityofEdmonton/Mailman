@@ -234,7 +234,7 @@ namespace Mailman.Services
         {
            authenticationBuilder.AddCookie(options =>
            {
-                
+                options.Cookie.SameSite = SameSiteMode.None;
            });
 
             return authenticationBuilder;

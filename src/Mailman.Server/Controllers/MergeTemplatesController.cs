@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json.Linq;
 using Serilog;
-using Microsoft.AspNetCore.Cors;
 
 namespace Mailman.Server.Controllers
 {
