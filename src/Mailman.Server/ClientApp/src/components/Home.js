@@ -6,17 +6,26 @@ import { withStyles } from "@material-ui/core/styles";
 import { IconButton } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/AddCircle";
 import Grid from "@material-ui/core/Grid";
+import Button from '@material-ui/core/Button';
 
 // import { actionCreators } from "../store/MergeTemplates";
 import InfoCard from "./MergeTemplate/InfoCard";
 import {
   fetchMergeTemplatesIfNeeded
 } from '../store/MergeTemplates'
+import { isAbsolute } from "path";
 
 const queryString = require('query-string');
 
-const styles = theme => ({});
 
+const styles = theme => ({
+  
+  largeButton: {
+    width: 50,
+    height: 50,
+  },
+
+});
 class Home extends Component {
 
   constructor(props){
@@ -39,10 +48,10 @@ class Home extends Component {
    // console.log(spreadsheetId);
     const {dispatch} = this.props;
     //const {fetchMergeTemplatesIfNeeded} = this.props;
-    spreadsheetId = '1MiRwI8yIQSmnzBXjtFFSHqmU8t5TaOMqcnZG3aszn6o'
-    if (spreadsheetId ){
-      dispatch(fetchMergeTemplatesIfNeeded(spreadsheetId));
-    }
+    // spreadsheetId = '1MiRwI8yIQSmnzBXjtFFSHqmU8t5TaOMqcnZG3aszn6o'
+    // if (spreadsheetId ){
+    //   dispatch(fetchMergeTemplatesIfNeeded(spreadsheetId));
+    // }
     //'1GnoG6twy6OC9jQw7-KeZBR02znTW8VkR7Yp2Wf2JlrY'
     //console.log(test);
  
@@ -61,8 +70,11 @@ class Home extends Component {
    console.log(this.props);
    console.log(typeof this.props.mergeTemplates);
    console.log('Piano');
+   const { classes } = this.props;
+
     return (
       <div>
+        
         <div>
           <Grid container spacing={16}>
             {this.props.mergeTemplates.map(mergeTemplate => (
@@ -75,9 +87,9 @@ class Home extends Component {
               </Grid>
             ))}
           </Grid>
-          <IconButton color="inherit"   iconStyle={{height: 48, width: 48}} >
+          <IconButton color="inherit"    >
             <Link to="/mergeTemplate/title">
-              <AddIcon />
+              <AddIcon className={classes.largeButton} color="secondary"/>
             </Link>
           </IconButton>
         </div>
@@ -101,7 +113,7 @@ return {
 }
 
 }
-
+//iconStyle={{height: 48, width: 48}}
 const exportWithStyles = withStyles(styles, { withTheme: true })(Home); //do you have to export with styles everywhere?
 
 // export default connect(

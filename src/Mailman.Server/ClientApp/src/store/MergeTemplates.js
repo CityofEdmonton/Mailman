@@ -1,4 +1,4 @@
-import { REQUEST_MERGE_TEMPLATES, RECEIVE_MERGE_TEMPLATES, FETCH_MERGE_TEMPLATES_REQUEST, FETCH_MERGE_TEMPLATES_SUCCESS, FETCH_MERGE_TEMPLATES_FAILURE } from './actionTypes';
+import { REQUEST_MERGE_TEMPLATES, RECEIVE_MERGE_TEMPLATES } from './actionTypes';
 //import fetch from 'cross-fetch'; //most browsers don't natively support fetch yet, should install the npm package
 
 const initialState = {
@@ -98,7 +98,7 @@ function shouldFetchMergeTemplates() {
 }
 
 export function fetchMergeTemplatesIfNeeded(spreadsheetId) {
-  console.log('fetchMerge')
+ 
   return (dispatch, getState) => {
 
     if(shouldFetchMergeTemplates(spreadsheetId)) {
@@ -109,29 +109,6 @@ export function fetchMergeTemplatesIfNeeded(spreadsheetId) {
   }
 
 }
-
-// export const actionCreators = {
-//   requestMergeTemplates: sheetId => async (dispatch, getState) => {
-//     if (sheetId === getState().mergeTemplates.sheetId) {
-//       // Don't issue a duplicate request (we already have or are loading the requested data)
-//       return;
-//     }
-
-//     dispatch({ type: requestMergeTemplatesType, sheetId });
-
-//     const url = `api/MergeTemplates?sheet=${sheetId}`;
-//     const response = await fetch(url);
-//     const mergeTemplates = await response.json();
-
-//     dispatch({ type: receiveMergeTemplatesType, sheetId, mergeTemplates });
-//   }
-
-  //receive merge templates here
-// };
-
-
-
-
 
 export const reducer = (state, action) => { // state = initialState
   state = state || initialState;
