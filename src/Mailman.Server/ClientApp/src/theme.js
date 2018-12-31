@@ -2,14 +2,20 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import indigo from '@material-ui/core/colors/indigo';
 import pink from '@material-ui/core/colors/pink';
 import red from '@material-ui/core/colors/red';
+import green  from '@material-ui/core/colors/green';
+import grey  from '@material-ui/core/colors/grey';
+
+
 
 // All the following keys are optional.
 // We try our best to provide a great default value.
 const theme = createMuiTheme({
   palette: {
     primary: indigo,
-    secondary: pink,
+    secondary: green,
     error: red,
+   
+     
     // Used by `getContrastText()` to maximize the contrast between the background and
     // the text.
     contrastThreshold: 3,
@@ -18,13 +24,9 @@ const theme = createMuiTheme({
     // E.g., shift from Red 500 to Red 300 or Red 700.
     tonalOffset: 0.2,
   },
-  typography: {
-   
-    fontFamily: [
-      'Roboto',
-      'sans-serif',
-    ].join(','),
-  },
+  
+    
+  
 
 });
 

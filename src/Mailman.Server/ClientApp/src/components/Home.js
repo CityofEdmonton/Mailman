@@ -23,8 +23,12 @@ const styles = theme => ({
   largeButton: {
     width: 50,
     height: 50,
+    
   },
-
+  place: {
+    position: 'absolute',
+    bottom: -500,
+  }
 });
 class Home extends Component {
 
@@ -87,9 +91,12 @@ class Home extends Component {
               </Grid>
             ))}
           </Grid>
-          <IconButton color="inherit"    >
+         
+        </div>
+        <div>
+        <IconButton color="inherit"    >
             <Link to="/mergeTemplate/title">
-              <AddIcon className={classes.largeButton} color="secondary"/>
+              <AddIcon className={classes.largeButton} color="error"/>
             </Link>
           </IconButton>
         </div>

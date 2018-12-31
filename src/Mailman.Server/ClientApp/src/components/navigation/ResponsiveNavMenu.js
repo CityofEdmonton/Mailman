@@ -7,6 +7,9 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import ResponsiveDrawer from "./Drawer";
+import SettingsIcon from "@material-ui/icons/Settings";
+import LetterIcon from "@material-ui/icons/Drafts";
+
 
 // State Management
 import { bindActionCreators } from "redux";
@@ -22,7 +25,8 @@ const styles = theme => ({
     overflow: "hidden",
     position: "relative",
     display: "flex",
-    width: "100%"
+    width: "100%",
+    height: 1000,
   },
   appBar: {
     position: "absolute",
@@ -57,20 +61,17 @@ class ResponsiveNavMenu extends React.Component {
 
     return (
       <div className={classes.root}>
-        <ResponsiveDrawer />
+        
         <AppBar className={classes.appBar}>
           <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={this.props.open}
-              className={classes.navIconHide}
-            >
-              <MenuIcon />
-            </IconButton>
+            
+            <LetterIcon/>
             <Typography variant="title" color="inherit" noWrap>
               Mailman
             </Typography>
+            <IconButton>
+              <SettingsIcon style={{color: 'white'}}/>
+            </IconButton>
           </Toolbar>
         </AppBar>
         {this.props.children}
