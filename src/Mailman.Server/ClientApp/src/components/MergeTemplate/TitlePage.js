@@ -7,6 +7,13 @@ import Paper from "@material-ui/core/Paper";
 import Tooltip from "@material-ui/core/Tooltip";
 import HelpIcon from "@material-ui/icons/Help";
 
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import Input from '@material-ui/core/Input';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+
+window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
 // import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
@@ -15,36 +22,54 @@ import HelpIcon from "@material-ui/icons/Help";
 class TitlePage extends Component {
   componentWillMount() {
     // This method runs when the component is first added to the page
-    //const sheetId = ""; // TODO: get sheetId 
-  //  this.props.requestMergeTemplates(sheetId);
+    // const sheetId = ""; // TODO: get sheetId 
+    // this.props.requestMergeTemplates(sheetId);
   }
 
   componentWillReceiveProps(nextProps) {
     // This method runs when incoming props (e.g., route params) change
-    //const sheetId = ""; // TODO: get sheetId 
-    //this.props.requestMergeTemplates(sheetId);
+    // const sheetId = ""; // TODO: get sheetId 
+    // this.props.requestMergeTemplates(sheetId);
   }
 
   render() {
-    console.log(this.props); //what we could do is get the id from the path... or do something else??
+    console.log('Hello!' + this.props); //what we could do is get the id from the path... or do something else??
     return (
-      <div>
-        <Paper>
-        <h4>What should this merge template be called?</h4>
-        <p>Here you can add a new MergeTemplate.  This will be a sequence of cards.</p>
-        <input type="text"></input><br></br>
-        <input type="checkbox"/> Use this title as timestamp column name?<br></br>
-        <Tooltip title="This title will help you differentiate this merge from others."><HelpIcon/></Tooltip>
-        </Paper>
-        <div>
+      // <div>
+      <Grid
+        container
+      >
+        <Grid item>
+          <Paper style={{ padding: 9 }}>
+            <Typography variant="h5" gutterBottom>What should this merge template be called?</Typography>
+            {/* <Typography gutterBottom style={{paddingBottom: 10}}>Here you can add a new MergeTemplate.  This will be a sequence of cards.</Typography> */}
+            {/* <p>Here you can add a new MergeTemplate.  This will be a sequence of cards.</p> */}
+            {/* <input type="text"></input><br></br> */}
+            <Input placeholder="Title" style={{width: "wrap-content", alignText: "center"}}/>
+            <FormControlLabel
+              control={ <Checkbox color="primary" /> }
+              label={ <Typography variant="subtitle2">Use this title as timestamp column name?</Typography> }
+              labelPlacement="end"
+              style={{paddingTop: 10}}
+            />
+            {/* <input type="checkbox"/> Use this title as timestamp column name?<br></br> */}
+            <Tooltip title="This title will help you differentiate this merge from others." style={{paddingTop: 10}}><HelpIcon/></Tooltip>
+          </Paper>
+        </Grid>
+        {/* <div> */}
+        <Grid item>
           <Button variant="contained">
-              Back 
+            {/* <Link> */}
+              Back
+            {/* </Link> */}
           </Button>  
           <Button color="primary" variant="contained">
               Next
           </Button>
-        </div>
-      </div>
+        </Grid>
+        {/* </div> */}
+      </Grid>
+      // {/* </div> */}
     );
   }
 }

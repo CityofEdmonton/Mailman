@@ -99,11 +99,11 @@ namespace Mailman.Services.Security
                             new List<Claim>
                             {
                                 new Claim(ClaimTypes.NameIdentifier, userInfo.Id),
-                                new Claim(ClaimTypes.Name, userInfo.DisplayName),
-                                new Claim(ClaimTypes.GivenName, userInfo.Name?.GivenName),
-                                new Claim(ClaimTypes.Surname, userInfo.Name?.FamilyName),
-                                new Claim("urn:google:profile", userInfo.Url),
-                                new Claim(ClaimTypes.Email, userInfo.Emails.FirstOrDefault()?.Value)
+                                // new Claim(ClaimTypes.Name, userInfo.DisplayName),
+                                // new Claim(ClaimTypes.GivenName, userInfo.Name?.GivenName),
+                                // new Claim(ClaimTypes.Surname, userInfo.Name?.FamilyName),
+                                // new Claim("urn:google:profile", userInfo.Url),
+                                // new Claim(ClaimTypes.Email, userInfo.Emails.FirstOrDefault()?.Value)
                             },
                             AppScriptOAuthAuthenticationDefaults.AuthenticationScheme);
 
