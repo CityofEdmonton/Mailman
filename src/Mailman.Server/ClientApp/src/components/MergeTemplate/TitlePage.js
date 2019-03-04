@@ -15,6 +15,14 @@ window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 // import { actionCreators } from '../../store/MergeTemplates';
 
 class TitlePage extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = { merge_title: "" }; // initialize empty merge title
+
+    this.checkTitleInput = this.checkTitleInput.bind(this); // bind the function (know the instance of 'this')
+  }
+
   componentWillMount() {
     // This method runs when the component is first added to the page
     // const sheetId = ""; // TODO: get sheetId 
@@ -27,6 +35,14 @@ class TitlePage extends Component {
     // this.props.requestMergeTemplates(sheetId);
   }
 
+  checkTitleInput(event) {
+    console.log("Event!")
+    console.log(event.target.value)
+    console.log(this.state.merge_title)
+    this.setState({ merge_title: event.target.value })
+    console.log(this.state.merge_title)
+  }
+
   render() {
     console.log('Hello!' + this.props); //what we could do is get the id from the path... or do something else??
     return (
@@ -36,7 +52,7 @@ class TitlePage extends Component {
       >
         <Card style={styles.card}>
           <Typography variant="h5" gutterBottom>What should this merge template be called?</Typography>
-          <Input placeholder="Title" />
+          <Input name="title_input" placeholder="Title" onChange={this.checkTitleInput}/>
           <FormControlLabel
             control={ <Checkbox color="primary" style={{top: 0}}/> }
             label={ <Typography variant="caption">Use this title as timestamp column name?</Typography> }
@@ -55,7 +71,7 @@ class TitlePage extends Component {
           color="primary"
           variant="contained"
           style={styles.next_button}
-          disabled={true}>
+          disabled={!this.state.merge_title}>
             Next
         </Button>
       </Grid>

@@ -65,8 +65,7 @@ class ResponsiveNavMenu extends React.Component {
         
         <AppBar className={classes.appBar}>
           <Toolbar>
-            
-            <LetterIcon/>
+            <LetterIcon style={{paddingRight: 5}}/>
             <Typography variant="h6" color="inherit" noWrap>
               Mailman
             </Typography>
