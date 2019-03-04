@@ -94,7 +94,7 @@ class Home extends Component {
          
         </div>
         <div>
-        <IconButton color="inherit"    >
+        <IconButton color="inherit" style={{position: "absolute", bottom: 10, right: 10}}>
             <Link to="/mergeTemplate/title">
               <AddIcon className={classes.largeButton} color="error"/>
             </Link>
