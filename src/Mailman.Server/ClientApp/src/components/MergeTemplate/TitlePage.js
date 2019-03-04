@@ -38,6 +38,7 @@ class TitlePage extends Component {
       // <div>
       <Grid
         container
+        alignItems="center"
       >
         <Grid item>
           <Paper style={{ padding: 9 }}>
@@ -59,11 +60,13 @@ class TitlePage extends Component {
         {/* <div> */}
         <Grid item>
           <Button variant="contained">
-            {/* <Link> */}
-              Back
-            {/* </Link> */}
+            <Link to="/" >
+              Cancel
+            </Link>
           </Button>  
-          <Button color="primary" variant="contained">
+        </Grid>
+        <Grid item>
+          <Button color="primary" variant="contained" disabled={true}>
               Next
           </Button>
         </Grid>
@@ -73,7 +76,6 @@ class TitlePage extends Component {
     );
   }
 }
-
 
 
 // export default connect(

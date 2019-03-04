@@ -9,6 +9,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ResponsiveDrawer from "./Drawer";
 import SettingsIcon from "@material-ui/icons/Settings";
 import LetterIcon from "@material-ui/icons/Drafts";
+import { Link } from "react-router-dom";
 
 
 // State Management
@@ -66,12 +67,14 @@ class ResponsiveNavMenu extends React.Component {
           <Toolbar>
             
             <LetterIcon/>
-            <Typography variant="title" color="inherit" noWrap>
+            <Typography variant="h6" color="inherit" noWrap>
               Mailman
             </Typography>
-            <IconButton>
-              <SettingsIcon style={{color: 'white'}}/>
-            </IconButton>
+            <Link to="/settings">
+              <IconButton>
+                <SettingsIcon style={{color: 'white'}} />
+              </IconButton>
+            </Link>
           </Toolbar>
         </AppBar>
         {this.props.children}
