@@ -36,11 +36,7 @@ class TitlePage extends Component {
   }
 
   checkTitleInput(event) {
-    console.log("Event!")
-    console.log(event.target.value)
-    console.log(this.state.merge_title)
     this.setState({ merge_title: event.target.value })
-    console.log(this.state.merge_title)
   }
 
   render() {
@@ -54,19 +50,21 @@ class TitlePage extends Component {
           <Typography variant="h5" gutterBottom>What should this merge template be called?</Typography>
           <Input name="title_input" placeholder="Title" onChange={this.checkTitleInput}/>
           <FormControlLabel
-            control={ <Checkbox color="primary" style={{top: 0}}/> }
+            control={ <Checkbox color="primary" style={{position: "relative", top: 0}}/> }
             label={ <Typography variant="caption">Use this title as timestamp column name?</Typography> }
             labelPlacement="end"
             style={{paddingTop: 10}}
           />
           <Tooltip title="This title will help you differentiate this merge from others." style={{paddingTop: 10}}><HelpIcon/></Tooltip>
         </Card>
-        <Button
-          variant="contained"
-          style={styles.cancel_button}
-        >
-          <Link to="/">Cancel</Link>
-        </Button>
+        <Link to="/">
+          <Button
+            variant="contained"
+            style={styles.cancel_button}
+          >
+            Cancel
+          </Button>
+        </Link>
         <Button
           color="primary"
           variant="contained"

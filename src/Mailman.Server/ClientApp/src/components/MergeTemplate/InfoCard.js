@@ -44,7 +44,7 @@ const InfoCard = props => {
         <ListItemText primary={<Typography variant="h5"  className={classes.text}  noWrap={true}>{props.title}</Typography>}/>
       </ListItem>
       <ListItemSecondaryAction>
-        <InfoCardSidebar/>
+        <InfoCardSidebar id={props.id}/>
       </ListItemSecondaryAction>
     </List>
     </Paper>

@@ -15,7 +15,7 @@ import SendIcon from "@material-ui/icons/Send";
 // State Management
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { actionCreators } from '../../store/NavDrawer';
+import { actionCreators } from '../../reducers/NavDrawer';
 
 const drawerWidth = 240;
 

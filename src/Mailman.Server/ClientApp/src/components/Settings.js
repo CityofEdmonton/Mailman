@@ -7,12 +7,10 @@ const Home = props => (
   <Grid>
     <Typography variant="subtitle1">Settings</Typography>
     <Grid item>
-          <Button variant="contained">
-            <Link to="/" >
-              Back
-            </Link>
-          </Button>  
-        </Grid>
+      <Link to="/">
+        <Button variant="contained">Back</Button>  
+      </Link>
+    </Grid>
   </Grid>
   // <div>
   //   <h1>Settings</h1>
