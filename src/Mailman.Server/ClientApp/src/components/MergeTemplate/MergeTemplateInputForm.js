@@ -11,6 +11,10 @@ export default class MergeTemplateInputForm extends Component {
         this.state = this.props.mergeTemplateInfo;
 
         this.handleTextInput = this.handleTextInput.bind(this);
+
+        if (this.props.textInputCallback) {
+            this.props.textInputCallback(this.state.title); // Initialize value in parent
+        }
     }
 
     render() {
@@ -24,14 +28,17 @@ export default class MergeTemplateInputForm extends Component {
 
     handleTextInput(event) {
         // let templateInfo = Object.assign({}, this.props.)
-        this.setState({ merge_title: event.target.value })
+        this.setState({ title: event.target.value });
+        if (this.props.textInputCallback) {
+            this.props.textInputCallback(event.target.value);
+        }
     }
 
     renderTextInput() {
         if (this.props.textInput) {
-            return [
-                <Input name="text_input" placeholder={this.props.textInput} onChange={this.handleTextInput} value={this.state.merge_title}/>
-            ];
+            return (
+                <Input name="text_input" placeholder={this.props.textInput} onChange={this.handleTextInput} value={this.state.title}/>
+            );
         } else {
             return null;
         }
@@ -59,5 +66,6 @@ MergeTemplateInputForm.propTypes = {
     tip: PropTypes.string,
     checkbox: PropTypes.string,
     textInput: PropTypes.string,
+    textInputCallback: PropTypes.func,
     hint: PropTypes.string,
 }

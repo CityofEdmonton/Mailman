@@ -23,6 +23,7 @@ class TitlePage extends Component {
     this.state = { merge_title: "" }; // initialize empty merge title
 
     this.checkTitleInput = this.checkTitleInput.bind(this); // bind the function (know the instance of 'this')
+    this.updateTextInput = this.updateTextInput.bind(this);
   }
 
   componentWillMount() {
@@ -41,6 +42,12 @@ class TitlePage extends Component {
     this.setState({ merge_title: event.target.value })
   }
 
+  updateTextInput(newInput) {
+    this.setState({ merge_title: newInput })
+    // const currentInputFormState = this.inputFormState.current;
+    // return(!currentInputFormState.state.title)
+  }
+
   render() {
     console.log('Hello!' + this.props); //what we could do is get the id from the path... or do something else??
     return (
@@ -48,7 +55,13 @@ class TitlePage extends Component {
         container
         style={styles.container}
       >
-        <MergeTemplateInputForm title="Test" link="Test" mergeTemplateInfo={{merge_title: ""}} textInput="placeholder"/>
+        <MergeTemplateInputForm
+          title="Test"
+          link="Test"
+          mergeTemplateInfo={{title: "hello"}}
+          textInput="placeholder"
+          textInputCallback={this.updateTextInput}
+        />
         {/* <Card style={styles.card}>
           <Typography variant="h5" gutterBottom>What should this merge template be called?</Typography>
           <Input name="title_input" placeholder="Title" onChange={this.checkTitleInput}/>
