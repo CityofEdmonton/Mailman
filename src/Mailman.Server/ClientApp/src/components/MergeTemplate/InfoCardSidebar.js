@@ -49,7 +49,7 @@ const InfoCardSidebar = props => {
       </ListItem>
       <ListItem className={classes.root}>
         <IconButton className={classes.smallIcon} > 
-          <Link to={`/mergeTemplate/title/${props.id}`}>
+          <Link to={`/mergeTemplate/title/?id=${props.id}`}>
             <Tooltip title="Edit" placement="left"><CreateIcon style={{color: "grey"}}/></Tooltip>
           </Link>
         </IconButton>

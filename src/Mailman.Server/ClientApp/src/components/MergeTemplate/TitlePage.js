@@ -8,7 +8,9 @@ import { Button, Card, Checkbox,
   FormControlLabel, Grid, Input,
   Tooltip, Typography } from '@material-ui/core';
 
-import MergeTemplateInputForm from './MergeTemplateInputForm';
+import MergeTemplateInputForm from './MergeTemplateFormCard';
+
+const queryString = require('query-string');
 
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
@@ -28,6 +30,12 @@ class TitlePage extends Component {
     // this.checkTitleInput = this.checkTitleInput.bind(this); // bind the function (know the instance of 'this')
     this.updateTextInput = this.updateTextInput.bind(this);
     this.updateFormInput = this.updateFormInput.bind(this);
+  }
+
+  componentDidMount() {
+    const parsed = queryString.parse(this.props.location.search);
+    let templateID = parsed.id; //parse query
+    console.log("Sheet ID: ", templateID);
   }
 
   componentWillMount() {
@@ -65,7 +73,7 @@ class TitlePage extends Component {
       }
     }
 
-    console.log('Hello!' + this.props); //what we could do is get the id from the path... or do something else??
+    console.log('Hello!', this.props); //what we could do is get the id from the path... or do something else??
     return (
       <Grid
         container
@@ -99,14 +107,16 @@ class TitlePage extends Component {
             Cancel
           </Button>
         </Link>
-        <Button
-          color="primary"
-          variant="contained"
-          style={styles.next_button}
-          onClick={() => console.log("State: ", this.state)}
-          disabled={!this.state.merge_title}>
-            Next
-        </Button>
+        <Link to="/mergeTemplate/tabSelection">
+          <Button
+            color="primary"
+            variant="contained"
+            style={styles.next_button}
+            onClick={() => console.log("State: ", this.state)} // TODO: call dispatch (matchDispatchToProps) to update mergeTemplateInfo
+            disabled={!this.state.merge_title}>
+              Next
+          </Button>
+        </Link>
       </Grid>
     );
   }
