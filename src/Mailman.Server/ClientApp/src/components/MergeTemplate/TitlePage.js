@@ -20,10 +20,14 @@ class TitlePage extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { merge_title: "" }; // initialize empty merge title
+    this.state = {
+      merge_title: "",
+      formInput: false
+    }; // initialize empty merge title
 
-    this.checkTitleInput = this.checkTitleInput.bind(this); // bind the function (know the instance of 'this')
+    // this.checkTitleInput = this.checkTitleInput.bind(this); // bind the function (know the instance of 'this')
     this.updateTextInput = this.updateTextInput.bind(this);
+    this.updateFormInput = this.updateFormInput.bind(this);
   }
 
   componentWillMount() {
@@ -38,14 +42,18 @@ class TitlePage extends Component {
     // this.props.requestMergeTemplates(sheetId);
   }
 
-  checkTitleInput(event) {
-    this.setState({ merge_title: event.target.value })
-  }
+  // checkTitleInput(event) {
+  //   this.setState({ merge_title: event.target.value })
+  // }
 
   updateTextInput(newInput) {
     this.setState({ merge_title: newInput })
     // const currentInputFormState = this.inputFormState.current;
     // return(!currentInputFormState.state.title)
+  }
+
+  updateFormInput(newInput) {
+    this.setState({ formInput: newInput })
   }
 
   render() {
@@ -65,9 +73,11 @@ class TitlePage extends Component {
       >
         <MergeTemplateInputForm
           title="What should this merge template be called?"
-          mergeTemplateInfo={{title: "hello"}}
+          mergeTemplateInfo={testData}
           textInput="placeholder"
           textInputCallback={this.updateTextInput}
+          formInput="Use this title as timestamp column name?"
+          formInputCallback={this.updateFormInput}
           tip="This title will help you differentiate this merge from others."
         />
         {/* <Card style={styles.card}>
@@ -93,6 +103,7 @@ class TitlePage extends Component {
           color="primary"
           variant="contained"
           style={styles.next_button}
+          onClick={() => console.log("State: ", this.state)}
           disabled={!this.state.merge_title}>
             Next
         </Button>
