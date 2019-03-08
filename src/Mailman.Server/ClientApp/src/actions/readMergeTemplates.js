@@ -68,3 +68,60 @@ export function receiveMergeTemplates(spreadsheetId, json) {
 }
 
 // save mergeTemplate?? -> config -> method POST
+
+/*
+export function addMergeTemplate(spreadsheetId, data) {
+
+    const testData = {
+        "id": "test_id_1",
+        "spreadSheetId": "hello",
+        "type": "Email",
+        "createdBy": "string",
+        "createdDateUtc": "2019-03-07T21:34:00.846Z",
+        "version": "string",
+        "title": "string",
+        "sheetName": "string",
+        "headerRowNumber": 1,
+        "timestampColumn": {
+            "name": "string",
+            "shouldPrefixNameWithMergeTemplateTitle": true,
+            "title": "string"
+        },
+        "conditional": "string",
+        "repeater": "Off",
+        "emailTemplate": {
+            "to": "string",
+            "cc": "string",
+            "bcc": "string",
+            "subject": "string",
+            "body": "string"
+        }
+    }
+
+    data = data || testData;
+
+    const config = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: data
+    };
+
+    return dispatch => {
+        dispatch(requestMergeTemplates(spreadsheetId));
+        return fetch(`https://localhost:5001/api/MergeTemplates/${spreadsheetId}`, config)
+        .then(response => {
+            console.log(response);
+            return response.json();
+        })
+        .then(json => {
+            //debugger
+            console.log('Made it to this part! ', json[0]);
+            dispatch(receiveMergeTemplates(spreadsheetId, json));
+            return json;
+        })
+    };
+}
+
+*/

@@ -8,6 +8,8 @@ import { Button, Card, Checkbox,
   FormControlLabel, Grid, Input,
   Tooltip, Typography } from '@material-ui/core';
 
+import MergeTemplateInputForm from './MergeTemplateInputForm';
+
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
 // import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -46,7 +48,8 @@ class TitlePage extends Component {
         container
         style={styles.container}
       >
-        <Card style={styles.card}>
+        <MergeTemplateInputForm title="Test" link="Test" mergeTemplateInfo={{merge_title: ""}} textInput="placeholder"/>
+        {/* <Card style={styles.card}>
           <Typography variant="h5" gutterBottom>What should this merge template be called?</Typography>
           <Input name="title_input" placeholder="Title" onChange={this.checkTitleInput}/>
           <FormControlLabel
@@ -56,7 +59,7 @@ class TitlePage extends Component {
             style={{paddingTop: 10}}
           />
           <Tooltip title="This title will help you differentiate this merge from others." style={{paddingTop: 10}}><HelpIcon/></Tooltip>
-        </Card>
+        </Card> */}
         <Link to="/">
           <Button
             variant="contained"

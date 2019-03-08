@@ -14,7 +14,7 @@ import { Tooltip } from '@material-ui/core';
 import InfoCard from "./MergeTemplate/InfoCard";
 import {
   fetchMergeTemplatesIfNeeded
-} from '../actions/MergeTemplates'
+} from '../actions/readMergeTemplates'
 import { isAbsolute } from "path";
 
 const queryString = require('query-string');
@@ -116,12 +116,14 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-return {
-  fetchMergeTemplatesIfNeeded: (spreadSheetId) =>
-    dispatch({
-      type: 'FETCH_MERGE_TEMPLATES' //spreadsheet??
-    })
-}
+  console.log("From map dispatch to props - Home");
+  return {
+    fetchMergeTemplatesIfNeeded: (spreadSheetId) =>
+      // dispatch({
+      //   type: 'FETCH_MERGE_TEMPLATES' //spreadsheet??
+      // })
+      dispatch(fetchMergeTemplatesIfNeeded(spreadSheetId))
+  }
 
 }
 //iconStyle={{height: 48, width: 48}}

@@ -4,7 +4,7 @@ import { routerReducer, routerMiddleware } from "react-router-redux";
 import * as Counter from "../reducers/Counter";
 import * as WeatherForecasts from "../reducers/WeatherForecasts";
 import * as NavDrawer from "../reducers/NavDrawer";
-import * as MergeTemplates from "../reducers/MergeTemplates";
+import * as MergeTemplates from "../reducers/readMergeTemplates";
 
 export default function configureStore(history, initialState) {
   
