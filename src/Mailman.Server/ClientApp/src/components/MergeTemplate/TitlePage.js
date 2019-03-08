@@ -49,6 +49,14 @@ class TitlePage extends Component {
   }
 
   render() {
+
+    const testData = {
+      title: "Hello!",
+      timestampColumn: {
+        shouldPrefixNameWithMergeTemplateTitle: true
+      }
+    }
+
     console.log('Hello!' + this.props); //what we could do is get the id from the path... or do something else??
     return (
       <Grid
@@ -56,11 +64,11 @@ class TitlePage extends Component {
         style={styles.container}
       >
         <MergeTemplateInputForm
-          title="Test"
-          link="Test"
+          title="What should this merge template be called?"
           mergeTemplateInfo={{title: "hello"}}
           textInput="placeholder"
           textInputCallback={this.updateTextInput}
+          tip="This title will help you differentiate this merge from others."
         />
         {/* <Card style={styles.card}>
           <Typography variant="h5" gutterBottom>What should this merge template be called?</Typography>
