@@ -35,7 +35,7 @@ class TitlePage extends Component {
   componentDidMount() {
     const parsed = queryString.parse(this.props.location.search);
     let templateID = parsed.id; //parse query
-    console.log("Sheet ID: ", templateID);
+    console.log("Sheet ID: ", templateID); // Save this id to the current merge templates in store
   }
 
   componentWillMount() {
@@ -73,7 +73,7 @@ class TitlePage extends Component {
       }
     }
 
-    console.log('Hello!', this.props); //what we could do is get the id from the path... or do something else??
+    // console.log('Hello!', this.props); //what we could do is get the id from the path... or do something else?? - get from search in navigation
     return (
       <Grid
         container
