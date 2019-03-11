@@ -1,63 +1,51 @@
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
 
-import HelpIcon from "@material-ui/icons/Help";
-import { Button, Card, Checkbox,
-  FormControlLabel, Grid, Input,
-  Tooltip, Typography } from '@material-ui/core';
+import { Button, Grid, } from '@material-ui/core';
 
 import MergeTemplateInputForm from './MergeTemplateFormCard';
-
-const queryString = require('query-string');
+import { loadFromMergeTemplates } from '../../actions/createMergeTemplate'
 
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
-// import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+const queryString = require('query-string');
 
-// import { actionCreators } from '../../store/MergeTemplates';
-
-class TitlePage extends Component {
+export default class TitlePage extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      merge_title: "",
+    this.state = { // initialize empty merge title
+      mergeTitle: "",
       formInput: false
-    }; // initialize empty merge title
+    };
 
-    // this.checkTitleInput = this.checkTitleInput.bind(this); // bind the function (know the instance of 'this')
     this.updateTextInput = this.updateTextInput.bind(this);
     this.updateFormInput = this.updateFormInput.bind(this);
   }
 
+  getMergeTemplateFromID(templateID) { // returns the index of the mergeTemplate (in props) or null if not exist
+    if (!this.props.mergeTemplates) {
+      return null;
+    }
+    for (let i = 0; i < this.props.mergeTemplates.length; i++) {
+      if (this.props.mergeTemplates[i]["id"] === templateID) {
+        return this.props.mergeTemplates[i];
+      }
+    }
+    return null;
+  }
+
   componentDidMount() {
     const parsed = queryString.parse(this.props.location.search);
-    let templateID = parsed.id; //parse query
+    let templateID = parsed.id; // parse query
+    this.props.loadFromMergeTemplates(this.getMergeTemplateFromID(templateID));
     console.log("Sheet ID: ", templateID); // Save this id to the current merge templates in store
   }
 
-  componentWillMount() {
-    // This method runs when the component is first added to the page
-    // const sheetId = ""; // TODO: get sheetId 
-    // this.props.requestMergeTemplates(sheetId);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // This method runs when incoming props (e.g., route params) change
-    // const sheetId = ""; // TODO: get sheetId 
-    // this.props.requestMergeTemplates(sheetId);
-  }
-
-  // checkTitleInput(event) {
-  //   this.setState({ merge_title: event.target.value })
-  // }
-
   updateTextInput(newInput) {
-    this.setState({ merge_title: newInput })
-    // const currentInputFormState = this.inputFormState.current;
-    // return(!currentInputFormState.state.title)
+    this.setState({ mergeTitle: newInput })
   }
 
   updateFormInput(newInput) {
@@ -66,14 +54,6 @@ class TitlePage extends Component {
 
   render() {
 
-    const testData = {
-      title: "Hello!",
-      timestampColumn: {
-        shouldPrefixNameWithMergeTemplateTitle: true
-      }
-    }
-
-    // console.log('Hello!', this.props); //what we could do is get the id from the path... or do something else?? - get from search in navigation
     return (
       <Grid
         container
@@ -81,24 +61,13 @@ class TitlePage extends Component {
       >
         <MergeTemplateInputForm
           title="What should this merge template be called?"
-          mergeTemplateInfo={testData}
-          textInput="placeholder"
+          mergeTemplateInfo={this.props.currentMergeTemplate}
+          textInput="Title..."
           textInputCallback={this.updateTextInput}
           formInput="Use this title as timestamp column name?"
           formInputCallback={this.updateFormInput}
           tip="This title will help you differentiate this merge from others."
         />
-        {/* <Card style={styles.card}>
-          <Typography variant="h5" gutterBottom>What should this merge template be called?</Typography>
-          <Input name="title_input" placeholder="Title" onChange={this.checkTitleInput}/>
-          <FormControlLabel
-            control={ <Checkbox color="primary" style={{position: "relative", top: 0}}/> }
-            label={ <Typography variant="caption">Use this title as timestamp column name?</Typography> }
-            labelPlacement="end"
-            style={{paddingTop: 10}}
-          />
-          <Tooltip title="This title will help you differentiate this merge from others." style={{paddingTop: 10}}><HelpIcon/></Tooltip>
-        </Card> */}
         <Link to="/">
           <Button
             variant="contained"
@@ -113,7 +82,7 @@ class TitlePage extends Component {
             variant="contained"
             style={styles.next_button}
             onClick={() => console.log("State: ", this.state)} // TODO: call dispatch (matchDispatchToProps) to update mergeTemplateInfo
-            disabled={!this.state.merge_title}>
+            disabled={!this.state.mergeTitle}>
               Next
           </Button>
         </Link>
@@ -126,17 +95,12 @@ const styles = {
   container: {
     paddingTop: 15,
     alignItems: "center",
-    // justifyContent: "center"
   },
   card: {
-    // alignItems: "center",
-    // display: "flex",
     display: 'flex',
     flexDirection: 'column',
     padding: 15,
     justifyContent: "center",
-    // justify: "center"
-    // backgroundColor: "blue"
   },
   cancel_button: {
     position: "absolute",
@@ -147,36 +111,12 @@ const styles = {
     position: "absolute",
     bottom: 15,
     right: 15
-  },
-  item_: {
-
   }
 }
 
-// export default connect(
-//   state => state.mergeTemplates,
-//   dispatch => bindActionCreators(actionCreators, dispatch)
-// )(TitlePage);
-
-
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchMergeTemplatesIfNeeded: () =>
-      dispatch({
-        type: 'FETCH_MERGE_TEMPLATES'
-      })
-  }
-  
-  }
-
-  // function  mapStateToProps(state) {
-  //   return {
-
-  //   }
-  // }
-
-  export default connect(
-    state => state.mergeTemplates,
-    mapDispatchToProps
-  )(TitlePage); //Styles??
+TitlePage.propTypes = {
+  mergeTemplates: PropTypes.array.isRequired,
+  currentMergeTemplate: PropTypes.object.isRequired,
+  loadFromMergeTemplates: PropTypes.func.isRequired
+}
   

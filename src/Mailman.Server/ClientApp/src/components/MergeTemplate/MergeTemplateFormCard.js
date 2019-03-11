@@ -7,7 +7,7 @@ import { Card, Checkbox, FormControlLabel, Input, Tooltip, Typography } from '@m
 export default class MergeTemplateInputForm extends Component {
     constructor(props) {
         super(props);
-        this.state = this.props.mergeTemplateInfo;
+        this.state = this.props.mergeTemplateInfo; // Add selected tab to state?? -> this.state = ...this.state, this.props.selectedTab
 
         this.handleTextInput = this.handleTextInput.bind(this);
         this.handleFormInput = this.handleFormInput.bind(this);
@@ -94,6 +94,8 @@ export default class MergeTemplateInputForm extends Component {
             return null;
         }
     }
+
+    // TODO: Drop-down menu -> get input from props
 
     renderTip() {
         if (this.props.tip) {
