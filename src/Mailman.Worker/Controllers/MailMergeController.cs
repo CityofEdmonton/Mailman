@@ -11,10 +11,19 @@ using System.Threading.Tasks;
 
 namespace Mailman.Worker.Controllers
 {
+    /// <summary>
+    /// Controller for running Mail Merges.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class MailMergeController : ControllerBase
     {
+        /// <summary>
+        /// Controller for running Mail Merges.
+        /// </summary>
+        /// <param name="mergeTemplateRepository"></param>
+        /// <param name="mergeTemplateService"></param>
+        /// <param name="servicesProxy"></param>
         public MailMergeController(
             IMergeTemplateRepository mergeTemplateRepository,
             IMergeTemplateService mergeTemplateService,
@@ -33,6 +42,12 @@ namespace Mailman.Worker.Controllers
         private readonly IMailmanServicesProxy _servicesProxy;
 
         // POST api/values
+        /// <summary>
+        /// Runs a Mail Merge
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme )]
         [HttpPost("run")]
         public async Task<IActionResult> Run([FromBody] RunMailMergeOptions options,
