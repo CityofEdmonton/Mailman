@@ -16,7 +16,8 @@ function mapDispatchToProps(dispatch) {
         loadFromMergeTemplates: (templateID) => {
             dispatch(loadFromMergeTemplates(templateID))
         }
+        // Put other functions (updating certain parts of the store) here
     });
 }
 
-export const TitlePageContainer = connect(mapStateToProps, mapDispatchToProps)(TitlePage);
+export const TitlePageContainer = connect(mapStateToProps, undefined)(TitlePage);

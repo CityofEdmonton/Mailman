@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
 
 import { Button, Grid, } from '@material-ui/core';
 
 import MergeTemplateInputForm from './MergeTemplateFormCard';
-import { loadFromMergeTemplates } from '../../actions/createMergeTemplate'
 
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
-
-const queryString = require('query-string');
 
 export default class TitlePage extends Component {
 
@@ -35,13 +31,6 @@ export default class TitlePage extends Component {
       }
     }
     return null;
-  }
-
-  componentDidMount() {
-    const parsed = queryString.parse(this.props.location.search);
-    let templateID = parsed.id; // parse query
-    this.props.loadFromMergeTemplates(this.getMergeTemplateFromID(templateID));
-    console.log("Sheet ID: ", templateID); // Save this id to the current merge templates in store
   }
 
   updateTextInput(newInput) {
@@ -116,7 +105,6 @@ const styles = {
 
 TitlePage.propTypes = {
   mergeTemplates: PropTypes.array.isRequired,
-  currentMergeTemplate: PropTypes.object.isRequired,
-  loadFromMergeTemplates: PropTypes.func.isRequired
+  currentMergeTemplate: PropTypes.object.isRequired
 }
   

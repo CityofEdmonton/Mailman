@@ -16,6 +16,7 @@ import {
   fetchMergeTemplatesIfNeeded
 } from '../actions/readMergeTemplates'
 import { isAbsolute } from "path";
+import { loadFromMergeTemplates } from "../actions/createMergeTemplate";
 
 const queryString = require('query-string');
 
@@ -98,7 +99,7 @@ class Home extends Component {
          
         </div>
         <div>
-        <Link to="/mergeTemplate/title">
+        <Link to="/mergeTemplate/title" onClick={() => this.props.dispatch(loadFromMergeTemplates())}>
           <Tooltip title="New Merge Template" placement="top">
             <AddIcon className={classes.largeButton} style={{position: "absolute", bottom: 10, right: 10}} color="error" />
           </Tooltip>
