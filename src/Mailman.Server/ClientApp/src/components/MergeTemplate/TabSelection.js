@@ -33,7 +33,7 @@ export default class TabSelection extends Component {
                     mergeTemplateInfo={testData}
                     tip="This tab must contain all the information you may want to send in an email."
                 />
-                <Link to={`/mergeTemplate/title/${this.props.id}`}> {/* This props id should be in store -> under current mergeTemplate -> can query from store -> using TabSelectionContainer*/}
+                <Link to={`/mergeTemplate/title`}> {/* This props id should be in store -> under current mergeTemplate -> can query from store -> using TabSelectionContainer*/}
                     <Button
                         variant="contained"
                         style={styles.cancel_button}
@@ -74,6 +74,8 @@ const styles = {
     },
 }
 
-TabSelection.propTypes = {
-    id: PropTypes.string.isRequired
-}
+// TabSelection.propTypes = {
+//     currentMergeTemplate: PropTypes.shape({
+
+//     }).isRequired
+// }

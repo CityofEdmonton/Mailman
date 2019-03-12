@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Button, Grid, } from '@material-ui/core';
 
 import MergeTemplateInputForm from './MergeTemplateFormCard';
+import { mergeTemplateArrayShape, mergeTemplateInfoShape } from './MergeTemplatePropTypes';
 
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
@@ -61,6 +62,7 @@ export default class TitlePage extends Component {
           <Button
             variant="contained"
             style={styles.cancel_button}
+            onClick={() => this.props.updateTitlePage(this.state.mergeTitle, this.state.formInput)}
           >
             Cancel
           </Button>
@@ -70,7 +72,7 @@ export default class TitlePage extends Component {
             color="primary"
             variant="contained"
             style={styles.next_button}
-            onClick={() => console.log("State: ", this.state)} // TODO: call dispatch (matchDispatchToProps) to update mergeTemplateInfo
+            onClick={() => this.props.updateTitlePage(this.state.mergeTitle, this.state.formInput)}
             disabled={!this.state.mergeTitle}>
               Next
           </Button>
@@ -104,7 +106,8 @@ const styles = {
 }
 
 TitlePage.propTypes = {
-  mergeTemplates: PropTypes.array.isRequired,
-  currentMergeTemplate: PropTypes.object.isRequired
+  mergeTemplates: mergeTemplateArrayShape.isRequired,
+  currentMergeTemplate: mergeTemplateInfoShape.isRequired,
+  updateTitlePage: PropTypes.func.isRequired
 }
   

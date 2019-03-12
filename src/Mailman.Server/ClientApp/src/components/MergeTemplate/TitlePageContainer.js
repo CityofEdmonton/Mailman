@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 
 import TitlePage from './TitlePage';
-import { loadFromMergeTemplates } from '../../actions/createMergeTemplate'
+import { updateTitlePage } from '../../actions/createMergeTemplate'
 
 function mapStateToProps(state) {
     const { mergeTemplates, currentMergeTemplate } = state;
@@ -13,11 +13,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return({
-        loadFromMergeTemplates: (templateID) => {
-            dispatch(loadFromMergeTemplates(templateID))
+        updateTitlePage: (title, timestamp) => {
+            dispatch(updateTitlePage(title, timestamp));
         }
-        // Put other functions (updating certain parts of the store) here
     });
 }
 
-export const TitlePageContainer = connect(mapStateToProps, undefined)(TitlePage);
+export const TitlePageContainer = connect(mapStateToProps, mapDispatchToProps)(TitlePage);

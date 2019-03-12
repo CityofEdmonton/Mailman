@@ -4,19 +4,26 @@ import HelpIcon from "@material-ui/icons/Help";
 
 import { Card, Checkbox, FormControlLabel, Input, Tooltip, Typography } from '@material-ui/core';
 
+import { mergeTemplateInfoShape } from './MergeTemplatePropTypes';
+
 export default class MergeTemplateInputForm extends Component {
     constructor(props) {
         super(props);
-        this.state = this.props.mergeTemplateInfo; // Add selected tab to state?? -> this.state = ...this.state, this.props.selectedTab
+        this.state = {
+            mergeTemplateInfo: this.props.mergeTemplateInfo,
+            test: "THIS IS A TEST"
+        } // Add selected tab to state?? -> this.state = ...this.state, this.props.selectedTab
 
         this.handleTextInput = this.handleTextInput.bind(this);
         this.handleFormInput = this.handleFormInput.bind(this);
 
+        console.log("MergeTemplateInputForm State: ", this.state);
+
         if (this.props.textInputCallback) {
-            this.props.textInputCallback(this.state.title); // Initialize value in parent
+            this.props.textInputCallback(this.state.mergeTemplateInfo.title); // Initialize value in parent
         }
         if (this.props.formControlCallback) {
-            this.props.formControlCallback(this.state.timestampColumn.shouldPrefixNameWithMergeTemplateTitle);
+            this.props.formControlCallback(this.state.mergeTemplateInfo.timestampColumn.shouldPrefixNameWithMergeTemplateTitle);
         }
     }
 
@@ -32,7 +39,12 @@ export default class MergeTemplateInputForm extends Component {
     }
 
     handleTextInput(event) {
-        this.setState({ title: event.target.value });
+        this.setState({
+            mergeTemplateInfo: {
+                ...this.state.mergeTemplateInfo,
+                title: event.target.value
+            }
+        });
         if (this.props.textInputCallback) {
             this.props.textInputCallback(event.target.value);
         }
@@ -45,7 +57,7 @@ export default class MergeTemplateInputForm extends Component {
                     name="text_input"
                     placeholder={this.props.textInput}
                     onChange={this.handleTextInput}
-                    value={this.state.title}
+                    value={this.state.mergeTemplateInfo.title}
                     style={styles.textInput}
                 />
             );
@@ -55,13 +67,18 @@ export default class MergeTemplateInputForm extends Component {
     }
 
     handleFormInput() {
-        var currentValue = this.state.timestampColumn.shouldPrefixNameWithMergeTemplateTitle;
+        var currentValue = this.state.mergeTemplateInfo.timestampColumn.shouldPrefixNameWithMergeTemplateTitle;
+        console.log("BEFORE STATE: ", this.state);
         this.setState({
-            timestampColumn: {
-                ...this.state.timestampColumn,
-                shouldPrefixNameWithMergeTemplateTitle: !currentValue
+            mergeTemplateInfo: {
+                ...this.state.mergeTemplateInfo,
+                timestampColumn: {
+                    ...this.state.mergeTemplateInfo.timestampColumn,
+                    shouldPrefixNameWithMergeTemplateTitle: !currentValue
+                }
             }
         });
+        console.log("AFTER STATE: ", this.state);
         if (this.props.formInputCallback) {
             this.props.formInputCallback(!currentValue);
         }
@@ -75,7 +92,7 @@ export default class MergeTemplateInputForm extends Component {
                         <Checkbox
                             color="primary"
                             style={styles.formInputCheckbox}
-                            checked={this.state.timestampColumn.shouldPrefixNameWithMergeTemplateTitle}
+                            checked={this.state.mergeTemplateInfo.timestampColumn.shouldPrefixNameWithMergeTemplateTitle}
                             onChange={this.handleFormInput}
                         />
                     }
@@ -136,35 +153,24 @@ const styles = {
 
 MergeTemplateInputForm.propTypes = {
     title: PropTypes.string.isRequired,
-    mergeTemplateInfo: PropTypes.shape({
-        emailTemplate: PropTypes.shape({
-            to: PropTypes.string,
-            cc: PropTypes.string,
-            bcc: PropTypes.string,
-            subject: PropTypes.string,
-            body: PropTypes.string
-        }),
-        id: PropTypes.string,
-        type: PropTypes.string,
-        createdBy: PropTypes.string,
-        createdDateUtc: PropTypes.string,
-        version: PropTypes.any,
-        title: PropTypes.string.isRequired,
-        sheetName: PropTypes.string,
-        headerRowNumber: PropTypes.number,
-        timestampColumn: PropTypes.shape({
-            name: PropTypes.string,
-            shouldPrefixNameWithMergeTemplateTitle: PropTypes.bool.isRequired,
-            title: PropTypes.string
-        }).isRequired,
-        conditional: PropTypes.string,
-        repeater: PropTypes.string
-    }).isRequired, // For gathering info of MergeTemplate -> include title (autofill if props passed in -> TitlePage)
+    mergeTemplateInfo: mergeTemplateInfoShape.isRequired,
     tip: PropTypes.string,
     checkbox: PropTypes.string,
     textInput: PropTypes.string,
-    textInputCallback: PropTypes.func,
+    textInputCallback: function(props, propName, componentName) {
+        if ((props['textInput'] && (props[propName] === undefined || typeof(props[propName]) !== 'function'))) {
+            return new Error(
+                "Please provide a textInputCallback function!"
+            );
+        }
+    },
     formInput: PropTypes.string,
-    formInputCallback: PropTypes.func,
+    formInputCallback: function(props, propName, componentName) {
+        if ((props['formInput'] && (props[propName] === undefined || typeof(props[propName]) !== 'function'))) {
+            return new Error(
+                "Please provide a formInputCallback function!"
+            );
+        }
+    },
     hint: PropTypes.string,
 }

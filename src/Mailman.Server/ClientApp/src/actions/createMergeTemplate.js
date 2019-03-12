@@ -7,6 +7,7 @@ export const UPDATE_SUBJECT = "UPDATE_SUBJECT"
 export const UPDATE_EMAIL_BODY = "UPDATE_EMAIL_BODY";
 export const UPDATE_SEND_TIME = "UPDATE_SEND_TIME";
 export const UPDATE_CONDITIONAL = "UPDATE_CONDITIONAL";
+export const UPDATE_VERSION_NUMBER = "UPDATE_VERSION_NUMBER";
 
 export function loadFromMergeTemplates(mergeTemplate) {
   console.log("action creator called")
@@ -32,5 +33,11 @@ export function tabSelection(tab) {
     payload: {
       tab: tab
     }
+  })
+}
+
+export function updateVersionNumber() {
+  return({
+    type: UPDATE_VERSION_NUMBER
   })
 }
