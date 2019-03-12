@@ -11,12 +11,17 @@ export default class TabSelection extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             selectedTab: this.props.currentMergeTemplate.sheetName
         }
 
+        this.handleRouting = this.handleRouting.bind(this);
         // should pass in "mergeTemplateInfo" from container component
+    }
+
+    handleRouting() {
+        // Look at TitlePage -> check if state was changed
+        console.log("TODO: update Tab Selection")
     }
 
     render() {
@@ -29,13 +34,16 @@ export default class TabSelection extends Component {
                 <MergeTemplateInputForm
                     title="Which tab are we sending from?"
                     mergeTemplateInfo={this.props.currentMergeTemplate}
-                    menuInput={["Hello!"]}
+                    menuInput={true}
+                    menuInputSelected="Hello!" // this is required!
+                    menuInputValues={["Hello!"]}
                     tip="This tab must contain all the information you may want to send in an email."
                 />
-                <Link to={`/mergeTemplate/title`}> {/* This props id should be in store -> under current mergeTemplate -> can query from store -> using TabSelectionContainer*/}
+                <Link to={`/mergeTemplate/title`}>
                     <Button
                         variant="contained"
                         style={styles.cancel_button}
+                        onClick={() => this.handleRouting()}
                     >
                         Back
                     </Button>
@@ -45,7 +53,8 @@ export default class TabSelection extends Component {
                         color="primary"
                         variant="contained"
                         style={styles.next_button}
-                        onClick={() => console.log("State: ", this.state)} // TODO: call dispatch (matchDispatchToProps) to update mergeTemplateInfo
+                        // onClick={() => console.log("State: ", this.state)} // TODO: call dispatch (matchDispatchToProps) to update mergeTemplateInfo
+                        onClick={() => this.handleRouting()}
                     >
                         Next
                     </Button>

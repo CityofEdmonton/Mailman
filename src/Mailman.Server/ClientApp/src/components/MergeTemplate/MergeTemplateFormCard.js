@@ -23,6 +23,7 @@ export default class MergeTemplateInputForm extends Component {
         this.state = {
             textInputValue: this.props.textInputValue,
             formInputValue: this.props.formInputValue,
+            menuInputSelected: this.props.menuInputSelected,
             // mergeTemplateInfo: this.props.mergeTemplateInfo,
             sheetTabs: ["TODO: ADD TABS", 1, 2, 3],
             sheetHeaders: "TODO: ADD HEADERS", // ?? should this be in this component or handled by other component??
@@ -138,7 +139,7 @@ export default class MergeTemplateInputForm extends Component {
             //         )
             //     }) }
             // </React.Fragment>
-            this.state.sheetTabs.map( function(tab) {
+            this.props.menuInputValues.map( function(tab) {
                 return (
                     <MenuItem value={tab} key={tab}>{tab}</MenuItem>
                 )
@@ -154,7 +155,7 @@ export default class MergeTemplateInputForm extends Component {
             return (
                 <Select
                     style={styles.menuInput}
-                    value={this.state.menuInputValue}
+                    value={this.state.menuInputSelected}
                 >
                     {this.createMenuItems()}
                 </Select>
@@ -256,7 +257,9 @@ MergeTemplateInputForm.propTypes = {
             );
         }
     },
-    menuInput: PropTypes.array,
+    menuInput: PropTypes.bool,
+    menuInputSelected: PropTypes.string, // The initial value of the menu
+    menuInputValues: PropTypes.array,
     // menuInputCallback: function(props, propName, componentName) {
     //     if ((props['menuInput'] && (props[propName] === undefined || typeof(props[propName]) !== 'function'))) {
     //         return new Error(

@@ -6,7 +6,6 @@ function mapStateToProps(state, ownProps) {
     const { currentMergeTemplate } = state; // Get this from the store
     return ({
         currentMergeTemplate: currentMergeTemplate // Send the current merge template id being editted/created in to TabSelection
-        // id: "placeholder" //
     });
 }
 
