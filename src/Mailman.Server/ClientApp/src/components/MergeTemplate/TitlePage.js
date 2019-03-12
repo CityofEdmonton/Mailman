@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Button, Grid, } from '@material-ui/core';
 
 import MergeTemplateInputForm from './MergeTemplateFormCard';
-import { mergeTemplateArrayShape, mergeTemplateInfoShape } from './MergeTemplatePropTypes';
+import { mergeTemplateInfoShape } from './MergeTemplatePropTypes';
 
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
@@ -13,25 +13,14 @@ export default class TitlePage extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { // initialize empty merge title
-      mergeTitle: "",
-      formInput: false
+    this.state = { // initialize empty merge title inputs
+      mergeTitle: this.props.currentMergeTemplate.title,
+      formInput: this.props.currentMergeTemplate.timestampColumn.shouldPrefixNameWithMergeTemplateTitle
     };
 
     this.updateTextInput = this.updateTextInput.bind(this);
     this.updateFormInput = this.updateFormInput.bind(this);
-  }
-
-  getMergeTemplateFromID(templateID) { // returns the index of the mergeTemplate (in props) or null if not exist
-    if (!this.props.mergeTemplates) {
-      return null;
-    }
-    for (let i = 0; i < this.props.mergeTemplates.length; i++) {
-      if (this.props.mergeTemplates[i]["id"] === templateID) {
-        return this.props.mergeTemplates[i];
-      }
-    }
-    return null;
+    this.handleRouting = this.handleRouting.bind(this);
   }
 
   updateTextInput(newInput) {
@@ -40,6 +29,17 @@ export default class TitlePage extends Component {
 
   updateFormInput(newInput) {
     this.setState({ formInput: newInput })
+  }
+
+  handleRouting() {
+    const oldTitle = this.props.currentMergeTemplate.title;
+    const oldTimestamp = this.props.currentMergeTemplate.timestampColumn.shouldPrefixNameWithMergeTemplateTitle;
+    if (oldTitle !== this.state.mergeTitle || oldTimestamp !== this.state.formInput) {
+      console.log("Title page was changed. Should update!")
+      this.props.updateTitlePage(this.state.mergeTitle, this.state.formInput)
+    } else {
+      console.log("Title page unchanged.")
+    }
   }
 
   render() {
@@ -52,9 +52,11 @@ export default class TitlePage extends Component {
         <MergeTemplateInputForm
           title="What should this merge template be called?"
           mergeTemplateInfo={this.props.currentMergeTemplate}
-          textInput="Title..."
+          textInputTitle="Title..."
+          textInputValue={this.state.mergeTitle}
           textInputCallback={this.updateTextInput}
-          formInput="Use this title as timestamp column name?"
+          formInputTitle="Use this title as timestamp column name?"
+          formInputValue={this.state.formInput}
           formInputCallback={this.updateFormInput}
           tip="This title will help you differentiate this merge from others."
         />
@@ -62,7 +64,6 @@ export default class TitlePage extends Component {
           <Button
             variant="contained"
             style={styles.cancel_button}
-            onClick={() => this.props.updateTitlePage(this.state.mergeTitle, this.state.formInput)}
           >
             Cancel
           </Button>
@@ -72,7 +73,7 @@ export default class TitlePage extends Component {
             color="primary"
             variant="contained"
             style={styles.next_button}
-            onClick={() => this.props.updateTitlePage(this.state.mergeTitle, this.state.formInput)}
+            onClick={() => this.handleRouting()}
             disabled={!this.state.mergeTitle}>
               Next
           </Button>
@@ -106,7 +107,6 @@ const styles = {
 }
 
 TitlePage.propTypes = {
-  mergeTemplates: mergeTemplateArrayShape.isRequired,
   currentMergeTemplate: mergeTemplateInfoShape.isRequired,
   updateTitlePage: PropTypes.func.isRequired
 }

@@ -5,23 +5,21 @@ import PropTypes from 'prop-types';
 import { Button, Grid } from '@material-ui/core';
 
 import MergeTemplateInputForm from './MergeTemplateFormCard';
+import { mergeTemplateInfoShape } from './MergeTemplatePropTypes';
 
 export default class TabSelection extends Component {
 
     constructor(props) {
         super(props);
 
+        this.state = {
+            selectedTab: this.props.currentMergeTemplate.sheetName
+        }
+
         // should pass in "mergeTemplateInfo" from container component
     }
 
     render() {
-
-        const testData = {
-            title: "Hello!",
-            timestampColumn: {
-              shouldPrefixNameWithMergeTemplateTitle: true
-            }
-          }
 
         return (
             <Grid
@@ -30,7 +28,8 @@ export default class TabSelection extends Component {
             >
                 <MergeTemplateInputForm
                     title="Which tab are we sending from?"
-                    mergeTemplateInfo={testData}
+                    mergeTemplateInfo={this.props.currentMergeTemplate}
+                    menuInput={["Hello!"]}
                     tip="This tab must contain all the information you may want to send in an email."
                 />
                 <Link to={`/mergeTemplate/title`}> {/* This props id should be in store -> under current mergeTemplate -> can query from store -> using TabSelectionContainer*/}
@@ -74,8 +73,6 @@ const styles = {
     },
 }
 
-// TabSelection.propTypes = {
-//     currentMergeTemplate: PropTypes.shape({
-
-//     }).isRequired
-// }
+TabSelection.propTypes = {
+    currentMergeTemplate: mergeTemplateInfoShape.isRequired
+}

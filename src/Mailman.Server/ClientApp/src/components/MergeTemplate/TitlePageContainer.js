@@ -4,9 +4,8 @@ import TitlePage from './TitlePage';
 import { updateTitlePage } from '../../actions/createMergeTemplate'
 
 function mapStateToProps(state) {
-    const { mergeTemplates, currentMergeTemplate } = state;
+    const { currentMergeTemplate } = state;
     return ({
-        mergeTemplates: mergeTemplates.mergeTemplates,
         currentMergeTemplate: currentMergeTemplate
     });
 }

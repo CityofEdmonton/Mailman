@@ -2,7 +2,18 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import HelpIcon from "@material-ui/icons/Help";
 
-import { Card, Checkbox, FormControlLabel, Input, Tooltip, Typography } from '@material-ui/core';
+import {
+    Button,
+    Card,
+    Checkbox,
+    FormControlLabel,
+    Input,
+    Menu,
+    MenuItem,
+    Select,
+    Tooltip,
+    Typography
+} from '@material-ui/core';
 
 import { mergeTemplateInfoShape } from './MergeTemplatePropTypes';
 
@@ -10,8 +21,13 @@ export default class MergeTemplateInputForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            mergeTemplateInfo: this.props.mergeTemplateInfo,
-            test: "THIS IS A TEST"
+            textInputValue: this.props.textInputValue,
+            formInputValue: this.props.formInputValue,
+            // mergeTemplateInfo: this.props.mergeTemplateInfo,
+            sheetTabs: ["TODO: ADD TABS", 1, 2, 3],
+            sheetHeaders: "TODO: ADD HEADERS", // ?? should this be in this component or handled by other component??
+            // selectedTab: "Hello!"
+            // anchorElement: null
         } // Add selected tab to state?? -> this.state = ...this.state, this.props.selectedTab
 
         this.handleTextInput = this.handleTextInput.bind(this);
@@ -19,12 +35,12 @@ export default class MergeTemplateInputForm extends Component {
 
         console.log("MergeTemplateInputForm State: ", this.state);
 
-        if (this.props.textInputCallback) {
-            this.props.textInputCallback(this.state.mergeTemplateInfo.title); // Initialize value in parent
-        }
-        if (this.props.formControlCallback) {
-            this.props.formControlCallback(this.state.mergeTemplateInfo.timestampColumn.shouldPrefixNameWithMergeTemplateTitle);
-        }
+        // if (this.props.textInputCallback) {
+        //     this.props.textInputCallback(this.state.mergeTemplateInfo.title); // Initialize value in parent - YOU SHOULD NOT HAVE TO DO THIS, INITIALIZE FROM PARENT!!!
+        // }
+        // if (this.props.formControlCallback) {
+        //     this.props.formControlCallback(this.state.mergeTemplateInfo.timestampColumn.shouldPrefixNameWithMergeTemplateTitle);
+        // }
     }
 
     render() {
@@ -32,6 +48,7 @@ export default class MergeTemplateInputForm extends Component {
             <Card style={styles.container}>
                 <Typography variant="h5" style={styles.title}>{this.props.title}</Typography>
                 {this.renderTextInput()}
+                {this.renderMenuInput()}
                 {this.renderFormInput()}
                 {this.renderTip()}
             </Card>
@@ -40,10 +57,7 @@ export default class MergeTemplateInputForm extends Component {
 
     handleTextInput(event) {
         this.setState({
-            mergeTemplateInfo: {
-                ...this.state.mergeTemplateInfo,
-                title: event.target.value
-            }
+            textInputValue: event.target.value
         });
         if (this.props.textInputCallback) {
             this.props.textInputCallback(event.target.value);
@@ -51,13 +65,13 @@ export default class MergeTemplateInputForm extends Component {
     }
 
     renderTextInput() {
-        if (this.props.textInput) {
+        if (this.props.textInputTitle) {
             return (
                 <Input
                     name="text_input"
-                    placeholder={this.props.textInput}
+                    placeholder={this.props.textInputTitle}
                     onChange={this.handleTextInput}
-                    value={this.state.mergeTemplateInfo.title}
+                    value={this.state.textInputValue}
                     style={styles.textInput}
                 />
             );
@@ -67,32 +81,25 @@ export default class MergeTemplateInputForm extends Component {
     }
 
     handleFormInput() {
-        var currentValue = this.state.mergeTemplateInfo.timestampColumn.shouldPrefixNameWithMergeTemplateTitle;
-        console.log("BEFORE STATE: ", this.state);
+        var currentValue = this.state.formInputValue;
         this.setState({
-            mergeTemplateInfo: {
-                ...this.state.mergeTemplateInfo,
-                timestampColumn: {
-                    ...this.state.mergeTemplateInfo.timestampColumn,
-                    shouldPrefixNameWithMergeTemplateTitle: !currentValue
-                }
-            }
+            formInputValue: !currentValue
         });
-        console.log("AFTER STATE: ", this.state);
         if (this.props.formInputCallback) {
             this.props.formInputCallback(!currentValue);
         }
     }
 
     renderFormInput() {
-        if (this.props.formInput) {
+        if (this.props.formInputTitle) {
             return (
                 <FormControlLabel
+                    name="form_input"
                     control={
                         <Checkbox
                             color="primary"
                             style={styles.formInputCheckbox}
-                            checked={this.state.mergeTemplateInfo.timestampColumn.shouldPrefixNameWithMergeTemplateTitle}
+                            checked={this.state.formInputValue}
                             onChange={this.handleFormInput}
                         />
                     }
@@ -100,7 +107,7 @@ export default class MergeTemplateInputForm extends Component {
                         <Typography
                             variant="caption"
                         >
-                            {this.props.formInput}
+                            {this.props.formInputTitle}
                         </Typography>
                     }
                     labelPlacement="end"
@@ -113,6 +120,67 @@ export default class MergeTemplateInputForm extends Component {
     }
 
     // TODO: Drop-down menu -> get input from props
+
+    handleClick = (event) => {
+        this.setState({ anchorElement: event.currentTarget });
+    }
+
+    handleClose = () => {
+        this.setState({ anchorElement: null });
+    }
+
+    createMenuItems() {
+        return (
+            // <React.Fragment>
+            //     { this.state.sheetTabs.map(function(tab) {
+            //         return (
+            //             <MenuItem value={tab}>{tab}</MenuItem>
+            //         )
+            //     }) }
+            // </React.Fragment>
+            this.state.sheetTabs.map( function(tab) {
+                return (
+                    <MenuItem value={tab} key={tab}>{tab}</MenuItem>
+                )
+            })
+        );
+    }
+
+    renderMenuInput() {
+        if (this.props.menuInput) {
+
+            // const { anchorElement } = this.state;
+            
+            return (
+                <Select
+                    style={styles.menuInput}
+                    value={this.state.menuInputValue}
+                >
+                    {this.createMenuItems()}
+                </Select>
+                // <React.Fragment>
+                //     <Button
+                //         onClick={this.handleClick}
+                //     >
+                //         Open Menu
+                //     </Button>
+                //     <Menu
+                //         anchorEl={anchorElement}
+                //         open={Boolean(anchorElement)}
+                //         onClick={() => console.log("Menu was clicked. TODO: get the available tabs?? - use a callback function??")}
+                //         onClose={this.handleClose}
+                //         style={styles.menuInput}
+                //     >
+                //         <Typography onClick={this.handleClose} style={styles.menuItem}>Menu Item 1</Typography>
+                //         <Typography onClick={this.handleClose} style={styles.menuItem}>Menu Item 2</Typography>
+                //         <Typography onClick={this.handleClose} style={styles.menuItem}>Menu Item 3</Typography>
+                //     </Menu>
+                // </React.Fragment>
+            );
+        } else {
+            return null;
+        }
+    }
 
     renderTip() {
         if (this.props.tip) {
@@ -146,31 +214,56 @@ const styles = {
         position: "relative",
         top: 0
     },
-    tip: {
+    menuInput: {
         marginTop: 15
+    },
+    tip: {
+        marginTop: 15,
     }
 }
 
 MergeTemplateInputForm.propTypes = {
     title: PropTypes.string.isRequired,
-    mergeTemplateInfo: mergeTemplateInfoShape.isRequired,
     tip: PropTypes.string,
     checkbox: PropTypes.string,
-    textInput: PropTypes.string,
+    textInputTitle: PropTypes.string,
+    textInputValue: function(props, propName, componentName) {
+        if (props['textInputTitle'] && (props[propName] === undefined || typeof(props[propName]) !== 'string')) {
+            return new Error(
+                "Please provide a textInputValue string!"
+            );
+        }
+    },
     textInputCallback: function(props, propName, componentName) {
-        if ((props['textInput'] && (props[propName] === undefined || typeof(props[propName]) !== 'function'))) {
+        if (props['textInputTitle'] && (props[propName] === undefined || typeof(props[propName]) !== 'function')) {
             return new Error(
                 "Please provide a textInputCallback function!"
             );
         }
     },
-    formInput: PropTypes.string,
+    formInputTitle: PropTypes.string,
+    formInputValue: function(props, propName, componentName) {
+        if (props['formInputTitle'] && (props[propName] === undefined || typeof(props[propName]) !== 'boolean')) {
+            return new Error(
+                "Please provide a formInputValue boolean!"
+            );
+        }
+    },
     formInputCallback: function(props, propName, componentName) {
-        if ((props['formInput'] && (props[propName] === undefined || typeof(props[propName]) !== 'function'))) {
+        if (props['formInputTitle'] && (props[propName] === undefined || typeof(props[propName]) !== 'function')) {
             return new Error(
                 "Please provide a formInputCallback function!"
             );
         }
     },
-    hint: PropTypes.string,
+    menuInput: PropTypes.array,
+    // menuInputCallback: function(props, propName, componentName) {
+    //     if ((props['menuInput'] && (props[propName] === undefined || typeof(props[propName]) !== 'function'))) {
+    //         return new Error(
+    //             "Please provide a menuInputCallback function!"
+    //         );
+    //     }
+    // },
+    sheetTabs: PropTypes.array,
+    sheetHeaders: PropTypes.array
 }

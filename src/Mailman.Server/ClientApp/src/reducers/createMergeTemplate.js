@@ -35,6 +35,7 @@ const initialState = {
     "repeater": ""
 };
 
+// TODO: generate a unique id -> inital state
 // TODO: split reducer into parts (e.g. one for emailTemplate, one for timestampColumn... etc...)
 
 export function currentMergeTemplateReducer(state = initialState, action) {
