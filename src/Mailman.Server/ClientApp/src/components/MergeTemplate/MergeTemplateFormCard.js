@@ -3,14 +3,12 @@ import PropTypes from 'prop-types';
 import HelpIcon from "@material-ui/icons/Help";
 
 import {
-    Button,
     Card,
     Checkbox,
     FormControl,
     FormControlLabel,
     Input,
     InputLabel,
-    Menu,
     MenuItem,
     Select,
     Tooltip,
@@ -43,6 +41,10 @@ export default class MergeTemplateInputForm extends Component {
         );
     }
 
+    // TODO: Organize the different inputs into separate components/files
+
+    // -------- Text Input -------- //
+
     handleTextInput(event) {
         this.setState({
             textInputValue: event.target.value
@@ -67,6 +69,8 @@ export default class MergeTemplateInputForm extends Component {
             return null;
         }
     }
+
+    // -------- Form Input -------- //
 
     handleFormInput() {
         var currentValue = this.state.formInputValue;
@@ -107,6 +111,8 @@ export default class MergeTemplateInputForm extends Component {
         }
     }
 
+    // -------- Menu Input -------- //
+
     handleMenuInput(event) {
         var currentSelection = event.target.value;
         this.setState({
@@ -145,6 +151,8 @@ export default class MergeTemplateInputForm extends Component {
             return null;
         }
     }
+
+    // -------- Tip -------- //
 
     renderTip() {
         if (this.props.tip) {
