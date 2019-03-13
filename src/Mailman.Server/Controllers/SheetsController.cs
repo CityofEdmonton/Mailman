@@ -41,7 +41,7 @@ namespace Mailman.Server.Controllers
         /// <returns>A list of strings with the names of the tabs</returns>
         /// <response code="200">Returns the tab names of the Sheet</response>
         /// <response code="404">If the Google Sheet cannot be found</response>
-        [HttpGet("[action]")]
+        [HttpGet("SheetNames/{spreadsheetId}")]
         public Task<IEnumerable<string>> SheetNames(string spreadsheetId, bool includeHidden = false)
         {
             return _sheetsService.GetSheetNamesAsync(spreadsheetId, includeHidden);

@@ -24,6 +24,7 @@ using System.Reflection;
 using Mailman.Services.Data;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Security.Claims;
 
 namespace Mailman.Services
 {
@@ -281,6 +282,15 @@ namespace Mailman.Services
                 options.ClientSecret = googleClientSecret;
                 options.Scope.Add(SheetsService.Scope.Spreadsheets);
                 options.Scope.Add(GmailService.Scope.GmailSend);
+                options.UserInformationEndpoint = "https://www.googleapis.com/oauth2/v2/userinfo";
+                options.ClaimActions.Clear();
+                options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
+                options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
+                options.ClaimActions.MapJsonKey(ClaimTypes.GivenName, "given_name");
+                options.ClaimActions.MapJsonKey(ClaimTypes.Surname, "family_name");
+                options.ClaimActions.MapJsonKey("urn:google:profile", "url");
+                options.ClaimActions.MapJsonKey("displayName", "displayName");
+                options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");                
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.CallbackPath = "/login/signin-google";
                 options.SaveTokens = true;
