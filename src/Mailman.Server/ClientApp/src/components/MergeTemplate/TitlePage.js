@@ -35,10 +35,10 @@ export default class TitlePage extends Component {
     const oldTitle = this.props.currentMergeTemplate.title;
     const oldTimestamp = this.props.currentMergeTemplate.timestampColumn.shouldPrefixNameWithMergeTemplateTitle;
     if (oldTitle !== this.state.mergeTitle || oldTimestamp !== this.state.formInput) {
-      console.log("Title page was changed. Should update!")
-      this.props.updateTitlePage(this.state.mergeTitle, this.state.formInput)
+      console.log("Title page was changed. Should update!");
+      this.props.updateTitlePage(this.state.mergeTitle, this.state.formInput);
     } else {
-      console.log("Title page unchanged.")
+      console.log("Title page unchanged.");
     }
   }
 

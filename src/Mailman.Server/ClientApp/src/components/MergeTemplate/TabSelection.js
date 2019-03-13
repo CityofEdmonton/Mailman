@@ -15,16 +15,27 @@ export default class TabSelection extends Component {
             selectedTab: this.props.currentMergeTemplate.sheetName
         }
 
+        this.updateMenuInput = this.updateMenuInput.bind(this);
         this.handleRouting = this.handleRouting.bind(this);
-        // should pass in "mergeTemplateInfo" from container component
+    }
+
+    updateMenuInput(newInput) {
+        this.setState({ selectedTab: newInput });
     }
 
     handleRouting() {
-        // Look at TitlePage -> check if state was changed
-        console.log("TODO: update Tab Selection")
+        const oldSelection = this.props.currentMergeTemplate.sheetName;
+        if (oldSelection !== this.state.selectedTab) {
+            console.log("Different tab was selected");
+            this.props.updateTabSelection(this.state.selectedTab);
+        } else {
+            console.log("Tab selection unchanged.");
+        }
     }
 
     render() {
+
+        const testData = ["Item 1", "Item 2", "Item 3"];
 
         return (
             <Grid
@@ -34,9 +45,10 @@ export default class TabSelection extends Component {
                 <MergeTemplateInputForm
                     title="Which tab are we sending from?"
                     mergeTemplateInfo={this.props.currentMergeTemplate}
-                    menuInput={true}
-                    menuInputSelected="Hello!" // this is required!
-                    menuInputValues={["Hello!"]}
+                    menuInputTitle="Tab..."
+                    menuInputSelected={this.state.selectedTab} // this is required!
+                    menuInputValues={testData}
+                    menuInputCallback={this.updateMenuInput}
                     tip="This tab must contain all the information you may want to send in an email."
                 />
                 <Link to={`/mergeTemplate/title`}>
@@ -53,7 +65,6 @@ export default class TabSelection extends Component {
                         color="primary"
                         variant="contained"
                         style={styles.next_button}
-                        // onClick={() => console.log("State: ", this.state)} // TODO: call dispatch (matchDispatchToProps) to update mergeTemplateInfo
                         onClick={() => this.handleRouting()}
                     >
                         Next
@@ -83,5 +94,6 @@ const styles = {
 }
 
 TabSelection.propTypes = {
-    currentMergeTemplate: mergeTemplateInfoShape.isRequired
+    currentMergeTemplate: mergeTemplateInfoShape.isRequired,
+    updateTabSelection: PropTypes.func.isRequired
 }

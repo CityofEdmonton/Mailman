@@ -10,7 +10,6 @@ export const UPDATE_CONDITIONAL = "UPDATE_CONDITIONAL";
 export const UPDATE_VERSION_NUMBER = "UPDATE_VERSION_NUMBER";
 
 export function loadFromMergeTemplates(mergeTemplate) {
-  console.log("action creator called")
   return ({
     type: LOAD_FROM_MERGE_TEMPLATES,
     mergeTemplate
@@ -27,7 +26,7 @@ export function updateTitlePage(title, timestamp) {
   });
 }
 
-export function tabSelection(tab) {
+export function updateTabSelection(tab) {
   return ({
     type: UPDATE_TAB_SELECTION,
     payload: {
