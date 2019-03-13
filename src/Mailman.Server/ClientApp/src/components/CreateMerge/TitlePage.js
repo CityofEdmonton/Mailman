@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 
 import { Button, Grid, } from '@material-ui/core';
 
-import MergeTemplateInputForm from './MergeTemplate/MergeTemplateFormCard';
-import { mergeTemplateInfoShape } from './MergeTemplate/MergeTemplatePropTypes';
+import MergeTemplateInputForm from '../MergeTemplate/MergeTemplateFormCard';
+import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes';
 
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
@@ -56,8 +56,8 @@ export default class TitlePage extends Component {
           textInputValue={this.state.mergeTitle}
           textInputCallback={this.updateTextInput}
 
-          // textInputConstraintRegex="^[0-9]+$"
-          // textInputConstraintCallback
+          // textInputConstraintRegex="^[1-9][0-9]*$"
+          // textInputConstraintCallback={(stuff) => console.log(stuff)}
           // textInputConstraintMessage="Must be a number greater than 0"
 
           formInputTitle="Use this title as timestamp column name?"
@@ -92,12 +92,6 @@ const styles = {
   container: {
     paddingTop: 15,
     alignItems: "center",
-  },
-  card: {
-    display: 'flex',
-    flexDirection: 'column',
-    padding: 15,
-    justifyContent: "center",
   },
   cancel_button: {
     position: "absolute",

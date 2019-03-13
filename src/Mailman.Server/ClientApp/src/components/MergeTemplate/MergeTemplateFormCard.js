@@ -236,7 +236,7 @@ MergeTemplateInputForm.propTypes = {
         }
     },
     textInputConstraintRegex: function (props, propName, componentName) {
-        if (!props['textInputTitle']) {
+        if (props[propName] !== undefined && props['textInputTitle'] === undefined) {
             return new Error(
                 "Please provide an input to check!"
             );
