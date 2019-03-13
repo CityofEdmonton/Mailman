@@ -7,6 +7,7 @@ import {
     LOAD_FROM_MERGE_TEMPLATES,
     UPDATE_TITLE_PAGE,
     UPDATE_TAB_SELECTION,
+    UPDATE_HEADER_TITLES,
     UPDATE_VERSION_NUMBER
 } from '../actions/createMergeTemplate';
   
@@ -60,6 +61,11 @@ export function currentMergeTemplateReducer(state = initialState, action) {
                 ...state,
                 sheetName: action.payload.tab
             });
+        case UPDATE_HEADER_TITLES:
+            return ({
+                ...state,
+                headerRowNumber: parseInt(action.payload.header)
+            })
         case UPDATE_VERSION_NUMBER:
             return ({
                 ...state,

@@ -51,15 +51,9 @@ export default class TitlePage extends Component {
       >
         <MergeTemplateInputForm
           title="What should this merge template be called?"
-          mergeTemplateInfo={this.props.currentMergeTemplate}
           textInputTitle="Title..."
           textInputValue={this.state.mergeTitle}
           textInputCallback={this.updateTextInput}
-
-          // textInputConstraintRegex="^[1-9][0-9]*$"
-          // textInputConstraintCallback={(stuff) => console.log(stuff)}
-          // textInputConstraintMessage="Must be a number greater than 0"
-
           formInputTitle="Use this title as timestamp column name?"
           formInputValue={this.state.formInput}
           formInputCallback={this.updateFormInput}

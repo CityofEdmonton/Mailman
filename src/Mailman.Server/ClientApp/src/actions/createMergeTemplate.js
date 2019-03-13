@@ -35,6 +35,15 @@ export function updateTabSelection(tab) {
   })
 }
 
+export function updateHeaderSelection(header) {
+  return({
+    type: UPDATE_HEADER_TITLES,
+    payload: {
+      header: header
+    }
+  })
+}
+
 export function updateVersionNumber() {
   return({
     type: UPDATE_VERSION_NUMBER

@@ -62,7 +62,6 @@ export default class TabSelection extends Component {
             >
                 <MergeTemplateInputForm
                     title="Which tab are we sending from?"
-                    mergeTemplateInfo={this.props.currentMergeTemplate}
                     menuInputTitle="Tab..."
                     menuInputSelected={this.state.selectedTab}
                     menuInputValues={this.state.tabsList}
@@ -78,7 +77,7 @@ export default class TabSelection extends Component {
                         Back
                     </Button>
                 </Link>
-                <Link to="/mergeTemplate/tabSelection">
+                <Link to="/mergeTemplate/headerSelection">
                     <Button
                         color="primary"
                         variant="contained"
