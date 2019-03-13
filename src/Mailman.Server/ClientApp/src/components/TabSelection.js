@@ -84,6 +84,7 @@ export default class TabSelection extends Component {
                         variant="contained"
                         style={styles.next_button}
                         onClick={() => this.handleRouting()}
+                        disabled={!this.state.selectedTab}
                     >
                         Next
                     </Button>

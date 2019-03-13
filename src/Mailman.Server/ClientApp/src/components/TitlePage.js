@@ -55,6 +55,11 @@ export default class TitlePage extends Component {
           textInputTitle="Title..."
           textInputValue={this.state.mergeTitle}
           textInputCallback={this.updateTextInput}
+
+          // textInputConstraintRegex="^[0-9]+$"
+          // textInputConstraintCallback
+          // textInputConstraintMessage="Must be a number greater than 0"
+
           formInputTitle="Use this title as timestamp column name?"
           formInputValue={this.state.formInput}
           formInputCallback={this.updateFormInput}

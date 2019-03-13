@@ -20,6 +20,7 @@ export default class MergeTemplateInputForm extends Component {
         super(props);
         this.state = {
             textInputValue: this.props.textInputValue,
+            textInputConstraintPass: true, // Default to always passes
             formInputValue: this.props.formInputValue,
             menuInputSelected: this.props.menuInputSelected
         }
@@ -46,24 +47,41 @@ export default class MergeTemplateInputForm extends Component {
     // -------- Text Input -------- //
 
     handleTextInput(event) {
+        const newInput = event.target.value;
         this.setState({
-            textInputValue: event.target.value
+            textInputValue: newInput
         });
         if (this.props.textInputCallback) {
-            this.props.textInputCallback(event.target.value);
+            this.props.textInputCallback(newInput);
+        }
+        if (this.props.textInputConstraintRegex) {
+            this.handleTextInputConstraint(newInput);
+        }
+    }
+
+    handleTextInputConstraint(input) {
+        var constraintPass = input.match(new RegExp(this.props.textInputConstraintRegex));
+        this.setState({ textInputConstraintPass: constraintPass })
+        if (this.props.textInputConstraintCallback) {
+            this.props.textInputConstraintCallback(constraintPass)
         }
     }
 
     renderTextInput() {
         if (this.props.textInputTitle) {
             return (
-                <Input
-                    name="text_input"
-                    placeholder={this.props.textInputTitle}
-                    onChange={this.handleTextInput}
-                    value={this.state.textInputValue}
-                    style={styles.textInput}
-                />
+                <FormControl
+                    error={!this.state.textInputConstraintPass}
+                >
+                    <Input
+                        name="text_input"
+                        placeholder={this.props.textInputTitle}
+                        onChange={this.handleTextInput}
+                        value={this.state.textInputValue}
+                        style={styles.textInput}
+                    />
+                    {!this.state.textInputConstraintPass ? <Typography variant="body2" style={styles.textInputError}>{this.props.textInputConstraintMessage}</Typography> : null}
+                </FormControl>
             );
         } else {
             return null;
@@ -179,6 +197,10 @@ const styles = {
     textInput: {
         marginTop: 15
     },
+    textInputError: {
+        marginTop: 5,
+        color: "red"
+    },
     formInput: {
         marginTop: 15
     },
@@ -213,6 +235,26 @@ MergeTemplateInputForm.propTypes = {
             );
         }
     },
+    textInputConstraintRegex: function (props, propName, componentName) {
+        if (!props['textInputTitle']) {
+            return new Error(
+                "Please provide an input to check!"
+            );
+        }
+        if (props[propName] !== undefined && typeof(props[propName]) !== 'string') {
+            return new Error(
+                "\"textInputConstraintRegex\" has to be a string!"
+            );
+        }
+    },
+    textInputConstraintCallback: function(props, propName, componentName) {
+        if (props['textInputConstraintRegex'] && (props[propName] === undefined || typeof(props[propName]) !== 'function')) {
+            return new Error(
+                "Please provide a textInputConstraintCallback function!"
+            );
+        }
+    },
+    textInputConstraintMessage: PropTypes.string, // Optional message
     formInputTitle: PropTypes.string,
     formInputValue: function(props, propName, componentName) {
         if (props['formInputTitle'] && (props[propName] === undefined || typeof(props[propName]) !== 'boolean')) {
@@ -229,14 +271,14 @@ MergeTemplateInputForm.propTypes = {
         }
     },
     menuInputTitle: PropTypes.string,
-    menuInputSelected: function(props, propName, component) {
+    menuInputSelected: function(props, propName, componentName) {
         if (props['menuInputTitle'] && (props[propName] === undefined || typeof(props[propName]) !== 'string')) {
             return new Error(
                 "Please provide a menuInputSelected string!"
             );
         }
     },
-    menuInputValues: function(props, propName, component) {
+    menuInputValues: function(props, propName, componentName) {
         if (props['menuInputTitle']) {
             if (props[propName] === undefined) {
                 return new Error(
@@ -252,7 +294,7 @@ MergeTemplateInputForm.propTypes = {
             }
         }
     },
-    menuInputCallback: function(props, propName, component) {
+    menuInputCallback: function(props, propName, componentName) {
         if (props['menuInputTitle'] && (props[propName] === undefined || typeof(props[propName]) !== 'function')) {
             return new Error(
                 "Please procide a menuInputCallback function!"
