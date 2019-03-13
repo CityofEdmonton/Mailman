@@ -4,9 +4,10 @@ import TabSelection from './TabSelection';
 import { updateTabSelection } from '../actions/createMergeTemplate'
 
 function mapStateToProps(state, ownProps) {
-    const { currentMergeTemplate } = state; // Get this from the store
+    const { currentMergeTemplate, mergeTemplates } = state; // Get this from the store
     return ({
-        currentMergeTemplate: currentMergeTemplate // Send the current merge template id being editted/created in to TabSelection
+        currentMergeTemplate: currentMergeTemplate, // Send the current merge template id being editted/created in to TabSelection
+        spreadsheetId: mergeTemplates.sheetId
     });
 }
 

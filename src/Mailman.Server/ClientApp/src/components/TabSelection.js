@@ -12,11 +12,32 @@ export default class TabSelection extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedTab: this.props.currentMergeTemplate.sheetName
+            selectedTab: this.props.currentMergeTemplate.sheetName,
+            tabsList: []
         }
 
         this.updateMenuInput = this.updateMenuInput.bind(this);
         this.handleRouting = this.handleRouting.bind(this);
+    }
+
+    componentDidMount() {
+        const config = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+
+        fetch(`https://localhost:5001/api/Sheets/SheetNames/${this.props.spreadsheetId}`, config)
+        .then(response => { // Use arrow functions so do not have to bind to "this" context
+            return response.json();
+        })
+        .then(json => {
+            this.setState({ tabsList: json });
+        })
+        .catch(error => {
+            console.log("Error: Unable to get sheet tab data");
+        })
     }
 
     updateMenuInput(newInput) {
@@ -34,9 +55,6 @@ export default class TabSelection extends Component {
     }
 
     render() {
-
-        const testData = ["Item 1", "Item 2", "Item 3"];
-
         return (
             <Grid
                 container
@@ -47,7 +65,7 @@ export default class TabSelection extends Component {
                     mergeTemplateInfo={this.props.currentMergeTemplate}
                     menuInputTitle="Tab..."
                     menuInputSelected={this.state.selectedTab}
-                    menuInputValues={testData}
+                    menuInputValues={this.state.tabsList}
                     menuInputCallback={this.updateMenuInput}
                     tip="This tab must contain all the information you may want to send in an email."
                 />
@@ -95,5 +113,6 @@ const styles = {
 
 TabSelection.propTypes = {
     currentMergeTemplate: mergeTemplateInfoShape.isRequired,
-    updateTabSelection: PropTypes.func.isRequired
+    updateTabSelection: PropTypes.func.isRequired,
+    spreadsheetId: PropTypes.string.isRequired,
 }
