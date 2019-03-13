@@ -122,23 +122,10 @@ export default class MergeTemplateInputForm extends Component {
 
     // TODO: Drop-down menu -> get input from props
 
-    handleClick = (event) => {
-        this.setState({ anchorElement: event.currentTarget });
-    }
-
-    handleClose = () => {
-        this.setState({ anchorElement: null });
-    }
+    // TODO: Handle callback! -> update selected from parent view
 
     createMenuItems() {
         return (
-            // <React.Fragment>
-            //     { this.state.sheetTabs.map(function(tab) {
-            //         return (
-            //             <MenuItem value={tab}>{tab}</MenuItem>
-            //         )
-            //     }) }
-            // </React.Fragment>
             this.props.menuInputValues.map( function(tab) {
                 return (
                     <MenuItem value={tab} key={tab}>{tab}</MenuItem>
@@ -149,34 +136,14 @@ export default class MergeTemplateInputForm extends Component {
 
     renderMenuInput() {
         if (this.props.menuInput) {
-
-            // const { anchorElement } = this.state;
-            
             return (
                 <Select
                     style={styles.menuInput}
                     value={this.state.menuInputSelected}
+                    // TODO: Handle change and selection!!!
                 >
                     {this.createMenuItems()}
                 </Select>
-                // <React.Fragment>
-                //     <Button
-                //         onClick={this.handleClick}
-                //     >
-                //         Open Menu
-                //     </Button>
-                //     <Menu
-                //         anchorEl={anchorElement}
-                //         open={Boolean(anchorElement)}
-                //         onClick={() => console.log("Menu was clicked. TODO: get the available tabs?? - use a callback function??")}
-                //         onClose={this.handleClose}
-                //         style={styles.menuInput}
-                //     >
-                //         <Typography onClick={this.handleClose} style={styles.menuItem}>Menu Item 1</Typography>
-                //         <Typography onClick={this.handleClose} style={styles.menuItem}>Menu Item 2</Typography>
-                //         <Typography onClick={this.handleClose} style={styles.menuItem}>Menu Item 3</Typography>
-                //     </Menu>
-                // </React.Fragment>
             );
         } else {
             return null;
@@ -259,7 +226,7 @@ MergeTemplateInputForm.propTypes = {
     },
     menuInput: PropTypes.bool,
     menuInputSelected: PropTypes.string, // The initial value of the menu
-    menuInputValues: PropTypes.array,
+    menuInputValues: PropTypes.arrayOf(PropTypes.string),
     // menuInputCallback: function(props, propName, componentName) {
     //     if ((props['menuInput'] && (props[propName] === undefined || typeof(props[propName]) !== 'function'))) {
     //         return new Error(
