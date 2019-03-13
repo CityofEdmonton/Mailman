@@ -16,8 +16,16 @@ using Microsoft.Extensions.Options;
 
 namespace Mailman.Worker
 {
+    /// <summary>
+    /// Standard ASP.NET MVC Startup class.
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Constructor for the startup class.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="hostingEnvironment"></param>
         public Startup(IConfiguration configuration,
             IHostingEnvironment hostingEnvironment)
         {
@@ -38,6 +46,10 @@ namespace Mailman.Worker
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// Configures the services required by the Mail Merge worker.
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             // Add Automapper
@@ -68,6 +80,11 @@ namespace Mailman.Worker
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// Configures the ASP.NET web application. Standard ASP.NET stuff.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())

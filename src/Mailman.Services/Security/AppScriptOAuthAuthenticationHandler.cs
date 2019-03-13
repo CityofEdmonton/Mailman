@@ -1,16 +1,14 @@
-﻿using Google.Apis.Auth.OAuth2;
-using Google.Apis.Plus.v1;
-using Google.Apis.Plus.v1.Data;
-using Google.Apis.Services;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Newtonsoft.Json;
 
 namespace Mailman.Services.Security
 {
@@ -22,6 +20,8 @@ namespace Mailman.Services.Security
             ISystemClock clock) : base(options, loggerFactory, encoder, clock)
         {
         }
+
+        private static readonly string USERINFO_ENDPOINT = "https://www.googleapis.com/oauth2/v3/userinfo";
 
         protected string SignInScheme => Options.SignInScheme;
 
@@ -78,32 +78,26 @@ namespace Mailman.Services.Security
 
                     // validate the token and get user info
                     bool isSuccess = false;
-                    using (var plusService = new PlusService(new BaseClientService.Initializer()
+
+                    // I can't seem to find a client library for getting the userinfo,
+                    // so we'll do it manually
+                    using (var httpClient = new HttpClient())
                     {
-                        HttpClientInitializer = GoogleCredential.FromAccessToken(accessToken)
-                    }))
-                    {
-                        Person userInfo;
-                        try
-                        {
-                            var req = plusService.People.Get("me");
-                            userInfo = await req.ExecuteAsync();
-                        }
-                        catch (Exception)
-                        {
-                            //TODO: handle getting userinfo errors gracefully with logging
-                            throw;
-                        }
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                        var response = httpClient.GetAsync(USERINFO_ENDPOINT).Result;
+
+                        string userInfoString = await response.Content.ReadAsStringAsync();
+                        var userInfo = JsonConvert.DeserializeObject<GoogleUserInfo>(userInfoString);
 
                         var identity = new ClaimsIdentity(
                             new List<Claim>
                             {
                                 new Claim(ClaimTypes.NameIdentifier, userInfo.Id),
                                 new Claim(ClaimTypes.Name, userInfo.DisplayName),
-                                new Claim(ClaimTypes.GivenName, userInfo.Name?.GivenName),
-                                new Claim(ClaimTypes.Surname, userInfo.Name?.FamilyName),
-                                new Claim("urn:google:profile", userInfo.Url),
-                                new Claim(ClaimTypes.Email, userInfo.Emails.FirstOrDefault()?.Value)
+                                new Claim(ClaimTypes.GivenName, userInfo.GivenName),
+                                new Claim(ClaimTypes.Surname, userInfo.FamilyName),
+                                new Claim("urn:google:picture", userInfo.PictureUrl ?? string.Empty),
+                                new Claim(ClaimTypes.Email, userInfo.Email ?? string.Empty)
                             },
                             AppScriptOAuthAuthenticationDefaults.AuthenticationScheme);
 

@@ -4,6 +4,57 @@
         <name>Mailman.Worker</name>
     </assembly>
     <members>
+        <member name="T:Mailman.Worker.Controllers.MailMergeController">
+            <summary>
+            Controller for running Mail Merges.
+            </summary>
+        </member>
+        <member name="M:Mailman.Worker.Controllers.MailMergeController.#ctor(Mailman.Services.IMergeTemplateRepository,Mailman.Services.IMergeTemplateService,Mailman.Services.IMailmanServicesProxy)">
+            <summary>
+            Controller for running Mail Merges.
+            </summary>
+            <param name="mergeTemplateRepository"></param>
+            <param name="mergeTemplateService"></param>
+            <param name="servicesProxy"></param>
+        </member>
+        <member name="M:Mailman.Worker.Controllers.MailMergeController.Run(Mailman.Services.RunMailMergeOptions,System.Threading.CancellationToken)">
+            <summary>
+            Runs a Mail Merge
+            </summary>
+            <param name="options"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Mailman.Worker.Program">
+            <summary>
+            Entry point for Mail Merge worker process
+            </summary>
+        </member>
+        <member name="M:Mailman.Worker.Program.Main(System.String[])">
+            <summary>
+            Entry point for Mail Merge worker process
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:Mailman.Worker.Program.CreateWebHostBuilder(System.String[])">
+            <summary>
+            Creates the web application host
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Mailman.Worker.Startup">
+            <summary>
+            Standard ASP.NET MVC Startup class.
+            </summary>
+        </member>
+        <member name="M:Mailman.Worker.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+            <summary>
+            Constructor for the startup class.
+            </summary>
+            <param name="configuration"></param>
+            <param name="hostingEnvironment"></param>
+        </member>
         <member name="P:Mailman.Worker.Startup.Configuration">
             <summary>
             The configuration of the application. Combines config files,
@@ -14,6 +65,19 @@
             <summary>
             Provides information about the web hosting environment an application is running in. 
             </summary>
+        </member>
+        <member name="M:Mailman.Worker.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configures the services required by the Mail Merge worker.
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:Mailman.Worker.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+            <summary>
+            Configures the ASP.NET web application. Standard ASP.NET stuff.
+            </summary>
+            <param name="app"></param>
+            <param name="env"></param>
         </member>
     </members>
 </doc>
