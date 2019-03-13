@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 
 import { Button, Grid } from '@material-ui/core';
 
-import MergeTemplateInputForm from './MergeTemplateFormCard';
-import { mergeTemplateInfoShape } from './MergeTemplatePropTypes';
+import MergeTemplateInputForm from './MergeTemplate/MergeTemplateFormCard';
+import { mergeTemplateInfoShape } from './MergeTemplate/MergeTemplatePropTypes';
 
 export default class TabSelection extends Component {
 

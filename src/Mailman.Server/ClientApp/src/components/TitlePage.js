@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 
 import { Button, Grid, } from '@material-ui/core';
 
-import MergeTemplateInputForm from './MergeTemplateFormCard';
-import { mergeTemplateInfoShape } from './MergeTemplatePropTypes';
+import MergeTemplateInputForm from './MergeTemplate/MergeTemplateFormCard';
+import { mergeTemplateInfoShape } from './MergeTemplate/MergeTemplatePropTypes';
 
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 

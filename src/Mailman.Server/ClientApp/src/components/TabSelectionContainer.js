@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 
 import TabSelection from './TabSelection';
-import { updateTabSelection } from '../../actions/createMergeTemplate'
+import { updateTabSelection } from '../actions/createMergeTemplate'
 
 function mapStateToProps(state, ownProps) {
     const { currentMergeTemplate } = state; // Get this from the store
