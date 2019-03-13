@@ -23,19 +23,12 @@ export default class MergeTemplateInputForm extends Component {
         this.state = {
             textInputValue: this.props.textInputValue,
             formInputValue: this.props.formInputValue,
-            menuInputSelected: this.props.menuInputSelected,
-            // mergeTemplateInfo: this.props.mergeTemplateInfo,
-            // sheetTabs: ["TODO: ADD TABS", 1, 2, 3],
-            // sheetHeaders: "TODO: ADD HEADERS", // ?? should this be in this component or handled by other component??
-            // selectedTab: "Hello!"
-            // anchorElement: null
-        } // Add selected tab to state?? -> this.state = ...this.state, this.props.selectedTab
+            menuInputSelected: this.props.menuInputSelected
+        }
 
         this.handleTextInput = this.handleTextInput.bind(this);
         this.handleFormInput = this.handleFormInput.bind(this);
         this.handleMenuInput = this.handleMenuInput.bind(this);
-
-        console.log("MergeTemplateInputForm State: ", this.state);
     }
 
     render() {
@@ -114,8 +107,6 @@ export default class MergeTemplateInputForm extends Component {
         }
     }
 
-    // TODO: Handle callback! -> update selected from parent view
-
     handleMenuInput(event) {
         var currentSelection = event.target.value;
         this.setState({
@@ -139,13 +130,12 @@ export default class MergeTemplateInputForm extends Component {
     renderMenuInput() {
         if (this.props.menuInputTitle) {
             return (
-                <FormControl>
+                <FormControl name="menu_input">
                     {this.state.menuInputSelected ? null : <InputLabel>{this.props.menuInputTitle}</InputLabel>}
                     <Select
                         style={styles.menuInput}
                         value={this.state.menuInputSelected}
                         onChange={this.handleMenuInput}
-                        // TODO: Handle change and selection!!!
                     >
                         {this.createMenuItems()}
                     </Select>
@@ -231,16 +221,34 @@ MergeTemplateInputForm.propTypes = {
         }
     },
     menuInputTitle: PropTypes.string,
-    menuInputSelected: PropTypes.string, // The initial value of the menu - optional
-    menuInputValues: PropTypes.arrayOf(PropTypes.string),
-    menuInputCallback: PropTypes.func
-    // menuInputCallback: function(props, propName, componentName) {
-    //     if ((props['menuInput'] && (props[propName] === undefined || typeof(props[propName]) !== 'function'))) {
-    //         return new Error(
-    //             "Please provide a menuInputCallback function!"
-    //         );
-    //     }
-    // },
-    // sheetTabs: PropTypes.array,
-    // sheetHeaders: PropTypes.array
+    menuInputSelected: function(props, propName, component) {
+        if (props['menuInputTitle'] && (props[propName] === undefined || typeof(props[propName]) !== 'string')) {
+            return new Error(
+                "Please provide a menuInputSelected string!"
+            );
+        }
+    },
+    menuInputValues: function(props, propName, component) {
+        if (props['menuInputTitle']) {
+            if (props[propName] === undefined) {
+                return new Error(
+                    "Please provide a menuInputValues array of strings!"
+                );
+            }
+            for (let i = 0; i < props[propName].length; i++) {
+                if (typeof(props[propName][i]) !== 'string') {
+                    return new Error(
+                        "menuInputValues is not an array of strings!"
+                    )
+                }
+            }
+        }
+    },
+    menuInputCallback: function(props, propName, component) {
+        if (props['menuInputTitle'] && (props[propName] === undefined || typeof(props[propName]) !== 'function')) {
+            return new Error(
+                "Please procide a menuInputCallback function!"
+            );
+        }
+    }
 }

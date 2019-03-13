@@ -46,7 +46,7 @@ export default class TabSelection extends Component {
                     title="Which tab are we sending from?"
                     mergeTemplateInfo={this.props.currentMergeTemplate}
                     menuInputTitle="Tab..."
-                    menuInputSelected={this.state.selectedTab} // this is required!
+                    menuInputSelected={this.state.selectedTab}
                     menuInputValues={testData}
                     menuInputCallback={this.updateMenuInput}
                     tip="This tab must contain all the information you may want to send in an email."
