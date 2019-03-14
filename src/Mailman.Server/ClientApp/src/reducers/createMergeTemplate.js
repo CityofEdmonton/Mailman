@@ -26,7 +26,7 @@ const initialState = {
     "version": "",
     "title": "",
     "sheetName": "",
-    "headerRowNumber": 0,
+    "headerRowNumber": 1,
     "timestampColumn": {
         "name": "",
         "shouldPrefixNameWithMergeTemplateTitle": true,

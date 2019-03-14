@@ -6,6 +6,7 @@ import Settings from './components/Settings';
 import { TitlePageContainer } from './components/CreateMerge/TitlePageContainer';
 import { TabSelectionContainer } from './components/CreateMerge/TabSelectionContainer';
 import { HeaderSelectionContainer } from './components/CreateMerge/HeaderSelectionContainer'
+import { ReceiverSelectionContainer } from './components/CreateMerge/ReceiverSelectionContainer';
 import Counter from './components/Counter';
 import FetchData from './components/FetchData';
 
@@ -16,6 +17,7 @@ export default () => (
     <Route path='/mergeTemplate/title/:id?' component={TitlePageContainer} />
     <Route path='/mergeTemplate/tabSelection' component={TabSelectionContainer} />
     <Route path='/mergeTemplate/headerSelection' component={HeaderSelectionContainer} />
+    <Route path='/mergeTemplate/receiverSelection' component={ReceiverSelectionContainer} />
     <Route path='/counter' component={Counter} />
     <Route path='/fetchdata/:startDateIndex?' component={FetchData} />
   </Layout>

@@ -7,48 +7,52 @@ import { Button, Grid } from '@material-ui/core';
 import MergeTemplateInputForm from '../MergeTemplate/MergeTemplateFormCard';
 import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes';
 
-export default class HeaderSelection extends Component {
+import ReactAutosuggest from '../MergeTemplate/ReactAutosuggest';
+
+export default class ReceiverSelection extends Component {
     _isMounted = false;
 
     constructor(props) {
         super(props);
 
         this.state = {
-            headerRowNumber: this.props.currentMergeTemplate.headerRowNumber.toString(),
-            regexPassed: true
+            selectOptions: []
         }
-
-        this.updateRowInput = this.updateRowInput.bind(this);
-        this.checkRegex = this.checkRegex.bind(this);
-        this.handleRouting = this.handleRouting.bind(this);
     }
 
     componentDidMount() {
         this._isMounted = true;
+
+        const config = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+
+        const ssid = this.props.spreadsheetId;
+        const sheetName = this.props.currentMergeTemplate.sheetName;
+        const rowNumber = this.props.currentMergeTemplate.headerRowNumber;
+
+        fetch(`https://localhost:5001/api/Sheets/RowValues/${ssid}/${sheetName}?rowNumber=${rowNumber}`, config)
+        .then(response => { // Use arrow functions so do not have to bind to "this" context
+            return response.json();
+        })
+        .then(json => {
+            var options = json.filter(x => x.length > 0).map( function(x) {
+                return (
+                    { value: x }
+                );
+            });
+            this.setState({ selectOptions: options });
+        })
+        .catch(error => {
+            console.log("Unable to get sheet row data. Error: ", error);
+        })
     }
 
     componentWillUnmount() {
         this._isMounted = false;
-    }
-
-    updateRowInput(newInput) {
-        this.setState({ headerRowNumber: newInput });
-    }
-
-    checkRegex(result) {
-        this.setState({ regexPassed: result })
-    }
-
-    handleRouting() {
-        const oldSelection = this.props.currentMergeTemplate.headerRowNumber;
-        if (oldSelection !== this.state.headerRowNumber) {
-            console.log("Different header was selected");
-            if (this._isMounted) {
-                this.props.updateHeaderSelection(this.state.headerRowNumber);
-            }
-        } else {
-            console.log("Header selection unchanged.");
-        }
     }
 
     render() {
@@ -57,17 +61,12 @@ export default class HeaderSelection extends Component {
                 container
                 style={styles.container}
             >
-                <MergeTemplateInputForm
-                    title="Which row contains your header titles?"
-                    textInputTitle="Header row..."
-                    textInputValue={this.state.headerRowNumber}
-                    textInputCallback={this.updateRowInput}
-                    textInputConstraintRegex="^[1-9][0-9]*$"
-                    textInputConstraintCallback={this.checkRegex}
-                    textInputConstraintMessage="Must be a number greater than 0"
-                    tip="Mailman will use this to swap out template tags."
+                <ReactAutosuggest
+                    suggestions={this.state.selectOptions}
+                    regex="<<([^>](2))*"
+                    style={{flex: 1}}
                 />
-                <Link to={`/mergeTemplate/tabSelection`}>
+                {/* <Link to={`/mergeTemplate/tabSelection`}>
                     <Button
                         variant="contained"
                         style={styles.cancel_button}
@@ -76,7 +75,7 @@ export default class HeaderSelection extends Component {
                         Back
                     </Button>
                 </Link>
-                <Link to="/mergeTemplate/receiverSelection">
+                <Link to="/mergeTemplate/headerSelection">
                     <Button
                         color="primary"
                         variant="contained"
@@ -86,7 +85,7 @@ export default class HeaderSelection extends Component {
                     >
                         Next
                     </Button>
-                </Link>
+                </Link> */}
             </Grid>
         );
     }
@@ -110,7 +109,7 @@ const styles = {
     },
 }
 
-HeaderSelection.propTypes = {
+ReceiverSelection.propTypes = {
     currentMergeTemplate: mergeTemplateInfoShape.isRequired,
-    updateHeaderSelection: PropTypes.func.isRequired,
+    spreadsheetId: PropTypes.string.isRequired,
 }

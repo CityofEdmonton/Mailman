@@ -78,7 +78,7 @@ export default class MergeTemplateInputForm extends Component {
         if (this.props.textInputTitle) {
             return (
                 <FormControl
-                    error={(!this.state.textInputConstraintPass && this.state.textInputValue)}
+                    error={(!this.state.textInputConstraintPass && Boolean(this.state.textInputValue))}
                 >
                     <Input
                         name="text_input"
@@ -87,7 +87,7 @@ export default class MergeTemplateInputForm extends Component {
                         value={this.state.textInputValue}
                         style={styles.textInput}
                     />
-                    {(!this.state.textInputConstraintPass && this.state.textInputValue) ? <Typography variant="body2" style={styles.textInputError}>{this.props.textInputConstraintMessage}</Typography> : null}
+                    {(!this.state.textInputConstraintPass && Boolean(this.state.textInputValue)) ? <Typography variant="body2" style={styles.textInputError}>{this.props.textInputConstraintMessage}</Typography> : null}
                 </FormControl>
             );
         } else {
