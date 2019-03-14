@@ -10,6 +10,7 @@ import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes'
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
 export default class TitlePage extends Component {
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -21,6 +22,14 @@ export default class TitlePage extends Component {
     this.updateTextInput = this.updateTextInput.bind(this);
     this.updateFormInput = this.updateFormInput.bind(this);
     this.handleRouting = this.handleRouting.bind(this);
+  }
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   updateTextInput(newInput) {
@@ -36,7 +45,9 @@ export default class TitlePage extends Component {
     const oldTimestamp = this.props.currentMergeTemplate.timestampColumn.shouldPrefixNameWithMergeTemplateTitle;
     if (oldTitle !== this.state.mergeTitle || oldTimestamp !== this.state.formInput) {
       console.log("Title page was changed. Should update!");
-      this.props.updateTitlePage(this.state.mergeTitle, this.state.formInput);
+      if (this._isMounted) {
+        this.props.updateTitlePage(this.state.mergeTitle, this.state.formInput);
+      }
     } else {
       console.log("Title page unchanged.");
     }

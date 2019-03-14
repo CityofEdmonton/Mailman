@@ -8,17 +8,34 @@ import MergeTemplateInputForm from '../MergeTemplate/MergeTemplateFormCard';
 import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes';
 
 export default class HeaderSelection extends Component {
+    _isMounted = false;
 
     constructor(props) {
         super(props);
+
+
+        const initialRowNumber = this.props.currentMergeTemplate.headerRowNumber.toString();
+
+        console.log(initialRowNumber)
+
+        console.log("Regex pass?", initialRowNumber.match(/^[1-9][0-9]*$/))
+
         this.state = {
-            headerRowNumber: this.props.currentMergeTemplate.headerRowNumber.toString(),
-            regexPassed: true // this.props.currentMergeTemplate.headerRowNumber.match(/^[0-9][0-9]+$/) // Initial check
+            headerRowNumber: initialRowNumber,
+            regexPassed: initialRowNumber.match(/^[1-9][0-9]*$/) ? true : false // this.props.currentMergeTemplate.headerRowNumber.match(/^[0-9][0-9]+$/) // Initial check
         }
 
         this.updateRowInput = this.updateRowInput.bind(this);
         this.checkRegex = this.checkRegex.bind(this);
         this.handleRouting = this.handleRouting.bind(this);
+    }
+
+    componentDidMount() {
+        this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     updateRowInput(newInput) {

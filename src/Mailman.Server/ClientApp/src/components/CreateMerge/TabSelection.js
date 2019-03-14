@@ -8,6 +8,7 @@ import MergeTemplateInputForm from '../MergeTemplate/MergeTemplateFormCard';
 import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes';
 
 export default class TabSelection extends Component {
+    _isMounted = false;
 
     constructor(props) {
         super(props);
@@ -21,6 +22,8 @@ export default class TabSelection extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
+
         const config = {
             method: 'GET',
             headers: {
@@ -40,15 +43,32 @@ export default class TabSelection extends Component {
         })
     }
 
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     updateMenuInput(newInput) {
         this.setState({ selectedTab: newInput });
+    }
+
+    disableNextButton() {
+        if (this.state.selectedTab) {
+            if (this.state.tabsList && this.state.tabsList.includes(this.state.selectedTab)) {
+                return false;
+            }
+            return true;
+        } else {
+            return true;
+        }
     }
 
     handleRouting() {
         const oldSelection = this.props.currentMergeTemplate.sheetName;
         if (oldSelection !== this.state.selectedTab) {
             console.log("Different tab was selected");
-            this.props.updateTabSelection(this.state.selectedTab);
+            if (this._isMounted) {
+                this.props.updateTabSelection(this.state.selectedTab);
+            }
         } else {
             console.log("Tab selection unchanged.");
         }
@@ -83,7 +103,7 @@ export default class TabSelection extends Component {
                         variant="contained"
                         style={styles.next_button}
                         onClick={() => this.handleRouting()}
-                        disabled={!this.state.selectedTab}
+                        disabled={this.disableNextButton()}
                     >
                         Next
                     </Button>

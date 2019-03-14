@@ -28,6 +28,10 @@ export default class MergeTemplateInputForm extends Component {
         this.handleTextInput = this.handleTextInput.bind(this);
         this.handleFormInput = this.handleFormInput.bind(this);
         this.handleMenuInput = this.handleMenuInput.bind(this);
+
+        if (this.props.textInputConstraintRegex) { // Check initial constraint
+            
+        }
     }
 
     render() {
