@@ -63,7 +63,8 @@ export default class ReceiverSelection extends Component {
             >
                 <ReactAutosuggest
                     suggestions={this.state.selectOptions}
-                    regex="<<([^>](2))*"
+                    regex="<<[^>]*$"
+                    placeholder="To..."
                     style={{flex: 1}}
                 />
                 {/* <Link to={`/mergeTemplate/tabSelection`}>

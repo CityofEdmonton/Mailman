@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Autosuggest from 'react-autosuggest';
 
-import { Grid } from '@material-ui/core' // TODO: Remove this later -> just return the select component
-
 export default class ReactAutosuggest extends Component {
     constructor(props) {
         super(props);
@@ -15,11 +13,6 @@ export default class ReactAutosuggest extends Component {
         }
     }
 
-    // handleChange = (selectedOption) => {
-    //     this.setState({ selectedOption });
-    //     console.log("Option selected: ", selectedOption);
-    // }
-
     onChange = (event, { newValue }) => {
         this.setState({
             value: newValue
@@ -29,7 +22,7 @@ export default class ReactAutosuggest extends Component {
     onSuggestionsFetchRequested =({ value }) => {
         if (value.match(new RegExp(this.props.regex))) {
             this.setState({
-                // suggestions: this.props.suggestions || test
+                // suggestions: this.props.suggestions
                 suggestions: [ { value: "Testing 1" }, { value: "Testing 2" } ]
             });
         } else {
@@ -45,55 +38,98 @@ export default class ReactAutosuggest extends Component {
         });
     }
 
-    getSuggestionValue = (value) => {
-        return (
-            this.state.value + value.value
-        );
+    onSuggestionSelected = (event, { suggestion }) => {
+        const newValue = this.state.value.replace(new RegExp(this.props.regex), "<<" + suggestion.value + ">>")
+        this.setState({ value: newValue })
     }
 
-    renderSuggestion = suggestion => (
-        <div>
-            {suggestion.value}
-        </div>
+    getSuggestionValue = (value) => {
+        return this.state.value;
+    }
+
+    renderSuggestion = (suggestion) => (
+            <span>{suggestion.value}</span>
     );
 
     render() {
 
         const inputProps = {
-            placeholder: 'Type a programming language',
+            placeholder: this.props.placeholder,
             value: this.state.value,
             onChange: this.onChange
         };
 
         return (
-            <Grid style={styles.container}>
-                <Autosuggest
-                    suggestions={this.state.suggestions}
-                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                    getSuggestionValue={this.getSuggestionValue}
-                    renderSuggestion={this.renderSuggestion}
-                    inputProps={inputProps}
-                    // onChange={this.handleChange}
-                    // options={this.props.options}
-                    // style={this.props.style}
-                />
-            </Grid>
+            <Autosuggest
+                suggestions={this.state.suggestions}
+                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                getSuggestionValue={this.getSuggestionValue}
+                onSuggestionSelected={this.onSuggestionSelected}
+                renderSuggestion={this.renderSuggestion}
+                inputProps={inputProps}
+                theme={theme}
+            />
         );
     }
 }
 
-const styles = {
+const theme = {
     container: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        padding: 15,
-        justifyContent: 'center',
+        position: 'relative'
     },
-}
+    input: {
+        width: 240,
+        height: 15,
+        paddingBottom: 5,
+        fontFamily: 'Roboto, sans-serif',
+        fontWeight: 300,
+        fontSize: 16,
+        border: 'none',
+        borderBottom: '1px solid #aaa',
+    },
+    inputFocused: {
+        outline: 'none',
+        borderBottom: '1.5px solid #3e30c1',
+        transformOrigin: '0 0 0'
+    },
+    inputOpen: {
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0
+    },
+    suggestionsContainer: {
+        display: 'none'
+    },
+    suggestionsContainerOpen: {
+        display: 'block',
+        position: 'absolute',
+        top: 20,
+        width: 240,
+        border: '1px solid #aaa',
+        backgroundColor: '#fff',
+        fontFamily: 'Helvetica, sans-serif',
+        fontWeight: 300,
+        fontSize: 16,
+        borderBottomLeftRadius: 4,
+        borderBottomRightRadius: 4,
+        zIndex: 2
+    },
+    suggestionsList: {
+        margin: 0,
+        padding: 0,
+        listStyleType: 'none',
+    },
+    suggestion: {
+        cursor: 'pointer',
+        padding: '10px 20px'
+    },
+    suggestionHighlighted: {
+        backgroundColor: '#ddd'
+    }
+};
 
 ReactAutosuggest.propTypes = {
     suggestions: PropTypes.arrayOf(PropTypes.object).isRequired,
-    regex: PropTypes.string.isRequired
+    regex: PropTypes.string.isRequired,
+    placeholder: PropTypes.string.isRequired
 }
