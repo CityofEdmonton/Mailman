@@ -81,7 +81,7 @@ const theme = {
     input: {
         width: 240,
         height: 15,
-        paddingBottom: 5,
+        paddingBottom: 8,
         fontFamily: 'Roboto, sans-serif',
         fontWeight: 300,
         fontSize: 16,
@@ -91,7 +91,7 @@ const theme = {
     inputFocused: {
         outline: 'none',
         borderBottom: '1.5px solid #3e30c1',
-        transformOrigin: '0 0 0'
+        // TODO: add transition animation
     },
     inputOpen: {
         borderBottomLeftRadius: 0,
@@ -103,7 +103,7 @@ const theme = {
     suggestionsContainerOpen: {
         display: 'block',
         position: 'absolute',
-        top: 20,
+        top: 25,
         width: 240,
         border: '1px solid #aaa',
         backgroundColor: '#fff',
