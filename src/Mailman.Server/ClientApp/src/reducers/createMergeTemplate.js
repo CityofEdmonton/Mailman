@@ -8,6 +8,7 @@ import {
     UPDATE_TITLE_PAGE,
     UPDATE_TAB_SELECTION,
     UPDATE_HEADER_TITLES,
+    UPDATE_RECEIVER_SELECTION,
     UPDATE_VERSION_NUMBER
 } from '../actions/createMergeTemplate';
   
@@ -65,6 +66,16 @@ export function currentMergeTemplateReducer(state = initialState, action) {
             return ({
                 ...state,
                 headerRowNumber: parseInt(action.payload.header)
+            })
+        case UPDATE_RECEIVER_SELECTION:
+            return({
+                ...state,
+                emailTemplate: {
+                    ...state.emailTemplate,
+                    to: action.payload.to,
+                    cc: action.payload.cc,
+                    bcc: action.payload.bcc
+                }
             })
         case UPDATE_VERSION_NUMBER:
             return ({

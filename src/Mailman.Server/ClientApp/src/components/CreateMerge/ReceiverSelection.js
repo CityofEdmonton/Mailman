@@ -16,7 +16,9 @@ export default class ReceiverSelection extends Component {
         super(props);
         this.state = {
             selectOptions: [],
-            sendTo: ""
+            sendTo: this.props.currentMergeTemplate.emailTemplate.to,
+            sendCc: this.props.currentMergeTemplate.emailTemplate.cc,
+            sendBcc: this.props.currentMergeTemplate.emailTemplate.bcc,
         }
     }
 
@@ -68,7 +70,16 @@ export default class ReceiverSelection extends Component {
     }
 
     handleRouting = () => {
-        console.log("Handle routing!")
+        const oldTo = this.props.currentMergeTemplate.emailTemplate.to;
+        const oldCc = this.props.currentMergeTemplate.emailTemplate.cc;
+        const oldBcc = this.props.currentMergeTemplate.emailTemplate.bcc;
+        const { sendTo, sendCc, sendBcc } = this.state;
+        if (oldTo !== sendTo || oldCc !== sendCc || oldBcc !== sendBcc) {
+            console.log("Receiver selection was changed!")
+            this.props.updateReceiverSelection(sendTo, sendCc, sendBcc);
+        } else {
+            console.log("Receiver selection unchanged.")
+        }
     }
 
     render() {
@@ -83,6 +94,7 @@ export default class ReceiverSelection extends Component {
                         placeholder="To..."
                         suggestions={this.state.selectOptions}
                         callback={this.handleToInput}
+                        value={this.state.sendTo}
                         openWrapper="<<"
                         closeWrapper=">>"
                     />
@@ -129,7 +141,6 @@ const styles = {
       flexDirection: 'column',
       paddingTop: 15,
       alignItems: 'center',
-      overflow: 'visible'
     },
     card: {
       flex: 1,
@@ -156,5 +167,6 @@ const styles = {
 
 ReceiverSelection.propTypes = {
     currentMergeTemplate: mergeTemplateInfoShape.isRequired,
-    spreadsheetId: PropTypes.string.isRequired,
+    updateReceiverSelection: PropTypes.func.isRequired,
+    spreadsheetId: PropTypes.string.isRequired
 }

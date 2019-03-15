@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 
 import ReceiverSelection from './ReceiverSelection';
+import { updateReceiverSelection } from '../../actions/createMergeTemplate'
 
 function mapStateToProps(state) {
     const { currentMergeTemplate, mergeTemplates } = state;
@@ -12,8 +13,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return({
-        
+        updateReceiverSelection: (to, cc, bcc) => {
+            dispatch(updateReceiverSelection(to, cc, bcc))
+        }
     });
 }
 
-export const ReceiverSelectionContainer = connect(mapStateToProps, undefined)(ReceiverSelection);
+export const ReceiverSelectionContainer = connect(mapStateToProps, mapDispatchToProps)(ReceiverSelection);

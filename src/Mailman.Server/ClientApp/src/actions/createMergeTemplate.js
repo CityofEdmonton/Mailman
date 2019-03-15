@@ -2,7 +2,7 @@ export const LOAD_FROM_MERGE_TEMPLATES = "LOAD_FROM_MERGE_TEMPLATES";
 export const UPDATE_TITLE_PAGE = "UPDATE_TITLE_PAGE";
 export const UPDATE_TAB_SELECTION = "UPDATE_TAB_SELECTION";
 export const UPDATE_HEADER_TITLES = "UPDATE_HEADER_TITLES";
-export const UPDATE_SENDING_TO = "UPDATE_SENDING_TO";
+export const UPDATE_RECEIVER_SELECTION = "UPDATE_RECEIVER_SELECTION";
 export const UPDATE_SUBJECT = "UPDATE_SUBJECT"
 export const UPDATE_EMAIL_BODY = "UPDATE_EMAIL_BODY";
 export const UPDATE_SEND_TIME = "UPDATE_SEND_TIME";
@@ -40,6 +40,17 @@ export function updateHeaderSelection(header) {
     type: UPDATE_HEADER_TITLES,
     payload: {
       header: header
+    }
+  })
+}
+
+export function updateReceiverSelection(to, cc, bcc) {
+  return({
+    type: UPDATE_RECEIVER_SELECTION,
+    payload: {
+      to: to,
+      cc: cc,
+      bcc: bcc
     }
   })
 }

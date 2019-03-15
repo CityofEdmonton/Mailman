@@ -86,7 +86,7 @@ const styles = theme => ({
 
 class MuiReactAutosuggest extends React.Component {
   state = {
-    single: "",
+    single: this.props.value || "",
     suggestions: []
   };
 
@@ -204,6 +204,7 @@ MuiReactAutosuggest.propTypes = {
   })).isRequired,
   callback: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
+  value: PropTypes.string,
   openWrapper: PropTypes.string,
   closeWrapper: function (props, propName, componentName) {
     if (props['openWrapper'] && (props[propName] === undefined || typeof(props[propName]) !== 'string')) {
