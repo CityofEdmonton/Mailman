@@ -16,6 +16,7 @@ export default class ReceiverSelection extends Component {
         super(props);
         this.state = {
             selectOptions: [],
+            sendTo: ""
         }
     }
 
@@ -58,16 +59,12 @@ export default class ReceiverSelection extends Component {
         this.setState({ textInput: newInput })
     }
 
+    handleToInput = (newInput) => {
+        this.setState({ sendTo: newInput })
+    }
+
     checkRegex = (result) => {
         this.setState({ regexPassed: result })
-    }
-
-    updateMenu = (newInput) => {
-        this.setState({ menuInput: newInput })
-    }
-
-    handleFormInput = (newInput) => {
-        this.setState({ formInput: newInput })
     }
 
     handleRouting = () => {
@@ -75,9 +72,6 @@ export default class ReceiverSelection extends Component {
     }
 
     render() {
-
-        console.log(this.state.selectOptions)
-
         return (
             <Grid
                 container
@@ -88,15 +82,18 @@ export default class ReceiverSelection extends Component {
                     <MuiReactAutosuggest
                         placeholder="To..."
                         suggestions={this.state.selectOptions}
+                        callback={this.handleToInput}
+                        openWrapper="<<"
+                        closeWrapper=">>"
                     />
-                    <MuiReactAutosuggest
+                    {/* <MuiReactAutosuggest
                         placeholder="CC..."
                         suggestions={this.state.selectOptions}
                     />
                     <MuiReactAutosuggest
                         placeholder="BCC..."
                         suggestions={this.state.selectOptions}
-                    />
+                    /> */}
                     <Hint title="This is the column filled with the email addresses of the recipients." />
                 </Card>
                 <Link to={`/mergeTemplate/headerSelection`}>
@@ -131,7 +128,8 @@ const styles = {
       display: 'flex',
       flexDirection: 'column',
       paddingTop: 15,
-      alignItems: "center",
+      alignItems: 'center',
+      overflow: 'visible'
     },
     card: {
       flex: 1,
@@ -139,6 +137,7 @@ const styles = {
       flexDirection: 'column',
       padding: 15,
       justifyContent: 'center',
+      overflow: 'visible'
     },
     title: {
       marginBottom: 15

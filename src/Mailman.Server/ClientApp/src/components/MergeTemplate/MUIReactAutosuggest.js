@@ -10,33 +10,40 @@ import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
 
+import {
+  FormControl,
+  Input,
+  Typography
+} from '@material-ui/core';
+
 function renderInputComponent(inputProps) {
   const { classes, inputRef = () => {}, ref, ...other } = inputProps;
 
   return (
-    <TextField
+    <Input
       fullWidth
-      InputProps={{
-        inputRef: node => {
-          ref(node);
-          inputRef(node);
-        },
-        classes: {
-          input: classes.input
-        }
-      }}
+      // InputProps={{
+      //   inputRef: node => {
+      //     ref(node);
+      //     inputRef(node);
+      //   },
+      //   classes: {
+      //     input: classes.input
+      //   }
+      // }}
       {...other}
     />
   );
 }
 
-function getSuggestions(value, suggestions, regex) {
-  if (regex && !value.match(new RegExp(regex))) {
+function getSuggestions(value, suggestions, openWrapper, closeWrapper) {
+  const regex = openWrapper ? new RegExp(openWrapper + "[^" + closeWrapper +"]*$") : new RegExp("");
+  if (openWrapper && !value.match(regex)) {
     return [];
   }
 
   const sliceFrom = value.match(new RegExp(regex)).index + 2;
-  const inputValue = regex ? value.slice(sliceFrom, value.length).trim().toLowerCase() : value.trim().toLowerCase();
+  const inputValue = openWrapper ? value.slice(sliceFrom, value.length).trim().toLowerCase() : value.trim().toLowerCase();
   const inputLength = inputValue.length;
   let count = 0;
 
@@ -56,12 +63,9 @@ function getSuggestions(value, suggestions, regex) {
 }
 
 const styles = theme => ({
-  root: {
-    flexGrow: 1
-  },
   container: {
     position: "relative",
-    marginTop: 15
+    marginTop: 30
   },
   suggestionsContainerOpen: {
     position: "absolute",
@@ -88,7 +92,7 @@ class MuiReactAutosuggest extends React.Component {
 
   handleSuggestionsFetchRequested = ({ value }) => {
     this.setState({
-      suggestions: getSuggestions(value, this.props.suggestions, this.props.regex)
+      suggestions: getSuggestions(value, this.props.suggestions, this.props.openWrapper, this.props.closeWrapper)
     });
   };
 
@@ -102,13 +106,17 @@ class MuiReactAutosuggest extends React.Component {
     this.setState({
       [name]: newValue
     });
+    this.props.callback(newValue); // Callback here
   };
 
   onSuggestionSelected = (event, { suggestion }) => {
-    const newValue = this.props.regex
-      ? this.state.single.replace(new RegExp(this.props.regex), "<<" + suggestion.label + ">>")
+    const { openWrapper, closeWrapper } = this.props;
+    const regex = openWrapper ? new RegExp(openWrapper + "[^" + closeWrapper +"]*$") : null;
+    const newValue = regex
+      ? this.state.single.replace(regex, openWrapper + suggestion.label + closeWrapper)
       : suggestion.label
     this.setState({ single: newValue })
+    this.props.callback(newValue); // Callback here as well
   }
 
   getSuggestionValue = (suggestion) => {
@@ -116,8 +124,13 @@ class MuiReactAutosuggest extends React.Component {
   }
 
   renderSuggestion = (suggestion, { query, isHighlighted }) => {
-    const sliceFrom = this.props.regex ? query.match(new RegExp(this.props.regex)).index + 2 : 0;
-    const newQuery = this.props.regex ? query.slice(sliceFrom, query.length).trim().toLowerCase() : query.trim().toLowerCase();
+
+    const { openWrapper, closeWrapper } = this.props;
+
+    const regex = openWrapper ? new RegExp(openWrapper + "[^" + closeWrapper +"]*$") : null;
+
+    const sliceFrom = regex ? query.match(regex).index + 2 : 0;
+    const newQuery = regex ? query.slice(sliceFrom, query.length).trim().toLowerCase() : query.trim().toLowerCase();
     
     const matches = match(suggestion.label, newQuery);
     const parts = parse(suggestion.label, matches);
@@ -154,7 +167,9 @@ class MuiReactAutosuggest extends React.Component {
     };
 
     return (
-      <div className={classes.root}>
+      <FormControl
+        error={false}
+      >
         <Autosuggest
           {...autosuggestProps}
           inputProps={{
@@ -177,7 +192,7 @@ class MuiReactAutosuggest extends React.Component {
           onSuggestionSelected={this.onSuggestionSelected}
           onSuggestionHighlighted={this.onSuggestionHighlighted}
         />
-      </div>
+      </FormControl>
     );
   }
 }
@@ -187,7 +202,36 @@ MuiReactAutosuggest.propTypes = {
   suggestions: PropTypes.arrayOf(PropTypes.shape({
       label: PropTypes.string
   })).isRequired,
-  placeholder: PropTypes.string
+  callback: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  openWrapper: PropTypes.string,
+  closeWrapper: function (props, propName, componentName) {
+    if (props['openWrapper'] && (props[propName] === undefined || typeof(props[propName]) !== 'string')) {
+      return new Error(
+          "Please provide a closeWrapper function!"
+      );
+    }
+  },
+  constraintRegex: function (props, propName, componentName) {
+    if (props[propName] !== undefined && props['callback'] === undefined) {
+        return new Error(
+            "Please provide a callback function!"
+        );
+    }
+    if (props[propName] !== undefined && typeof(props[propName]) !== 'string') {
+        return new Error(
+            "\"constraintRegex\" has to be a string!"
+        );
+    }
+  },
+  constraintCallback: function(props, propName, componentName) {
+      if (props['constraintRegex'] && (props[propName] === undefined || typeof(props[propName]) !== 'function')) {
+          return new Error(
+              "Please provide a constraintCallback function!"
+          );
+      }
+  },
+  constraintMessage: PropTypes.string, // Optional message
 };
 
 export default withStyles(styles)(MuiReactAutosuggest);

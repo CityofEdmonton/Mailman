@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import HelpIcon from "@material-ui/icons/Help";
 import { Tooltip } from '@material-ui/core';
 
-const styles = theme => ({
+const styles = theme => ({ // https://material-ui.com/demos/tooltips/#variable-width - change width
     customTooltip: {
         fontSize: 14,
         font: 'Roboto',
@@ -16,7 +16,7 @@ const styles = theme => ({
 
 function Hint({ classes, title }) {
     return (
-        <Tooltip title={title} style={{marginTop: 15}} classes={{ tooltip: classes.customTooltip }}><HelpIcon/></Tooltip>
+        <Tooltip title={title} style={{marginTop: 50}} classes={{ tooltip: classes.customTooltip }}><HelpIcon/></Tooltip>
     )
 }
 
