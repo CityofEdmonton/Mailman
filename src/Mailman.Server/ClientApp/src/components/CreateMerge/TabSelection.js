@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import PropTypes from 'prop-types';
 
-import { Button, Grid } from '@material-ui/core';
+import { Button, Card, Grid, Typography } from '@material-ui/core';
 
-import MergeTemplateInputForm from '../MergeTemplate/MergeTemplateFormCard';
+import MenuInput from '../MergeTemplate/MenuInput';
+import Hint from '../MergeTemplate/Hint';
 import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes';
 
 export default class TabSelection extends Component {
@@ -16,9 +17,6 @@ export default class TabSelection extends Component {
             selectedTab: this.props.currentMergeTemplate.sheetName,
             tabsList: []
         }
-
-        this.updateMenuInput = this.updateMenuInput.bind(this);
-        this.handleRouting = this.handleRouting.bind(this);
     }
 
     componentDidMount() {
@@ -47,7 +45,7 @@ export default class TabSelection extends Component {
         this._isMounted = false;
     }
 
-    updateMenuInput(newInput) {
+    updateMenuInput = (newInput) => {
         this.setState({ selectedTab: newInput });
     }
 
@@ -62,7 +60,7 @@ export default class TabSelection extends Component {
         }
     }
 
-    handleRouting() {
+    handleRouting = () => {
         const oldSelection = this.props.currentMergeTemplate.sheetName;
         if (oldSelection !== this.state.selectedTab) {
             console.log("Different tab was selected");
@@ -80,14 +78,16 @@ export default class TabSelection extends Component {
                 container
                 style={styles.container}
             >
-                <MergeTemplateInputForm
-                    title="Which tab are we sending from?"
-                    menuInputTitle="Tab..."
-                    menuInputSelected={this.state.selectedTab}
-                    menuInputValues={this.state.tabsList}
-                    menuInputCallback={this.updateMenuInput}
-                    tip="This tab must contain all the information you may want to send in an email."
-                />
+                <Card style={styles.card}>
+                    <Typography variant="h5" style={styles.title}>Which tab are we sending from?</Typography>
+                    <MenuInput
+                        placeholder="Tab..."
+                        selected={this.state.selectedTab}
+                        values={this.state.tabsList}
+                        callback={this.updateMenuInput}
+                    />
+                    <Hint title="This tab must contain all the information you may want to send in an email." />
+                </Card>
                 <Link to={`/mergeTemplate/title`}>
                     <Button
                         variant="contained"
@@ -118,6 +118,16 @@ const styles = {
     container: {
       paddingTop: 15,
       alignItems: "center",
+    },
+    card: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      padding: 15,
+      justifyContent: 'center',
+    },
+    title: {
+      marginBottom: 15
     },
     cancel_button: {
       position: "absolute",
