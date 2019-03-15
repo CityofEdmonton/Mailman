@@ -8,6 +8,8 @@ import MergeTemplateInputForm from '../MergeTemplate/MergeTemplateFormCard';
 import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes';
 
 import ReactAutosuggest from '../MergeTemplate/ReactAutosuggest';
+import MUIReactAutosuggest from '../MergeTemplate/MUIReactAutosuggest';
+
 
 export default class ReceiverSelection extends Component {
     _isMounted = false;
@@ -66,6 +68,13 @@ export default class ReceiverSelection extends Component {
                     regex="<<[^>]*$"
                     placeholder="To..."
                     style={{flex: 1}}
+                />
+                <MUIReactAutosuggest
+                    suggestions={[
+                        { label: "Hello!" }
+                    ]}
+                    // regex = "<<[^>]*"
+                    placeholder="To..."
                 />
                 {/* <Link to={`/mergeTemplate/tabSelection`}>
                     <Button

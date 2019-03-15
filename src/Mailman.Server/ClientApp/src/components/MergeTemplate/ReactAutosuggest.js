@@ -90,7 +90,7 @@ const theme = {
     },
     inputFocused: {
         outline: 'none',
-        borderBottom: '1.5px solid #3e30c1',
+        borderBottom: '2px solid #3e30c1',
         // TODO: add transition animation
     },
     inputOpen: {
