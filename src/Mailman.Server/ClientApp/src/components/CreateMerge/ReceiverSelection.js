@@ -7,9 +7,9 @@ import { Button, Grid } from '@material-ui/core';
 import MergeTemplateInputForm from '../MergeTemplate/MergeTemplateFormCard';
 import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes';
 
-import ReactAutosuggest from '../MergeTemplate/ReactAutosuggest';
 import MuiReactAutosuggest from '../MergeTemplate/MuiReactAutosuggest';
-
+import TextInput from '../MergeTemplate/TextInput';
+import MenuInput from '../MergeTemplate/MenuInput';
 
 export default class ReceiverSelection extends Component {
     _isMounted = false;
@@ -18,7 +18,10 @@ export default class ReceiverSelection extends Component {
         super(props);
 
         this.state = {
-            selectOptions: []
+            selectOptions: [],
+            textInput: "",
+            regexPassed: false,
+            menuInput: ""
         }
     }
 
@@ -55,6 +58,18 @@ export default class ReceiverSelection extends Component {
 
     componentWillUnmount() {
         this._isMounted = false;
+    }
+
+    handleTextInput = (newInput) => {
+        this.setState({ textInput: newInput })
+    }
+
+    checkRegex = (result) => {
+        this.setState({ regexPassed: result })
+    }
+
+    updateMenu = (newInput) => {
+        this.setState({ menuInput: newInput })
     }
 
     render() {
@@ -118,6 +133,20 @@ export default class ReceiverSelection extends Component {
                 <MuiReactAutosuggest
                     suggestions={suggestions}
                     placeholder="No regex"
+                />
+                <TextInput
+                    placeholder="Header row..."
+                    callback={this.handleTextInput}
+                    constraintRegex="^[1-9][0-9]*$"
+                    constraintCallback={this.checkRegex}
+                    constraintMessage="Must be a number greater than 0"
+                />
+                <MenuInput
+                    placeholder="Tab..."
+                    selected=""
+                    values={["Item 1", "Item 2", "Item 3"]}
+                    callback={this.updateMenu}
+
                 />
                 {/* <Link to={`/mergeTemplate/tabSelection`}>
                     <Button
