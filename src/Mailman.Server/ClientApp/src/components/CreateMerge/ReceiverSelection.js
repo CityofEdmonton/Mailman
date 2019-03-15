@@ -2,28 +2,20 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import PropTypes from 'prop-types';
 
-import { Button, Grid } from '@material-ui/core';
+import { Button, Card, Grid, Typography } from '@material-ui/core';
 
-import MergeTemplateInputForm from '../MergeTemplate/MergeTemplateFormCard';
 import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes';
 
 import MuiReactAutosuggest from '../MergeTemplate/MuiReactAutosuggest';
-import TextInput from '../MergeTemplate/TextInput';
-import MenuInput from '../MergeTemplate/MenuInput';
-import FormInput from '../MergeTemplate/FormInput';
+import Hint from '../MergeTemplate/Hint';
 
 export default class ReceiverSelection extends Component {
     _isMounted = false;
 
     constructor(props) {
         super(props);
-
         this.state = {
             selectOptions: [],
-            textInput: "",
-            regexPassed: false,
-            menuInput: "",
-            formInput: true
         }
     }
 
@@ -46,9 +38,9 @@ export default class ReceiverSelection extends Component {
             return response.json();
         })
         .then(json => {
-            var options = json.filter(x => x.length > 0).map( function(x) {
+            var options = json.filter(columnValue => columnValue.length > 0).map( function(columnValue) {
                 return (
-                    { value: x }
+                    { label: columnValue }
                 );
             });
             this.setState({ selectOptions: options });
@@ -78,87 +70,36 @@ export default class ReceiverSelection extends Component {
         this.setState({ formInput: newInput })
     }
 
+    handleRouting = () => {
+        console.log("Handle routing!")
+    }
+
     render() {
 
-        const suggestions = [
-            { label: "Afghanistan" },
-            { label: "Aland Islands" },
-            { label: "Albania" },
-            { label: "Algeria" },
-            { label: "American Samoa" },
-            { label: "Andorra" },
-            { label: "Angola" },
-            { label: "Anguilla" },
-            { label: "Antarctica" },
-            { label: "Antigua and Barbuda" },
-            { label: "Argentina" },
-            { label: "Armenia" },
-            { label: "Aruba" },
-            { label: "Australia" },
-            { label: "Austria" },
-            { label: "Azerbaijan" },
-            { label: "Bahamas" },
-            { label: "Bahrain" },
-            { label: "Bangladesh" },
-            { label: "Barbados" },
-            { label: "Belarus" },
-            { label: "Belgium" },
-            { label: "Belize" },
-            { label: "Benin" },
-            { label: "Bermuda" },
-            { label: "Bhutan" },
-            { label: "Bolivia, Plurinational State of" },
-            { label: "Bonaire, Sint Eustatius and Saba" },
-            { label: "Bosnia and Herzegovina" },
-            { label: "Botswana" },
-            { label: "Bouvet Island" },
-            { label: "Brazil" },
-            { label: "British Indian Ocean Territory" },
-            { label: "Brunei Darussalam" }
-          ];
+        console.log(this.state.selectOptions)
 
         return (
             <Grid
                 container
                 style={styles.container}
             >
-                {/* <ReactAutosuggest
-                    suggestions={this.state.selectOptions}
-                    regex="<<[^>]*$"
-                    placeholder="To..."
-                    style={{flex: 1}}
-                /> */}
-                <MuiReactAutosuggest
-                    // suggestions={[
-                    //     { label: "Hello!" }
-                    // ]}
-                    suggestions={suggestions}
-                    regex = "<<[^>]*$"
-                    placeholder="To..."
-                />
-                <MuiReactAutosuggest
-                    suggestions={suggestions}
-                    placeholder="No regex"
-                />
-                <TextInput
-                    placeholder="Header row..."
-                    callback={this.handleTextInput}
-                    constraintRegex="^[1-9][0-9]*$"
-                    constraintCallback={this.checkRegex}
-                    constraintMessage="Must be a number greater than 0"
-                />
-                <MenuInput
-                    placeholder="Tab..."
-                    selected=""
-                    values={["Item 1", "Item 2", "Item 3"]}
-                    callback={this.updateMenu}
-                />
-
-                <FormInput
-                    title="Use this title as timestamp column name?"
-                    callback={this.handleFormInput}
-                />
-                {/* <Link to={`/mergeTemplate/tabSelection`}>
+                <Card style={styles.card}>
+                    <Typography variant="h5" style={styles.title}>Who are you sending to?</Typography>
+                    <MuiReactAutosuggest
+                        placeholder="To..."
+                        suggestions={this.state.selectOptions}
+                    />
+                    <MuiReactAutosuggest
+                        placeholder="CC..."
+                        suggestions={this.state.selectOptions}
+                    />
+                    <MuiReactAutosuggest
+                        placeholder="BCC..."
+                        suggestions={this.state.selectOptions}
+                    />
+                    <Hint title="This is the column filled with the email addresses of the recipients." />
+                </Card>
+                <Link to={`/mergeTemplate/headerSelection`}>
                     <Button
                         variant="contained"
                         style={styles.cancel_button}
@@ -167,7 +108,7 @@ export default class ReceiverSelection extends Component {
                         Back
                     </Button>
                 </Link>
-                <Link to="/mergeTemplate/headerSelection">
+                <Link to="/mergeTemplate/receiverSelection">
                     <Button
                         color="primary"
                         variant="contained"
@@ -177,7 +118,7 @@ export default class ReceiverSelection extends Component {
                     >
                         Next
                     </Button>
-                </Link> */}
+                </Link>
             </Grid>
         );
     }
@@ -191,6 +132,16 @@ const styles = {
       flexDirection: 'column',
       paddingTop: 15,
       alignItems: "center",
+    },
+    card: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      padding: 15,
+      justifyContent: 'center',
+    },
+    title: {
+      marginBottom: 15
     },
     cancel_button: {
       position: "absolute",

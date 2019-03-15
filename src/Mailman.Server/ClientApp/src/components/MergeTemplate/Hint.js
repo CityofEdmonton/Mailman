@@ -1,23 +1,27 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import HelpIcon from "@material-ui/icons/Help";
+import { withStyles } from '@material-ui/core/styles';
 
+import HelpIcon from "@material-ui/icons/Help";
 import { Tooltip } from '@material-ui/core';
 
-export default class Hint extends Component {
-    render() {
-        return (
-            <Tooltip title={this.props.title} style={styles.hint}><HelpIcon/></Tooltip>
-        );
+const styles = theme => ({
+    customTooltip: {
+        fontSize: 14,
+        font: 'Roboto',
+        maxWidth: 200,
+        padding: 15,
     }
-}
+})
 
-const styles = {
-    hint: {
-        marginTop: 15,
-    }
+function Hint({ classes, title }) {
+    return (
+        <Tooltip title={title} style={{marginTop: 15}} classes={{ tooltip: classes.customTooltip }}><HelpIcon/></Tooltip>
+    )
 }
 
 Hint.propTypes = {
     title: PropTypes.string.isRequired
 }
+
+export default withStyles(styles)(Hint);

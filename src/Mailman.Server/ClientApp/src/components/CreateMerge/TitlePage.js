@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
 
-import { Card, Button, Grid, Typography } from '@material-ui/core';
+import { Button, Card, Grid, Typography } from '@material-ui/core';
 
 import TextInput from '../MergeTemplate/TextInput';
 import FormInput from '../MergeTemplate/FormInput';

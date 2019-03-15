@@ -57,11 +57,11 @@ function getSuggestions(value, suggestions, regex) {
 
 const styles = theme => ({
   root: {
-    height: 250,
     flexGrow: 1
   },
   container: {
-    position: "relative"
+    position: "relative",
+    marginTop: 15
   },
   suggestionsContainerOpen: {
     position: "absolute",
@@ -77,9 +77,6 @@ const styles = theme => ({
     margin: 0,
     padding: 0,
     listStyleType: "none"
-  },
-  divider: {
-    height: theme.spacing.unit * 2
   }
 });
 

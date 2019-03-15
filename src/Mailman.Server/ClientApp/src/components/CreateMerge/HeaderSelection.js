@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import PropTypes from 'prop-types';
 
-import { Button, Grid } from '@material-ui/core';
+import { Button, Card, Grid, Typography } from '@material-ui/core';
 
-import MergeTemplateInputForm from '../MergeTemplate/MergeTemplateFormCard';
+import TextInput from '../MergeTemplate/TextInput';
+import Hint from '../MergeTemplate/Hint';
 import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes';
 
 export default class HeaderSelection extends Component {
@@ -12,15 +13,10 @@ export default class HeaderSelection extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             headerRowNumber: this.props.currentMergeTemplate.headerRowNumber.toString(),
             regexPassed: true
         }
-
-        this.updateRowInput = this.updateRowInput.bind(this);
-        this.checkRegex = this.checkRegex.bind(this);
-        this.handleRouting = this.handleRouting.bind(this);
     }
 
     componentDidMount() {
@@ -31,15 +27,15 @@ export default class HeaderSelection extends Component {
         this._isMounted = false;
     }
 
-    updateRowInput(newInput) {
+    updateRowInput = (newInput) => {
         this.setState({ headerRowNumber: newInput });
     }
 
-    checkRegex(result) {
+    checkRegex = (result) => {
         this.setState({ regexPassed: result })
     }
 
-    handleRouting() {
+    handleRouting = () => {
         const oldSelection = this.props.currentMergeTemplate.headerRowNumber;
         if (oldSelection !== this.state.headerRowNumber) {
             console.log("Different header was selected");
@@ -57,16 +53,18 @@ export default class HeaderSelection extends Component {
                 container
                 style={styles.container}
             >
-                <MergeTemplateInputForm
-                    title="Which row contains your header titles?"
-                    textInputTitle="Header row..."
-                    textInputValue={this.state.headerRowNumber}
-                    textInputCallback={this.updateRowInput}
-                    textInputConstraintRegex="^[1-9][0-9]*$"
-                    textInputConstraintCallback={this.checkRegex}
-                    textInputConstraintMessage="Must be a number greater than 0"
-                    tip="Mailman will use this to swap out template tags."
-                />
+                <Card style={styles.card}>
+                    <Typography variant="h5" style={styles.title}>Which row contains your header titles?</Typography>
+                    <TextInput
+                        placeholder="Header row..."
+                        value={this.state.headerRowNumber}
+                        callback={this.updateRowInput}
+                        constraintRegex="^[1-9][0-9]*$"
+                        constraintCallback={this.checkRegex}
+                        constraintMessage="Must be a number greater than 0"
+                    />
+                    <Hint title="Mailman will use this to swap out template tags." />
+                </Card>
                 <Link to={`/mergeTemplate/tabSelection`}>
                     <Button
                         variant="contained"
@@ -97,6 +95,16 @@ const styles = {
     container: {
       paddingTop: 15,
       alignItems: "center",
+    },
+    card: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      padding: 15,
+      justifyContent: 'center',
+    },
+    title: {
+      marginBottom: 15
     },
     cancel_button: {
       position: "absolute",
