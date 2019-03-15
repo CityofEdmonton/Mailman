@@ -8,7 +8,7 @@ import MergeTemplateInputForm from '../MergeTemplate/MergeTemplateFormCard';
 import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes';
 
 import ReactAutosuggest from '../MergeTemplate/ReactAutosuggest';
-import MUIReactAutosuggest from '../MergeTemplate/MUIReactAutosuggest';
+import MuiReactAutosuggest from '../MergeTemplate/MuiReactAutosuggest';
 
 
 export default class ReceiverSelection extends Component {
@@ -58,23 +58,66 @@ export default class ReceiverSelection extends Component {
     }
 
     render() {
+
+        const suggestions = [
+            { label: "Afghanistan" },
+            { label: "Aland Islands" },
+            { label: "Albania" },
+            { label: "Algeria" },
+            { label: "American Samoa" },
+            { label: "Andorra" },
+            { label: "Angola" },
+            { label: "Anguilla" },
+            { label: "Antarctica" },
+            { label: "Antigua and Barbuda" },
+            { label: "Argentina" },
+            { label: "Armenia" },
+            { label: "Aruba" },
+            { label: "Australia" },
+            { label: "Austria" },
+            { label: "Azerbaijan" },
+            { label: "Bahamas" },
+            { label: "Bahrain" },
+            { label: "Bangladesh" },
+            { label: "Barbados" },
+            { label: "Belarus" },
+            { label: "Belgium" },
+            { label: "Belize" },
+            { label: "Benin" },
+            { label: "Bermuda" },
+            { label: "Bhutan" },
+            { label: "Bolivia, Plurinational State of" },
+            { label: "Bonaire, Sint Eustatius and Saba" },
+            { label: "Bosnia and Herzegovina" },
+            { label: "Botswana" },
+            { label: "Bouvet Island" },
+            { label: "Brazil" },
+            { label: "British Indian Ocean Territory" },
+            { label: "Brunei Darussalam" }
+          ];
+
         return (
             <Grid
                 container
                 style={styles.container}
             >
-                <ReactAutosuggest
+                {/* <ReactAutosuggest
                     suggestions={this.state.selectOptions}
                     regex="<<[^>]*$"
                     placeholder="To..."
                     style={{flex: 1}}
-                />
-                <MUIReactAutosuggest
-                    suggestions={[
-                        { label: "Hello!" }
-                    ]}
-                    // regex = "<<[^>]*"
+                /> */}
+                <MuiReactAutosuggest
+                    // suggestions={[
+                    //     { label: "Hello!" }
+                    // ]}
+                    suggestions={suggestions}
+                    regex = "<<[^>]*$"
                     placeholder="To..."
+                />
+                <MuiReactAutosuggest
+                    suggestions={suggestions}
+                    placeholder="No regex"
                 />
                 {/* <Link to={`/mergeTemplate/tabSelection`}>
                     <Button
@@ -104,6 +147,9 @@ export default class ReceiverSelection extends Component {
 
 const styles = {
     container: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
       paddingTop: 15,
       alignItems: "center",
     },

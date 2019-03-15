@@ -67,50 +67,18 @@ function renderInputComponent(inputProps) {
   );
 }
 
-function renderSuggestion(suggestion, { query, isHighlighted }) {
-    const matches = match(suggestion.label, query);
-    const parts = parse(suggestion.label, matches);
-  
-    return (
-      <MenuItem selected={isHighlighted} component="div">
-        <div>
-          {parts.map((part, index) =>
-            part.highlight ? (
-              <span key={String(index)} style={{ fontWeight: 500 }}>
-                {part.text}
-              </span>
-            ) : (
-              <strong key={String(index)} style={{ fontWeight: 300 }}>
-                {part.text}
-              </strong>
-            )
-          )}
-        </div>
-      </MenuItem>
-    );
-  }
-
 function getSuggestions(value, suggestions, regex) {
-  if (regex) {
-      console.log("Regex input")
-  }
-  console.log("Get Suggestions: ", value)
   if (regex && !value.match(new RegExp(regex))) {
-      console.log("No match")
     return [];
   }
 
   const sliceFrom = value.match(new RegExp(regex)).index + 2;
-  console.log(value.match(new RegExp(regex)))
-
   const inputValue = regex ? value.slice(sliceFrom, value.length).trim().toLowerCase() : value.trim().toLowerCase();
-  console.log("Input value: ", inputValue)
-
   const inputLength = inputValue.length;
   let count = 0;
 
   return inputLength === 0
-    ? []
+    ? suggestions
     : suggestions.filter(suggestion => {
         const keep =
           count < 5 &&
@@ -122,10 +90,6 @@ function getSuggestions(value, suggestions, regex) {
 
         return keep;
       });
-}
-
-function getSuggestionValue(suggestion) {
-  return suggestion.label;
 }
 
 const styles = theme => ({
@@ -156,7 +120,7 @@ const styles = theme => ({
   }
 });
 
-class MUIReeactAutosuggest extends React.Component {
+class MuiReactAutosuggest extends React.Component {
   state = {
     single: "",
     suggestions: []
@@ -180,6 +144,43 @@ class MUIReeactAutosuggest extends React.Component {
     });
   };
 
+  onSuggestionSelected = (event, { suggestion }) => {
+    const newValue = this.props.regex
+      ? this.state.single.replace(new RegExp(this.props.regex), "<<" + suggestion.label + ">>")
+      : suggestion.label
+    this.setState({ single: newValue })
+  }
+
+  getSuggestionValue = (suggestion) => {
+    return this.state.single;
+  }
+
+  renderSuggestion = (suggestion, { query, isHighlighted }) => {
+    const sliceFrom = this.props.regex ? query.match(new RegExp(this.props.regex)).index + 2 : 0;
+    const newQuery = this.props.regex ? query.slice(sliceFrom, query.length).trim().toLowerCase() : query.trim().toLowerCase();
+    
+    const matches = match(suggestion.label, newQuery);
+    const parts = parse(suggestion.label, matches);
+  
+    return (
+      <MenuItem selected={isHighlighted} component="div">
+        <div>
+          {parts.map((part, index) =>
+            part.highlight ? (
+              <span key={String(index)} style={{ fontWeight: 500 }}>
+                {part.text}
+              </span>
+            ) : (
+              <strong key={String(index)} style={{ fontWeight: 300 }}>
+                {part.text}
+              </strong>
+            )
+          )}
+        </div>
+      </MenuItem>
+    );
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -188,8 +189,8 @@ class MUIReeactAutosuggest extends React.Component {
       suggestions: this.state.suggestions,
       onSuggestionsFetchRequested: this.handleSuggestionsFetchRequested,
       onSuggestionsClearRequested: this.handleSuggestionsClearRequested,
-      getSuggestionValue,
-      renderSuggestion
+      getSuggestionValue: this.getSuggestionValue,
+      renderSuggestion: this.renderSuggestion
     };
 
     return (
@@ -213,13 +214,15 @@ class MUIReeactAutosuggest extends React.Component {
               {options.children}
             </Paper>
           )}
+          onSuggestionSelected={this.onSuggestionSelected}
+          onSuggestionHighlighted={this.onSuggestionHighlighted}
         />
       </div>
     );
   }
 }
 
-MUIReeactAutosuggest.propTypes = {
+MuiReactAutosuggest.propTypes = {
   classes: PropTypes.object.isRequired,
   suggestions: PropTypes.arrayOf(PropTypes.shape({
       label: PropTypes.string
@@ -227,4 +230,4 @@ MUIReeactAutosuggest.propTypes = {
   placeholder: PropTypes.string
 };
 
-export default withStyles(styles)(MUIReeactAutosuggest);
+export default withStyles(styles)(MuiReactAutosuggest);
