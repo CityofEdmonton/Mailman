@@ -10,6 +10,7 @@ import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes'
 import MuiReactAutosuggest from '../MergeTemplate/MuiReactAutosuggest';
 import TextInput from '../MergeTemplate/TextInput';
 import MenuInput from '../MergeTemplate/MenuInput';
+import FormInput from '../MergeTemplate/FormInput';
 
 export default class ReceiverSelection extends Component {
     _isMounted = false;
@@ -21,7 +22,8 @@ export default class ReceiverSelection extends Component {
             selectOptions: [],
             textInput: "",
             regexPassed: false,
-            menuInput: ""
+            menuInput: "",
+            formInput: true
         }
     }
 
@@ -70,6 +72,10 @@ export default class ReceiverSelection extends Component {
 
     updateMenu = (newInput) => {
         this.setState({ menuInput: newInput })
+    }
+
+    handleFormInput = (newInput) => {
+        this.setState({ formInput: newInput })
     }
 
     render() {
@@ -146,7 +152,11 @@ export default class ReceiverSelection extends Component {
                     selected=""
                     values={["Item 1", "Item 2", "Item 3"]}
                     callback={this.updateMenu}
+                />
 
+                <FormInput
+                    title="Use this title as timestamp column name?"
+                    callback={this.handleFormInput}
                 />
                 {/* <Link to={`/mergeTemplate/tabSelection`}>
                     <Button

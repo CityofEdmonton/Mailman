@@ -54,7 +54,7 @@ export default class TextInput extends Component {
     }
 
     handleConstraint = (input) => {
-        var newConstraintPass = input.match(new RegExp(this.props.constraintRegex));
+        var newConstraintPass = Boolean(input.match(new RegExp(this.props.constraintRegex)));
         if (this.props.constraintCallback) {
             this.setState({ constraintPass: newConstraintPass })
             this.props.constraintCallback(newConstraintPass)
