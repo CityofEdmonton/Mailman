@@ -11,8 +11,12 @@ export default class FormInput extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: this.props.value || true,
+            value: this.props.value,
         }    
+    }
+
+    componentDidMount() {
+        this.props.callback(this.state.value);
     }
 
     handleFormInput = () => {

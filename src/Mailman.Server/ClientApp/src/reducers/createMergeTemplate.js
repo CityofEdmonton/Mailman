@@ -26,7 +26,7 @@ const initialState = {
     "type": "",
     "createdBy": "",
     "createdDateUtc": "",
-    "version": "",
+    "version": "1",
     "title": "",
     "sheetName": "",
     "headerRowNumber": 1,
@@ -36,7 +36,8 @@ const initialState = {
         "title": ""
     },
     "conditional": "",
-    "repeater": ""
+    "repeater": "Off",
+    "createNew": true
 };
 
 // TODO: generate a unique id -> inital state
@@ -51,12 +52,15 @@ export function currentMergeTemplateReducer(state = initialState, action) {
                 return initialState;
             }
         case UPDATE_TITLE_PAGE:
+            const { title, timestamp } = action.payload;
             return ({
                 ...state,
-                title: action.payload.title,
+                title: title,
                 timestampColumn: {
                     ...state.timestampColumn,
-                    shouldPrefixNameWithMergeTemplateTitle: action.payload.timestamp
+                    name: "<<Mailman " + title + " Timestamp>>",
+                    shouldPrefixNameWithMergeTemplateTitle: timestamp,
+                    title: title + " - <<Mailman " + title + " Timestamp>>"
                 }
             });
         case UPDATE_TAB_SELECTION:
