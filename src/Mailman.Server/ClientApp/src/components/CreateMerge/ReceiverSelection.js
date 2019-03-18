@@ -60,10 +60,6 @@ export default class ReceiverSelection extends Component {
         this._isMounted = false;
     }
 
-    handleTextInput = (newInput) => {
-        this.setState({ textInput: newInput });
-    }
-
     handleToInput = (newInput) => {
         this.setState({ sendTo: newInput });
     }
@@ -158,7 +154,7 @@ export default class ReceiverSelection extends Component {
                         Back
                     </Button>
                 </Link>
-                <Link to="/mergeTemplate/receiverSelection">
+                <Link to="/mergeTemplate/subject">
                     <Button
                         color="primary"
                         variant="contained"
@@ -183,7 +179,7 @@ const styles = {
       display: 'flex',
       flexDirection: 'column',
       paddingTop: 15,
-      alignItems: 'center',
+      alignItems: 'center'
     },
     card: {
       flex: 1,

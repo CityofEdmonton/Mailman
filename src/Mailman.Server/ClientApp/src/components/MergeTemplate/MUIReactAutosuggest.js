@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import Autosuggest from "react-autosuggest";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
@@ -22,21 +21,20 @@ function renderInputComponent(inputProps) {
   return (
     <Input
       fullWidth
-      // InputProps={{
-      //   inputRef: node => {
-      //     ref(node);
-      //     inputRef(node);
-      //   },
-      //   classes: {
-      //     input: classes.input
-      //   }
-      // }}
+      inputProps={{
+        ref: ref,
+        classes: {
+          input: classes.input
+        }
+      }}
       {...other}
     />
   );
 }
 
-function getSuggestions(value, suggestions, openWrapper, closeWrapper) {
+function getSuggestions(value, inputProps) {
+  const { suggestions, openWrapper, closeWrapper } = inputProps;
+
   const regex = openWrapper ? new RegExp(openWrapper + "[^" + closeWrapper +"]*$") : new RegExp("");
   if (openWrapper && !value.match(regex)) {
     return [];
@@ -108,7 +106,7 @@ class MuiReactAutosuggest extends React.Component {
 
   handleSuggestionsFetchRequested = ({ value }) => {
     this.setState({
-      suggestions: getSuggestions(value, this.props.suggestions, this.props.openWrapper, this.props.closeWrapper)
+      suggestions: getSuggestions(value, this.props)
     });
   };
 
