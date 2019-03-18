@@ -36,7 +36,7 @@ export default class HeaderSelection extends Component {
     }
 
     handleRouting = () => {
-        const oldSelection = this.props.currentMergeTemplate.headerRowNumber;
+        const oldSelection = this.props.currentMergeTemplate.headerRowNumber.toString();
         if (oldSelection !== this.state.headerRowNumber) {
             console.log("Different header was selected");
             if (this._isMounted) {

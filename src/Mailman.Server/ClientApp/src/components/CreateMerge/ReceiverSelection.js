@@ -19,6 +19,9 @@ export default class ReceiverSelection extends Component {
             sendTo: this.props.currentMergeTemplate.emailTemplate.to,
             sendCc: this.props.currentMergeTemplate.emailTemplate.cc,
             sendBcc: this.props.currentMergeTemplate.emailTemplate.bcc,
+            toRegexPassed: true,
+            ccRegexPassed: true,
+            bccRegexPassed: true
         }
     }
 
@@ -58,15 +61,31 @@ export default class ReceiverSelection extends Component {
     }
 
     handleTextInput = (newInput) => {
-        this.setState({ textInput: newInput })
+        this.setState({ textInput: newInput });
     }
 
     handleToInput = (newInput) => {
-        this.setState({ sendTo: newInput })
+        this.setState({ sendTo: newInput });
     }
 
-    checkRegex = (result) => {
-        this.setState({ regexPassed: result })
+    handleCcInput = (newInput) => {
+        this.setState({ sendCc: newInput });
+    }
+
+    handleBccInput = (newInput) => {
+        this.setState({ sendBcc: newInput });
+    }
+
+    checkToRegex = (result) => {
+        this.setState({ toRegexPassed: result });
+    }
+
+    checkCcRegex = (result) => {
+        this.setState({ ccRegexPassed: result });
+    }
+
+    checkBccRegex = (result) => {
+        this.setState({ bccRegexPassed: result });
     }
 
     handleRouting = () => {
@@ -83,6 +102,11 @@ export default class ReceiverSelection extends Component {
     }
 
     render() {
+
+        const emailRegex = "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)"; // Source: http://regexlib.com/Search.aspx?k=email&AspxAutoDetectCookieSupport=1
+        const tagRegex = "<<[^<>]+>>";
+        const receiverRegex = `^((${tagRegex})|(${emailRegex}))(,\\s*((${tagRegex})|(${emailRegex})))*$`;
+
         return (
             <Grid
                 container
@@ -97,15 +121,32 @@ export default class ReceiverSelection extends Component {
                         value={this.state.sendTo}
                         openWrapper="<<"
                         closeWrapper=">>"
+                        constraintRegex={receiverRegex}
+                        constraintCallback={this.checkToRegex}
+                        constraintMessage="Must be template tags << >> or emails seperated by commas"
                     />
-                    {/* <MuiReactAutosuggest
+                    <MuiReactAutosuggest
                         placeholder="CC..."
                         suggestions={this.state.selectOptions}
+                        callback={this.handleCcInput}
+                        value={this.state.sendCc}
+                        openWrapper="<<"
+                        closeWrapper=">>"
+                        constraintRegex={receiverRegex}
+                        constraintCallback={this.checkCcRegex}
+                        constraintMessage="Must be template tags << >> or emails seperated by commas"
                     />
                     <MuiReactAutosuggest
                         placeholder="BCC..."
                         suggestions={this.state.selectOptions}
-                    /> */}
+                        callback={this.handleBccInput}
+                        value={this.state.sendBcc}
+                        openWrapper="<<"
+                        closeWrapper=">>"
+                        constraintRegex={receiverRegex}
+                        constraintCallback={this.checkBccRegex}
+                        constraintMessage="Must be template tags << >> or emails seperated by commas"
+                    />
                     <Hint title="This is the column filled with the email addresses of the recipients." />
                 </Card>
                 <Link to={`/mergeTemplate/headerSelection`}>
@@ -123,7 +164,9 @@ export default class ReceiverSelection extends Component {
                         variant="contained"
                         style={styles.next_button}
                         onClick={() => this.handleRouting()}
-                        disabled={!this.state.regexPassed}
+                        disabled={!this.state.toRegexPassed
+                            || (Boolean(this.state.sendCc) && !this.state.ccRegexPassed)
+                            || (Boolean(this.state.sendBcc) && !this.state.bccRegexPassed)}
                     >
                         Next
                     </Button>

@@ -87,8 +87,24 @@ const styles = theme => ({
 class MuiReactAutosuggest extends React.Component {
   state = {
     single: this.props.value || "",
-    suggestions: []
+    suggestions: [],
+    constraintPass: true // Always default to true
   };
+
+  componentDidMount() {
+    if (this.props.constraintRegex) { // Check initial constraint
+        console.log("Input to check: ", this.state.single)
+        this.handleConstraint(this.state.single)
+    }
+  }
+
+  handleConstraint = (input) => {
+    var newConstraintPass = Boolean(input.match(new RegExp(this.props.constraintRegex)));
+    if (this.props.constraintCallback) {
+        this.setState({ constraintPass: newConstraintPass })
+        this.props.constraintCallback(newConstraintPass)
+    }
+  }
 
   handleSuggestionsFetchRequested = ({ value }) => {
     this.setState({
@@ -106,7 +122,10 @@ class MuiReactAutosuggest extends React.Component {
     this.setState({
       [name]: newValue
     });
-    this.props.callback(newValue); // Callback here
+    this.props.callback(newValue); // Callbacks here
+    if (this.props.constraintRegex) {
+      this.handleConstraint(newValue);
+    }
   };
 
   onSuggestionSelected = (event, { suggestion }) => {
@@ -116,7 +135,10 @@ class MuiReactAutosuggest extends React.Component {
       ? this.state.single.replace(regex, openWrapper + suggestion.label + closeWrapper)
       : suggestion.label
     this.setState({ single: newValue })
-    this.props.callback(newValue); // Callback here as well
+    this.props.callback(newValue); // Callbacks here as well
+    if (this.props.constraintRegex) {
+      this.handleConstraint(newValue);
+    }
   }
 
   getSuggestionValue = (suggestion) => {
@@ -127,7 +149,7 @@ class MuiReactAutosuggest extends React.Component {
 
     const { openWrapper, closeWrapper } = this.props;
 
-    const regex = openWrapper ? new RegExp(openWrapper + "[^" + closeWrapper +"]*$") : null;
+    const regex = openWrapper ? new RegExp(openWrapper + "[^" + closeWrapper + "]*$") : null;
 
     const sliceFrom = regex ? query.match(regex).index + 2 : 0;
     const newQuery = regex ? query.slice(sliceFrom, query.length).trim().toLowerCase() : query.trim().toLowerCase();
@@ -168,7 +190,7 @@ class MuiReactAutosuggest extends React.Component {
 
     return (
       <FormControl
-        error={false}
+        error={(!this.state.constraintPass && Boolean(this.state.single))}
       >
         <Autosuggest
           {...autosuggestProps}
@@ -192,6 +214,7 @@ class MuiReactAutosuggest extends React.Component {
           onSuggestionSelected={this.onSuggestionSelected}
           onSuggestionHighlighted={this.onSuggestionHighlighted}
         />
+        {(!this.state.constraintPass && Boolean(this.state.single)) ? <Typography variant="body2" style={{ marginTop: 5, color: "red" }}>{this.props.constraintMessage}</Typography> : null}
       </FormControl>
     );
   }
