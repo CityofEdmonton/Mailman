@@ -49,7 +49,9 @@ export default class ReceiverSelection extends Component {
                     { label: columnValue }
                 );
             });
-            this.setState({ selectOptions: options });
+            if (this._isMounted) {
+                this.setState({ selectOptions: options });
+            }
         })
         .catch(error => {
             console.log("Unable to get sheet row data. Error: ", error);

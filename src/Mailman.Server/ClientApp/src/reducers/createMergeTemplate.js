@@ -23,8 +23,8 @@ const initialState = {
         "body": ""
     },
     "id": "",
-    "type": "",
-    "createdBy": "",
+    "type": "string",
+    "createdBy": "Unknown user",
     "createdDateUtc": "",
     "version": "1",
     "title": "",
@@ -35,9 +35,8 @@ const initialState = {
         "shouldPrefixNameWithMergeTemplateTitle": true,
         "title": ""
     },
-    "conditional": "",
-    "repeater": "Off",
-    "createNew": true
+    "conditional": "string",
+    "repeater": "Off"
 };
 
 // TODO: generate a unique id -> inital state

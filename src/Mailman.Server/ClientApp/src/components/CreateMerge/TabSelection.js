@@ -34,7 +34,9 @@ export default class TabSelection extends Component {
             return response.json();
         })
         .then(json => {
-            this.setState({ tabsList: json });
+            if (this._isMounted) {
+                this.setState({ tabsList: json });
+            }
         })
         .catch(error => {
             console.log("Error: Unable to get sheet tab data");

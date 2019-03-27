@@ -9,6 +9,7 @@ import { HeaderSelectionContainer } from './components/CreateMerge/HeaderSelecti
 import { ReceiverSelectionContainer } from './components/CreateMerge/ReceiverSelectionContainer';
 import { EmailSubjectContainer } from './components/CreateMerge/EmailSubjectContainer';
 import { EmailBodyContainer } from './components/CreateMerge/EmailBodyContainer';
+import { SavePageContainer } from './components/CreateMerge/SavePageContainer';
 import Counter from './components/Counter';
 import FetchData from './components/FetchData';
 
@@ -22,6 +23,7 @@ export default () => (
     <Route path='/mergeTemplate/receiverSelection' component={ReceiverSelectionContainer} />
     <Route path='/mergeTemplate/subject' component={EmailSubjectContainer} />
     <Route path='/mergeTemplate/body' component={EmailBodyContainer} />
+    <Route path='/mergeTemplate/save' component={SavePageContainer} />
     <Route path='/counter' component={Counter} />
     <Route path='/fetchdata/:startDateIndex?' component={FetchData} />
   </Layout>
