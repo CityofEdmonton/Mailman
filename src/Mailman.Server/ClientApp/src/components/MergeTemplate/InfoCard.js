@@ -15,7 +15,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import { generateKeyPair } from "crypto";
-import InfoCardSidebar from './InfoCardSidebar';
+// import InfoCardSidebar from './InfoCardSidebar';
+import { InfoCardSidebarContainer } from './InfoCardSidebarContainer';
 
 const styles = theme => ({
   paper: {
@@ -44,7 +45,7 @@ const InfoCard = props => {
         <ListItemText primary={<Typography variant="h5"  className={classes.text}  noWrap={true}>{props.title}</Typography>}/>
       </ListItem>
       <ListItemSecondaryAction>
-        <InfoCardSidebar/>
+        <InfoCardSidebarContainer id={props.id}/>
       </ListItemSecondaryAction>
     </List>
     </Paper>

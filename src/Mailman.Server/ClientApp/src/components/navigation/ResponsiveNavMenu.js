@@ -9,12 +9,13 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ResponsiveDrawer from "./Drawer";
 import SettingsIcon from "@material-ui/icons/Settings";
 import LetterIcon from "@material-ui/icons/Drafts";
+import { Link } from "react-router-dom";
 
 
 // State Management
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { actionCreators } from "../../store/NavDrawer";
+import { actionCreators } from "../../reducers/NavDrawer";
 
 const drawerWidth = 240;
 
@@ -26,7 +27,7 @@ const styles = theme => ({
     position: "relative",
     display: "flex",
     width: "100%",
-    height: 1000,
+    height: 800,
   },
   appBar: {
     position: "absolute",
@@ -64,14 +65,15 @@ class ResponsiveNavMenu extends React.Component {
         
         <AppBar className={classes.appBar}>
           <Toolbar>
-            
-            <LetterIcon/>
-            <Typography variant="title" color="inherit" noWrap>
+            <LetterIcon style={{paddingRight: 5}}/>
+            <Typography variant="h6" color="inherit" noWrap>
               Mailman
             </Typography>
-            <IconButton>
-              <SettingsIcon style={{color: 'white'}}/>
-            </IconButton>
+            <Link to="/settings">
+              <IconButton>
+                <SettingsIcon style={{color: 'white'}} />
+              </IconButton>
+            </Link>
           </Toolbar>
         </AppBar>
         {this.props.children}

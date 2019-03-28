@@ -3,17 +3,20 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import { IconButton } from "@material-ui/core";
+import Fab from '@material-ui/core/Fab';
 import AddIcon from "@material-ui/icons/AddCircle";
 import Grid from "@material-ui/core/Grid";
 import Button from '@material-ui/core/Button';
+
+import { Tooltip } from '@material-ui/core';
 
 // import { actionCreators } from "../store/MergeTemplates";
 import InfoCard from "./MergeTemplate/InfoCard";
 import {
   fetchMergeTemplatesIfNeeded
-} from '../store/MergeTemplates'
+} from '../actions/readMergeTemplates'
 import { isAbsolute } from "path";
+import { loadFromMergeTemplates } from "../actions/createMergeTemplate";
 
 const queryString = require('query-string');
 
@@ -53,8 +56,10 @@ class Home extends Component {
     const {dispatch} = this.props;
     //const {fetchMergeTemplatesIfNeeded} = this.props;
     //spreadsheetId = '1MiRwI8yIQSmnzBXjtFFSHqmU8t5TaOMqcnZG3aszn6o'
-    if (spreadsheetId ){
+    if (spreadsheetId){
+      console.log("Fetch merge templates if needed")
       dispatch(fetchMergeTemplatesIfNeeded(spreadsheetId));
+      // fetchMergeTemplatesIfNeeded(spreadsheetId);
     }
     //'1GnoG6twy6OC9jQw7-KeZBR02znTW8VkR7Yp2Wf2JlrY'
     //console.log(test);
@@ -94,11 +99,11 @@ class Home extends Component {
          
         </div>
         <div>
-        <IconButton color="inherit"    >
-            <Link to="/mergeTemplate/title">
-              <AddIcon className={classes.largeButton} color="error"/>
-            </Link>
-          </IconButton>
+        <Link to="/mergeTemplate/title" onClick={() => this.props.dispatch(loadFromMergeTemplates())}>
+          <Tooltip title="New Merge Template" placement="top">
+            <AddIcon className={classes.largeButton} style={{position: "absolute", bottom: 10, right: 10}} color="error" />
+          </Tooltip>
+        </Link>
         </div>
       </div>
     );
@@ -112,12 +117,14 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-return {
-  fetchMergeTemplatesIfNeeded: (spreadSheetId) =>
-    dispatch({
-      type: 'FETCH_MERGE_TEMPLATES' //spreadsheet??
-    })
-}
+  console.log("From map dispatch to props - Home");
+  return {
+    fetchMergeTemplatesIfNeeded: (spreadSheetId) =>
+      // dispatch({
+      //   type: 'FETCH_MERGE_TEMPLATES' //spreadsheet??
+      // })
+      dispatch(fetchMergeTemplatesIfNeeded(spreadSheetId))
+  }
 
 }
 //iconStyle={{height: 48, width: 48}}

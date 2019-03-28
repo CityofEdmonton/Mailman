@@ -1,10 +1,11 @@
 ﻿import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import thunk from "redux-thunk";
 import { routerReducer, routerMiddleware } from "react-router-redux";
-import * as Counter from "./Counter";
-import * as WeatherForecasts from "./WeatherForecasts";
-import * as NavDrawer from "./NavDrawer";
-import * as MergeTemplates from "./MergeTemplates";
+import * as Counter from "../reducers/Counter";
+import * as WeatherForecasts from "../reducers/WeatherForecasts";
+import * as NavDrawer from "../reducers/NavDrawer";
+import * as MergeTemplates from "../reducers/readMergeTemplates";
+import { currentMergeTemplateReducer } from "../reducers/createMergeTemplate";
 
 export default function configureStore(history, initialState) {
   
@@ -12,7 +13,8 @@ export default function configureStore(history, initialState) {
     counter: Counter.reducer,
     weatherForecasts: WeatherForecasts.reducer,
     navDrawer: NavDrawer.reducer,
-    mergeTemplates: MergeTemplates.reducer
+    mergeTemplates: MergeTemplates.reducer,
+    currentMergeTemplate: currentMergeTemplateReducer
   };
 
   const middleware = [thunk, routerMiddleware(history)];
