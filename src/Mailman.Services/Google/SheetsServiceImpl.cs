@@ -70,12 +70,17 @@ namespace Mailman.Services.Google
                 try { response = await request.ExecuteAsync(); }
                 catch (GoogleApiException gex)
                 {
-                    throw new SheetNotFoundException("Sheet $spreadsheetId not found", gex);
+                    _logger.Error("Sheet $spreadsheetId not found", gex);
+                    // throw new SheetNotFoundException("Sheet $spreadsheetId not found", gex);
+                    IList<IList<object>> emptyValues = new List<IList<object>>();
+                    return emptyValues;
                 }
                 catch (Exception err)
                 {
                     _logger.Error(err, "Unable to read from Google Sheets: {ErrorMessage}", err.Message);
-                    throw new ReadGoogleSheetsException("Unable to read from Google Sheets", err);
+                    //throw new ReadGoogleSheetsException("Unable to read from Google Sheets", err);
+                    IList<IList<object>> emptyValues = new List<IList<object>>();
+                    return emptyValues;
                 }
 
                 returnValue = response.Values;
