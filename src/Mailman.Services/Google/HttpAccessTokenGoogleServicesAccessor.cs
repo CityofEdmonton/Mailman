@@ -36,14 +36,24 @@ namespace Mailman.Services.Google
                 _logger.Error("Unable to get current HttpContext");
                 throw new InvalidOperationException("Unable to get current HttpContext");
             }
+            string accessToken = null;
+            if (context.Request.Headers.ContainsKey("accessToken"))
+            {
+                accessToken = context.Request.Headers["accessToken"];
 
+            }
             // The Mailman server/Worker service uses JWT authentication with 
             // the OAuth token as a claim.  Check there first.
             //if (context.User.Identity.AuthenticationType == "Jwt")
-            string accessToken = context.User.Claims?.FirstOrDefault(c => c.Type == "access_token")?.Value;
 
             if (string.IsNullOrWhiteSpace(accessToken))
-                accessToken = await context.GetTokenAsync("access_token");
+            {
+                accessToken = context.User.Claims?.FirstOrDefault(c => c.Type == "access_token")?.Value;
+
+                if (string.IsNullOrWhiteSpace(accessToken))
+                    accessToken = await context.GetTokenAsync("access_token");
+
+            }
 
             return accessToken;
         }
@@ -61,6 +71,7 @@ namespace Mailman.Services.Google
             string accessToken = await GetAccessTokenAsync();
             var credential = GoogleCredential.FromAccessToken(accessToken);
             var serviceInitializer = new BaseClientService.Initializer() { HttpClientInitializer = credential };
+            Console.WriteLine("tester"+credential);
             return new SheetsService(serviceInitializer);
         }
     }
