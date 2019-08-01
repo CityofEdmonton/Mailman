@@ -213,7 +213,7 @@ namespace Mailman.Server.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost("run")]
-        public async Task<IActionResult> RunMailMerge(RunMailMergeOptions options,
+        public async Task<IActionResult> RunMailMerge([FromBody]RunMailMergeOptions options,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             if (!ModelState.IsValid)

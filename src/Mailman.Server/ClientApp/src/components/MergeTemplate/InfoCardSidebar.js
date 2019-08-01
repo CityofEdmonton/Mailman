@@ -11,7 +11,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-
+import { runMergeTemplate } from '../../actions/runMergeTemplate';
 import PropTypes from 'prop-types';
 
 const styles = theme => ({
@@ -63,8 +63,8 @@ class InfoCardSidebar extends Component {
             </IconButton>
           </ListItem>
           <ListItem className={classes.root}>
-            <IconButton className={classes.smallIcon}>
-              <Tooltip title="Run" placement="left"><PlayIcon style={{color: "green"}}/></Tooltip>
+            <IconButton className={classes.smallIcon} onClick={() => runMergeTemplate(this.props.id)}> 
+               <Tooltip title="Run" placement="left"><PlayIcon style={{ color: "green" }} /></Tooltip>
             </IconButton>
           </ListItem>
           <ListItem className={classes.root}>
