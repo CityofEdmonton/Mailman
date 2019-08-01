@@ -11,6 +11,7 @@ import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes'
 
 import MuiReactAutosuggest from '../MergeTemplate/MuiReactAutosuggest';
 import Hint from '../MergeTemplate/Hint';
+import {getOAuthToken} from '../../util/OAuthUtil'
 
 import { getUtcDateString } from './date';
 
@@ -60,14 +61,13 @@ export default class SavePage extends Component {
 
     sendPost = () => {
 
-        //var data = this.props.currentMergeTemplate;
+
         const data = {
             ...this.props.currentMergeTemplate,
             "id": ID(),
             "createdDateUtc": getUtcDateString(),
         }
-
-        console.log(data)
+        data.type = "Email";
 
         const config = {
             method: 'POST',
@@ -76,17 +76,21 @@ export default class SavePage extends Component {
             },
             body: JSON.stringify(data)
         };
+        getOAuthToken().then(
+            accessToken => {
+                config.headers.accessToken = accessToken;
 
-        fetch(`https://localhost:5001/api/MergeTemplates/Email`, config)
-        .then(response => { // Use arrow functions so do not have to bind to "this" context
-            return response;
-        })
-        .then(json => {
-            console.log(json);
-        })
-        .catch(error => {
-            console.log("Unable to send post request. Error: ", error);
-        })
+                fetch(`https://localhost:5001/api/MergeTemplates/Email`, config)
+                    .then(response => { // Use arrow functions so do not have to bind to "this" context
+                        return response;
+                    })
+                    .then(json => {
+                        console.log(json);
+                    })
+                    .catch(error => {
+                        console.log("Unable to send post request. Error: ", error);
+                    })
+            })
     }
 
     sendPut() {
