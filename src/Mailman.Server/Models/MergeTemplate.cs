@@ -47,9 +47,23 @@ namespace Mailman.Server.Models
                     createdDateUtc = value;
                 else
                     throw new ArgumentOutOfRangeException(nameof(CreatedDateUtc), value, "CreatedDateUtc cannot be in the future");
+
             }            
         }
 
+        private string spreadSheetId;
+        [Required]
+        public string SpreadSheetId
+        {
+            get => spreadSheetId;
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                    spreadSheetId = value;
+                else
+                    throw new ArgumentNullException(nameof(SpreadSheetId));
+            }
+        }
 
         /// <summary>
         /// The version of Mailman at the time this merge 

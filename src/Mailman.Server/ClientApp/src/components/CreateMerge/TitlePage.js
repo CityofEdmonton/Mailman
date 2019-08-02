@@ -8,17 +8,20 @@ import TextInput from '../MergeTemplate/TextInput';
 import FormInput from '../MergeTemplate/FormInput';
 import Hint from '../MergeTemplate/Hint';
 import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes';
+const queryString = require('query-string');
 
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
 export default class TitlePage extends Component {
-  _isMounted = false;
+    _isMounted = false;
 
   constructor(props) {
     super(props);
     this.state = { // initialize empty merge title inputs
       mergeTitle: this.props.currentMergeTemplate.title,
-      formInput: this.props.currentMergeTemplate.timestampColumn.shouldPrefixNameWithMergeTemplateTitle
+        formInput: this.props.currentMergeTemplate.timestampColumn.shouldPrefixNameWithMergeTemplateTitle,
+
+
     };
   }
 
@@ -38,9 +41,12 @@ export default class TitlePage extends Component {
     this.setState({ formInput: newInput })
   }
 
-  handleRouting = () => {
+    handleRouting = () => {
     const oldTitle = this.props.currentMergeTemplate.title;
     const oldTimestamp = this.props.currentMergeTemplate.timestampColumn.shouldPrefixNameWithMergeTemplateTitle;
+    let spreadsheetId = this.props.location.pathname.split('/title/')[1];
+    this.props.currentMergeTemplate.spreadsheetId = spreadsheetId;
+
     if (oldTitle !== this.state.mergeTitle || oldTimestamp !== this.state.formInput) {
       console.log("Title page was changed. Should update!");
       if (this._isMounted) {
@@ -51,7 +57,7 @@ export default class TitlePage extends Component {
     }
   }
 
-  render() {
+    render() {
 
     return (
       <Grid
