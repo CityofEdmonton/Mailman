@@ -12,6 +12,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import { runMergeTemplate } from '../../actions/runMergeTemplate';
+import { deleteMergeTemplate } from '../../actions/deleteMergeTemplate';
+
 import PropTypes from 'prop-types';
 
 const styles = theme => ({
@@ -58,7 +60,7 @@ class InfoCardSidebar extends Component {
         <List disablePadding={true} className={classes.iconList}>
           
           <ListItem className={classes.root}>
-            <IconButton className={classes.smallIcon}>
+            <IconButton className={classes.smallIcon} onClick={() => deleteMergeTemplate(this.props.id)}> 
               <Tooltip title="Delete" placement="left"><DeleteIcon style={{color: "red"}}/></Tooltip>
             </IconButton>
           </ListItem>

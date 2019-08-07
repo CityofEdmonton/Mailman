@@ -1,8 +1,8 @@
 ﻿import { getOAuthToken } from '../util/OAuthUtil';
 
-export function runMergeTemplate(templateId) {
+export function deleteMergeTemplate(templateId) {
     const config = {
-        method: 'POST',
+        method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
            
@@ -14,9 +14,11 @@ export function runMergeTemplate(templateId) {
     getOAuthToken().then(
         accessToken => {
             config.headers.accessToken = accessToken;
-            return fetch(`https://localhost:5001/api/MergeTemplates/run`, config).then(response => {
+            return fetch(`https://localhost:5001/api/MergeTemplates/Email`, config).then(response => {
+                window.location.reload();
                 return response.json();
             })
         })
 }
+
 
