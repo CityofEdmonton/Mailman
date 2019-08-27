@@ -22,4 +22,3 @@ jobs:
         dotnet-version: 2.2.108
     - name: Build with dotnet
       run: dotnet build --configuration Release
-           dotnet test ./src/Mailman.Tests/Mailman.Tests.csproj
