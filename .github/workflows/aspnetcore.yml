@@ -1,6 +1,10 @@
 name: ASP.NET Core CI
 
 on:
+  push:
+    branches:
+    - edge
+    
   pull_request:
     branches:
     - edge
