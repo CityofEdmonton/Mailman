@@ -1,6 +1,9 @@
 name: ASP.NET Core CI
 
-on: [push]
+on:
+  pull_request:
+    branches:
+    - edge
 
 jobs:
   build:
@@ -12,7 +15,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.108
+        dotnet-version: 2.2
     - name: Build with dotnet
       run: dotnet build ./src/Mailman.Server/Mailman.Server.csproj
            dotnet test ./src/Mailman.Tests/Mailman.Tests.csproj
