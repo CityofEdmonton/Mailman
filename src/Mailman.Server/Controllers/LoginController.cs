@@ -44,7 +44,7 @@ namespace Mailman.Server.Controllers
             {
                 var returnUrl = Request?.Query?["returnUrl"];
                 if (string.IsNullOrWhiteSpace(returnUrl))
-                    returnUrl = "/";
+                    returnUrl = "/#/";
                 return base.Redirect(returnUrl + Request.QueryString.Value);
             }
             else

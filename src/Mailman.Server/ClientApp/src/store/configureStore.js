@@ -1,13 +1,12 @@
 ﻿import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
 import thunk from 'redux-thunk'
-import { routerReducer, routerMiddleware } from 'react-router-redux'
 import * as Counter from '../reducers/Counter'
 import * as WeatherForecasts from '../reducers/WeatherForecasts'
 import * as NavDrawer from '../reducers/NavDrawer'
 import * as MergeTemplates from '../reducers/ReadMergeTemplates'
 import { currentMergeTemplateReducer } from '../reducers/CreateMergeTemplate'
 
-export default function configureStore(history, initialState) {
+export default function configureStore(initialState) {
   const reducers = {
     counter: Counter.reducer,
     weatherForecasts: WeatherForecasts.reducer,
@@ -16,7 +15,7 @@ export default function configureStore(history, initialState) {
     currentMergeTemplate: currentMergeTemplateReducer,
   }
 
-  const middleware = [thunk, routerMiddleware(history)]
+  const middleware = [thunk]
 
   // In development, use the browser's Redux dev tools extension if installed
   const enhancers = []
@@ -30,8 +29,7 @@ export default function configureStore(history, initialState) {
   }
 
   const rootReducer = combineReducers({
-    ...reducers,
-    routing: routerReducer,
+    ...reducers
   })
 
   return createStore(
