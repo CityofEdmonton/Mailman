@@ -71,7 +71,6 @@ namespace Mailman.Services.Google
             string accessToken = await GetAccessTokenAsync();
             var credential = GoogleCredential.FromAccessToken(accessToken);
             var serviceInitializer = new BaseClientService.Initializer() { HttpClientInitializer = credential };
-            Console.WriteLine("tester"+credential);
             return new SheetsService(serviceInitializer);
         }
     }
