@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import HeaderSelection from './HeaderSelection'
-import { updateHeaderSelection } from '../../actions/createMergeTemplate'
+import { updateHeaderSelection } from '../../actions/CreateMergeTemplate'
 
 function mapStateToProps(state) {
   const { currentMergeTemplate } = state // Get this from the store

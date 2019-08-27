@@ -16,9 +16,9 @@ import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes'
 import MuiReactAutosuggest from '../MergeTemplate/MuiReactAutosuggest'
 import Hint from '../MergeTemplate/Hint'
 
-import { getUtcDateString } from './date'
+import { getUtcDateString } from './Date'
 
-var ID = require('./id')
+var ID = require('./Id')
 
 export default class SavePage extends Component {
   _isMounted = false

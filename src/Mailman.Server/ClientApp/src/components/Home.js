@@ -13,7 +13,7 @@ import { Tooltip } from '@material-ui/core'
 import InfoCard from './MergeTemplate/InfoCard'
 import { fetchMergeTemplatesIfNeeded } from '../actions/readMergeTemplates'
 import { isAbsolute } from 'path'
-import { loadFromMergeTemplates } from '../actions/createMergeTemplate'
+import { loadFromMergeTemplates } from '../actions/CreateMergeTemplate'
 
 const queryString = require('query-string')
 

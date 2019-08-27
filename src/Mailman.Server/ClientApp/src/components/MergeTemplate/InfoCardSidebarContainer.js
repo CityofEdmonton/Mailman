@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { loadFromMergeTemplates } from '../../actions/createMergeTemplate'
+import { loadFromMergeTemplates } from '../../actions/CreateMergeTemplate'
 
 import InfoCardSidebar from './InfoCardSidebar'
 

@@ -12,7 +12,7 @@ import {
   UPDATE_EMAIL_SUBJECT,
   UPDATE_EMAIL_BODY,
   UPDATE_VERSION_NUMBER,
-} from '../actions/createMergeTemplate'
+} from '../actions/CreateMergeTemplate'
 
 const initialState = {
   emailTemplate: {

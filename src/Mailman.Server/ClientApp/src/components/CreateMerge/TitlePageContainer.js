@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import TitlePage from './TitlePage'
-import { updateTitlePage } from '../../actions/createMergeTemplate'
+import { updateTitlePage } from '../../actions/CreateMergeTemplate'
 
 function mapStateToProps(state) {
   const { currentMergeTemplate } = state

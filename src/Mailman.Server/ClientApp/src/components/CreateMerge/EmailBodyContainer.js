@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import EmailBody from './EmailBody'
-import { updateEmailBody } from '../../actions/createMergeTemplate'
+import { updateEmailBody } from '../../actions/CreateMergeTemplate'
 
 function mapStateToProps(state) {
   const { currentMergeTemplate, mergeTemplates } = state
