@@ -1,12 +1,12 @@
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 
-import SavePage from './SavePage';
+import SavePage from './SavePage'
 
 function mapStateToProps(state) {
-    const { currentMergeTemplate } = state;
-    return ({
-        currentMergeTemplate: currentMergeTemplate,
-    });
+  const { currentMergeTemplate } = state
+  return {
+    currentMergeTemplate: currentMergeTemplate,
+  }
 }
 
-export const SavePageContainer = connect(mapStateToProps)(SavePage);
+export const SavePageContainer = connect(mapStateToProps)(SavePage)

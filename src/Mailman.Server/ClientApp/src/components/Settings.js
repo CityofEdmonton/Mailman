@@ -12,10 +12,6 @@ const Home = props => (
       </Link>
     </Grid>
   </Grid>
-  // <div>
-  //   <h1>Settings</h1>
-
-  // </div>
 )
 
 export default connect()(Home)
