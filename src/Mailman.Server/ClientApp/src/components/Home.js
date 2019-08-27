@@ -76,9 +76,6 @@ class Home extends Component {
   }
 
   render() {
-   console.log(this.props);
-   console.log(typeof this.props.mergeTemplates);
-   console.log('Piano');
       const { classes } = this.props;
       const parsed = queryString.parse(this.props.location.search);
       var spreadsheetId = parsed.ssid;

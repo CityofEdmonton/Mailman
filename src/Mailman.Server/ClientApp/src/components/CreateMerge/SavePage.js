@@ -81,8 +81,10 @@ export default class SavePage extends Component {
                 config.headers.accessToken = accessToken;
 
                 fetch(`https://localhost:5001/api/MergeTemplates/Email`, config)
-                    .then(response => { // Use arrow functions so do not have to bind to "this" context
-                        return response;
+                    .then(response => {
+                        if (response.status === 201) {
+                            return this.props.currentMergeTemplate.spreadsheetId;
+                        }
                     })
                     .then(json => {
                         console.log(json);
@@ -102,13 +104,11 @@ export default class SavePage extends Component {
         if (id === "") {
             this.sendPost()
         } else {
-            console.log("Should update current template");
             this.sendPost()
         }
     }
 
     render() {
-
         const theme = createMuiTheme({
             palette: {
               primary: teal,
@@ -138,7 +138,7 @@ export default class SavePage extends Component {
                 </Link>
                 {/* <Link to="/"> */}
                 <MuiThemeProvider theme={theme}>
-                    <Link to={`/`}>
+                    <Link to="/">
                         <Button
                             color="primary"
                             variant="contained"
