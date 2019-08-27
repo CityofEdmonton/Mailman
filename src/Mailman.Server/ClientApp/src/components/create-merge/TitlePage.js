@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom'
 
 import { Button, Card, Grid, Typography } from '@material-ui/core'
 
-import TextInput from '../MergeTemplate/TextInput'
-import FormInput from '../MergeTemplate/FormInput'
-import Hint from '../MergeTemplate/Hint'
-import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes'
+import TextInput from '../merge-template/TextInput'
+import FormInput from '../merge-template/FormInput'
+import Hint from '../merge-template/Hint'
+import { mergeTemplateInfoShape } from '../merge-template/MergeTemplatePropTypes'
 
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true
 

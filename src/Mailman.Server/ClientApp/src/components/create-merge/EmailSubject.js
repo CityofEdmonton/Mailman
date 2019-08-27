@@ -4,19 +4,19 @@ import PropTypes from 'prop-types'
 
 import { Button, Card, Grid, Typography } from '@material-ui/core'
 
-import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes'
+import { mergeTemplateInfoShape } from '../merge-template/MergeTemplatePropTypes'
 
-import MuiReactAutosuggest from '../MergeTemplate/MuiReactAutosuggest'
-import Hint from '../MergeTemplate/Hint'
+import MuiReactAutosuggest from '../merge-template/MuiReactAutosuggest'
+import Hint from '../merge-template/Hint'
 
-export default class EmailBody extends Component {
+export default class EmailSubject extends Component {
   _isMounted = false
 
   constructor(props) {
     super(props)
     this.state = {
       selectOptions: [],
-      body: this.props.currentMergeTemplate.emailTemplate.body,
+      subject: this.props.currentMergeTemplate.emailTemplate.subject,
     }
   }
 
@@ -61,18 +61,18 @@ export default class EmailBody extends Component {
     this._isMounted = false
   }
 
-  handleBodyInput = newInput => {
-    this.setState({ body: newInput })
+  handleSubjectInput = newInput => {
+    this.setState({ subject: newInput })
   }
 
   handleRouting = () => {
-    const oldBody = this.props.currentMergeTemplate.emailTemplate.body
-    const { body } = this.state
-    if (oldBody !== body) {
-      console.log('Email body was changed!')
-      this.props.updateEmailBody(body)
+    const oldSubject = this.props.currentMergeTemplate.emailTemplate.subject
+    const { subject } = this.state
+    if (oldSubject !== subject) {
+      console.log('Email subject was changed!')
+      this.props.updateEmailSubject(subject)
     } else {
-      console.log('Email body unchanged.')
+      console.log('Email subject unchanged.')
     }
   }
 
@@ -81,24 +81,24 @@ export default class EmailBody extends Component {
       <Grid container style={styles.container}>
         <Card style={styles.card}>
           <Typography variant="h5" style={styles.title}>
-            What would you like your email body to be?
+            What would you like your email subject to be?
           </Typography>
           <Typography variant="body2">Tip: try typing {'<<'}</Typography>
           <MuiReactAutosuggest
-            placeholder="Body..."
+            placeholder="Subject..."
             suggestions={this.state.selectOptions}
-            callback={this.handleBodyInput}
-            value={this.state.body}
+            callback={this.handleSubjectInput}
+            value={this.state.subject}
             openWrapper="<<"
             closeWrapper=">>"
           />
           <Hint
-            title="Recipients will see this as the body of the email.
+            title="Recipients will see this as the subject line of the email.
                         Type << to see a list of column names.
                         Template tags will be swapped out with the associated values in the Sheet"
           />
         </Card>
-        <Link to={`/mergeTemplate/subject`}>
+        <Link to={`/mergeTemplate/receiverSelection`}>
           <Button
             variant="contained"
             style={styles.cancel_button}
@@ -107,13 +107,13 @@ export default class EmailBody extends Component {
             Back
           </Button>
         </Link>
-        <Link to="/mergeTemplate/save">
+        <Link to="/mergeTemplate/body">
           <Button
             color="primary"
             variant="contained"
             style={styles.next_button}
             onClick={() => this.handleRouting()}
-            disabled={!this.state.body}
+            disabled={!this.state.subject}
           >
             Next
           </Button>
@@ -154,8 +154,8 @@ const styles = {
   },
 }
 
-EmailBody.propTypes = {
+EmailSubject.propTypes = {
   currentMergeTemplate: mergeTemplateInfoShape.isRequired,
-  updateEmailBody: PropTypes.func.isRequired,
+  updateEmailSubject: PropTypes.func.isRequired,
   spreadsheetId: PropTypes.string.isRequired,
 }

@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button'
 
 import { Tooltip } from '@material-ui/core'
 
-import InfoCard from './MergeTemplate/InfoCard'
+import InfoCard from './merge-template/InfoCard'
 import { fetchMergeTemplatesIfNeeded } from '../actions/ReadMergeTemplates'
 import { isAbsolute } from 'path'
 import { loadFromMergeTemplates } from '../actions/CreateMergeTemplate'

@@ -4,9 +4,9 @@ import PropTypes from 'prop-types'
 
 import { Button, Card, Grid, Typography } from '@material-ui/core'
 
-import TextInput from '../MergeTemplate/TextInput'
-import Hint from '../MergeTemplate/Hint'
-import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes'
+import TextInput from '../merge-template/TextInput'
+import Hint from '../merge-template/Hint'
+import { mergeTemplateInfoShape } from '../merge-template/MergeTemplatePropTypes'
 
 export default class HeaderSelection extends Component {
   _isMounted = false

@@ -4,10 +4,10 @@ import PropTypes from 'prop-types'
 
 import { Button, Card, Grid, Typography } from '@material-ui/core'
 
-import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes'
+import { mergeTemplateInfoShape } from '../merge-template/MergeTemplatePropTypes'
 
-import MuiReactAutosuggest from '../MergeTemplate/MuiReactAutosuggest'
-import Hint from '../MergeTemplate/Hint'
+import MuiReactAutosuggest from '../merge-template/MuiReactAutosuggest'
+import Hint from '../merge-template/Hint'
 
 export default class ReceiverSelection extends Component {
   _isMounted = false

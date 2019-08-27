@@ -11,7 +11,7 @@
  * Generates a string that can be used as an id.
  *
  * @return {string} A randomized string.
- * @alias module:components/CreateMerge/id.ID
+ * @alias module:components/create-merge/id.ID
  */
 var ID = function() {
   // Math.random should be unique because of its seeding algorithm.

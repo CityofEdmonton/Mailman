@@ -4,9 +4,9 @@ import PropTypes from 'prop-types'
 
 import { Button, Card, Grid, Typography } from '@material-ui/core'
 
-import MenuInput from '../MergeTemplate/MenuInput'
-import Hint from '../MergeTemplate/Hint'
-import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes'
+import MenuInput from '../merge-template/MenuInput'
+import Hint from '../merge-template/Hint'
+import { mergeTemplateInfoShape } from '../merge-template/MergeTemplatePropTypes'
 
 export default class TabSelection extends Component {
   _isMounted = false

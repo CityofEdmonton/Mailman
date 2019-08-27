@@ -11,10 +11,10 @@ import teal from '@material-ui/core/colors/teal'
 
 import { Button, Card, Grid, Typography } from '@material-ui/core'
 
-import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes'
+import { mergeTemplateInfoShape } from '../merge-template/MergeTemplatePropTypes'
 
-import MuiReactAutosuggest from '../MergeTemplate/MuiReactAutosuggest'
-import Hint from '../MergeTemplate/Hint'
+import MuiReactAutosuggest from '../merge-template/MuiReactAutosuggest'
+import Hint from '../merge-template/Hint'
 
 import { getUtcDateString } from './Date'
 
