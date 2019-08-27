@@ -40,7 +40,7 @@ class Home extends Component {
     this.state = {
       mergeTemplates: []
     }
-
+    
     
 
   }
@@ -76,10 +76,9 @@ class Home extends Component {
   }
 
   render() {
-   console.log(this.props);
-   console.log(typeof this.props.mergeTemplates);
-   console.log('Piano');
-   const { classes } = this.props;
+      const { classes } = this.props;
+      const parsed = queryString.parse(this.props.location.search);
+      var spreadsheetId = parsed.ssid;
 
     return (
       <div>
@@ -99,7 +98,7 @@ class Home extends Component {
          
         </div>
         <div>
-        <Link to="/mergeTemplate/title" onClick={() => this.props.dispatch(loadFromMergeTemplates())}>
+         <Link to={"/mergeTemplate/title/"+spreadsheetId} onClick={() => this.props.dispatch(loadFromMergeTemplates())}>
           <Tooltip title="New Merge Template" placement="top">
             <AddIcon className={classes.largeButton} style={{position: "absolute", bottom: 10, right: 10}} color="error" />
           </Tooltip>

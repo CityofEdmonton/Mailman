@@ -7,7 +7,7 @@ import { Button, Card, Grid, Typography } from '@material-ui/core';
 import MenuInput from '../MergeTemplate/MenuInput';
 import Hint from '../MergeTemplate/Hint';
 import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes';
-
+import {getOAuthToken} from '../../util/OAuthUtil'
 export default class TabSelection extends Component {
     _isMounted = false;
 
@@ -28,19 +28,26 @@ export default class TabSelection extends Component {
                 'Content-Type': 'application/json'
             }
         };
-
-        fetch(`https://localhost:5001/api/Sheets/SheetNames/${this.props.spreadsheetId}`, config)
-        .then(response => { // Use arrow functions so do not have to bind to "this" context
-            return response.json();
-        })
-        .then(json => {
-            if (this._isMounted) {
-                this.setState({ tabsList: json });
-            }
-        })
+        getOAuthToken().then(
+            accessToken => {
+            config.headers.accessToken = accessToken;
+            fetch(`https://localhost:5001/api/Sheets/SheetNames/${this.props.spreadsheetId}`, config)
+            .then(response => { // Use arrow functions so do not have to bind to "this" context
+                return response.json();
+            })
+            .then(json => {
+                if (this._isMounted) {
+                    this.setState({ tabsList: json });
+                }
+            })
+            .catch(error => {
+                console.log("Error: Unable to get sheet tab data");
+            })
+            })
         .catch(error => {
             console.log("Error: Unable to get sheet tab data");
         })
+
     }
 
     componentWillUnmount() {

@@ -11,6 +11,8 @@ import Tooltip from "@material-ui/core/Tooltip";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import { runMergeTemplate } from '../../actions/runMergeTemplate';
+import { deleteMergeTemplate } from '../../actions/deleteMergeTemplate';
 
 import PropTypes from 'prop-types';
 
@@ -58,13 +60,13 @@ class InfoCardSidebar extends Component {
         <List disablePadding={true} className={classes.iconList}>
           
           <ListItem className={classes.root}>
-            <IconButton className={classes.smallIcon}>
+            <IconButton className={classes.smallIcon} onClick={() => deleteMergeTemplate(this.props.id)}> 
               <Tooltip title="Delete" placement="left"><DeleteIcon style={{color: "red"}}/></Tooltip>
             </IconButton>
           </ListItem>
           <ListItem className={classes.root}>
-            <IconButton className={classes.smallIcon}>
-              <Tooltip title="Run" placement="left"><PlayIcon style={{color: "green"}}/></Tooltip>
+            <IconButton className={classes.smallIcon} onClick={() => runMergeTemplate(this.props.id)}> 
+               <Tooltip title="Run" placement="left"><PlayIcon style={{ color: "green" }} /></Tooltip>
             </IconButton>
           </ListItem>
           <ListItem className={classes.root}>

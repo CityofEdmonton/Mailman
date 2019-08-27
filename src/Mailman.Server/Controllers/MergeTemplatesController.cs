@@ -152,17 +152,16 @@ namespace Mailman.Server.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpDelete("Email")]
-        public async Task<IActionResult> Delete([FromBody] EmailMergeTemplate mergeTemplateData)
+        public async Task<IActionResult> Delete([FromBody]RunMailMergeOptions options)
         
         {
-            EnsureArg.IsNotNull(mergeTemplateData);
             
             if (!ModelState.IsValid)
             {
                 _logger.Warning("Unable to delete MergeTemplate because model state is not valid: {ModelState}", ModelState);
                 return BadRequest(ModelState);
             }
-            var oldMergeTemplate = _mapper.Map<Mailman.Services.Data.MergeTemplate> (mergeTemplateData); 
+            var oldMergeTemplate = await _mergeTemplateRepository.GetMergeTemplate(options.MergeTemplateId);
             try
             {
                 await _mergeTemplateRepository.DeleteMergeTemplateAsync(oldMergeTemplate);
@@ -213,7 +212,7 @@ namespace Mailman.Server.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost("run")]
-        public async Task<IActionResult> RunMailMerge(RunMailMergeOptions options,
+        public async Task<IActionResult> RunMailMerge([FromBody]RunMailMergeOptions options,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             if (!ModelState.IsValid)

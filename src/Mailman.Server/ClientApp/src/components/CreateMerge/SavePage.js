@@ -11,6 +11,7 @@ import { mergeTemplateInfoShape } from '../MergeTemplate/MergeTemplatePropTypes'
 
 import MuiReactAutosuggest from '../MergeTemplate/MuiReactAutosuggest';
 import Hint from '../MergeTemplate/Hint';
+import {getOAuthToken} from '../../util/OAuthUtil'
 
 import { getUtcDateString } from './date';
 
@@ -60,43 +61,13 @@ export default class SavePage extends Component {
 
     sendPost = () => {
 
-        // TODO: make this method actually work
 
-        const test_data = {
-            "id": "asdasd123",
-            // "SpreadSheetId": "hello",
-            "type": "Email",
-            "createdBy": "string",
-            "createdDateUtc": "2019-03-07T21:34:00.846Z",
-            "version": "string",
-            "title": "string",
-            "sheetName": "string",
-            "headerRowNumber": 1,
-            "timestampColumn": {
-              "name": "string",
-              "shouldPrefixNameWithMergeTemplateTitle": true,
-              "title": "string"
-            },
-            "conditional": "string",
-            "repeater": "Off",
-            "emailTemplate": {
-              "to": "string",
-              "cc": "string",
-              "bcc": "string",
-              "subject": "string",
-              "body": "string"
-            }
-          }
-
-        // var data = this.props.currentMergeTemplate;
         const data = {
             ...this.props.currentMergeTemplate,
             "id": ID(),
-            // "createdDateUtc": getUtcDateString(),
+            "createdDateUtc": getUtcDateString(),
         }
-
-        console.log(data)
-        console.log(test_data)
+        data.type = "Email";
 
         const config = {
             method: 'POST',
@@ -105,17 +76,23 @@ export default class SavePage extends Component {
             },
             body: JSON.stringify(data)
         };
+        getOAuthToken().then(
+            accessToken => {
+                config.headers.accessToken = accessToken;
 
-        fetch(`https://localhost:5001/api/MergeTemplates/Email`, config)
-        .then(response => { // Use arrow functions so do not have to bind to "this" context
-            return response;
-        })
-        .then(json => {
-            console.log(json);
-        })
-        .catch(error => {
-            console.log("Unable to send post request. Error: ", error);
-        })
+                fetch(`https://localhost:5001/api/MergeTemplates/Email`, config)
+                    .then(response => {
+                        if (response.status === 201) {
+                            return this.props.currentMergeTemplate.spreadsheetId;
+                        }
+                    })
+                    .then(json => {
+                        console.log(json);
+                    })
+                    .catch(error => {
+                        console.log("Unable to send post request. Error: ", error);
+                    })
+            })
     }
 
     sendPut() {
@@ -127,13 +104,11 @@ export default class SavePage extends Component {
         if (id === "") {
             this.sendPost()
         } else {
-            console.log("Should update current template");
             this.sendPost()
         }
     }
 
     render() {
-
         const theme = createMuiTheme({
             palette: {
               primary: teal,
@@ -162,7 +137,8 @@ export default class SavePage extends Component {
                     </Button>
                 </Link>
                 {/* <Link to="/"> */}
-                    <MuiThemeProvider theme={theme}>
+                <MuiThemeProvider theme={theme}>
+                    <Link to="/">
                         <Button
                             color="primary"
                             variant="contained"
@@ -170,7 +146,8 @@ export default class SavePage extends Component {
                             onClick={() => this.handleSave()}
                         >
                             Save
-                        </Button>
+                            </Button>
+                     </Link>
                     </MuiThemeProvider>
                 {/* </Link> */}
             </Grid>
