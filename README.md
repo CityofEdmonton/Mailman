@@ -1,7 +1,7 @@
 # Mailman
 Mailman aims to make sending emails easy. Using common spreadsheet functions, customize when you want to send your emails.
 A powerful, easy to use mail merge solution for the City of Edmonton.
-Mailman guides you through the process of setting up your own mail merge. Just use our merge tags! You can use <<>> to swap out data from your Google Sheets into your emails. Supercharge your email workflow today!
+Mailman guides you through the process of setting up your own mail merge. Just use our merge tags! You can use <<>> to swap out data from your Google Sheets into your emails. Supercharge your email workflow today! 
 
 ## Collaborate
 
