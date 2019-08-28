@@ -66,11 +66,21 @@ namespace Mailman.Server.Controllers
         [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.Google.GoogleDefaults.AuthenticationScheme)]
         public IActionResult Signin()
         {
-            return new ContentResult()
+            if (User.Identity.IsAuthenticated)
             {
-                Content = "<html><body>\n<script>\nwindow.close();</script>\n</body></html>",
-                ContentType = "text/html"
-            };
+              string email = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+              string name = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+              string givenName = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value;
+              string surname = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value;
+
+              Dictionary<string, string> userInfo = new Dictionary<string, string>();
+              userInfo.Add("email", email);
+              userInfo.Add("name", name);
+              userInfo.Add("givenName", givenName);
+              userInfo.Add("surname", surname);
+              return new JsonResult(userInfo);
+            }
+            return new UnauthorizedResult();
         }
 
         /// <summary>
