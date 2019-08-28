@@ -5,8 +5,9 @@ import configureStore from '../store/ConfigureStore'
 let store = configureStore()
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   let state = store.getState()
+  console.log('Blocking..')
   return (<Route { ...rest } render={(props) => {
-    return state.login.user
+    return Object.keys(state.login.user).length !== 0
     ? <Component {...props} />
     : <Redirect to='/login' />
   }}
