@@ -16,7 +16,6 @@ export const reducer = (state, action) => {
       }
 
     case RECEIVE_LOGIN:
-      console.log('Grabbing login')
       return {
         ...state,
         user: action.payload.user,

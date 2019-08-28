@@ -7,6 +7,7 @@ export function fetchLogin() {
     headers: {
       'Content-Type': 'application/json',
     },
+    mode: 'no-cors'
   }
 
   return dispatch => {
