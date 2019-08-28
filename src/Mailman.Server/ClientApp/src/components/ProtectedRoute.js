@@ -1,19 +1,16 @@
 import React, { Component } from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import { connect } from 'react-redux'
+import configureStore from '../store/ConfigureStore'
 
-const mapStateToProps = state => {
-  return {
-    user: state.user
-  }
-}
-
+let store = configureStore()
 const ProtectedRoute = ({ component: Component, ...rest }) => {
-  return (<Route { ...rest } render={(props) => (
-    props.user
+  let state = store.getState()
+  return (<Route { ...rest } render={(props) => {
+    return state.login.user
     ? <Component {...props} />
     : <Redirect to='/login' />
-  )} />)
+  }}
+  />)
 }
 
-export default connect(mapStateToProps)(ProtectedRoute)
+export default ProtectedRoute

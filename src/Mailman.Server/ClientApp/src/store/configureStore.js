@@ -4,15 +4,23 @@ import * as Counter from '../reducers/Counter'
 import * as WeatherForecasts from '../reducers/WeatherForecasts'
 import * as NavDrawer from '../reducers/NavDrawer'
 import * as MergeTemplates from '../reducers/ReadMergeTemplates'
+import * as Login from '../reducers/Login'
 import { currentMergeTemplateReducer } from '../reducers/CreateMergeTemplate'
 
+let store = null
+
 export default function configureStore(initialState) {
+  if (store) {
+    console.log('Store already exists.')
+    return store
+  }
   const reducers = {
     counter: Counter.reducer,
     weatherForecasts: WeatherForecasts.reducer,
     navDrawer: NavDrawer.reducer,
     mergeTemplates: MergeTemplates.reducer,
     currentMergeTemplate: currentMergeTemplateReducer,
+    login: Login.reducer
   }
 
   const middleware = [thunk]
@@ -32,7 +40,7 @@ export default function configureStore(initialState) {
     ...reducers
   })
 
-  return createStore(
+  store = createStore(
     rootReducer,
     initialState,
     compose(
@@ -40,4 +48,5 @@ export default function configureStore(initialState) {
       ...enhancers
     )
   )
+  return store
 }
