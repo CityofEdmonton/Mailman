@@ -19,7 +19,7 @@ const styles = theme => ({
 
 const Loading = (props) => {
   let loadClass = props.classes.hidden
-  if (props.loading) {
+  if (props.loading.length > 0) {
     loadClass = props.classes.fullPage
   }
   return <div className={loadClass}>
@@ -31,7 +31,7 @@ const Loading = (props) => {
 
 const mapStateToProps = state => {
   return {
-    loading: state.loading.hardLoad
+    loading: state.loading
   }
 }
 
