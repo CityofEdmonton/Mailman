@@ -15,6 +15,7 @@ using System.Reflection;
 using System.IO;
 using Mailman.Server.Hubs;
 using Mailman.Server;
+using Mailman.Server.Controllers;
 
 namespace Mailman
 {
@@ -60,6 +61,7 @@ namespace Mailman
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMailmanAuthentication(Configuration);
             services.AddMailmanServices(Configuration);
+            services.AddScoped<MergeTemplatesController, MergeTemplatesController>();
 
             // Add Appication Insights, if available
             string applicationInsightsInstrumentationKey = Environment.GetEnvironmentVariable("APP_INSIGHTS_KEY");
