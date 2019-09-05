@@ -75,7 +75,7 @@ namespace Mailman.Server.Controllers
         /// in a child window to get consent.
         /// </remarks>
         [HttpGet("[action]")]
-        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.Google.GoogleDefaults.AuthenticationScheme)]
+        [Authorize]
         public async Task<IActionResult> Signin(String SignalrId)
         {
             // Send the user information to the client.
@@ -95,32 +95,5 @@ namespace Mailman.Server.Controllers
                 ContentType = "text/html"
             };
         }
-
-        /// <summary>
-        /// Completes the AppScriptOAuth login flow by submitting an OAuth token from 
-        /// a parent appscript window
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPost("signin")]
-        [Authorize(AuthenticationSchemes = AppScriptOAuthAuthenticationDefaults.AuthenticationScheme)]
-        public IActionResult SigninWithToken([FromForm]SignInModel model)
-        {
-            // this code is never called because the AppScriptOAuthAuthenticationHandler redirects 
-            // after a successfull challenge.
-            return Ok();
-        }
-
-        /// <summary>
-        /// structure for submitting an accessToken to the <see cref="SigninWithToken(SignInModel)">SigninWithToken</see> method
-        /// </summary>
-        public class SignInModel
-        {
-            /// <summary>
-            /// An OAuth 2.0 Access Token
-            /// </summary>
-            public string AccessToken { get; set; }
-        }
-
     }
 }
