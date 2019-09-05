@@ -12,6 +12,9 @@ namespace Mailman.Server.Controllers
     /// <summary>
     /// Controller for managing users.
     /// </summary>
+    [ApiController]
+    [Authorize]
+    [Produces("application/json")]
     [Route("api/[controller]")]
     public class UserController : Controller
     {
@@ -22,7 +25,6 @@ namespace Mailman.Server.Controllers
         /// <remarks>
         /// A 401 is returned if no user is signed in.
         /// </remarks>
-        [Authorize]
         [HttpGet("me")]
         public IActionResult GetCurrentUser()
         {
