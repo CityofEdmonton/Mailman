@@ -54,16 +54,30 @@ namespace Mailman.Server.Hubs
         /// </summary>
         /// <param name="id">The unique identifier of the Merge Template</param>
         /// <returns></returns>
-        public void RegisterConnection(string id)
+        public String RegisterConnection()
         {
-            if(_userIds.ContainsKey(id))
+            if (!this.Context.User.Identity.IsAuthenticated) {
+                return "Please log in.";
+            }
+
+            if(_userIds.ContainsKey(this.Context.UserIdentifier))
             {
-                _userIds[id] = Context.ConnectionId;
+                _userIds[this.Context.UserIdentifier] = Context.ConnectionId;
             }
             else
             {
-              _userIds.Add(id, Context.ConnectionId);
+              _userIds.Add(this.Context.UserIdentifier, Context.ConnectionId);
             }
+            return "Success";
+        }
+
+        /// <summary>
+        /// Gets the user's SignalR connection id.
+        /// </summary>
+        /// <returns>The connection id.</returns>
+        public String GetConnectionId()
+        {
+          return Context.ConnectionId;
         }
     }
 }

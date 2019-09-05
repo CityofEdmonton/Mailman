@@ -1,8 +1,8 @@
-import { REQUEST_LOGIN, RECEIVE_LOGIN } from '../actions/Login'
+import { REQUEST_LOGIN, RECEIVE_LOGIN, RECEIVE_SIGNALR_ID } from '../actions/Login'
 
 const initialState = {
   user: {},
-  isLoading: true,
+  signalrId: null
 }
 
 export const reducer = (state, action) => {
@@ -12,14 +12,18 @@ export const reducer = (state, action) => {
     case REQUEST_LOGIN:
       return {
         ...state,
-        isLoading: true,
       }
 
     case RECEIVE_LOGIN:
       return {
         ...state,
         user: action.payload.user,
-        isLoading: false,
+      }
+
+    case RECEIVE_SIGNALR_ID:
+      return {
+        ...state,
+        signalrId: action.payload.id,
       }
     default:
       return state

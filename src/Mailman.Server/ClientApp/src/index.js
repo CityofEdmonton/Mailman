@@ -12,6 +12,7 @@ import { SignalRClient } from './SignalrClient'
 // Get the application-wide store instance, prepopulating with state from the server where available.
 const initialState = window.initialReduxState
 const store = configureStore(initialState)
+// Start our SignalR connection.
 const signalRClient = new SignalRClient('/hub', store)
 signalRClient.start().catch(err => {
   console.error(err)

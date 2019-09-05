@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+using Mailman.Server.Hubs;
 
 namespace Mailman.Server.Controllers
 {
@@ -20,6 +22,16 @@ namespace Mailman.Server.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class LoginController : Controller
     {
+        private readonly IHubContext<MailmanHub> _hub;
+
+        /// <summary>
+        /// Creates a new instance of LoginController.
+        /// </summary>
+        public LoginController(IHubContext<MailmanHub> hub)
+        {
+            _hub = hub;
+        }
+
         /// <summary>
         /// Logs in a user using the AppScriptOAuth scheme by communicating with
         /// the parent appscript window.
@@ -64,23 +76,24 @@ namespace Mailman.Server.Controllers
         /// </remarks>
         [HttpGet("[action]")]
         [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.Google.GoogleDefaults.AuthenticationScheme)]
-        public IActionResult Signin()
+        public async Task<IActionResult> Signin(String SignalrId)
         {
-            if (User.Identity.IsAuthenticated)
+            // Send the user information to the client.
+            await this._hub.Clients.Client(SignalrId).SendAsync("REDUX_ACTION", "RECEIVE_LOGIN", new 
             {
-              string email = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-              string name = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
-              string givenName = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value;
-              string surname = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value;
-
-              Dictionary<string, string> userInfo = new Dictionary<string, string>();
-              userInfo.Add("email", email);
-              userInfo.Add("name", name);
-              userInfo.Add("givenName", givenName);
-              userInfo.Add("surname", surname);
-              return new JsonResult(userInfo);
-            }
-            return new UnauthorizedResult();
+                user = new
+                {
+                  email = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value,
+                  name = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value,
+                  givenName = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value,
+                  surname = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value,
+                }
+            });
+            return new ContentResult()
+            {
+                Content = "<html><body>\n<script>\nwindow.close();</script>\n</body></html>",
+                ContentType = "text/html"
+            };
         }
 
         /// <summary>

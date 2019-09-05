@@ -24,13 +24,14 @@ const Login = props => (
       Current user: <strong>{JSON.stringify(props.user)}</strong>
     </p>
 
-    <button onClick={props.fetchLogin}>Login</button>
+    <button onClick={props.fetchLogin.bind(this, props.signalrId)}>Login</button>
   </div>
 )
 
 const mapStateToProps = state => {
   return {
-    user: state.login.user
+    user: state.login.user,
+    signalrId: state.login.signalrId
   }
 }
 

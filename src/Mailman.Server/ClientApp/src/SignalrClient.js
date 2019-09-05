@@ -1,5 +1,6 @@
 import { HubConnectionBuilder } from '@aspnet/signalr'
 import { START_HARD_LOAD, STOP_HARD_LOAD } from './actions/Loading'
+import { receiveSignalrId } from './actions/Login'
 
 export class SignalRClient {
   constructor(connection, store) {
@@ -10,9 +11,13 @@ export class SignalRClient {
   }
 
   start = () => {
-    this.connection.on('ReceiveMessage', (user, message) => {
-      console.log(user)
-      console.log(message)
+    // This wires the backend up to dispatch Redux actions.
+    this.connection.on('REDUX_ACTION', (method, payload) => {
+      let action = {
+        type: method,
+        payload
+      }
+      this.store.dispatch(action)
     })
     let action = {
       type: START_HARD_LOAD,
@@ -23,7 +28,9 @@ export class SignalRClient {
     this.store.dispatch(action)
 
     return this.connection.start().then(() => {
-      console.log(this)
+      return this.connection.invoke('GetConnectionId')
+    }).then((id) => {
+      this.store.dispatch(receiveSignalrId(id))
       let action = {
         type: STOP_HARD_LOAD,
         payload: {
@@ -31,7 +38,6 @@ export class SignalRClient {
         }
       }
       this.store.dispatch(action)
-      return this.connection.invoke('RegisterConnection', 'test')
     })
   }
 }
