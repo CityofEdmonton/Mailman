@@ -21,7 +21,7 @@ function handleErrors(response) {
   return response
 }
 
-export const reducer = (state, action) => {
+export default (state, action) => {
   // state = initialState
   state = state || initialState
 

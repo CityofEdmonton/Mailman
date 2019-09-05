@@ -7,7 +7,7 @@ export const actionCreators = {
   decrement: () => ({ type: decrementCountType }),
 }
 
-export const reducer = (state, action) => {
+export default (state, action) => {
   state = state || initialState
 
   if (action.type === incrementCountType) {

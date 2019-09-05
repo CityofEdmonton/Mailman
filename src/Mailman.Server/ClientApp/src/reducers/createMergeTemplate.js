@@ -42,7 +42,7 @@ const initialState = {
 // TODO: generate a unique id -> inital state
 // TODO: split reducer into parts (e.g. one for emailTemplate, one for timestampColumn... etc...)
 
-export function currentMergeTemplateReducer(state = initialState, action) {
+export default (state = initialState, action) => {
   switch (action.type) {
     case LOAD_FROM_MERGE_TEMPLATES:
       if (action.mergeTemplate) {

@@ -2,7 +2,7 @@ import { STOP_HARD_LOAD, START_HARD_LOAD } from '../actions/Loading'
 
 const initialState = []
 
-export const reducer = (state, action) => {
+export default (state, action) => {
   state = state || initialState
 
   switch (action.type) {

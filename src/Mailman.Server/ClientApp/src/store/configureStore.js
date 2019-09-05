@@ -1,12 +1,7 @@
 ﻿import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
 import thunk from 'redux-thunk'
-import * as Counter from '../reducers/Counter'
-import * as WeatherForecasts from '../reducers/WeatherForecasts'
-import * as NavDrawer from '../reducers/NavDrawer'
-import * as MergeTemplates from '../reducers/ReadMergeTemplates'
-import * as Login from '../reducers/Login'
-import * as Loading from '../reducers/Loading'
-import { currentMergeTemplateReducer } from '../reducers/CreateMergeTemplate'
+import rootReducer from '../reducers'
+import * as actionCreators from '../actions'
 
 let store = null
 
@@ -15,40 +10,18 @@ export default function configureStore(initialState) {
     console.log('Store already exists.')
     return store
   }
-  const reducers = {
-    counter: Counter.reducer,
-    weatherForecasts: WeatherForecasts.reducer,
-    navDrawer: NavDrawer.reducer,
-    mergeTemplates: MergeTemplates.reducer,
-    currentMergeTemplate: currentMergeTemplateReducer,
-    login: Login.reducer,
-    loading: Loading.reducer
-  }
+
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ actionCreators, serialize: true, trace: true }) || compose;
 
   const middleware = [thunk]
-
-  // In development, use the browser's Redux dev tools extension if installed
-  const enhancers = []
-  const isDevelopment = process.env.NODE_ENV === 'development'
-  if (
-    isDevelopment &&
-    typeof window !== 'undefined' &&
-    window.devToolsExtension
-  ) {
-    enhancers.push(window.devToolsExtension())
-  }
-
-  const rootReducer = combineReducers({
-    ...reducers
-  })
+  const enhancer = composeEnhancers(
+    applyMiddleware(...middleware),
+  );
 
   store = createStore(
     rootReducer,
     initialState,
-    compose(
-      applyMiddleware(...middleware),
-      ...enhancers
-    )
+    enhancer
   )
   return store
 }

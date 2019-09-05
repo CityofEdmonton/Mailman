@@ -8,6 +8,7 @@ import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 import theme from './theme'
 import { SignalRClient } from './SignalrClient'
+import { fetchLogin } from './actions/Login'
 
 // Get the application-wide store instance, prepopulating with state from the server where available.
 const initialState = window.initialReduxState
@@ -17,6 +18,10 @@ const signalRClient = new SignalRClient('/hub', store)
 signalRClient.start().catch(err => {
   console.error(err)
 })
+// Try to get the currently authenticated user.
+// fetchLogin
+// Sign them in if we get a 401 Unauthorized.
+
 
 const rootElement = document.getElementById('root')
 

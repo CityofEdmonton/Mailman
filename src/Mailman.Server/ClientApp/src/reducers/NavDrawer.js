@@ -7,7 +7,7 @@ export const actionCreators = {
   close: () => ({ type: closeDrawerType }),
 }
 
-export const reducer = (state, action) => {
+export default (state, action) => {
   state = state || initialState
   console.log('Tester')
   if (action.type === openDrawerType) {

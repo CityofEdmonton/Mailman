@@ -5,7 +5,7 @@ const initialState = {
   signalrId: null
 }
 
-export const reducer = (state, action) => {
+export default (state, action) => {
   state = state || initialState
 
   switch (action.type) {
