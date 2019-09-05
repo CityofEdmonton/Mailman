@@ -5,6 +5,7 @@ import * as WeatherForecasts from '../reducers/WeatherForecasts'
 import * as NavDrawer from '../reducers/NavDrawer'
 import * as MergeTemplates from '../reducers/ReadMergeTemplates'
 import * as Login from '../reducers/Login'
+import * as Loading from '../reducers/Loading'
 import { currentMergeTemplateReducer } from '../reducers/CreateMergeTemplate'
 
 let store = null
@@ -20,7 +21,8 @@ export default function configureStore(initialState) {
     navDrawer: NavDrawer.reducer,
     mergeTemplates: MergeTemplates.reducer,
     currentMergeTemplate: currentMergeTemplateReducer,
-    login: Login.reducer
+    login: Login.reducer,
+    loading: Loading.reducer
   }
 
   const middleware = [thunk]
