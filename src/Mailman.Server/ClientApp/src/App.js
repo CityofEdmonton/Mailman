@@ -13,32 +13,31 @@ import { SavePageContainer } from './components/create-merge/SavePageContainer'
 import Counter from './components/Counter'
 import FetchData from './components/FetchData'
 import Login from './components/Login'
-import ProtectedRoute from './components/ProtectedRoute'
 
 export default () => (
   <Router>
     <Layout>
-      <ProtectedRoute exact path="/" component={Home} />
-      <ProtectedRoute path="/settings" component={Settings} />
+      <Route exact path="/" component={Home} />
+      <Route path="/settings" component={Settings} />
       <Route path="/login" component={Login} />
-      <ProtectedRoute path="/mergeTemplate/title/:id?" component={TitlePageContainer} />
-      <ProtectedRoute
+      <Route path="/mergeTemplate/title/:id?" component={TitlePageContainer} />
+      <Route
         path="/mergeTemplate/tabSelection"
         component={TabSelectionContainer}
       />
-      <ProtectedRoute
+      <Route
         path="/mergeTemplate/headerSelection"
         component={HeaderSelectionContainer}
       />
-      <ProtectedRoute
+      <Route
         path="/mergeTemplate/receiverSelection"
         component={ReceiverSelectionContainer}
       />
-      <ProtectedRoute path="/mergeTemplate/subject" component={EmailSubjectContainer} />
-      <ProtectedRoute path="/mergeTemplate/body" component={EmailBodyContainer} />
-      <ProtectedRoute path="/mergeTemplate/save" component={SavePageContainer} />
-      <ProtectedRoute path="/counter" component={Counter} />
-      <ProtectedRoute path="/fetchdata/:startDateIndex?" component={FetchData} />
+      <Route path="/mergeTemplate/subject" component={EmailSubjectContainer} />
+      <Route path="/mergeTemplate/body" component={EmailBodyContainer} />
+      <Route path="/mergeTemplate/save" component={SavePageContainer} />
+      <Route path="/counter" component={Counter} />
+      <Route path="/fetchdata/:startDateIndex?" component={FetchData} />
     </Layout>
   </Router>
 )
