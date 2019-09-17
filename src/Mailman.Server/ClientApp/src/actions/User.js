@@ -2,6 +2,8 @@ import UnauthorizedError from '../errors/UnauthorizedError'
 import NoSignalrIdError from '../errors/NoSignalrIdError'
 import { fetchLogin } from './Login'
 import configureStore from '../store/ConfigureStore'
+import { stopHardLoad } from './Loading'
+import { FRIENDLY_TASK } from './Login'
 
 export const RECEIVE_USER = 'RECEIVE_USER'
 
@@ -54,10 +56,14 @@ export function fetchMe() {
  * @param {*} json The user object.
  */
 export function receiveUser(json) {
-  return {
-    type: RECEIVE_USER,
-    payload: {
-      user: json,
-    },
+  return dispatch => {
+    dispatch(stopHardLoad(FRIENDLY_TASK))
+    dispatch({
+      type: RECEIVE_USER,
+      payload: {
+        user: json,
+      },
+    })
   }
+  
 }

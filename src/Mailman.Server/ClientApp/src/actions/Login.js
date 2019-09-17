@@ -1,5 +1,8 @@
+import { startHardLoad, stopHardLoad } from './Loading'
+
 export const REQUEST_LOGIN = 'REQUEST_LOGIN'
 export const RECEIVE_LOGIN = 'RECEIVE_LOGIN'
+export const FRIENDLY_TASK = 'Logging in...'
 
 export function fetchLogin(signalrId) {
   const config = {
@@ -16,16 +19,22 @@ export function fetchLogin(signalrId) {
 }
 
 export function requestLogin() {
-  return {
-    type: REQUEST_LOGIN,
+  return dispatch => {
+    dispatch(startHardLoad(FRIENDLY_TASK))
+    dispatch({
+      type: REQUEST_LOGIN,
+    })
   }
 }
 
 export function receiveLogin(json) {
-  return {
-    type: RECEIVE_LOGIN,
-    payload: {
-      user: json,
-    },
+  return dispatch => {
+    dispatch(stopHardLoad(FRIENDLY_TASK))
+    dispatch({
+      type: RECEIVE_LOGIN,
+      payload: {
+        user: json,
+      }
+    })
   }
 }
