@@ -1,11 +1,11 @@
 ﻿import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
 import thunk from 'redux-thunk'
-import rootReducer from '../reducers'
+import { rootReducer } from '../reducers'
 import * as actionCreators from '../actions'
 
 let store = null
 
-export default function configureStore(initialState) {
+export default function configureStore() {
   if (store) {
     console.log('Store already exists.')
     return store
@@ -20,7 +20,6 @@ export default function configureStore(initialState) {
 
   store = createStore(
     rootReducer,
-    initialState,
     enhancer
   )
   return store

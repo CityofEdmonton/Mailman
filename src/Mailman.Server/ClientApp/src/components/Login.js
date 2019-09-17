@@ -30,8 +30,8 @@ const Login = props => (
 
 const mapStateToProps = state => {
   return {
-    user: state.login.user,
-    signalrId: state.login.signalrId
+    user: state.user.user,
+    signalrId: state.user.signalrId
   }
 }
 

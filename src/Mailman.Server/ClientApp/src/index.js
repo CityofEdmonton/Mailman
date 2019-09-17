@@ -7,21 +7,16 @@ import configureStore from './store/ConfigureStore'
 import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 import theme from './theme'
-import { SignalRClient } from './SignalrClient'
-import { fetchLogin } from './actions/Login'
+import { fetchMe } from './actions/User'
+import { fetchSignalrId } from './actions/Signalr'
 
 // Get the application-wide store instance, prepopulating with state from the server where available.
 const initialState = window.initialReduxState
 const store = configureStore(initialState)
 // Start our SignalR connection.
-const signalRClient = new SignalRClient('/hub', store)
-signalRClient.start().catch(err => {
-  console.error(err)
+store.dispatch(fetchSignalrId()).then(id => {
+  return store.dispatch(fetchMe())
 })
-// Try to get the currently authenticated user.
-// fetchLogin
-// Sign them in if we get a 401 Unauthorized.
-
 
 const rootElement = document.getElementById('root')
 

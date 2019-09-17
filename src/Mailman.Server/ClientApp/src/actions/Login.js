@@ -1,6 +1,5 @@
 export const REQUEST_LOGIN = 'REQUEST_LOGIN'
 export const RECEIVE_LOGIN = 'RECEIVE_LOGIN'
-export const RECEIVE_SIGNALR_ID = 'RECEIVE_SIGNALR_ID'
 
 export function fetchLogin(signalrId) {
   const config = {
@@ -28,14 +27,5 @@ export function receiveLogin(json) {
     payload: {
       user: json,
     },
-  }
-}
-
-export function receiveSignalrId(id) {
-  return {
-    type: RECEIVE_SIGNALR_ID,
-    payload: {
-      id
-    }
   }
 }

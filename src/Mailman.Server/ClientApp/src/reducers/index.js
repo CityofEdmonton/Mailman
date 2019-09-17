@@ -1,20 +1,18 @@
 import { combineReducers } from 'redux'
 import createMergeTemplate from './CreateMergeTemplate'
 import loading from './Loading'
-import login from './Login'
+import user from './User'
 import counter from './Counter'
 import navDrawer from './NavDrawer'
 import readMergeTemplates from './ReadMergeTemplates'
 import weatherForecasts from './WeatherForecasts'
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   createMergeTemplate,
   loading,
-  login,
+  user,
   counter,
   navDrawer,
   readMergeTemplates,
   weatherForecasts
 })
-
-export default rootReducer
