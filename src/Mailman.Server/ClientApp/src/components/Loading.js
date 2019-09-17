@@ -26,6 +26,7 @@ const Loading = (props) => {
     <h1>Loading</h1>
 
     <p>This is a loading page</p>
+    <p>{props.loading[0]}</p>
   </div>
 }
 

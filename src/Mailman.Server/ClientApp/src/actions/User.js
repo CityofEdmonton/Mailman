@@ -2,10 +2,11 @@ import UnauthorizedError from '../errors/UnauthorizedError'
 import NoSignalrIdError from '../errors/NoSignalrIdError'
 import { fetchLogin } from './Login'
 import configureStore from '../store/ConfigureStore'
-import { stopHardLoad } from './Loading'
-import { FRIENDLY_TASK } from './Login'
+import { stopHardLoad, startHardLoad } from './Loading'
+import { FRIENDLY_TASK as FRIENDLY_LOGIN_TASK } from './Login'
 
 export const RECEIVE_USER = 'RECEIVE_USER'
+const FRIENDLY_TASK = 'Getting current user...'
 
 export function fetchUser() {
   const config = {
@@ -27,6 +28,7 @@ export function fetchUser() {
 
 export function fetchMe() {
   return dispatch => {
+    dispatch(startHardLoad(FRIENDLY_TASK))
     return fetchUser().then(
       (user) => dispatch(receiveUser(user)),
       (err) => {
@@ -38,9 +40,10 @@ export function fetchMe() {
           }
           
           dispatch(fetchLogin(store.getState().user.signalrId))
+          dispatch(stopHardLoad(FRIENDLY_TASK))
           return
         }
-        
+
         throw err
       }
     )
@@ -57,13 +60,14 @@ export function fetchMe() {
  */
 export function receiveUser(json) {
   return dispatch => {
-    dispatch(stopHardLoad(FRIENDLY_TASK))
     dispatch({
       type: RECEIVE_USER,
       payload: {
         user: json,
       },
     })
+    dispatch(stopHardLoad(FRIENDLY_LOGIN_TASK))
+    dispatch(stopHardLoad(FRIENDLY_TASK))
   }
   
 }

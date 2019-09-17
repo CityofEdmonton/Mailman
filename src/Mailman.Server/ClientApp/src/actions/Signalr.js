@@ -1,8 +1,10 @@
 import { SignalRClient } from '../SignalrClient'
 import configureStore from '../store/ConfigureStore'
+import { stopHardLoad, startHardLoad } from './Loading'
 
 export const RECEIVE_SIGNALR_ID = 'RECEIVE_SIGNALR_ID'
 export const REQUEST_SIGNALR_ID = 'REQUEST_SIGNALR_ID'
+const FRIENDLY_TASK = 'Contacting server...'
 
 // All users of these actions should wait until the client 
 // is ready before sending messages.
@@ -28,16 +30,22 @@ export function fetchSignalrId() {
 }
 
 export function requestSignalrId() {
-  return {
-    type: REQUEST_SIGNALR_ID,
+  return dispatch => {
+    dispatch(startHardLoad(FRIENDLY_TASK))
+    dispatch({
+      type: REQUEST_SIGNALR_ID,
+    })
   }
 }
 
 export function receiveSignalrId(id) {
-  return {
-    type: RECEIVE_SIGNALR_ID,
-    payload: {
-      id,
-    },
+  return dispatch => {
+    dispatch({
+      type: RECEIVE_SIGNALR_ID,
+      payload: {
+        id,
+      },
+    })
+    dispatch(stopHardLoad(FRIENDLY_TASK))
   }
 }

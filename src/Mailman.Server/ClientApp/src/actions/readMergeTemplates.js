@@ -1,5 +1,8 @@
+import { startHardLoad, stopHardLoad } from './Loading'
+
 export const REQUEST_MERGE_TEMPLATES = 'REQUEST_MERGE_TEMPLATES'
 export const RECEIVE_MERGE_TEMPLATES = 'RECEIVE_MERGE_TEMPLATES'
+const FRIENDLY_TASK = 'Grabbing Merge Templates...'
 
 function shouldFetchMergeTemplates() {
   //TODO: make it so we don't issue a duplicate request
@@ -40,18 +43,24 @@ export function fetchMergeTemplates(spreadsheetId) {
 }
 
 export function requestMergeTemplates(spreadsheetId) {
-  return {
-    type: REQUEST_MERGE_TEMPLATES,
-    spreadsheetId,
+  return dispatch => {
+    dispatch(startHardLoad(FRIENDLY_TASK))
+    dispatch({
+      type: REQUEST_MERGE_TEMPLATES,
+      spreadsheetId,
+    })
   }
 }
 
 export function receiveMergeTemplates(spreadsheetId, json) {
-  return {
-    type: RECEIVE_MERGE_TEMPLATES,
-    payload: {
-      mergeTemplates: json,
-      spreadsheetId: spreadsheetId,
-    },
+  return dispatch => {
+    dispatch({
+      type: RECEIVE_MERGE_TEMPLATES,
+      payload: {
+        mergeTemplates: json,
+        spreadsheetId: spreadsheetId,
+      },
+    })
+    dispatch(stopHardLoad(FRIENDLY_TASK))
   }
 }
