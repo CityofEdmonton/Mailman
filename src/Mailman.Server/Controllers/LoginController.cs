@@ -79,7 +79,7 @@ namespace Mailman.Server.Controllers
         public async Task<IActionResult> Signin(String SignalrId)
         {
             // Send the user information to the client.
-            await this._hub.Clients.Client(SignalrId).SendAsync("REDUX_ACTION", "RECEIVE_LOGIN", new 
+            await this._hub.Clients.Client(SignalrId).SendAsync("USER_LOGIN", new 
             {
                 user = new
                 {
