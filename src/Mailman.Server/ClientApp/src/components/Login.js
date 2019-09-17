@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
 import { fetchLogin } from '../actions/Login'
 
@@ -14,7 +15,14 @@ const styles = theme => ({
   },
 })
 
-const Login = props => (
+const Login = props => {
+  console.log(props)
+  if (Object.keys(props.user).length !== 0) {
+    return (
+      <Redirect to={props.location.state.from} />
+    )
+  }
+  return (
   <div>
     <h1>Login</h1>
 
@@ -26,7 +34,8 @@ const Login = props => (
 
     <button onClick={props.fetchLogin.bind(this, props.signalrId)}>Login</button>
   </div>
-)
+  )
+}
 
 const mapStateToProps = state => {
   return {
