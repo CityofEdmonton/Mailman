@@ -1,21 +1,14 @@
 import React, { Component } from 'react'
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
-import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/AddCircle'
 import Grid from '@material-ui/core/Grid'
-import Button from '@material-ui/core/Button'
 
 import { Tooltip } from '@material-ui/core'
 
 import InfoCard from './merge-template/InfoCard'
-import { fetchMergeTemplatesIfNeeded } from '../actions/ReadMergeTemplates'
-import { isAbsolute } from 'path'
 import { loadFromMergeTemplates } from '../actions/CreateMergeTemplate'
-
-const queryString = require('query-string')
 
 const styles = theme => ({
   largeButton: {
@@ -33,15 +26,6 @@ class Home extends Component {
     super(props)
     this.state = {
       mergeTemplates: [],
-    }
-  }
-
-  componentDidMount() {
-    const parsed = queryString.parse(this.props.location.search)
-    let spreadsheetId = parsed.ssid //parse query
-    const { dispatch } = this.props
-    if (spreadsheetId) {
-      dispatch(fetchMergeTemplatesIfNeeded(spreadsheetId))
     }
   }
 
@@ -88,12 +72,6 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchMergeTemplatesIfNeeded: spreadSheetId =>
-      dispatch(fetchMergeTemplatesIfNeeded(spreadSheetId)),
-  }
-}
 const exportWithStyles = withStyles(styles, { withTheme: true })(Home)
 
 export default connect(mapStateToProps)(exportWithStyles)
