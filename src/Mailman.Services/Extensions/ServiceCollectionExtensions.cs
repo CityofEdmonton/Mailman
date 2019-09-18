@@ -25,6 +25,7 @@ using Mailman.Services.Data;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Mailman.Services
 {
@@ -120,7 +121,7 @@ namespace Mailman.Services
             var authenticationBuilder = services.AddAuthentication(options =>
            {
                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-               options.DefaultChallengeScheme = AppScriptOAuthAuthenticationDefaults.AuthenticationScheme; //GoogleDefaults.AuthenticationScheme;
+               options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
             })
                 .AddCookie(configuration)
                 .AddServiceAuth(configuration)
@@ -290,16 +291,24 @@ namespace Mailman.Services
                 options.ClaimActions.MapJsonKey(ClaimTypes.Surname, "family_name");
                 options.ClaimActions.MapJsonKey("urn:google:profile", "url");
                 options.ClaimActions.MapJsonKey("displayName", "displayName");
-                options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");                
-                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
                 options.CallbackPath = "/login/signin-google";
                 options.SaveTokens = true;
                 options.AccessType = "offline";
-            });
-
-            authenticationBuilder.AddAppScriptOAuth(options =>
+                options.Events.OnRedirectToAuthorizationEndpoint = context =>
             {
-                // options can be added here
+                if (IsAjaxRequest(context.Request))
+                {
+                    context.Response.Headers["Location"] = context.RedirectUri;
+                    context.Response.StatusCode = 401;
+                    context.Response.ContentType = "application/json";
+                }
+                else
+                {
+                    context.Response.Redirect(context.RedirectUri);
+                }
+                return Task.CompletedTask;
+            };
             });
 
             return authenticationBuilder;
@@ -324,6 +333,12 @@ namespace Mailman.Services
                 services.AddScoped<IGoogleOAuthTokenService, EntityFrameworkGoogleOAuthTokenService>();
             }
         }
+
+        private static bool IsAjaxRequest(HttpRequest request)
+        {
+            return string.Equals(request.Query["X-Requested-With"], "XMLHttpRequest", StringComparison.Ordinal) ||
+                string.Equals(request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.Ordinal);
+        }	
 
         #region Helper classes
         private class PolymorphismDocumentFilter<T> : IDocumentFilter

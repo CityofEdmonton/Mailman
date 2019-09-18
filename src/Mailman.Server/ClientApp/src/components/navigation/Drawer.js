@@ -1,44 +1,44 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import Hidden from "@material-ui/core/Hidden";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
+import Drawer from '@material-ui/core/Drawer'
+import Hidden from '@material-ui/core/Hidden'
 
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import DraftsIcon from "@material-ui/icons/Drafts";
-import StarIcon from "@material-ui/icons/Star";
-import SendIcon from "@material-ui/icons/Send";
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import InboxIcon from '@material-ui/icons/MoveToInbox'
+import DraftsIcon from '@material-ui/icons/Drafts'
+import StarIcon from '@material-ui/icons/Star'
+import SendIcon from '@material-ui/icons/Send'
 
 // State Management
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { actionCreators } from '../../reducers/NavDrawer';
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { actionCreators } from '../../reducers/NavDrawer'
 
-const drawerWidth = 240;
+const drawerWidth = 240
 
 const styles = theme => ({
   drawerPaper: {
     width: drawerWidth,
-    [theme.breakpoints.up("md")]: {
-      position: "relative"
-    }
-  }
-});
+    [theme.breakpoints.up('md')]: {
+      position: 'relative',
+    },
+  },
+})
 
 class ResponsiveDrawer extends React.Component {
   state = {
-    mobileOpen: false
-  };
+    mobileOpen: false,
+  }
 
   handleDrawerToggle = () => {
-    this.setState(state => ({ mobileOpen: !state.mobileOpen }));
-  };
+    this.setState(state => ({ mobileOpen: !state.mobileOpen }))
+  }
 
   render() {
-    const { classes, theme } = this.props;
+    const { classes, theme } = this.props
 
     const drawer = (
       <div>
@@ -67,7 +67,7 @@ class ResponsiveDrawer extends React.Component {
           <ListItemText primary="Drafts" />
         </ListItem>
       </div>
-    );
+    )
 
     return (
       <div className={classes.root}>
@@ -99,24 +99,26 @@ class ResponsiveDrawer extends React.Component {
           </Drawer>
         </Hidden>
       </div>
-    );
+    )
   }
 }
 
 ResponsiveDrawer.propTypes = {
   classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
+  theme: PropTypes.object.isRequired,
+}
 
 const mapStateToProps = state => {
   return {
-    drawerOpen: state.navDrawer.drawerOpened
+    drawerOpen: state.navDrawer.drawerOpened,
   }
 }
 
-const withStylesExport = withStyles(styles, { withTheme: true })(ResponsiveDrawer);
+const withStylesExport = withStyles(styles, { withTheme: true })(
+  ResponsiveDrawer
+)
 
 export default connect(
   mapStateToProps,
   dispatch => bindActionCreators(actionCreators, dispatch)
-)(withStylesExport);
+)(withStylesExport)

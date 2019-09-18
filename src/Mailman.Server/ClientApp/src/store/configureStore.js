@@ -1,46 +1,26 @@
-﻿import { applyMiddleware, combineReducers, compose, createStore } from "redux";
-import thunk from "redux-thunk";
-import { routerReducer, routerMiddleware } from "react-router-redux";
-import * as Counter from "../reducers/Counter";
-import * as WeatherForecasts from "../reducers/WeatherForecasts";
-import * as NavDrawer from "../reducers/NavDrawer";
-import * as MergeTemplates from "../reducers/readMergeTemplates";
-import { currentMergeTemplateReducer } from "../reducers/createMergeTemplate";
+﻿import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
+import thunk from 'redux-thunk'
+import { rootReducer } from '../reducers'
+import * as actionCreators from '../actions'
 
-export default function configureStore(history, initialState) {
-  
-  const reducers = {
-    counter: Counter.reducer,
-    weatherForecasts: WeatherForecasts.reducer,
-    navDrawer: NavDrawer.reducer,
-    mergeTemplates: MergeTemplates.reducer,
-    currentMergeTemplate: currentMergeTemplateReducer
-  };
+let store = null
 
-  const middleware = [thunk, routerMiddleware(history)];
-
-  // In development, use the browser's Redux dev tools extension if installed
-  const enhancers = [];
-  const isDevelopment = process.env.NODE_ENV === "development";
-  if (
-    isDevelopment &&
-    typeof window !== "undefined" &&
-    window.devToolsExtension
-  ) {
-    enhancers.push(window.devToolsExtension());
+export default function configureStore() {
+  if (store) {
+    console.log('Store already exists.')
+    return store
   }
 
-  const rootReducer = combineReducers({
-    ...reducers,
-    routing: routerReducer
-  });
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ actionCreators, serialize: true, trace: true }) || compose;
 
-  return createStore(
-    rootReducer,
-    initialState,
-    compose(
-      applyMiddleware(...middleware),
-      ...enhancers
-    )
+  const middleware = [thunk]
+  const enhancer = composeEnhancers(
+    applyMiddleware(...middleware),
   );
+
+  store = createStore(
+    rootReducer,
+    enhancer
+  )
+  return store
 }
