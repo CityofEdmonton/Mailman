@@ -14,25 +14,27 @@ const styles = theme => ({
   },
   hidden: {
     display: 'none',
-  }
+  },
 })
 
-const Loading = (props) => {
+const Loading = props => {
   let loadClass = props.classes.hidden
   if (props.loading.length > 0) {
     loadClass = props.classes.fullPage
   }
-  return <div className={loadClass}>
-    <h1>Loading</h1>
+  return (
+    <div className={loadClass}>
+      <h1>Loading</h1>
 
-    <p>This is a loading page</p>
-    <p>{props.loading[0]}</p>
-  </div>
+      <p>This is a loading page</p>
+      <p>{props.loading[0]}</p>
+    </div>
+  )
 }
 
 const mapStateToProps = state => {
   return {
-    loading: state.loading
+    loading: state.loading,
   }
 }
 

@@ -13,8 +13,8 @@ export function fetchUser() {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest'
-    }
+      'X-Requested-With': 'XMLHttpRequest',
+    },
   }
 
   return fetch('/api/user/me', config).then(jsonResponse => {
@@ -29,14 +29,14 @@ export function fetchMe() {
   return dispatch => {
     dispatch(startHardLoad(FRIENDLY_TASK))
     return fetchUser().then(
-      (user) => dispatch(receiveUser(user)),
-      (err) => {
+      user => dispatch(receiveUser(user)),
+      err => {
         if (err instanceof UnauthorizedError) {
           let store = configureStore()
           if (!store.getState().user.signalrId) {
             return Promise.reject(new NoSignalrIdError())
           }
-          
+
           dispatch(fetchLogin(store.getState().user.signalrId))
           dispatch(stopHardLoad(FRIENDLY_TASK))
           return
@@ -49,9 +49,9 @@ export function fetchMe() {
 }
 
 /**
- * Receives a user. 
- * This function is extremely similar to Login.receiveLogin. 
- * This function is meant to be used when a user is already 
+ * Receives a user.
+ * This function is extremely similar to Login.receiveLogin.
+ * This function is meant to be used when a user is already
  * logged in, whereas receiveLogin is immediately after notifying
  * of a successful log in event.
  * @param {*} json The user object.
@@ -67,5 +67,4 @@ export function receiveUser(json) {
     dispatch(stopHardLoad(FRIENDLY_LOGIN_TASK))
     dispatch(stopHardLoad(FRIENDLY_TASK))
   }
-  
 }

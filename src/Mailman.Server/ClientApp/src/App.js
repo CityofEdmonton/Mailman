@@ -21,7 +21,10 @@ export default () => (
       <ProtectedRoute exact path="/" component={Home} />
       <ProtectedRoute path="/settings" component={Settings} />
       <Route path="/login" component={Login} />
-      <ProtectedRoute path="/mergeTemplate/title/:id?" component={TitlePageContainer} />
+      <ProtectedRoute
+        path="/mergeTemplate/title/:id?"
+        component={TitlePageContainer}
+      />
       <ProtectedRoute
         path="/mergeTemplate/tabSelection"
         component={TabSelectionContainer}
@@ -34,11 +37,23 @@ export default () => (
         path="/mergeTemplate/receiverSelection"
         component={ReceiverSelectionContainer}
       />
-      <ProtectedRoute path="/mergeTemplate/subject" component={EmailSubjectContainer} />
-      <ProtectedRoute path="/mergeTemplate/body" component={EmailBodyContainer} />
-      <ProtectedRoute path="/mergeTemplate/save" component={SavePageContainer} />
+      <ProtectedRoute
+        path="/mergeTemplate/subject"
+        component={EmailSubjectContainer}
+      />
+      <ProtectedRoute
+        path="/mergeTemplate/body"
+        component={EmailBodyContainer}
+      />
+      <ProtectedRoute
+        path="/mergeTemplate/save"
+        component={SavePageContainer}
+      />
       <ProtectedRoute path="/counter" component={Counter} />
-      <ProtectedRoute path="/fetchdata/:startDateIndex?" component={FetchData} />
+      <ProtectedRoute
+        path="/fetchdata/:startDateIndex?"
+        component={FetchData}
+      />
     </Layout>
   </Router>
 )

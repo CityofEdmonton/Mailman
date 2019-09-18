@@ -14,5 +14,5 @@ export const rootReducer = combineReducers({
   counter,
   navDrawer,
   readMergeTemplates,
-  weatherForecasts
+  weatherForecasts,
 })

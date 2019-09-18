@@ -9,7 +9,7 @@ export function fetchLogin(signalrId) {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-    }
+    },
   }
 
   return dispatch => {
@@ -34,7 +34,7 @@ export function receiveLogin(json) {
       type: RECEIVE_LOGIN,
       payload: {
         user: json,
-      }
+      },
     })
   }
 }

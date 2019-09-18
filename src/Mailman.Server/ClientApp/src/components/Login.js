@@ -17,35 +17,38 @@ const styles = theme => ({
 
 const Login = props => {
   if (Object.keys(props.user).length !== 0) {
-    return (
-      <Redirect to={props.location.state.from} />
-    )
+    return <Redirect to={props.location.state.from} />
   }
   return (
-  <div>
-    <h1>Login</h1>
+    <div>
+      <h1>Login</h1>
 
-    <p>This is a simple example of a React component.</p>
+      <p>This is a simple example of a React component.</p>
 
-    <p>
-      Current user: <strong>{JSON.stringify(props.user)}</strong>
-    </p>
+      <p>
+        Current user: <strong>{JSON.stringify(props.user)}</strong>
+      </p>
 
-    <button onClick={props.fetchLogin.bind(this, props.signalrId)}>Login</button>
-  </div>
+      <button onClick={props.fetchLogin.bind(this, props.signalrId)}>
+        Login
+      </button>
+    </div>
   )
 }
 
 const mapStateToProps = state => {
   return {
     user: state.user.user,
-    signalrId: state.user.signalrId
+    signalrId: state.user.signalrId,
   }
 }
 
 const mapDispatchToProps = {
-  fetchLogin
+  fetchLogin,
 }
 const exportWithStyles = withStyles(styles, { withTheme: true })(Login)
 
-export default connect(mapStateToProps, mapDispatchToProps)(exportWithStyles)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(exportWithStyles)

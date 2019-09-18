@@ -6,10 +6,10 @@ export const RECEIVE_SIGNALR_ID = 'RECEIVE_SIGNALR_ID'
 export const REQUEST_SIGNALR_ID = 'REQUEST_SIGNALR_ID'
 const FRIENDLY_TASK = 'Contacting server...'
 
-// All users of these actions should wait until the client 
+// All users of these actions should wait until the client
 // is ready before sending messages.
-let client = null;
-let readyClient = null;
+let client = null
+let readyClient = null
 
 export function fetchSignalrId() {
   if (!client) {
@@ -20,12 +20,14 @@ export function fetchSignalrId() {
   }
   return dispatch => {
     dispatch(requestSignalrId())
-    return readyClient.then((client) => {
-      return client.connection.invoke('GetConnectionId')
-    }).then((id) => {
-      dispatch(receiveSignalrId(id))
-      return id
-    })
+    return readyClient
+      .then(client => {
+        return client.connection.invoke('GetConnectionId')
+      })
+      .then(id => {
+        dispatch(receiveSignalrId(id))
+        return id
+      })
   }
 }
 

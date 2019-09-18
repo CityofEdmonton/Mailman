@@ -7,10 +7,7 @@ export default (state, action) => {
 
   switch (action.type) {
     case START_HARD_LOAD:
-      return [
-        ...state,
-        action.payload.task
-      ]
+      return [...state, action.payload.task]
 
     case STOP_HARD_LOAD:
       return state.filter((item, index) => {

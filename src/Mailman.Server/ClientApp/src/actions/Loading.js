@@ -5,8 +5,8 @@ export function startHardLoad(task) {
   return {
     type: START_HARD_LOAD,
     payload: {
-      task 
-    }
+      task,
+    },
   }
 }
 
@@ -14,7 +14,7 @@ export function stopHardLoad(task) {
   return {
     type: STOP_HARD_LOAD,
     payload: {
-      task
-    }
+      task,
+    },
   }
 }

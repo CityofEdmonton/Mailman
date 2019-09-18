@@ -4,11 +4,9 @@ import { RECEIVE_USER } from '../actions/User'
 import { REQUEST_LOGIN, RECEIVE_LOGIN } from '../actions/Login'
 import { REQUEST_SIGNALR_ID, RECEIVE_SIGNALR_ID } from '../actions/Signalr'
 
-
-
 const initialState = {
   user: {},
-  signalrId: null
+  signalrId: null,
 }
 
 export default (state, action) => {
@@ -30,7 +28,7 @@ export default (state, action) => {
         ...state,
         user: action.payload.user,
       }
-    
+
     case REQUEST_SIGNALR_ID:
       return {
         ...state,
