@@ -16,7 +16,6 @@ const styles = theme => ({
 })
 
 const Login = props => {
-  console.log(props)
   if (Object.keys(props.user).length !== 0) {
     return (
       <Redirect to={props.location.state.from} />

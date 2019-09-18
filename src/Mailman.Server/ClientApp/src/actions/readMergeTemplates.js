@@ -32,7 +32,6 @@ export function fetchMergeTemplates(spreadsheetId) {
       config
     )
       .then(response => {
-        console.log(response)
         return response.json()
       })
       .then(json => {

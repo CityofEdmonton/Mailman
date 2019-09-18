@@ -18,7 +18,6 @@ export function fetchUser() {
   }
 
   return fetch('/api/user/me', config).then(jsonResponse => {
-    console.log(jsonResponse)
     if (jsonResponse.status == 401) {
       return Promise.reject(new UnauthorizedError())
     }
@@ -33,7 +32,6 @@ export function fetchMe() {
       (user) => dispatch(receiveUser(user)),
       (err) => {
         if (err instanceof UnauthorizedError) {
-          console.log('Engage login flow')
           let store = configureStore()
           if (!store.getState().user.signalrId) {
             return Promise.reject(new NoSignalrIdError())
