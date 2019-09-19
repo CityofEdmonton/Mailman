@@ -10,6 +10,7 @@ import { ReceiverSelectionContainer } from './components/create-merge/ReceiverSe
 import { EmailSubjectContainer } from './components/create-merge/EmailSubjectContainer'
 import { EmailBodyContainer } from './components/create-merge/EmailBodyContainer'
 import { SavePageContainer } from './components/create-merge/SavePageContainer'
+import { EditMergeTemplateById } from './components/EditMergeTemplate'
 import Counter from './components/Counter'
 import FetchData from './components/FetchData'
 import Login from './components/Login'
@@ -21,6 +22,10 @@ export default () => (
       <ProtectedRoute exact path="/" component={Home} />
       <ProtectedRoute path="/settings" component={Settings} />
       <Route path="/login" component={Login} />
+      <ProtectedRoute
+        path="/mergeTemplate/:id"
+        component={EditMergeTemplateById}
+      />
       <ProtectedRoute
         path="/mergeTemplate/title/:id?"
         component={TitlePageContainer}
