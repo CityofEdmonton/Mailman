@@ -68,15 +68,8 @@ class InfoCardSidebar extends Component {
             </IconButton>
           </ListItem>
           <ListItem className={classes.root}>
-            <IconButton
-              className={classes.smallIcon}
-              onClick={() =>
-                this.props.loadFromMergeTemplates(
-                  this.getMergeTemplateFromID(this.props.id)
-                )
-              }
-            >
-              <Link to={`/mergeTemplate/title/?id=${this.props.id}`}>
+            <IconButton className={classes.smallIcon}>
+              <Link to={`/mergeTemplate/${this.props.id}`}>
                 <Tooltip title="Edit" placement="left">
                   <CreateIcon style={{ color: 'grey' }} />
                 </Tooltip>
