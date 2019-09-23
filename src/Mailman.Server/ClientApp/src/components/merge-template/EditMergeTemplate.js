@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Title from './Title'
+import TemplateDataSource from './TemplateDataSource'
 
 const styles = theme => ({
   root: {
@@ -29,8 +30,7 @@ const styles = theme => ({
 function getSteps() {
   return [
     'What should this merge template be called?',
-    'Which tab are we sending from?',
-    'Which row contains your header titles?',
+    'Where is your data located?',
     'Who are you sending to?',
     'What would you like your email subject to be?',
     'What would you like your email body to be?',
@@ -43,33 +43,36 @@ class EditMergeTemplateInner extends Component {
   state = {
     activeStep: 0,
     template: {
-      title: ''
-    }
+      title: '',
+    },
   }
 
   constructor(props) {
     super(props)
 
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   getStepContent(step) {
     switch (step) {
       case 0:
-        return <Title handleChange={this.handleChange} value={this.state.template.title}/>
+        return (
+          <Title
+            handleChange={this.handleChange}
+            value={this.state.template.title}
+          />
+        )
       case 1:
-        return 'This tab must contain all the information you may want to send in an email.'
+        return <TemplateDataSource value="Google Sheet" />
       case 2:
-        return `Mailman will use this to swap out template tags.`
-      case 3:
         return `This is the column filled with the email addresses of the recipients.`
-      case 4:
+      case 3:
         return `Recipients will see this as the subject line of the email. Type << to see a list of column names. Template tags will be swapped out with the associated values in the Sheet.`
-      case 5:
+      case 4:
         return `Recipients will see this as the body of the email. Type << to see a list of column names. Template tags will be swapped out with the associated values in the Sheet.`
-      case 6:
+      case 5:
         return `This card is used to determine what type of repeater you want to have. "Immediately" will send the email once a Google form linked to the sheet is submitted. Please note that if you choose this option, you will not be able to set conditionals."Hourly"  will send emails every hour; it is a good idea to combine this with a conditional, otherwise every person listed in the spreadsheet will recieve an email whenever Mailman runs!"Manually" will send emails whenever the user manually presses the run button.`
-      case 7:
+      case 6:
         return `This column is used to determine when to send an email. If a given row reads TRUE, Mailman will send an email. Any other value and Mailman won't send. This can be useful for scheduling your merges or ensuring you don't accidentally email someone twice.`
       default:
         return 'Unknown step'
@@ -95,15 +98,15 @@ class EditMergeTemplateInner extends Component {
   }
 
   handleSubmit(event) {
-    event.preventDefault();
+    event.preventDefault()
   }
 
   handleChange = input => e => {
     let template = {
       ...this.state.template,
-      ...{[input]: e.target.value}
+      ...{ [input]: e.target.value },
     }
-    this.setState({template})
+    this.setState({ template })
   }
 
   render() {
@@ -115,7 +118,7 @@ class EditMergeTemplateInner extends Component {
       variant: 'contained',
       color: 'primary',
       onClick: this.handleNext,
-      className: classes.button
+      className: classes.button,
     }
     let buttonText = 'Next'
     if (activeStep === steps.length - 1) {
@@ -125,7 +128,11 @@ class EditMergeTemplateInner extends Component {
     }
 
     return (
-      <form onSubmit={this.handleSubmit} className={classes.root} autoComplete="off">
+      <form
+        onSubmit={this.handleSubmit}
+        className={classes.root}
+        autoComplete="off"
+      >
         <Stepper activeStep={activeStep} orientation="vertical">
           {steps.map((label, index) => (
             <Step key={label}>
@@ -141,9 +148,7 @@ class EditMergeTemplateInner extends Component {
                     >
                       Back
                     </Button>
-                    <Button {...buttonAttr}>
-                      {buttonText}
-                    </Button>
+                    <Button {...buttonAttr}>{buttonText}</Button>
                   </div>
                 </div>
               </StepContent>
@@ -165,10 +170,10 @@ class EditMergeTemplateInner extends Component {
   static getDerivedStateFromProps(props, state) {
     if (props.template && props.template.id !== state.template.id) {
       return {
-        template: props.template
-      };
+        template: props.template,
+      }
     }
-    return null;
+    return null
   }
 }
 export const EditMergeTemplate = withStyles(styles, { withTheme: true })(
