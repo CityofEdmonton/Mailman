@@ -10,7 +10,7 @@ import { ReceiverSelectionContainer } from './components/create-merge/ReceiverSe
 import { EmailSubjectContainer } from './components/create-merge/EmailSubjectContainer'
 import { EmailBodyContainer } from './components/create-merge/EmailBodyContainer'
 import { SavePageContainer } from './components/create-merge/SavePageContainer'
-import { EditMergeTemplateById } from './components/EditMergeTemplate'
+import { EditMergeTemplateById } from './components/merge-template/EditMergeTemplate'
 import Counter from './components/Counter'
 import FetchData from './components/FetchData'
 import Login from './components/Login'
