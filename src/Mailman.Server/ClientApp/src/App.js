@@ -4,8 +4,6 @@ import Layout from './components/Layout'
 import Home from './components/Home'
 import Settings from './components/Settings'
 import { TitlePageContainer } from './components/create-merge/TitlePageContainer'
-import { TabSelectionContainer } from './components/create-merge/TabSelectionContainer'
-import { HeaderSelectionContainer } from './components/create-merge/HeaderSelectionContainer'
 import { ReceiverSelectionContainer } from './components/create-merge/ReceiverSelectionContainer'
 import { EmailSubjectContainer } from './components/create-merge/EmailSubjectContainer'
 import { EmailBodyContainer } from './components/create-merge/EmailBodyContainer'
@@ -29,14 +27,6 @@ export default () => (
       <ProtectedRoute
         path="/mergeTemplate/title/:id?"
         component={TitlePageContainer}
-      />
-      <ProtectedRoute
-        path="/mergeTemplate/tabSelection"
-        component={TabSelectionContainer}
-      />
-      <ProtectedRoute
-        path="/mergeTemplate/headerSelection"
-        component={HeaderSelectionContainer}
       />
       <ProtectedRoute
         path="/mergeTemplate/receiverSelection"
