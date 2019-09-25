@@ -123,8 +123,8 @@ class EditMergeTemplateInner extends Component {
     this.setState({ template })
   }
 
-  handleLoadTabs(sheetId) {
-    console.log('Updating tabs')
+  handleLoadTabs() {
+    this.props.fetchSheetTabs(this.props.sheetId)
   }
 
   render() {
@@ -213,6 +213,7 @@ class EditMergeTemplateByIdInner extends Component {
         template={this.props.template}
         tabs={this.props.sheet}
         sheetId={this.props.sheetId}
+        fetchSheetTabs={this.props.fetchSheetTabs}
       />
     )
   }

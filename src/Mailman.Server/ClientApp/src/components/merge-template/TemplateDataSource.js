@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button'
 import TableChartIcon from '@material-ui/icons/TableChart'
 import TextField from '@material-ui/core/TextField'
 import MuiReactAutosuggest from '../merge-template/MuiReactAutosuggest'
+import useDebounce from '../../util/UseDebounce'
 
 const styles = theme => ({
   root: {
@@ -29,6 +30,8 @@ const styles = theme => ({
 class TemplateDataSource extends Component {
   constructor(props) {
     super(props)
+
+    this.handleLoadTabs = useDebounce(props.handleLoadTabs, 3000)
   }
 
   showSheetPicker() {
@@ -36,6 +39,7 @@ class TemplateDataSource extends Component {
   }
 
   onTabChange = newValue => {
+    this.handleLoadTabs()
     this.props.handleChange('sheetName')({ target: { value: newValue } })
   }
 
