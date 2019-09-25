@@ -31,7 +31,7 @@ class TemplateDataSource extends Component {
   constructor(props) {
     super(props)
 
-    this.handleLoadTabs = useDebounce(props.handleLoadTabs, 3000)
+    this.handleLoadTabs = useDebounce(props.handleLoadTabs, 500)
   }
 
   showSheetPicker() {
@@ -44,7 +44,7 @@ class TemplateDataSource extends Component {
   }
 
   render() {
-    const { value, classes, handleChange, tabs, sheetId } = this.props
+    const { classes, tabs, sheetId } = this.props
 
     // Transform tabs to match autocomplete format
     const tabValues = tabs.tabs.map(value => {
@@ -71,6 +71,7 @@ class TemplateDataSource extends Component {
               suggestions={tabValues}
               callback={this.onTabChange}
               value={this.props.tab}
+              loading={tabs.loading}
             />
           </span>
           <Hint title="This tab must contain all the information you may want to send in an email." />

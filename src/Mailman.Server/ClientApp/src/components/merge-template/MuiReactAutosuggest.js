@@ -8,23 +8,27 @@ import parse from 'autosuggest-highlight/parse'
 import Paper from '@material-ui/core/Paper'
 import MenuItem from '@material-ui/core/MenuItem'
 import { withStyles } from '@material-ui/core/styles'
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import { FormControl, Input, Typography } from '@material-ui/core'
 
 function renderInputComponent(inputProps) {
-  const { classes, inputRef = () => {}, ref, ...other } = inputProps
+  const { classes, inputRef = () => {}, ref, loading, ...other } = inputProps
 
   return (
-    <Input
-      fullWidth
-      inputProps={{
-        ref: ref,
-        classes: {
-          input: classes.input,
-        },
-      }}
-      {...other}
-    />
+    <div>
+      <Input
+        fullWidth
+        inputProps={{
+          ref: ref,
+          classes: {
+            input: classes.input,
+          },
+        }}
+        {...other}
+      />
+      {loading && <LinearProgress />}
+    </div>
   )
 }
 
@@ -192,7 +196,7 @@ class MuiReactAutosuggest extends React.Component {
   }
 
   render() {
-    const { classes } = this.props
+    const { classes, loading } = this.props
 
     const autosuggestProps = {
       renderInputComponent,
@@ -214,6 +218,7 @@ class MuiReactAutosuggest extends React.Component {
             placeholder: this.props.placeholder,
             value: this.state.single,
             onChange: this.handleChange('single'),
+            loading,
           }}
           theme={{
             container: classes.container,
