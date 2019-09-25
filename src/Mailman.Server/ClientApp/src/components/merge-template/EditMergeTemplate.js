@@ -10,6 +10,8 @@ import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Title from './Title'
 import TemplateDataSource from './TemplateDataSource'
+import { fetchSheetTabs } from '../../actions/SheetInfo'
+import getParams from '../../util/QueryParam'
 
 const styles = theme => ({
   root: {
@@ -44,6 +46,8 @@ class EditMergeTemplateInner extends Component {
     activeStep: 0,
     template: {
       title: '',
+      sheetName: '',
+      headerRowNumber: 1,
     },
   }
 
@@ -51,6 +55,7 @@ class EditMergeTemplateInner extends Component {
     super(props)
 
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleLoadTabs = this.handleLoadTabs.bind(this)
   }
 
   getStepContent(step) {
@@ -63,7 +68,16 @@ class EditMergeTemplateInner extends Component {
           />
         )
       case 1:
-        return <TemplateDataSource value="Google Sheet" />
+        return (
+          <TemplateDataSource
+            tab={this.state.template.sheetName}
+            row={this.state.template.headerRowNumber}
+            sheetId={this.props.sheetId}
+            tabs={this.props.tabs}
+            handleLoadTabs={this.handleLoadTabs}
+            handleChange={this.handleChange}
+          />
+        )
       case 2:
         return `This is the column filled with the email addresses of the recipients.`
       case 3:
@@ -107,6 +121,10 @@ class EditMergeTemplateInner extends Component {
       ...{ [input]: e.target.value },
     }
     this.setState({ template })
+  }
+
+  handleLoadTabs(sheetId) {
+    console.log('Updating tabs')
   }
 
   render() {
@@ -185,21 +203,49 @@ class EditMergeTemplateByIdInner extends Component {
     super(props)
   }
 
-  render() {
-    return <EditMergeTemplate template={this.props.template} />
+  componentDidMount() {
+    this.props.fetchSheetTabs(this.props.sheetId)
   }
+
+  render() {
+    return (
+      <EditMergeTemplate
+        template={this.props.template}
+        tabs={this.props.sheet}
+        sheetId={this.props.sheetId}
+      />
+    )
+  }
+}
+
+const mapDispatchToProps = {
+  fetchSheetTabs,
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const sheetId = getParams(ownProps.location.search)['ssid']
   const id = ownProps.match.params.id
 
+  const template = state.readMergeTemplates.mergeTemplates.find(el => {
+    return el.id === id
+  })
+
+  let sheet = {
+    loading: false,
+    tabs: [],
+  }
+  if (state.sheetInfo.sheets && state.sheetInfo.sheets[sheetId]) {
+    sheet = state.sheetInfo.sheets[sheetId]
+  }
+
   return {
-    template: state.readMergeTemplates.mergeTemplates.find(el => {
-      return el.id === id
-    }),
+    template,
+    sheet,
+    sheetId,
   }
 }
 
-export const EditMergeTemplateById = connect(mapStateToProps)(
-  EditMergeTemplateByIdInner
-)
+export const EditMergeTemplateById = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EditMergeTemplateByIdInner)
