@@ -6,6 +6,7 @@ import counter from './Counter'
 import navDrawer from './NavDrawer'
 import readMergeTemplates from './ReadMergeTemplates'
 import weatherForecasts from './WeatherForecasts'
+import sheetInfo from './SheetInfo'
 
 export const rootReducer = combineReducers({
   createMergeTemplate,
@@ -15,4 +16,5 @@ export const rootReducer = combineReducers({
   navDrawer,
   readMergeTemplates,
   weatherForecasts,
+  sheetInfo,
 })
