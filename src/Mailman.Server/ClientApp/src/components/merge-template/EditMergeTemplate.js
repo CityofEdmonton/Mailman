@@ -10,6 +10,7 @@ import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
 import Title from './Title'
 import TemplateDataSource from './TemplateDataSource'
+import TemplateRecipient from './TemplateRecipient'
 import { fetchSheetTabs } from '../../actions/SheetInfo'
 import getParams from '../../util/QueryParam'
 
@@ -48,6 +49,11 @@ class EditMergeTemplateInner extends Component {
       title: '',
       sheetName: '',
       headerRowNumber: 1,
+      emailTemplate: {
+        to: '',
+        cc: '',
+        bcc: '',
+      }
     },
   }
 
@@ -79,7 +85,15 @@ class EditMergeTemplateInner extends Component {
           />
         )
       case 2:
-        return `This is the column filled with the email addresses of the recipients.`
+        return (
+          <TemplateRecipient
+            to={this.state.template.emailTemplate.to}
+            bcc={this.state.template.emailTemplate.bcc}
+            cc={this.state.template.emailTemplate.cc}
+            selectOptions={[]}
+            handleChange={this.handleChange}
+          />
+        )
       case 3:
         return `Recipients will see this as the subject line of the email. Type << to see a list of column names. Template tags will be swapped out with the associated values in the Sheet.`
       case 4:
@@ -116,9 +130,20 @@ class EditMergeTemplateInner extends Component {
   }
 
   handleChange = input => e => {
+    let levels = input.split('.')
+    let obj = {}
+    let nextLvl = obj
+
+    for (let i = 0; i < levels.length-1; i++) {
+      let level = levels[i]
+      nextLvl[level] = {}
+      nextLvl = nextLvl[level]
+    }
+    nextLvl[levels.pop()] = e.target.value
+
     let template = {
       ...this.state.template,
-      ...{ [input]: e.target.value },
+      ...obj,
     }
     this.setState({ template })
   }
