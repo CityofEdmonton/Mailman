@@ -53,7 +53,7 @@ class EditMergeTemplateInner extends Component {
         to: '',
         cc: '',
         bcc: '',
-      }
+      },
     },
   }
 
@@ -134,7 +134,7 @@ class EditMergeTemplateInner extends Component {
     let obj = {}
     let nextLvl = obj
 
-    for (let i = 0; i < levels.length-1; i++) {
+    for (let i = 0; i < levels.length - 1; i++) {
       let level = levels[i]
       nextLvl[level] = {}
       nextLvl = nextLvl[level]

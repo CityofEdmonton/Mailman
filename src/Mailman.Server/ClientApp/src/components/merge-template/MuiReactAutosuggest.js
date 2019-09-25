@@ -8,7 +8,7 @@ import parse from 'autosuggest-highlight/parse'
 import Paper from '@material-ui/core/Paper'
 import MenuItem from '@material-ui/core/MenuItem'
 import { withStyles } from '@material-ui/core/styles'
-import LinearProgress from '@material-ui/core/LinearProgress';
+import LinearProgress from '@material-ui/core/LinearProgress'
 
 import { FormControl, Input, Typography } from '@material-ui/core'
 

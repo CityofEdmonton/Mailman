@@ -13,7 +13,6 @@ const styles = theme => ({
   },
 })
 
-
 class Title extends Component {
   constructor(props) {
     super(props)
@@ -25,8 +24,16 @@ class Title extends Component {
     return (
       <div className={classes.root}>
         <Paper square elevation={0}>
-          <TextField required className={classes.text} id="template-title" label="Title" margin="normal" onChange={handleChange('title')} value={value}/>
-          <Hint title="This title will help you differentiate this merge from others."/>
+          <TextField
+            required
+            className={classes.text}
+            id="template-title"
+            label="Title"
+            margin="normal"
+            onChange={handleChange('title')}
+            value={value}
+          />
+          <Hint title="This title will help you differentiate this merge from others." />
         </Paper>
       </div>
     )
