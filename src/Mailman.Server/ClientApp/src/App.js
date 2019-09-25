@@ -3,7 +3,6 @@ import { HashRouter as Router, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './components/Home'
 import Settings from './components/Settings'
-import { ReceiverSelectionContainer } from './components/create-merge/ReceiverSelectionContainer'
 import { EmailSubjectContainer } from './components/create-merge/EmailSubjectContainer'
 import { EmailBodyContainer } from './components/create-merge/EmailBodyContainer'
 import { SavePageContainer } from './components/create-merge/SavePageContainer'
@@ -22,10 +21,6 @@ export default () => (
       <ProtectedRoute
         path="/mergeTemplate/:id"
         component={EditMergeTemplateById}
-      />
-      <ProtectedRoute
-        path="/mergeTemplate/receiverSelection"
-        component={ReceiverSelectionContainer}
       />
       <ProtectedRoute
         path="/mergeTemplate/subject"
