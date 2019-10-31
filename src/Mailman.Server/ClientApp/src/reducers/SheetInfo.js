@@ -16,9 +16,35 @@ export default (state, action) => {
 
   switch (action.type) {
     case RECEIVE_ROW_HEADERS:
-      throw new Error('Not implemented')
+      return {
+        sheets: {
+          ...state.sheets,
+          ...{
+            [action.payload.spreadsheetId]: {
+              tabs: state.sheets[action.payload.spreadsheetId].tabs,
+              headers: action.payload.headers,
+              loading: false,
+            },
+          },
+        },
+      }
     case REQUEST_ROW_HEADERS:
-      throw new Error('Not implemented')
+      // Always initialise with an empty list, but don't overwrite old results.
+      let headers = []
+      if (
+        state.sheets[action.spreadsheetId] &&
+        state.sheets[action.spreadsheetId].headers
+      ) {
+        headers = state.sheets[action.spreadsheetId].headers
+      }
+      return {
+        sheets: {
+          ...state.sheets,
+          ...{
+            [action.spreadsheetId]: { loading: true, tabs: state.sheets[action.spreadsheetId].tabs,  headers },
+          },
+        },
+      }
 
     case RECEIVE_SHEET_TABS:
       return {
@@ -27,6 +53,7 @@ export default (state, action) => {
           ...{
             [action.payload.spreadsheetId]: {
               tabs: action.payload.tabs,
+              headers: [],
               loading: false,
             },
           },
@@ -46,7 +73,7 @@ export default (state, action) => {
         sheets: {
           ...state.sheets,
           ...{
-            [action.spreadsheetId]: { loading: true, tabs },
+            [action.spreadsheetId]: { loading: true, tabs, headers: [] },
           },
         },
       }

@@ -37,3 +37,43 @@ export function receiveSheetTabs(spreadsheetId, json) {
     })
   }
 }
+
+export function fetchSheetHeaders(spreadsheetId, tab, row) {
+  return dispatch => {
+    dispatch(requestSheetHeaders(spreadsheetId, tab, row))
+    fetch(`https://localhost:5001/api/sheets/RowValues/${spreadsheetId}/${tab}?rowNumber=${row}`)
+      .then(response => {
+        console.log(response)
+        return response.json()
+      })
+      .then(json => {
+        dispatch(receiveSheetHeaders(spreadsheetId, tab, row, json))
+        return json
+      })
+  }
+}
+
+export function requestSheetHeaders(spreadsheetId, tab, row) {
+  return dispatch => {
+    dispatch({
+      type: REQUEST_ROW_HEADERS,
+      spreadsheetId,
+      tab,
+      row,
+    })
+  }
+}
+
+export function receiveSheetHeaders(spreadsheetId, tab, row, json) {
+  return dispatch => {
+    dispatch({
+      type: RECEIVE_ROW_HEADERS,
+      payload: {
+        spreadsheetId,
+        tab,
+        row,
+        headers: json,
+      },
+    })
+  }
+}
