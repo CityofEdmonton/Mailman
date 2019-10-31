@@ -13,6 +13,7 @@ import TemplateDataSource from './TemplateDataSource'
 import TemplateRecipient from './TemplateRecipient'
 import { fetchSheetTabs, fetchSheetHeaders } from '../../actions/SheetInfo'
 import getParams from '../../util/QueryParam'
+import merge from 'deepmerge'
 
 const styles = theme => ({
   root: {
@@ -63,6 +64,7 @@ class EditMergeTemplateInner extends Component {
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleLoadTabs = this.handleLoadTabs.bind(this)
     this.handleLoadHeaders = this.handleLoadHeaders.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
 
   getStepContent(step) {
@@ -143,10 +145,9 @@ class EditMergeTemplateInner extends Component {
     }
     nextLvl[levels.pop()] = e.target.value
 
-    let template = {
-      ...this.state.template,
-      ...obj,
-    }
+    // At this point, obj is a deep object of just the single input that triggered this event.
+    // Deep Merge is needed to avoid destroying properties >1 level deep.
+    let template = merge(this.state.template, obj)
     this.setState({ template })
   }
 
@@ -155,7 +156,6 @@ class EditMergeTemplateInner extends Component {
   }
 
   handleLoadHeaders() {
-    console.log(this.state)
     this.props.fetchSheetHeaders(this.props.sheetId, this.state.template.sheetName, this.state.template.headerRowNumber)
   }
 
