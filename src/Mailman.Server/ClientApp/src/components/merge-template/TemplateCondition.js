@@ -17,14 +17,14 @@ const styles = theme => ({
 })
 
 class TemplateCondition extends Component {
-  state = {
-    checked: false,
-  }
-
   constructor(props) {
     super(props)
 
     this.handleLoadHeaders = useDebounce(props.handleLoadHeaders, 500)
+
+    this.state = {
+      checked: props.conditional != null && props.conditional !== '',
+    }
   }
 
   onConditionChange = newValue => {
