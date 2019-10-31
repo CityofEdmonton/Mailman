@@ -217,6 +217,7 @@ class MuiReactAutosuggest extends React.Component {
             value: this.state.single,
             onChange: this.handleChange('single'),
             loading,
+            disabled: this.props.disabled,
           }}
           theme={{
             container: classes.container,
@@ -278,6 +279,7 @@ MuiReactAutosuggest.propTypes = {
     }
   },
   constraintMessage: PropTypes.string, // Optional message
+  disabled: PropTypes.bool,
 }
 
 export default withStyles(styles)(MuiReactAutosuggest)

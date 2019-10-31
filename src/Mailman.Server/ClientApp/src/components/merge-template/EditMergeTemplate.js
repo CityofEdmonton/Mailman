@@ -12,6 +12,7 @@ import Title from './Title'
 import TemplateDataSource from './TemplateDataSource'
 import TemplateRecipient from './TemplateRecipient'
 import TemplateEmail from './TemplateEmail'
+import TemplateCondition from './TemplateCondition'
 import { fetchSheetTabs, fetchSheetHeaders } from '../../actions/SheetInfo'
 import getParams from '../../util/QueryParam'
 import merge from 'deepmerge'
@@ -111,7 +112,14 @@ class EditMergeTemplateInner extends Component {
       case 4:
         return `This card is used to determine what type of repeater you want to have. "Immediately" will send the email once a Google form linked to the sheet is submitted. Please note that if you choose this option, you will not be able to set conditionals."Hourly"  will send emails every hour; it is a good idea to combine this with a conditional, otherwise every person listed in the spreadsheet will recieve an email whenever Mailman runs!"Manually" will send emails whenever the user manually presses the run button.`
       case 5:
-        return `This column is used to determine when to send an email. If a given row reads TRUE, Mailman will send an email. Any other value and Mailman won't send. This can be useful for scheduling your merges or ensuring you don't accidentally email someone twice.`
+        return (
+          <TemplateCondition
+            conditional={this.state.template.conditional}
+            headers={this.props.headers}
+            handleLoadHeaders={this.handleLoadHeaders}
+            handleChange={this.handleChange}
+          />
+        )
       default:
         return 'Unknown step'
     }
