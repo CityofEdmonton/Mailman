@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography'
 import Title from './Title'
 import TemplateDataSource from './TemplateDataSource'
 import TemplateRecipient from './TemplateRecipient'
-import { fetchSheetTabs } from '../../actions/SheetInfo'
+import { fetchSheetTabs, fetchSheetHeaders } from '../../actions/SheetInfo'
 import getParams from '../../util/QueryParam'
 
 const styles = theme => ({
@@ -62,6 +62,7 @@ class EditMergeTemplateInner extends Component {
 
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleLoadTabs = this.handleLoadTabs.bind(this)
+    this.handleLoadHeaders = this.handleLoadHeaders.bind(this)
   }
 
   getStepContent(step) {
@@ -90,7 +91,8 @@ class EditMergeTemplateInner extends Component {
             to={this.state.template.emailTemplate.to}
             bcc={this.state.template.emailTemplate.bcc}
             cc={this.state.template.emailTemplate.cc}
-            selectOptions={[]}
+            headers={this.props.headers}
+            handleLoadHeaders={this.handleLoadHeaders}
             handleChange={this.handleChange}
           />
         )
@@ -150,6 +152,11 @@ class EditMergeTemplateInner extends Component {
 
   handleLoadTabs() {
     this.props.fetchSheetTabs(this.props.sheetId)
+  }
+
+  handleLoadHeaders() {
+    console.log(this.state)
+    this.props.fetchSheetHeaders(this.props.sheetId, this.state.template.sheetName, this.state.template.headerRowNumber)
   }
 
   render() {
@@ -237,8 +244,10 @@ class EditMergeTemplateByIdInner extends Component {
       <EditMergeTemplate
         template={this.props.template}
         tabs={this.props.sheet}
+        headers={this.props.sheet}
         sheetId={this.props.sheetId}
         fetchSheetTabs={this.props.fetchSheetTabs}
+        fetchSheetHeaders={this.props.fetchSheetHeaders}
       />
     )
   }
@@ -246,6 +255,7 @@ class EditMergeTemplateByIdInner extends Component {
 
 const mapDispatchToProps = {
   fetchSheetTabs,
+  fetchSheetHeaders,
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -259,6 +269,7 @@ const mapStateToProps = (state, ownProps) => {
   let sheet = {
     loading: false,
     tabs: [],
+    headers: [],
   }
   if (state.sheetInfo.sheets && state.sheetInfo.sheets[sheetId]) {
     sheet = state.sheetInfo.sheets[sheetId]

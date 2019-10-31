@@ -4,6 +4,7 @@ import { Card, Grid, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import MuiReactAutosuggest from '../merge-template/MuiReactAutosuggest'
 import Hint from '../merge-template/Hint'
+import useDebounce from '../../util/UseDebounce'
 
 const styles = theme => ({
   container: {
@@ -34,6 +35,7 @@ class TemplateRecipient extends Component {
       ccRegexPassed: true,
       bccRegexPassed: true,
     }
+    this.handleLoadHeaders = useDebounce(props.handleLoadHeaders, 500)
   }
 
   checkToRegex = result => {
@@ -49,8 +51,7 @@ class TemplateRecipient extends Component {
   }
 
   notifyOfData = input => value => {
-    console.log(input)
-    console.log(value)
+    this.handleLoadHeaders()
     this.props.handleChange(input)({ target: { value } })
   }
 
@@ -60,48 +61,52 @@ class TemplateRecipient extends Component {
     const tagRegex = '<<[^<>]+>>'
     const receiverRegex = `^((${tagRegex})|(${emailRegex}))(,\\s*((${tagRegex})|(${emailRegex})))*$`
 
+    const { headers } = this.props
+    // Transform tabs to match autocomplete format
+    const headerValues = headers.headers.map(value => {
+      return { label: value }
+    })
+
     return (
-      <Grid container style={styles.container}>
-        <Card style={styles.card}>
-          <Typography variant="h5" style={styles.title}>
-            Who are you sending to?
-          </Typography>
-          <MuiReactAutosuggest
-            placeholder="To..."
-            suggestions={this.props.selectOptions}
-            callback={this.notifyOfData('emailTemplate.to')}
-            value={this.props.to}
-            openWrapper="<<"
-            closeWrapper=">>"
-            constraintRegex={receiverRegex}
-            constraintCallback={this.checkToRegex}
-            constraintMessage="Must be template tags << >> or emails seperated by commas"
-          />
-          <MuiReactAutosuggest
-            placeholder="CC..."
-            suggestions={this.props.selectOptions}
-            callback={this.notifyOfData('cc')}
-            value={this.props.cc}
-            openWrapper="<<"
-            closeWrapper=">>"
-            constraintRegex={receiverRegex}
-            constraintCallback={this.checkCcRegex}
-            constraintMessage="Must be template tags << >> or emails seperated by commas"
-          />
-          <MuiReactAutosuggest
-            placeholder="BCC..."
-            suggestions={this.props.selectOptions}
-            callback={this.notifyOfData('bcc')}
-            value={this.props.bcc}
-            openWrapper="<<"
-            closeWrapper=">>"
-            constraintRegex={receiverRegex}
-            constraintCallback={this.checkBccRegex}
-            constraintMessage="Must be template tags << >> or emails seperated by commas"
-          />
-          <Hint title="This is the column filled with the email addresses of the recipients." />
-        </Card>
-      </Grid>
+      <div>
+        <Typography variant="h5" style={styles.title}>
+          Who are you sending to?
+        </Typography>
+        <MuiReactAutosuggest
+          placeholder="To..."
+          suggestions={headerValues}
+          callback={this.notifyOfData('emailTemplate.to')}
+          value={this.props.to}
+          openWrapper="<<"
+          closeWrapper=">>"
+          constraintRegex={receiverRegex}
+          constraintCallback={this.checkToRegex}
+          constraintMessage="Must be template tags << >> or emails seperated by commas"
+        />
+        <MuiReactAutosuggest
+          placeholder="CC..."
+          suggestions={headerValues}
+          callback={this.notifyOfData('emailTemplate.cc')}
+          value={this.props.cc}
+          openWrapper="<<"
+          closeWrapper=">>"
+          constraintRegex={receiverRegex}
+          constraintCallback={this.checkCcRegex}
+          constraintMessage="Must be template tags << >> or emails seperated by commas"
+        />
+        <MuiReactAutosuggest
+          placeholder="BCC..."
+          suggestions={headerValues}
+          callback={this.notifyOfData('emailTemplate.bcc')}
+          value={this.props.bcc}
+          openWrapper="<<"
+          closeWrapper=">>"
+          constraintRegex={receiverRegex}
+          constraintCallback={this.checkBccRegex}
+          constraintMessage="Must be template tags << >> or emails seperated by commas"
+        />
+        <Hint title="This is the column filled with the email addresses of the recipients." />
+      </div>
     )
   }
 }
@@ -111,6 +116,7 @@ TemplateRecipient.propTypes = {
   cc: PropTypes.string,
   bcc: PropTypes.string,
   selectOptions: PropTypes.arrayOf(PropTypes.string),
+  handleLoadHeaders: PropTypes.func.isRequired,
   handleChange: PropTypes.func,
 }
 
