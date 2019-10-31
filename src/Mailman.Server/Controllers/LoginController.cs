@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+using Mailman.Server.Hubs;
 
 namespace Mailman.Server.Controllers
 {
@@ -20,6 +22,16 @@ namespace Mailman.Server.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class LoginController : Controller
     {
+        private readonly IHubContext<MailmanHub> _hub;
+
+        /// <summary>
+        /// Creates a new instance of LoginController.
+        /// </summary>
+        public LoginController(IHubContext<MailmanHub> hub)
+        {
+            _hub = hub;
+        }
+
         /// <summary>
         /// Logs in a user using the AppScriptOAuth scheme by communicating with
         /// the parent appscript window.
@@ -44,7 +56,7 @@ namespace Mailman.Server.Controllers
             {
                 var returnUrl = Request?.Query?["returnUrl"];
                 if (string.IsNullOrWhiteSpace(returnUrl))
-                    returnUrl = "/";
+                    returnUrl = "/#/";
                 return base.Redirect(returnUrl + Request.QueryString.Value);
             }
             else
@@ -63,41 +75,25 @@ namespace Mailman.Server.Controllers
         /// in a child window to get consent.
         /// </remarks>
         [HttpGet("[action]")]
-        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.Google.GoogleDefaults.AuthenticationScheme)]
-        public IActionResult Signin()
+        [Authorize]
+        public async Task<IActionResult> Signin(String SignalrId)
         {
+            // Send the user information to the client.
+            await this._hub.Clients.Client(SignalrId).SendAsync("USER_LOGIN", new 
+            {
+                user = new
+                {
+                  email = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value,
+                  name = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value,
+                  givenName = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value,
+                  surname = User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value,
+                }
+            });
             return new ContentResult()
             {
                 Content = "<html><body>\n<script>\nwindow.close();</script>\n</body></html>",
                 ContentType = "text/html"
             };
         }
-
-        /// <summary>
-        /// Completes the AppScriptOAuth login flow by submitting an OAuth token from 
-        /// a parent appscript window
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPost("signin")]
-        [Authorize(AuthenticationSchemes = AppScriptOAuthAuthenticationDefaults.AuthenticationScheme)]
-        public IActionResult SigninWithToken([FromForm]SignInModel model)
-        {
-            // this code is never called because the AppScriptOAuthAuthenticationHandler redirects 
-            // after a successfull challenge.
-            return Ok();
-        }
-
-        /// <summary>
-        /// structure for submitting an accessToken to the <see cref="SigninWithToken(SignInModel)">SigninWithToken</see> method
-        /// </summary>
-        public class SignInModel
-        {
-            /// <summary>
-            /// An OAuth 2.0 Access Token
-            /// </summary>
-            public string AccessToken { get; set; }
-        }
-
     }
 }
