@@ -7,23 +7,11 @@ import Hint from '../merge-template/Hint'
 import useDebounce from '../../util/UseDebounce'
 
 const styles = theme => ({
-  container: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    paddingTop: 15,
-    alignItems: 'center',
+  root: {
+    width: '90%',
   },
-  card: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    padding: 15,
-    justifyContent: 'center',
-    overflow: 'visible',
-  },
-  title: {
-    marginBottom: 15,
+  text: {
+    marginRight: theme.spacing.unit * 2,
   },
 })
 
@@ -61,51 +49,66 @@ class TemplateRecipient extends Component {
     const tagRegex = '<<[^<>]+>>'
     const receiverRegex = `^((${tagRegex})|(${emailRegex}))(,\\s*((${tagRegex})|(${emailRegex})))*$`
 
-    const { headers } = this.props
+    const { headers, classes } = this.props
     // Transform tabs to match autocomplete format
     const headerValues = headers.headers.map(value => {
       return { label: value }
     })
 
     return (
-      <div>
-        <Typography variant="h5" style={styles.title}>
-          Who are you sending to?
-        </Typography>
-        <MuiReactAutosuggest
-          placeholder="To..."
-          suggestions={headerValues}
-          callback={this.notifyOfData('emailTemplate.to')}
-          value={this.props.to}
-          openWrapper="<<"
-          closeWrapper=">>"
-          constraintRegex={receiverRegex}
-          constraintCallback={this.checkToRegex}
-          constraintMessage="Must be template tags << >> or emails seperated by commas"
-        />
-        <MuiReactAutosuggest
-          placeholder="CC..."
-          suggestions={headerValues}
-          callback={this.notifyOfData('emailTemplate.cc')}
-          value={this.props.cc}
-          openWrapper="<<"
-          closeWrapper=">>"
-          constraintRegex={receiverRegex}
-          constraintCallback={this.checkCcRegex}
-          constraintMessage="Must be template tags << >> or emails seperated by commas"
-        />
-        <MuiReactAutosuggest
-          placeholder="BCC..."
-          suggestions={headerValues}
-          callback={this.notifyOfData('emailTemplate.bcc')}
-          value={this.props.bcc}
-          openWrapper="<<"
-          closeWrapper=">>"
-          constraintRegex={receiverRegex}
-          constraintCallback={this.checkBccRegex}
-          constraintMessage="Must be template tags << >> or emails seperated by commas"
-        />
-        <Hint title="This is the column filled with the email addresses of the recipients." />
+      <div className={classes.root}>
+
+        <div>
+          <span className={classes.text}>
+            <MuiReactAutosuggest
+              placeholder="To..."
+              suggestions={headerValues}
+              callback={this.notifyOfData('emailTemplate.to')}
+              value={this.props.to}
+              loading={headers.loading}
+              openWrapper="<<"
+              closeWrapper=">>"
+              constraintRegex={receiverRegex}
+              constraintCallback={this.checkToRegex}
+              constraintMessage="Must be template tags << >> or emails seperated by commas"
+            />
+          </span>
+          <Hint title="Use << to dynamically fill this with email addresses from your spreadsheet. You can also put people's emails in here directly." />
+        </div>
+        <div>
+          <span className={classes.text}>
+            <MuiReactAutosuggest
+              placeholder="CC..."
+              suggestions={headerValues}
+              callback={this.notifyOfData('emailTemplate.cc')}
+              value={this.props.cc}
+              loading={headers.loading}
+              openWrapper="<<"
+              closeWrapper=">>"
+              constraintRegex={receiverRegex}
+              constraintCallback={this.checkCcRegex}
+              constraintMessage="Must be template tags << >> or emails seperated by commas"
+            />
+          </span>
+          <Hint title="CC stands for carbon copy. When you list the email address in the CC header, that recipient will receive a copy of the message." />
+        </div>
+        <div>
+          <span className={classes.text}>
+            <MuiReactAutosuggest
+              placeholder="BCC..."
+              suggestions={headerValues}
+              callback={this.notifyOfData('emailTemplate.bcc')}
+              value={this.props.bcc}
+              loading={headers.loading}
+              openWrapper="<<"
+              closeWrapper=">>"
+              constraintRegex={receiverRegex}
+              constraintCallback={this.checkBccRegex}
+              constraintMessage="Must be template tags << >> or emails seperated by commas"
+            />
+          </span>
+          <Hint title="BCC stands for blind carbon copy which is similar to that of CC except that the email address of the recipients specified in this field do not appear in the received message header and the recipients in the to or CC fields will not know that a copy was sent to these addresses." />
+        </div>
       </div>
     )
   }
