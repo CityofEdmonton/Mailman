@@ -32,8 +32,6 @@ export default class MergeTemplateInputForm extends Component {
 
   componentDidMount() {
     if (this.props.textInputConstraintRegex) {
-      // Check initial constraint
-      console.log('Input to check: ', this.state.textInputValue)
       this.handleTextInputConstraint(this.state.textInputValue)
     }
   }

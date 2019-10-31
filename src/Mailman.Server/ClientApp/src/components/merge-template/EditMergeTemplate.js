@@ -156,7 +156,11 @@ class EditMergeTemplateInner extends Component {
   }
 
   handleLoadHeaders() {
-    this.props.fetchSheetHeaders(this.props.sheetId, this.state.template.sheetName, this.state.template.headerRowNumber)
+    this.props.fetchSheetHeaders(
+      this.props.sheetId,
+      this.state.template.sheetName,
+      this.state.template.headerRowNumber
+    )
   }
 
   render() {

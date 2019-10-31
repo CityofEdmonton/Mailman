@@ -98,8 +98,6 @@ class MuiReactAutosuggest extends React.Component {
 
   componentDidMount() {
     if (this.props.constraintRegex) {
-      // Check initial constraint
-      console.log('Input to check: ', this.state.single)
       this.handleConstraint(this.state.single)
     }
   }

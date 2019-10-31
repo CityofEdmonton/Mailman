@@ -14,8 +14,6 @@ export default class TextInput extends Component {
 
   componentDidMount() {
     if (this.props.constraintRegex) {
-      // Check initial constraint
-      console.log('Input to check: ', this.state.value)
       this.handleConstraint(this.state.value)
     }
   }

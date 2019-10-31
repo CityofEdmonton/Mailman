@@ -41,7 +41,9 @@ export function receiveSheetTabs(spreadsheetId, json) {
 export function fetchSheetHeaders(spreadsheetId, tab, row) {
   return dispatch => {
     dispatch(requestSheetHeaders(spreadsheetId, tab, row))
-    fetch(`https://localhost:5001/api/sheets/RowValues/${spreadsheetId}/${tab}?rowNumber=${row}`)
+    fetch(
+      `https://localhost:5001/api/sheets/RowValues/${spreadsheetId}/${tab}?rowNumber=${row}`
+    )
       .then(response => {
         console.log(response)
         return response.json()

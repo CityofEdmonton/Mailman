@@ -41,7 +41,11 @@ export default (state, action) => {
         sheets: {
           ...state.sheets,
           ...{
-            [action.spreadsheetId]: { loading: true, tabs: state.sheets[action.spreadsheetId].tabs,  headers },
+            [action.spreadsheetId]: {
+              loading: true,
+              tabs: state.sheets[action.spreadsheetId].tabs,
+              headers,
+            },
           },
         },
       }

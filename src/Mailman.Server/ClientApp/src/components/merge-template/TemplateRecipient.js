@@ -57,7 +57,6 @@ class TemplateRecipient extends Component {
 
     return (
       <div className={classes.root}>
-
         <div>
           <span className={classes.text}>
             <MuiReactAutosuggest
