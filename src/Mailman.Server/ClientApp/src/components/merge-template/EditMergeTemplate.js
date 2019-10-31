@@ -39,7 +39,6 @@ function getSteps() {
     'Where is your data located?',
     'Who are you sending to?',
     'What would you like your email to look like?',
-    'How do you want to send the email?',
     'Conditionally send this merge?',
   ]
 }
@@ -110,8 +109,6 @@ class EditMergeTemplateInner extends Component {
           />
         )
       case 4:
-        return `This card is used to determine what type of repeater you want to have. "Immediately" will send the email once a Google form linked to the sheet is submitted. Please note that if you choose this option, you will not be able to set conditionals."Hourly"  will send emails every hour; it is a good idea to combine this with a conditional, otherwise every person listed in the spreadsheet will recieve an email whenever Mailman runs!"Manually" will send emails whenever the user manually presses the run button.`
-      case 5:
         return (
           <TemplateCondition
             conditional={this.state.template.conditional}
