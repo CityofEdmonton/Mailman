@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography'
 import Title from './Title'
 import TemplateDataSource from './TemplateDataSource'
 import TemplateRecipient from './TemplateRecipient'
+import TemplateEmail from './TemplateEmail'
 import { fetchSheetTabs, fetchSheetHeaders } from '../../actions/SheetInfo'
 import getParams from '../../util/QueryParam'
 import merge from 'deepmerge'
@@ -36,8 +37,7 @@ function getSteps() {
     'What should this merge template be called?',
     'Where is your data located?',
     'Who are you sending to?',
-    'What would you like your email subject to be?',
-    'What would you like your email body to be?',
+    'What would you like your email to look like?',
     'How do you want to send the email?',
     'Conditionally send this merge?',
   ]
@@ -99,12 +99,18 @@ class EditMergeTemplateInner extends Component {
           />
         )
       case 3:
-        return `Recipients will see this as the subject line of the email. Type << to see a list of column names. Template tags will be swapped out with the associated values in the Sheet.`
+        return (
+          <TemplateEmail
+            body={this.state.template.emailTemplate.body}
+            subject={this.state.template.emailTemplate.subject}
+            headers={this.props.headers}
+            handleLoadHeaders={this.handleLoadHeaders}
+            handleChange={this.handleChange}
+          />
+        )
       case 4:
-        return `Recipients will see this as the body of the email. Type << to see a list of column names. Template tags will be swapped out with the associated values in the Sheet.`
-      case 5:
         return `This card is used to determine what type of repeater you want to have. "Immediately" will send the email once a Google form linked to the sheet is submitted. Please note that if you choose this option, you will not be able to set conditionals."Hourly"  will send emails every hour; it is a good idea to combine this with a conditional, otherwise every person listed in the spreadsheet will recieve an email whenever Mailman runs!"Manually" will send emails whenever the user manually presses the run button.`
-      case 6:
+      case 5:
         return `This column is used to determine when to send an email. If a given row reads TRUE, Mailman will send an email. Any other value and Mailman won't send. This can be useful for scheduling your merges or ensuring you don't accidentally email someone twice.`
       default:
         return 'Unknown step'
