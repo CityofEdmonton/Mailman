@@ -9,7 +9,7 @@ import registerServiceWorker from './registerServiceWorker'
 import theme from './theme'
 import { fetchMe } from './actions/User'
 import { fetchSignalrId } from './actions/Signalr'
-import { fetchMergeTemplatesIfNeeded } from './actions/ReadMergeTemplates'
+import { fetchMergeTemplatesIfNeeded } from './actions/MergeTemplates'
 import getParams from './util/QueryParam'
 
 // Get the application-wide store instance, prepopulating with state from the server where available.

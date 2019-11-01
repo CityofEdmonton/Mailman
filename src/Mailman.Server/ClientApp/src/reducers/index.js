@@ -3,7 +3,7 @@ import createMergeTemplate from './CreateMergeTemplate'
 import loading from './Loading'
 import user from './User'
 import navDrawer from './NavDrawer'
-import readMergeTemplates from './ReadMergeTemplates'
+import mergeTemplates from './MergeTemplates'
 import sheetInfo from './SheetInfo'
 
 export const rootReducer = combineReducers({
@@ -11,6 +11,6 @@ export const rootReducer = combineReducers({
   loading,
   user,
   navDrawer,
-  readMergeTemplates,
+  mergeTemplates,
   sheetInfo,
 })

@@ -68,7 +68,7 @@ class Home extends Component {
 
 const mapStateToProps = state => {
   return {
-    mergeTemplates: state.readMergeTemplates.mergeTemplates,
+    mergeTemplates: state.mergeTemplates.mergeTemplates,
   }
 }
 

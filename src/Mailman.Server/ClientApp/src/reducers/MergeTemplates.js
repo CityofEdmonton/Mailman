@@ -3,7 +3,7 @@ import {
   RECEIVE_MERGE_TEMPLATES,
   REQUEST_SAVE_MERGE_TEMPLATE,
   RECEIVE_SAVE_MERGE_TEMPLATE,
-} from '../actions/ReadMergeTemplates'
+} from '../actions/MergeTemplates'
 //import fetch from 'cross-fetch'; //most browsers don't natively support fetch yet, should install the npm package
 
 const initialState = {

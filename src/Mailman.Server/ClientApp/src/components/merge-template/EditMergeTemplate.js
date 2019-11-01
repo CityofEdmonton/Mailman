@@ -15,7 +15,7 @@ import TemplateRecipient from './TemplateRecipient'
 import TemplateEmail from './TemplateEmail'
 import TemplateCondition from './TemplateCondition'
 import { fetchSheetTabs, fetchSheetHeaders } from '../../actions/SheetInfo'
-import { fetchSaveMergeTemplate } from '../../actions/ReadMergeTemplates'
+import { fetchSaveMergeTemplate } from '../../actions/MergeTemplates'
 import getParams from '../../util/QueryParam'
 import merge from 'deepmerge'
 
@@ -294,7 +294,7 @@ const mapStateToProps = (state, ownProps) => {
   const sheetId = getParams(ownProps.location.search)['ssid']
   const id = ownProps.match.params.id
 
-  const template = state.readMergeTemplates.mergeTemplates.find(el => {
+  const template = state.mergeTemplates.mergeTemplates.find(el => {
     return el.id === id
   })
 

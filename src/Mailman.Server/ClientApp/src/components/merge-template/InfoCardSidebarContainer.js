@@ -6,7 +6,7 @@ import InfoCardSidebar from './InfoCardSidebar'
 function mapStateToProps(state) {
   const { mergeTemplates } = state
   return {
-    mergeTemplates: state.readMergeTemplates.mergeTemplates,
+    mergeTemplates: state.mergeTemplates.mergeTemplates,
   }
 }
 
