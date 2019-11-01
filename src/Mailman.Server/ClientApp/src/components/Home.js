@@ -8,7 +8,6 @@ import Grid from '@material-ui/core/Grid'
 import { Tooltip } from '@material-ui/core'
 
 import InfoCard from './merge-template/InfoCard'
-import { loadFromMergeTemplates } from '../actions/CreateMergeTemplate'
 
 const styles = theme => ({
   largeButton: {
@@ -49,8 +48,8 @@ class Home extends Component {
         </div>
         <div>
           <Link
-            to="/mergeTemplate/title"
-            onClick={() => this.props.dispatch(loadFromMergeTemplates())}
+            to="/mergeTemplate"
+            onClick={() => console.log('TODO: New template')}
           >
             <Tooltip title="New Merge Template" placement="top">
               <AddIcon

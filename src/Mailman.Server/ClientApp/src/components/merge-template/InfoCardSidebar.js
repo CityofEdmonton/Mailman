@@ -10,7 +10,6 @@ import { Link } from 'react-router-dom'
 import Tooltip from '@material-ui/core/Tooltip'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 
 import PropTypes from 'prop-types'
 
@@ -91,42 +90,6 @@ class InfoCardSidebar extends Component {
 
 InfoCardSidebar.propTypes = {
   mergeTemplates: PropTypes.array.isRequired,
-  loadFromMergeTemplates: PropTypes.func.isRequired,
 }
-
-// const InfoCardSidebar = props => {
-//     const { classes } = props;
-//   return(<div>
-
-//     <List disablePadding={true} className={classes.iconList}>
-
-//       <ListItem className={classes.root}>
-//         <IconButton className={classes.smallIcon}>
-//           <Tooltip title="Delete" placement="left"><DeleteIcon style={{color: "red"}}/></Tooltip>
-//         </IconButton>
-//       </ListItem>
-//       <ListItem className={classes.root}>
-//         <IconButton className={classes.smallIcon}>
-//           <Tooltip title="Run" placement="left"><PlayIcon style={{color: "green"}}/></Tooltip>
-//         </IconButton>
-//       </ListItem>
-//       <ListItem className={classes.root}>
-//         <IconButton className={classes.smallIcon} onClick={props.loadFromMergeTemplates(props.id)}>
-//           <Link to={`/mergeTemplate/title/?id=${props.id}`}>
-//             <Tooltip title="Edit" placement="left"><CreateIcon style={{color: "grey"}}/></Tooltip>
-//           </Link>
-//         </IconButton>
-//       </ListItem>
-//       <ListItem className={classes.root}>
-//         <IconButton className={classes.smallIcon}>
-//           <Tooltip title="Preview" placement="left"><ViewIcon style={{color: "black"}}/></Tooltip>
-//         </IconButton>
-//       </ListItem>
-
-//     </List>
-
-//     </div>)
-
-// }
 
 export default withStyles(styles, { withTheme: true })(InfoCardSidebar)
