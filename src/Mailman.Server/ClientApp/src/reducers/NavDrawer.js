@@ -9,7 +9,7 @@ export const actionCreators = {
 
 export default (state, action) => {
   state = state || initialState
-  console.log('Tester')
+
   if (action.type === openDrawerType) {
     return { ...state, drawerOpened: true }
   }

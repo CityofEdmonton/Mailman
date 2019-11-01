@@ -3,12 +3,7 @@ import { HashRouter as Router, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './components/Home'
 import Settings from './components/Settings'
-import { EmailSubjectContainer } from './components/create-merge/EmailSubjectContainer'
-import { EmailBodyContainer } from './components/create-merge/EmailBodyContainer'
-import { SavePageContainer } from './components/create-merge/SavePageContainer'
 import { EditMergeTemplateById } from './components/merge-template/EditMergeTemplate'
-import Counter from './components/Counter'
-import FetchData from './components/FetchData'
 import Login from './components/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 
@@ -21,23 +16,6 @@ export default () => (
       <ProtectedRoute
         path="/mergeTemplate/:id"
         component={EditMergeTemplateById}
-      />
-      <ProtectedRoute
-        path="/mergeTemplate/subject"
-        component={EmailSubjectContainer}
-      />
-      <ProtectedRoute
-        path="/mergeTemplate/body"
-        component={EmailBodyContainer}
-      />
-      <ProtectedRoute
-        path="/mergeTemplate/save"
-        component={SavePageContainer}
-      />
-      <ProtectedRoute path="/counter" component={Counter} />
-      <ProtectedRoute
-        path="/fetchdata/:startDateIndex?"
-        component={FetchData}
       />
     </Layout>
   </Router>
