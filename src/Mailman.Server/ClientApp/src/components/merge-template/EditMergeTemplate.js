@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
@@ -14,6 +15,7 @@ import TemplateRecipient from './TemplateRecipient'
 import TemplateEmail from './TemplateEmail'
 import TemplateCondition from './TemplateCondition'
 import { fetchSheetTabs, fetchSheetHeaders } from '../../actions/SheetInfo'
+import { fetchSaveMergeTemplate } from '../../actions/ReadMergeTemplates'
 import getParams from '../../util/QueryParam'
 import merge from 'deepmerge'
 
@@ -140,7 +142,11 @@ class EditMergeTemplateInner extends Component {
     })
   }
 
-  handleSubmit(event) {
+  handleSubmit() {
+    this.props.fetchSaveMergeTemplate(this.state.template)
+  }
+
+  preventDefault(event) {
     event.preventDefault()
   }
 
@@ -179,22 +185,9 @@ class EditMergeTemplateInner extends Component {
     const { activeStep } = this.state
     const steps = getSteps()
 
-    let buttonAttr = {
-      variant: 'contained',
-      color: 'primary',
-      onClick: this.handleNext,
-      className: classes.button,
-    }
-    let buttonText = 'Next'
-    if (activeStep === steps.length - 1) {
-      buttonText = 'Finish'
-      buttonAttr.onClick = this.handleSubmit
-      buttonAttr.type = 'submit'
-    }
-
     return (
       <form
-        onSubmit={this.handleSubmit}
+        onSubmit={this.preventDefault}
         className={classes.root}
         autoComplete="off"
       >
@@ -213,7 +206,29 @@ class EditMergeTemplateInner extends Component {
                     >
                       Back
                     </Button>
-                    <Button {...buttonAttr}>{buttonText}</Button>
+                    {
+                      activeStep === steps.length - 1 ?
+                      <Button
+                        buttonAttr="submit"
+                        onClick={this.handleSubmit}
+                        className={classes.button}
+                        variant="contained"
+                        color="primary"
+                      >
+                        <Link to={'/'}>
+                          Finish
+                        </Link>
+                      </Button> :
+                      <Button
+                        onClick={this.handleNext}
+                        className={classes.button}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Next
+                      </Button>
+                    }
+                    
                   </div>
                 </div>
               </StepContent>
@@ -263,6 +278,7 @@ class EditMergeTemplateByIdInner extends Component {
         sheetId={this.props.sheetId}
         fetchSheetTabs={this.props.fetchSheetTabs}
         fetchSheetHeaders={this.props.fetchSheetHeaders}
+        fetchSaveMergeTemplate={this.props.fetchSaveMergeTemplate}
       />
     )
   }
@@ -271,6 +287,7 @@ class EditMergeTemplateByIdInner extends Component {
 const mapDispatchToProps = {
   fetchSheetTabs,
   fetchSheetHeaders,
+  fetchSaveMergeTemplate,
 }
 
 const mapStateToProps = (state, ownProps) => {

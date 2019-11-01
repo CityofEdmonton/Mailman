@@ -1,8 +1,8 @@
 import {
   REQUEST_MERGE_TEMPLATES,
   RECEIVE_MERGE_TEMPLATES,
-  requestMergeTemplates,
-  receiveMergeTemplates,
+  REQUEST_SAVE_MERGE_TEMPLATE,
+  RECEIVE_SAVE_MERGE_TEMPLATE,
 } from '../actions/ReadMergeTemplates'
 //import fetch from 'cross-fetch'; //most browsers don't natively support fetch yet, should install the npm package
 
@@ -38,6 +38,18 @@ export default (state, action) => {
         ...state,
         sheetId: action.payload.spreadsheetId, //think about payload
         mergeTemplates: action.payload.mergeTemplates,
+        isLoading: false,
+      }
+    case REQUEST_SAVE_MERGE_TEMPLATE:
+      return {
+        ...state,
+        isLoading: true,
+      }
+    case RECEIVE_SAVE_MERGE_TEMPLATE:
+      let updatedTemplates = state.mergeTemplates.map(t => t.id === action.payload.id ? action.payload : t)
+      return {
+        ...state,
+        mergeTemplates: updatedTemplates,
         isLoading: false,
       }
   }
