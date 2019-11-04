@@ -4,6 +4,8 @@ import user from './User'
 import navDrawer from './NavDrawer'
 import mergeTemplates from './MergeTemplates'
 import sheetInfo from './SheetInfo'
+import error from './Error'
+
 
 export const rootReducer = combineReducers({
   loading,
@@ -11,4 +13,5 @@ export const rootReducer = combineReducers({
   navDrawer,
   mergeTemplates,
   sheetInfo,
+  error,
 })

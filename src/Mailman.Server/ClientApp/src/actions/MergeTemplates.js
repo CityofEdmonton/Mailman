@@ -1,4 +1,5 @@
 import { startHardLoad, stopHardLoad } from './Loading'
+import { submitError } from './Error'
 
 export const REQUEST_MERGE_TEMPLATES = 'REQUEST_MERGE_TEMPLATES'
 export const RECEIVE_MERGE_TEMPLATES = 'RECEIVE_MERGE_TEMPLATES'
@@ -23,13 +24,19 @@ export function deleteMergeTemplate(templateId) {
     dispatch(requestDeleteMergeTemplate(templateId))
     return fetch('https://localhost:5001/api/MergeTemplates/Email', config)
       .then(response => {
+        if (response.ok) {
+          return response
+        }
+        throw new Error(`${response.status}: ${response.statusText}`)
+      })
+      .then(response => {
         return response.json()
       })
       .then(status => {
         dispatch(receiveDeleteMergeTemplate(templateId))
       })
       .catch(err => {
-        console.error(err)
+        dispatch(submitError(err))
       })
   }
 }
@@ -61,9 +68,19 @@ export function fetchSaveMergeTemplate(template) {
     body: JSON.stringify(template),
   }
 
+  if (!template.id) {
+    config.method = 'POST'
+  }
+
   return dispatch => {
     dispatch(requestSaveMergeTemplate(template))
     fetch('https://localhost:5001/api/MergeTemplates/Email', config)
+      .then(response => {
+        if (response.ok) {
+          return response
+        }
+        throw new Error(`${response.status}: ${response.statusText}`)
+      })
       .then(response => {
         return response.json()
       })
@@ -71,8 +88,7 @@ export function fetchSaveMergeTemplate(template) {
         dispatch(receiveSaveMergeTemplate(template))
       })
       .catch(err => {
-        console.error(err)
-        // TODO: Send error to redux store.
+        dispatch(submitError(err))
       })
   }
 }
@@ -123,11 +139,20 @@ export function fetchMergeTemplates(spreadsheetId) {
       config
     )
       .then(response => {
+        if (response.ok) {
+          return response
+        }
+        throw new Error(`${response.status}: ${response.statusText}`)
+      })
+      .then(response => {
         return response.json()
       })
       .then(json => {
         dispatch(receiveMergeTemplates(spreadsheetId, json))
         return json
+      })
+      .catch(err => {
+        dispatch(submitError(err))
       })
   }
 }
