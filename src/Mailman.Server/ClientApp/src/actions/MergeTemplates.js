@@ -5,6 +5,52 @@ export const RECEIVE_MERGE_TEMPLATES = 'RECEIVE_MERGE_TEMPLATES'
 const FRIENDLY_TASK = 'Grabbing Merge Templates...'
 export const REQUEST_SAVE_MERGE_TEMPLATE = 'REQUEST_SAVE_MERGE_TEMPLATE'
 export const RECEIVE_SAVE_MERGE_TEMPLATE = 'RECEIVE_SAVE_MERGE_TEMPLATE'
+export const REQUEST_DELETE_MERGE_TEMPLATE = 'REQUEST_DELETE_MERGE_TEMPLATE'
+export const RECEIVE_DELETE_MERGE_TEMPLATE = 'RECEIVE_DELETE_MERGE_TEMPLATE'
+
+export function deleteMergeTemplate(templateId) {
+  const config = {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      MergeTemplateId: templateId,
+    }),
+  }
+
+  return dispatch => {
+    dispatch(requestDeleteMergeTemplate(templateId))
+    return fetch('https://localhost:5001/api/MergeTemplates/Email', config)
+      .then(response => {
+        return response.json()
+      })
+      .then(status => {
+        dispatch(receiveDeleteMergeTemplate(templateId))
+      })
+      .catch(err => {
+        console.error(err)
+      })
+  }
+}
+
+export function receiveDeleteMergeTemplate(templateId) {
+  return dispatch => {
+    dispatch({
+      type: RECEIVE_DELETE_MERGE_TEMPLATE,
+      payload: templateId,
+    })
+  }
+}
+
+export function requestDeleteMergeTemplate(templateId) {
+  return dispatch => {
+    dispatch({
+      type: REQUEST_DELETE_MERGE_TEMPLATE,
+      payload: templateId,
+    })
+  }
+}
 
 export function fetchSaveMergeTemplate(template) {
   const config = {
@@ -17,14 +63,17 @@ export function fetchSaveMergeTemplate(template) {
 
   return dispatch => {
     dispatch(requestSaveMergeTemplate(template))
-    fetch('https://localhost:5001/api/MergeTemplates/Email', config).then(response => {
-      return response.json()
-    }).then(json => {
-      dispatch(receiveSaveMergeTemplate(template))
-    }).catch(err => {
-      console.error(err)
-      // TODO: Send error to redux store.
-    })
+    fetch('https://localhost:5001/api/MergeTemplates/Email', config)
+      .then(response => {
+        return response.json()
+      })
+      .then(json => {
+        dispatch(receiveSaveMergeTemplate(template))
+      })
+      .catch(err => {
+        console.error(err)
+        // TODO: Send error to redux store.
+      })
   }
 }
 

@@ -3,6 +3,8 @@ import {
   RECEIVE_MERGE_TEMPLATES,
   REQUEST_SAVE_MERGE_TEMPLATE,
   RECEIVE_SAVE_MERGE_TEMPLATE,
+  REQUEST_DELETE_MERGE_TEMPLATE,
+  RECEIVE_DELETE_MERGE_TEMPLATE,
 } from '../actions/MergeTemplates'
 //import fetch from 'cross-fetch'; //most browsers don't natively support fetch yet, should install the npm package
 
@@ -46,7 +48,23 @@ export default (state, action) => {
         isLoading: true,
       }
     case RECEIVE_SAVE_MERGE_TEMPLATE:
-      let updatedTemplates = state.mergeTemplates.map(t => t.id === action.payload.id ? action.payload : t)
+      var updatedTemplates = state.mergeTemplates.map(t =>
+        t.id === action.payload.id ? action.payload : t
+      )
+      return {
+        ...state,
+        mergeTemplates: updatedTemplates,
+        isLoading: false,
+      }
+    case REQUEST_DELETE_MERGE_TEMPLATE:
+      return {
+        ...state,
+        isLoading: true,
+      }
+    case RECEIVE_DELETE_MERGE_TEMPLATE:
+      var updatedTemplates = state.mergeTemplates.filter(
+        t => t.id !== action.payload
+      )
       return {
         ...state,
         mergeTemplates: updatedTemplates,

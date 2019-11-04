@@ -206,8 +206,7 @@ class EditMergeTemplateInner extends Component {
                     >
                       Back
                     </Button>
-                    {
-                      activeStep === steps.length - 1 ?
+                    {activeStep === steps.length - 1 ? (
                       <Button
                         buttonAttr="submit"
                         onClick={this.handleSubmit}
@@ -215,10 +214,9 @@ class EditMergeTemplateInner extends Component {
                         variant="contained"
                         color="primary"
                       >
-                        <Link to={'/'}>
-                          Finish
-                        </Link>
-                      </Button> :
+                        <Link to={'/'}>Finish</Link>
+                      </Button>
+                    ) : (
                       <Button
                         onClick={this.handleNext}
                         className={classes.button}
@@ -227,8 +225,7 @@ class EditMergeTemplateInner extends Component {
                       >
                         Next
                       </Button>
-                    }
-                    
+                    )}
                   </div>
                 </div>
               </StepContent>
