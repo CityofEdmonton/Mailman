@@ -16,10 +16,8 @@ namespace Mailman.Server.Models
         /// <summary>
         /// Identifier for the merge tempalte
         /// </summary>
-        [Required]
-
         public string Id { get; set; }
-
+        
         /// <summary>
         /// The type of merge template. 
         /// Currently only "Email" type is supported.

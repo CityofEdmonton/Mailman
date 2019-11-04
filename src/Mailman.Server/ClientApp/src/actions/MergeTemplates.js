@@ -85,7 +85,7 @@ export function fetchSaveMergeTemplate(template) {
         return response.json()
       })
       .then(json => {
-        dispatch(receiveSaveMergeTemplate(template))
+        dispatch(receiveSaveMergeTemplate(json))
       })
       .catch(err => {
         dispatch(submitError(err))

@@ -6,7 +6,6 @@ import mergeTemplates from './MergeTemplates'
 import sheetInfo from './SheetInfo'
 import error from './Error'
 
-
 export const rootReducer = combineReducers({
   loading,
   user,

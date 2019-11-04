@@ -48,9 +48,14 @@ export default (state, action) => {
         isLoading: true,
       }
     case RECEIVE_SAVE_MERGE_TEMPLATE:
-      var updatedTemplates = state.mergeTemplates.map(t =>
-        t.id === action.payload.id ? action.payload : t
-      )
+      if (state.mergeTemplates.find(el => el.id === action.payload.id)) {
+        var updatedTemplates = state.mergeTemplates.map(t =>
+          t.id === action.payload.id ? action.payload : t
+        )
+      } else {
+        var updatedTemplates = [...state.mergeTemplates, action.payload]
+      }
+
       return {
         ...state,
         mergeTemplates: updatedTemplates,
