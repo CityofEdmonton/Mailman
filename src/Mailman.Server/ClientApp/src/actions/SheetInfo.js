@@ -1,3 +1,5 @@
+import { submitError } from './Error'
+
 export const REQUEST_SHEET_TABS = 'REQUEST_SHEET_TABS'
 export const RECEIVE_SHEET_TABS = 'RECEIVE_SHEET_TABS'
 export const REQUEST_ROW_HEADERS = 'REQUEST_ROW_HEADERS'
@@ -8,11 +10,20 @@ export function fetchSheetTabs(spreadsheetId) {
     dispatch(requestSheetTabs(spreadsheetId))
     fetch(`https://localhost:5001/api/sheets/sheetnames/${spreadsheetId}`)
       .then(response => {
+        if (response.ok) {
+          return response
+        }
+        throw new Error(`${response.status}: ${response.statusText}`)
+      })
+      .then(response => {
         return response.json()
       })
       .then(json => {
         dispatch(receiveSheetTabs(spreadsheetId, json))
         return json
+      })
+      .catch(err => {
+        dispatch(submitError(err))
       })
   }
 }
@@ -45,12 +56,20 @@ export function fetchSheetHeaders(spreadsheetId, tab, row) {
       `https://localhost:5001/api/sheets/RowValues/${spreadsheetId}/${tab}?rowNumber=${row}`
     )
       .then(response => {
-        console.log(response)
+        if (response.ok) {
+          return response
+        }
+        throw new Error(`${response.status}: ${response.statusText}`)
+      })
+      .then(response => {
         return response.json()
       })
       .then(json => {
         dispatch(receiveSheetHeaders(spreadsheetId, tab, row, json))
         return json
+      })
+      .catch(err => {
+        dispatch(submitError(err))
       })
   }
 }
