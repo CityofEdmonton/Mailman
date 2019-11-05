@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import DeleteIcon from '@material-ui/icons/Delete'
 import PlayIcon from '@material-ui/icons/PlayArrow'
@@ -10,6 +11,7 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import PropTypes from 'prop-types'
 import MailmanLink from '../MailmanLink'
+import { deleteMergeTemplate } from '../../actions/MergeTemplates'
 
 
 const styles = theme => ({
@@ -75,8 +77,15 @@ class InfoCardSidebar extends Component {
 }
 
 InfoCardSidebar.propTypes = {
-  mergeTemplates: PropTypes.array.isRequired,
+  id: PropTypes.string.isRequired,
   deleteMergeTemplate: PropTypes.func.isRequired,
 }
 
-export default withStyles(styles, { withTheme: true })(InfoCardSidebar)
+const mapDispatchToProps = {
+  deleteMergeTemplate,
+}
+
+export default withStyles(styles, { withTheme: true })(connect(
+  null,
+  mapDispatchToProps,
+)(InfoCardSidebar))
