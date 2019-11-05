@@ -31,14 +31,20 @@ namespace Mailman.Server.Models
         /// </summary>
         [Required]
         public string CreatedBy { get; set; }
-        private DateTime createdDateUtc;
+        private DateTime? createdDateUtc;
         /// <summary>
         /// The date and time the merge tempalte was creatd.
         /// </summary>
         [Required]
-        public DateTime CreatedDateUtc
+        public DateTime? CreatedDateUtc
         {
-            get => createdDateUtc;
+            get
+            {
+              if (createdDateUtc.HasValue)
+                  return this.createdDateUtc;
+              else
+                  return DateTime.Now;
+            }
             set
             {          
                 if (value > DateTime.MinValue && value <= DateTime.UtcNow)
