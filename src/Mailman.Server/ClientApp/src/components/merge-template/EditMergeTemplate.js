@@ -16,7 +16,7 @@ import TemplateEmail from './TemplateEmail'
 import TemplateCondition from './TemplateCondition'
 import { fetchSheetTabs, fetchSheetHeaders } from '../../actions/SheetInfo'
 import { fetchSaveMergeTemplate } from '../../actions/MergeTemplates'
-import getParams from '../../util/QueryParam'
+import { getHashParams } from '../../util/QueryParam'
 import merge from 'deepmerge'
 
 const styles = theme => ({
@@ -288,7 +288,7 @@ const mapDispatchToProps = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const sheetId = getParams(ownProps.location.search)['ssid']
+  const sheetId = getHashParams(ownProps.location.search)['ssid']
   const id = ownProps.match.params.id
 
   const template = state.mergeTemplates.mergeTemplates.find(el => {

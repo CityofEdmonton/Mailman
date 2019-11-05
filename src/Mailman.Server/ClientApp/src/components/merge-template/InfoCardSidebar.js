@@ -1,17 +1,17 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
-
 import DeleteIcon from '@material-ui/icons/Delete'
 import PlayIcon from '@material-ui/icons/PlayArrow'
 import CreateIcon from '@material-ui/icons/Create'
 import ViewIcon from '@material-ui/icons/Visibility'
 import { IconButton } from '@material-ui/core'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
 import Tooltip from '@material-ui/core/Tooltip'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
-
 import PropTypes from 'prop-types'
+import MailmanLink from '../MailmanLink'
+
 
 const styles = theme => ({
   smallIcon: {
@@ -68,11 +68,11 @@ class InfoCardSidebar extends Component {
           </ListItem>
           <ListItem className={classes.root}>
             <IconButton className={classes.smallIcon}>
-              <Link to={`/mergeTemplate/${this.props.id}`}>
+              <MailmanLink to={`/mergeTemplate/${this.props.id}`}>
                 <Tooltip title="Edit" placement="left">
                   <CreateIcon style={{ color: 'grey' }} />
                 </Tooltip>
-              </Link>
+              </MailmanLink>
             </IconButton>
           </ListItem>
           <ListItem className={classes.root}>
@@ -90,6 +90,7 @@ class InfoCardSidebar extends Component {
 
 InfoCardSidebar.propTypes = {
   mergeTemplates: PropTypes.array.isRequired,
+  deleteMergeTemplate: PropTypes.func.isRequired,
 }
 
 export default withStyles(styles, { withTheme: true })(InfoCardSidebar)

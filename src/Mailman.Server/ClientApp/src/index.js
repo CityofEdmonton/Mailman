@@ -10,7 +10,7 @@ import theme from './theme'
 import { fetchMe } from './actions/User'
 import { fetchSignalrId } from './actions/Signalr'
 import { fetchMergeTemplatesIfNeeded } from './actions/MergeTemplates'
-import getParams from './util/QueryParam'
+import { getHashParams } from './util/QueryParam'
 
 // Get the application-wide store instance, prepopulating with state from the server where available.
 const initialState = window.initialReduxState
@@ -23,7 +23,7 @@ store
   })
   .then(() => {
     // Load our templates.
-    let params = getParams(window.location.href)
+    let params = getHashParams(window.location.href)
     if (params['ssid']) {
       const sheetId = params['ssid']
       return store.dispatch(fetchMergeTemplatesIfNeeded(sheetId))
