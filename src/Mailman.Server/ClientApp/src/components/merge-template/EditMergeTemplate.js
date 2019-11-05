@@ -57,6 +57,12 @@ class EditMergeTemplateInner extends Component {
         cc: '',
         bcc: '',
       },
+      timestampColumn: {
+        name: '<<Mailman Email Timestamp',
+        shouldPrefixNameWithMergeTemplateTitle: false,
+        title: '<<Mailman Email Timestamp>>'
+      },
+      createdBy: 'Who knows?',
     },
   }
 
@@ -67,6 +73,7 @@ class EditMergeTemplateInner extends Component {
     this.handleLoadTabs = this.handleLoadTabs.bind(this)
     this.handleLoadHeaders = this.handleLoadHeaders.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.state.template.spreadSheetId = props.sheetId
   }
 
   getStepContent(step) {
