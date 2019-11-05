@@ -5,7 +5,6 @@ import PlayIcon from '@material-ui/icons/PlayArrow'
 import CreateIcon from '@material-ui/icons/Create'
 import ViewIcon from '@material-ui/icons/Visibility'
 import { IconButton } from '@material-ui/core'
-// import { Link } from 'react-router-dom'
 import Tooltip from '@material-ui/core/Tooltip'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -33,19 +32,6 @@ class InfoCardSidebar extends Component {
     super(props)
   }
 
-  getMergeTemplateFromID(templateID) {
-    // returns the index of the mergeTemplate (in props) or null if not exist
-    if (!this.props.mergeTemplates) {
-      return null
-    }
-    for (let i = 0; i < this.props.mergeTemplates.length; i++) {
-      if (this.props.mergeTemplates[i]['id'] === templateID) {
-        return this.props.mergeTemplates[i]
-      }
-    }
-    return null
-  }
-
   render() {
     const { classes } = this.props
 
@@ -53,7 +39,7 @@ class InfoCardSidebar extends Component {
       <div>
         <List disablePadding={true} className={classes.iconList}>
           <ListItem className={classes.root}>
-            <IconButton className={classes.smallIcon}>
+            <IconButton className={classes.smallIcon} onClick={this.props.deleteMergeTemplate.bind(this, this.props.id)}>
               <Tooltip title="Delete" placement="left">
                 <DeleteIcon style={{ color: 'red' }} />
               </Tooltip>

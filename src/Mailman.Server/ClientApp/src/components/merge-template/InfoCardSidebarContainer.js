@@ -2,19 +2,11 @@ import { connect } from 'react-redux'
 import InfoCardSidebar from './InfoCardSidebar'
 import { deleteMergeTemplate } from '../../actions/MergeTemplates'
 
-function mapStateToProps(state) {
-  return {
-    mergeTemplates: state.mergeTemplates.mergeTemplates,
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    deleteMergeTemplate,
-  }
+const mapDispatchToProps = {
+  deleteMergeTemplate,
 }
 
 export const InfoCardSidebarContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
+  null,
+  mapDispatchToProps,
 )(InfoCardSidebar)
