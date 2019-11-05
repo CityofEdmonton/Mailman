@@ -13,7 +13,6 @@ import PropTypes from 'prop-types'
 import MailmanLink from '../MailmanLink'
 import { deleteMergeTemplate } from '../../actions/MergeTemplates'
 
-
 const styles = theme => ({
   smallIcon: {
     width: 32,
@@ -41,7 +40,10 @@ class InfoCardSidebar extends Component {
       <div>
         <List disablePadding={true} className={classes.iconList}>
           <ListItem className={classes.root}>
-            <IconButton className={classes.smallIcon} onClick={this.props.deleteMergeTemplate.bind(this, this.props.id)}>
+            <IconButton
+              className={classes.smallIcon}
+              onClick={this.props.deleteMergeTemplate.bind(this, this.props.id)}
+            >
               <Tooltip title="Delete" placement="left">
                 <DeleteIcon style={{ color: 'red' }} />
               </Tooltip>
@@ -85,7 +87,9 @@ const mapDispatchToProps = {
   deleteMergeTemplate,
 }
 
-export default withStyles(styles, { withTheme: true })(connect(
-  null,
-  mapDispatchToProps,
-)(InfoCardSidebar))
+export default withStyles(styles, { withTheme: true })(
+  connect(
+    null,
+    mapDispatchToProps
+  )(InfoCardSidebar)
+)

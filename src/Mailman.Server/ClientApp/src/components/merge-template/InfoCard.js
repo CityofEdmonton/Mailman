@@ -8,7 +8,7 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import InfoCardSidebar from './InfoCardSidebar';
+import InfoCardSidebar from './InfoCardSidebar'
 
 const styles = theme => ({
   paper: {

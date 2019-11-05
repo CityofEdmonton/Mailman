@@ -29,8 +29,7 @@ export function getHashUrl(url, params) {
 
   if (splitUrl.length < 2) {
     throw new Error(`Failed getting hash URL: ${url} has no hash.`)
-  }
-  else if (splitUrl.length > 2) {
+  } else if (splitUrl.length > 2) {
     throw new Error(`Failed getting hash URL: ${url} has multiple hashes.`)
   }
 
@@ -38,7 +37,10 @@ export function getHashUrl(url, params) {
   let route = afterHash.split('?')[0]
   let currentParams = {}
   // Only matches when there is a query string.
-  if (afterHash.split('?')[1] && afterHash.split('?')[1].match(/[^=?\/&]+=[^=?\/&]+/g)) {
+  if (
+    afterHash.split('?')[1] &&
+    afterHash.split('?')[1].match(/[^=?\/&]+=[^=?\/&]+/g)
+  ) {
     currentParams = afterHash.split('?')[1].reduce((combined, value) => {
       let values = value.split('=')
       combined[values[0]] = values[1]
@@ -46,7 +48,7 @@ export function getHashUrl(url, params) {
     }, {})
   }
 
-  let combinedParams = {...currentParams, ...params}
+  let combinedParams = { ...currentParams, ...params }
   let hashUrl = `${route}?`
   for (let [key, value] of Object.entries(combinedParams)) {
     hashUrl += `${key}=${value}&`
