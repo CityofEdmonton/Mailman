@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import MailmanLink from './MailmanLink'
 import { withStyles } from '@material-ui/core/styles'
 import AddIcon from '@material-ui/icons/AddCircle'
 import Grid from '@material-ui/core/Grid'
-
 import { Tooltip } from '@material-ui/core'
-
 import InfoCard from './merge-template/InfoCard'
 
 const styles = theme => ({
@@ -47,10 +45,7 @@ class Home extends Component {
           </Grid>
         </div>
         <div>
-          <Link
-            to="/mergeTemplate"
-            onClick={() => console.log('TODO: New template')}
-          >
+          <MailmanLink to="/mergeTemplate">
             <Tooltip title="New Merge Template" placement="top">
               <AddIcon
                 className={classes.largeButton}
@@ -58,7 +53,7 @@ class Home extends Component {
                 color="error"
               />
             </Tooltip>
-          </Link>
+          </MailmanLink>
         </div>
       </div>
     )

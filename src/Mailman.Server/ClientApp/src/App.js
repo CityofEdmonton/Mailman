@@ -14,7 +14,7 @@ export default () => (
       <ProtectedRoute path="/settings" component={Settings} />
       <Route path="/login" component={Login} />
       <ProtectedRoute
-        path="/mergeTemplate/:id"
+        path="/mergeTemplate/:id?"
         component={EditMergeTemplateById}
       />
     </Layout>
