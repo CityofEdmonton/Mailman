@@ -3,14 +3,14 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import Hidden from '@material-ui/core/Hidden'
-
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import InboxIcon from '@material-ui/icons/MoveToInbox'
+import SettingsIcon from '@material-ui/icons/Settings'
 import DraftsIcon from '@material-ui/icons/Drafts'
-import StarIcon from '@material-ui/icons/Star'
-import SendIcon from '@material-ui/icons/Send'
+import HistoryIcon from '@material-ui/icons/History'
+import ScheduleIcon from '@material-ui/icons/Schedule'
+import MailmanLink from '../MailmanLink'
 
 // State Management
 import { bindActionCreators } from 'redux'
@@ -26,15 +26,14 @@ const styles = theme => ({
       position: 'relative',
     },
   },
+  linkContents: {
+    display: 'flex',
+  },
 })
 
 class ResponsiveDrawer extends React.Component {
   state = {
     mobileOpen: false,
-  }
-
-  handleDrawerToggle = () => {
-    this.setState(state => ({ mobileOpen: !state.mobileOpen }))
   }
 
   render() {
@@ -43,28 +42,36 @@ class ResponsiveDrawer extends React.Component {
     const drawer = (
       <div>
         <ListItem button>
-          <ListItemIcon>
-            <InboxIcon />
-          </ListItemIcon>
-          <ListItemText primary="Inbox" />
+          <MailmanLink className={classes.linkContents} to='/' onClick={this.props.close}>
+            <ListItemIcon>
+              <DraftsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Templates" />
+          </MailmanLink>
         </ListItem>
         <ListItem button>
-          <ListItemIcon>
-            <StarIcon />
-          </ListItemIcon>
-          <ListItemText primary="Starred" />
+          <MailmanLink className={classes.linkContents} to='/' onClick={this.props.close}>
+            <ListItemIcon>
+              <ScheduleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Schedule" />
+          </MailmanLink>
         </ListItem>
         <ListItem button>
-          <ListItemIcon>
-            <SendIcon />
-          </ListItemIcon>
-          <ListItemText primary="Send mail" />
+          <MailmanLink className={classes.linkContents} to='/' onClick={this.props.close}>
+            <ListItemIcon>
+              <HistoryIcon />
+            </ListItemIcon>
+            <ListItemText primary="History" />
+          </MailmanLink>
         </ListItem>
         <ListItem button>
-          <ListItemIcon>
-            <DraftsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Drafts" />
+          <MailmanLink className={classes.linkContents} to='/settings' onClick={this.props.close}>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Settings" />
+          </MailmanLink>
         </ListItem>
       </div>
     )

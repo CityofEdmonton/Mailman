@@ -1,15 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import MailmanLink from './MailmanLink'
 import { Button, Grid, Typography } from '@material-ui/core'
 
 const Home = props => (
   <Grid>
     <Typography variant="subtitle1">Settings</Typography>
     <Grid item>
-      <Link to="/">
+      <MailmanLink to="/">
         <Button variant="contained">Back</Button>
-      </Link>
+      </MailmanLink>
     </Grid>
   </Grid>
 )

@@ -7,9 +7,6 @@ import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import ResponsiveDrawer from './Drawer'
-import SettingsIcon from '@material-ui/icons/Settings'
-import LetterIcon from '@material-ui/icons/Drafts'
-import { Link } from 'react-router-dom'
 
 // State Management
 import { bindActionCreators } from 'redux'
@@ -57,21 +54,22 @@ const styles = theme => ({
 class ResponsiveNavMenu extends React.Component {
   render() {
     const { classes } = this.props
-    console.log(`State: ${this.props}`)
-
     return (
       <div className={classes.root}>
+        <ResponsiveDrawer />
         <AppBar className={classes.appBar}>
           <Toolbar>
-            <LetterIcon style={{ paddingRight: 5 }} />
+            <IconButton
+              color="inherit"
+              aria-label="Open drawer"
+              onClick={this.props.open}
+              className={classes.navIconHide}
+            >
+              <MenuIcon />
+            </IconButton>
             <Typography variant="h6" color="inherit" noWrap>
               Mailman
             </Typography>
-            <Link to="/settings">
-              <IconButton>
-                <SettingsIcon style={{ color: 'white' }} />
-              </IconButton>
-            </Link>
           </Toolbar>
         </AppBar>
         {this.props.children}

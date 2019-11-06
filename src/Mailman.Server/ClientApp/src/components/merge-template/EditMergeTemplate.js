@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
@@ -14,6 +13,7 @@ import TemplateDataSource from './TemplateDataSource'
 import TemplateRecipient from './TemplateRecipient'
 import TemplateEmail from './TemplateEmail'
 import TemplateCondition from './TemplateCondition'
+import MailmanLink from '../MailmanLink'
 import { fetchSheetTabs, fetchSheetHeaders } from '../../actions/SheetInfo'
 import { fetchSaveMergeTemplate } from '../../actions/MergeTemplates'
 import { getHashParams } from '../../util/QueryParam'
@@ -221,7 +221,7 @@ class EditMergeTemplateInner extends Component {
                         variant="contained"
                         color="primary"
                       >
-                        <Link to={'/'}>Finish</Link>
+                        <MailmanLink to={'/'}>Finish</MailmanLink>
                       </Button>
                     ) : (
                       <Button
