@@ -18,7 +18,7 @@ export function fetchUser() {
   }
 
   return fetch('/api/user/me', config).then(jsonResponse => {
-    if (jsonResponse.status == 401) {
+    if (jsonResponse.status === 401) {
       return Promise.reject(new UnauthorizedError())
     }
     return jsonResponse.json()

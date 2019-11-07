@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import Paper from '@material-ui/core/Paper'
 import Hint from './Hint'
 import TextField from '@material-ui/core/TextField'
 
@@ -17,10 +16,6 @@ const styles = theme => ({
 })
 
 class Title extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   render() {
     const { value, classes, handleChange } = this.props
 

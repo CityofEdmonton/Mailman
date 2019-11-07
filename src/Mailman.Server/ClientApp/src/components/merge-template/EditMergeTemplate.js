@@ -272,10 +272,6 @@ export const EditMergeTemplate = withStyles(styles, { withTheme: true })(
 )
 
 class EditMergeTemplateByIdInner extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   componentDidMount() {
     this.props.fetchSheetTabs(this.props.sheetId)
   }

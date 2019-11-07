@@ -1,4 +1,4 @@
-﻿import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
+﻿import { applyMiddleware, compose, createStore } from 'redux'
 import thunk from 'redux-thunk'
 import { rootReducer } from '../reducers'
 import * as actionCreators from '../actions'

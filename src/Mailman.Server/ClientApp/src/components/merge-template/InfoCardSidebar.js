@@ -29,10 +29,6 @@ const styles = theme => ({
 })
 
 class InfoCardSidebar extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   render() {
     const { classes } = this.props
 

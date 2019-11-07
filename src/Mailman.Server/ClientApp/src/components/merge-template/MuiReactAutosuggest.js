@@ -13,7 +13,7 @@ import LinearProgress from '@material-ui/core/LinearProgress'
 import { FormControl, Input, Typography } from '@material-ui/core'
 
 function renderInputComponent(inputProps) {
-  const { classes, inputRef = () => {}, ref, loading, ...other } = inputProps
+  const { classes, ref, loading, ...other } = inputProps
 
   return (
     <div>

@@ -6,39 +6,28 @@ import {
   REQUEST_DELETE_MERGE_TEMPLATE,
   RECEIVE_DELETE_MERGE_TEMPLATE,
 } from '../actions/MergeTemplates'
-//import fetch from 'cross-fetch'; //most browsers don't natively support fetch yet, should install the npm package
 
 const initialState = {
   mergeTemplates: [],
-  isLoading: false, //I feel like this is not actually a thing that should be included
+  isLoading: false,
   sheetId: '',
 }
 
-function handleErrors(response) {
-  if (!response.ok) {
-    console.log('Failed')
-    throw Error(response.statusText)
-  }
-
-  return response
-}
-
 export default (state, action) => {
-  // state = initialState
   state = state || initialState
 
+  let updatedTemplates
   switch (action.type) {
     case REQUEST_MERGE_TEMPLATES:
       return {
         ...state,
-        //sheetId: action.payload.sheetId, //will you need to map merge templates to something?
         isLoading: true,
       }
 
     case RECEIVE_MERGE_TEMPLATES:
       return {
         ...state,
-        sheetId: action.payload.spreadsheetId, //think about payload
+        sheetId: action.payload.spreadsheetId,
         mergeTemplates: action.payload.mergeTemplates,
         isLoading: false,
       }
@@ -49,11 +38,11 @@ export default (state, action) => {
       }
     case RECEIVE_SAVE_MERGE_TEMPLATE:
       if (state.mergeTemplates.find(el => el.id === action.payload.id)) {
-        var updatedTemplates = state.mergeTemplates.map(t =>
+        updatedTemplates = state.mergeTemplates.map(t =>
           t.id === action.payload.id ? action.payload : t
         )
       } else {
-        var updatedTemplates = [...state.mergeTemplates, action.payload]
+        updatedTemplates = [...state.mergeTemplates, action.payload]
       }
 
       return {
@@ -67,7 +56,7 @@ export default (state, action) => {
         isLoading: true,
       }
     case RECEIVE_DELETE_MERGE_TEMPLATE:
-      var updatedTemplates = state.mergeTemplates.filter(
+      updatedTemplates = state.mergeTemplates.filter(
         t => t.id !== action.payload
       )
       return {
@@ -75,7 +64,7 @@ export default (state, action) => {
         mergeTemplates: updatedTemplates,
         isLoading: false,
       }
+    default:
+      return state
   }
-  //case failure
-  return state
 }
