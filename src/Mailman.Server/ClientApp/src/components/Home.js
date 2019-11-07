@@ -2,19 +2,27 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import MailmanLink from './MailmanLink'
 import { withStyles } from '@material-ui/core/styles'
-import AddIcon from '@material-ui/icons/AddCircle'
+import AddIcon from '@material-ui/icons/Add'
+import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid'
-import { Tooltip } from '@material-ui/core'
+import { Tooltip, FormHelperText } from '@material-ui/core'
 import InfoCard from './merge-template/InfoCard'
 
 const styles = theme => ({
-  largeButton: {
-    width: 50,
-    height: 50,
+  action: {
+    display: 'flex',
+    flexFlow: 'row-reverse',
   },
-  place: {
-    position: 'absolute',
-    bottom: -500,
+  fab: {
+    margin: theme.spacing.unit,
+  },
+  templates: {
+    flex: 1,
+  },
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
   },
 })
 
@@ -30,8 +38,8 @@ class Home extends Component {
     const { classes } = this.props
 
     return (
-      <div>
-        <div>
+      <div className={classes.root}>
+        <div className={classes.templates}>
           <Grid container spacing={16}>
             {this.props.mergeTemplates.map(mergeTemplate => (
               <Grid key={mergeTemplate.id} item xl={12}>
@@ -44,14 +52,12 @@ class Home extends Component {
             ))}
           </Grid>
         </div>
-        <div>
+        <div className={classes.action}>
           <MailmanLink to="/mergeTemplate">
             <Tooltip title="New Merge Template" placement="top">
-              <AddIcon
-                className={classes.largeButton}
-                style={{ position: 'absolute', bottom: 10, right: 10 }}
-                color="error"
-              />
+              <Fab color="primary" aria-label="Add" className={classes.fab}>
+                <AddIcon />
+              </Fab>
             </Tooltip>
           </MailmanLink>
         </div>

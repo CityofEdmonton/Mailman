@@ -5,6 +5,9 @@ import { withStyles } from '@material-ui/core/styles'
 import Loading from './Loading'
 
 const styles = theme => ({
+  layout: {
+    height: '100%',
+  },
   root: {
     flexGrow: 1,
     marginTop: '64px',
@@ -13,7 +16,7 @@ const styles = theme => ({
 })
 
 const Layout = props => (
-  <div>
+  <div className={props.classes.layout}>
     <Loading />
     <ResponsiveNavMenu>
       <Grid container className={props.classes.root}>
