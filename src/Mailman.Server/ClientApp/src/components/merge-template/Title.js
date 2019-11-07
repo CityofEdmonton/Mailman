@@ -11,6 +11,9 @@ const styles = theme => ({
   text: {
     marginRight: theme.spacing.unit * 2,
   },
+  textHint: {
+    display: 'flex',
+  },
 })
 
 class Title extends Component {
@@ -23,7 +26,7 @@ class Title extends Component {
 
     return (
       <div className={classes.root}>
-        <Paper square elevation={0}>
+        <div className={classes.textHint}>
           <TextField
             required
             className={classes.text}
@@ -34,7 +37,7 @@ class Title extends Component {
             value={value}
           />
           <Hint title="This title will help you differentiate this merge from others." />
-        </Paper>
+        </div>
       </div>
     )
   }

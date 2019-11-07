@@ -12,6 +12,9 @@ const styles = theme => ({
   text: {
     marginRight: theme.spacing.unit * 2,
   },
+  textHint: {
+    display: 'flex',
+  },
 })
 
 class TemplateEmail extends Component {
@@ -34,7 +37,7 @@ class TemplateEmail extends Component {
 
     return (
       <div className={classes.root}>
-        <div>
+        <div className={classes.textHint}>
           <span className={classes.text}>
             <MuiReactAutosuggest
               placeholder="Subject..."
@@ -52,7 +55,7 @@ class TemplateEmail extends Component {
                         Template tags will be swapped out with the associated values in the Sheet"
           />
         </div>
-        <div>
+        <div className={classes.textHint}>
           <span className={classes.text}>
             <MuiReactAutosuggest
               placeholder="Body..."

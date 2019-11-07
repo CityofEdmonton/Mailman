@@ -13,6 +13,9 @@ const styles = theme => ({
   text: {
     marginRight: theme.spacing.unit * 2,
   },
+  textHint: {
+    display: 'flex',
+  },
 })
 
 class TemplateRecipient extends Component {
@@ -57,7 +60,7 @@ class TemplateRecipient extends Component {
 
     return (
       <div className={classes.root}>
-        <div>
+        <div className={classes.textHint}>
           <span className={classes.text}>
             <MuiReactAutosuggest
               placeholder="To..."
@@ -74,7 +77,7 @@ class TemplateRecipient extends Component {
           </span>
           <Hint title="Use << to dynamically fill this with email addresses from your spreadsheet. You can also put people's emails in here directly." />
         </div>
-        <div>
+        <div className={classes.textHint}>
           <span className={classes.text}>
             <MuiReactAutosuggest
               placeholder="CC..."
@@ -91,7 +94,7 @@ class TemplateRecipient extends Component {
           </span>
           <Hint title="CC stands for carbon copy. When you list the email address in the CC header, that recipient will receive a copy of the message." />
         </div>
-        <div>
+        <div className={classes.textHint}>
           <span className={classes.text}>
             <MuiReactAutosuggest
               placeholder="BCC..."

@@ -25,6 +25,9 @@ const styles = theme => ({
     display: 'inline-block',
     margin: theme.spacing.unit,
   },
+  textHint: {
+    display: 'flex',
+  },
 })
 
 class TemplateDataSource extends Component {
@@ -54,7 +57,7 @@ class TemplateDataSource extends Component {
     return (
       <div className={classes.root}>
         {!sheetId && (
-          <div>
+          <div className={classes.textHint}>
             <Paper elevation={1} className={classes.sheetcontainer}>
               <Button onClick={this.showSheetPicker}>
                 <TableChartIcon className={classes.sheetButton} />
@@ -64,7 +67,7 @@ class TemplateDataSource extends Component {
             <Hint title="This Google Sheet contains your data." />
           </div>
         )}
-        <div>
+        <div className={classes.textHint}>
           <span className={classes.text}>
             <MuiReactAutosuggest
               placeholder="Tab..."
@@ -76,7 +79,7 @@ class TemplateDataSource extends Component {
           </span>
           <Hint title="This tab must contain all the information you may want to send in an email." />
         </div>
-        <div>
+        <div className={classes.textHint}>
           <TextField
             required
             className={classes.text}

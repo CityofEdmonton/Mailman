@@ -33,6 +33,9 @@ const styles = theme => ({
   resetContainer: {
     padding: theme.spacing.unit * 3,
   },
+  stepper: {
+    padding: 0,
+  },
 })
 
 function getSteps() {
@@ -198,7 +201,7 @@ class EditMergeTemplateInner extends Component {
         className={classes.root}
         autoComplete="off"
       >
-        <Stepper activeStep={activeStep} orientation="vertical">
+        <Stepper activeStep={activeStep} orientation="vertical" className={classes.stepper}>
           {steps.map((label, index) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>

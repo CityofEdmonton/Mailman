@@ -14,6 +14,9 @@ const styles = theme => ({
   text: {
     marginRight: theme.spacing.unit * 2,
   },
+  textHint: {
+    display: 'flex',
+  },
 })
 
 class TemplateCondition extends Component {
@@ -51,7 +54,7 @@ class TemplateCondition extends Component {
 
     return (
       <div className={classes.root}>
-        <div>
+        <div className={classes.textHint}>
           <span className={classes.text}>
             <MuiReactAutosuggest
               placeholder="Conditional..."
