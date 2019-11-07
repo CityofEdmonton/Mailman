@@ -16,10 +16,8 @@ namespace Mailman.Server.Models
         /// <summary>
         /// Identifier for the merge tempalte
         /// </summary>
-        [Required]
-
         public string Id { get; set; }
-
+        
         /// <summary>
         /// The type of merge template. 
         /// Currently only "Email" type is supported.
@@ -33,14 +31,20 @@ namespace Mailman.Server.Models
         /// </summary>
         [Required]
         public string CreatedBy { get; set; }
-        private DateTime createdDateUtc;
+        private DateTime? createdDateUtc;
         /// <summary>
         /// The date and time the merge tempalte was creatd.
         /// </summary>
         [Required]
-        public DateTime CreatedDateUtc
+        public DateTime? CreatedDateUtc
         {
-            get => createdDateUtc;
+            get
+            {
+              if (createdDateUtc.HasValue)
+                  return this.createdDateUtc;
+              else
+                  return DateTime.Now;
+            }
             set
             {          
                 if (value > DateTime.MinValue && value <= DateTime.UtcNow)

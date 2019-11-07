@@ -1,3 +1,15 @@
+# Mailman Frontend App
+
+## Development
+
+The only thing needed to get started with local development of the frontend is a .env with the base url set.
+
+```
+REACT_APP_BASE_URL=https://localhost:5001
+```
+
+## CreateReactApp
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>

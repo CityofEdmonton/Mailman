@@ -5,13 +5,6 @@ export const RECEIVE_LOGIN = 'RECEIVE_LOGIN'
 export const FRIENDLY_TASK = 'Logging in...'
 
 export function fetchLogin(signalrId) {
-  const config = {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }
-
   return dispatch => {
     dispatch(requestLogin())
     window.open(`/api/login/signin?SignalrId=${signalrId}`)

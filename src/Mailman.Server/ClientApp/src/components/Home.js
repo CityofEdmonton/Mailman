@@ -1,30 +1,28 @@
 import React, { Component } from 'react'
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import MailmanLink from './MailmanLink'
 import { withStyles } from '@material-ui/core/styles'
+import AddIcon from '@material-ui/icons/Add'
 import Fab from '@material-ui/core/Fab'
-import AddIcon from '@material-ui/icons/AddCircle'
 import Grid from '@material-ui/core/Grid'
-import Button from '@material-ui/core/Button'
-
 import { Tooltip } from '@material-ui/core'
-
 import InfoCard from './merge-template/InfoCard'
-import { fetchMergeTemplatesIfNeeded } from '../actions/ReadMergeTemplates'
-import { isAbsolute } from 'path'
-import { loadFromMergeTemplates } from '../actions/CreateMergeTemplate'
-
-const queryString = require('query-string')
 
 const styles = theme => ({
-  largeButton: {
-    width: 50,
-    height: 50,
+  action: {
+    display: 'flex',
+    flexFlow: 'row-reverse',
   },
-  place: {
-    position: 'absolute',
-    bottom: -500,
+  fab: {
+    margin: theme.spacing.unit,
+  },
+  templates: {
+    flex: 1,
+  },
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
   },
 })
 
@@ -36,21 +34,12 @@ class Home extends Component {
     }
   }
 
-  componentDidMount() {
-    const parsed = queryString.parse(this.props.location.search)
-    let spreadsheetId = parsed.ssid //parse query
-    const { dispatch } = this.props
-    if (spreadsheetId) {
-      dispatch(fetchMergeTemplatesIfNeeded(spreadsheetId))
-    }
-  }
-
   render() {
     const { classes } = this.props
 
     return (
-      <div>
-        <div>
+      <div className={classes.root}>
+        <div className={classes.templates}>
           <Grid container spacing={16}>
             {this.props.mergeTemplates.map(mergeTemplate => (
               <Grid key={mergeTemplate.id} item xl={12}>
@@ -63,19 +52,14 @@ class Home extends Component {
             ))}
           </Grid>
         </div>
-        <div>
-          <Link
-            to="/mergeTemplate/title"
-            onClick={() => this.props.dispatch(loadFromMergeTemplates())}
-          >
+        <div className={classes.action}>
+          <MailmanLink to="/mergeTemplate">
             <Tooltip title="New Merge Template" placement="top">
-              <AddIcon
-                className={classes.largeButton}
-                style={{ position: 'absolute', bottom: 10, right: 10 }}
-                color="error"
-              />
+              <Fab color="primary" aria-label="Add" className={classes.fab}>
+                <AddIcon />
+              </Fab>
             </Tooltip>
-          </Link>
+          </MailmanLink>
         </div>
       </div>
     )
@@ -84,16 +68,10 @@ class Home extends Component {
 
 const mapStateToProps = state => {
   return {
-    mergeTemplates: state.readMergeTemplates.mergeTemplates,
+    mergeTemplates: state.mergeTemplates.mergeTemplates,
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchMergeTemplatesIfNeeded: spreadSheetId =>
-      dispatch(fetchMergeTemplatesIfNeeded(spreadSheetId)),
-  }
-}
 const exportWithStyles = withStyles(styles, { withTheme: true })(Home)
 
 export default connect(mapStateToProps)(exportWithStyles)

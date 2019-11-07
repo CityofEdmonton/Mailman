@@ -2,3 +2,4 @@
 .DS_Store
 .vscode-janus-debug
 src/Mailman.Server/appsettings.Development.json
+src/Mailman.Server/ClientApp/.env

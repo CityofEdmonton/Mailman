@@ -8,23 +8,27 @@ import parse from 'autosuggest-highlight/parse'
 import Paper from '@material-ui/core/Paper'
 import MenuItem from '@material-ui/core/MenuItem'
 import { withStyles } from '@material-ui/core/styles'
+import LinearProgress from '@material-ui/core/LinearProgress'
 
 import { FormControl, Input, Typography } from '@material-ui/core'
 
 function renderInputComponent(inputProps) {
-  const { classes, inputRef = () => {}, ref, ...other } = inputProps
+  const { classes, ref, loading, ...other } = inputProps
 
   return (
-    <Input
-      fullWidth
-      inputProps={{
-        ref: ref,
-        classes: {
-          input: classes.input,
-        },
-      }}
-      {...other}
-    />
+    <div>
+      <Input
+        fullWidth
+        inputProps={{
+          ref: ref,
+          classes: {
+            input: classes.input,
+          },
+        }}
+        {...other}
+      />
+      {loading && <LinearProgress />}
+    </div>
   )
 }
 
@@ -94,8 +98,6 @@ class MuiReactAutosuggest extends React.Component {
 
   componentDidMount() {
     if (this.props.constraintRegex) {
-      // Check initial constraint
-      console.log('Input to check: ', this.state.single)
       this.handleConstraint(this.state.single)
     }
   }
@@ -192,7 +194,7 @@ class MuiReactAutosuggest extends React.Component {
   }
 
   render() {
-    const { classes } = this.props
+    const { classes, loading } = this.props
 
     const autosuggestProps = {
       renderInputComponent,
@@ -214,6 +216,8 @@ class MuiReactAutosuggest extends React.Component {
             placeholder: this.props.placeholder,
             value: this.state.single,
             onChange: this.handleChange('single'),
+            loading,
+            disabled: this.props.disabled,
           }}
           theme={{
             container: classes.container,
@@ -275,6 +279,7 @@ MuiReactAutosuggest.propTypes = {
     }
   },
   constraintMessage: PropTypes.string, // Optional message
+  disabled: PropTypes.bool,
 }
 
 export default withStyles(styles)(MuiReactAutosuggest)
