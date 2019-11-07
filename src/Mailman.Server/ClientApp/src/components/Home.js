@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import MailmanLink from './MailmanLink'
 import { withStyles } from '@material-ui/core/styles'
 import AddIcon from '@material-ui/icons/Add'
-import Fab from '@material-ui/core/Fab';
+import Fab from '@material-ui/core/Fab'
 import Grid from '@material-ui/core/Grid'
 import { Tooltip, FormHelperText } from '@material-ui/core'
 import InfoCard from './merge-template/InfoCard'

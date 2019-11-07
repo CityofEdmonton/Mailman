@@ -8,7 +8,9 @@ export const RECEIVE_ROW_HEADERS = 'RECEIVE_ROW_HEADERS'
 export function fetchSheetTabs(spreadsheetId) {
   return dispatch => {
     dispatch(requestSheetTabs(spreadsheetId))
-    fetch(`${process.env.REACT_APP_BASE_URL}/api/sheets/sheetnames/${spreadsheetId}`)
+    fetch(
+      `${process.env.REACT_APP_BASE_URL}/api/sheets/sheetnames/${spreadsheetId}`
+    )
       .then(response => {
         if (response.ok) {
           return response

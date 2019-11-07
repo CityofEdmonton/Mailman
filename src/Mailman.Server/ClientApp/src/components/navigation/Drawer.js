@@ -50,7 +50,11 @@ class ResponsiveDrawer extends React.Component {
     const drawer = (
       <div>
         <ListItem className={classes.listItem} button>
-          <MailmanLink className={classes.linkContents} to='/' onClick={this.props.close}>
+          <MailmanLink
+            className={classes.linkContents}
+            to="/"
+            onClick={this.props.close}
+          >
             <ListItemIcon>
               <DraftsIcon />
             </ListItemIcon>
@@ -58,7 +62,11 @@ class ResponsiveDrawer extends React.Component {
           </MailmanLink>
         </ListItem>
         <ListItem className={classes.listItem} button>
-          <MailmanLink className={classes.linkContents} to='/' onClick={this.props.close}>
+          <MailmanLink
+            className={classes.linkContents}
+            to="/"
+            onClick={this.props.close}
+          >
             <ListItemIcon>
               <ScheduleIcon />
             </ListItemIcon>
@@ -66,7 +74,11 @@ class ResponsiveDrawer extends React.Component {
           </MailmanLink>
         </ListItem>
         <ListItem className={classes.listItem} button>
-          <MailmanLink className={classes.linkContents} to='/' onClick={this.props.close}>
+          <MailmanLink
+            className={classes.linkContents}
+            to="/"
+            onClick={this.props.close}
+          >
             <ListItemIcon>
               <HistoryIcon />
             </ListItemIcon>
@@ -74,7 +86,11 @@ class ResponsiveDrawer extends React.Component {
           </MailmanLink>
         </ListItem>
         <ListItem className={classes.listItem} button>
-          <MailmanLink className={classes.linkContents} to='/settings' onClick={this.props.close}>
+          <MailmanLink
+            className={classes.linkContents}
+            to="/settings"
+            onClick={this.props.close}
+          >
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>

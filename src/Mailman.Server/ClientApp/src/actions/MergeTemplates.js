@@ -22,7 +22,10 @@ export function deleteMergeTemplate(templateId) {
 
   return dispatch => {
     dispatch(requestDeleteMergeTemplate(templateId))
-    return fetch(`${process.env.REACT_APP_BASE_URL}/api/MergeTemplates/Email`, config)
+    return fetch(
+      `${process.env.REACT_APP_BASE_URL}/api/MergeTemplates/Email`,
+      config
+    )
       .then(response => {
         if (response.ok) {
           return response

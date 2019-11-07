@@ -63,7 +63,7 @@ class EditMergeTemplateInner extends Component {
       timestampColumn: {
         name: '<<Mailman Email Timestamp',
         shouldPrefixNameWithMergeTemplateTitle: false,
-        title: '<<Mailman Email Timestamp>>'
+        title: '<<Mailman Email Timestamp>>',
       },
       createdBy: 'Who knows?',
     },
@@ -201,7 +201,11 @@ class EditMergeTemplateInner extends Component {
         className={classes.root}
         autoComplete="off"
       >
-        <Stepper activeStep={activeStep} orientation="vertical" className={classes.stepper}>
+        <Stepper
+          activeStep={activeStep}
+          orientation="vertical"
+          className={classes.stepper}
+        >
           {steps.map((label, index) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
