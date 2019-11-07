@@ -26,8 +26,16 @@ const styles = theme => ({
       position: 'relative',
     },
   },
+  listItem: {
+    padding: 0,
+  },
   linkContents: {
     display: 'flex',
+    width: '100%',
+    paddingTop: 11,
+    paddingBottom: 11,
+    paddingLeft: 16,
+    paddingRight: 16,
   },
 })
 
@@ -41,7 +49,7 @@ class ResponsiveDrawer extends React.Component {
 
     const drawer = (
       <div>
-        <ListItem button>
+        <ListItem className={classes.listItem} button>
           <MailmanLink className={classes.linkContents} to='/' onClick={this.props.close}>
             <ListItemIcon>
               <DraftsIcon />
@@ -49,7 +57,7 @@ class ResponsiveDrawer extends React.Component {
             <ListItemText primary="Templates" />
           </MailmanLink>
         </ListItem>
-        <ListItem button>
+        <ListItem className={classes.listItem} button>
           <MailmanLink className={classes.linkContents} to='/' onClick={this.props.close}>
             <ListItemIcon>
               <ScheduleIcon />
@@ -57,7 +65,7 @@ class ResponsiveDrawer extends React.Component {
             <ListItemText primary="Schedule" />
           </MailmanLink>
         </ListItem>
-        <ListItem button>
+        <ListItem className={classes.listItem} button>
           <MailmanLink className={classes.linkContents} to='/' onClick={this.props.close}>
             <ListItemIcon>
               <HistoryIcon />
@@ -65,7 +73,7 @@ class ResponsiveDrawer extends React.Component {
             <ListItemText primary="History" />
           </MailmanLink>
         </ListItem>
-        <ListItem button>
+        <ListItem className={classes.listItem} button>
           <MailmanLink className={classes.linkContents} to='/settings' onClick={this.props.close}>
             <ListItemIcon>
               <SettingsIcon />
