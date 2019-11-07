@@ -8,7 +8,7 @@ export const RECEIVE_ROW_HEADERS = 'RECEIVE_ROW_HEADERS'
 export function fetchSheetTabs(spreadsheetId) {
   return dispatch => {
     dispatch(requestSheetTabs(spreadsheetId))
-    fetch(`https://localhost:5001/api/sheets/sheetnames/${spreadsheetId}`)
+    fetch(`${process.env.REACT_APP_BASE_URL}/api/sheets/sheetnames/${spreadsheetId}`)
       .then(response => {
         if (response.ok) {
           return response
@@ -53,7 +53,7 @@ export function fetchSheetHeaders(spreadsheetId, tab, row) {
   return dispatch => {
     dispatch(requestSheetHeaders(spreadsheetId, tab, row))
     fetch(
-      `https://localhost:5001/api/sheets/RowValues/${spreadsheetId}/${tab}?rowNumber=${row}`
+      `${process.env.REACT_APP_BASE_URL}/api/sheets/RowValues/${spreadsheetId}/${tab}?rowNumber=${row}`
     )
       .then(response => {
         if (response.ok) {

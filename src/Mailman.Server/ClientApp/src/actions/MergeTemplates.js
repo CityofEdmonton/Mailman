@@ -22,7 +22,7 @@ export function deleteMergeTemplate(templateId) {
 
   return dispatch => {
     dispatch(requestDeleteMergeTemplate(templateId))
-    return fetch('https://localhost:5001/api/MergeTemplates/Email', config)
+    return fetch(`${process.env.REACT_APP_BASE_URL}/api/MergeTemplates/Email`, config)
       .then(response => {
         if (response.ok) {
           return response
@@ -74,7 +74,7 @@ export function fetchSaveMergeTemplate(template) {
 
   return dispatch => {
     dispatch(requestSaveMergeTemplate(template))
-    fetch('https://localhost:5001/api/MergeTemplates/Email', config)
+    fetch(`${process.env.REACT_APP_BASE_URL}/api/MergeTemplates/Email`, config)
       .then(response => {
         if (response.ok) {
           return response
@@ -135,7 +135,7 @@ export function fetchMergeTemplates(spreadsheetId) {
   return dispatch => {
     dispatch(requestMergeTemplates(spreadsheetId))
     return fetch(
-      `https://localhost:5001/api/MergeTemplates/${spreadsheetId}`,
+      `${process.env.REACT_APP_BASE_URL}/api/MergeTemplates/${spreadsheetId}`,
       config
     )
       .then(response => {
