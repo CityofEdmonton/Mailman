@@ -26,6 +26,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.OpenApi.Models;
 
 namespace Mailman.Services
 {
@@ -68,40 +69,17 @@ namespace Mailman.Services
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", 
-                    new Info
+                    new OpenApiInfo
                     {
                         Title = "Mailman API",
                         Description = "API for interacting with Mailman templates and running mail merges",
-                        License = new License()
+                        License = new OpenApiLicense()
                         {
                             Name = "GNU General Public License",
-                            Url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
+                            Url = new Uri("https://www.gnu.org/licenses/gpl-3.0.en.html")
                         },
                         Version = "v1"
                     });
-
-                c.DescribeAllEnumsAsStrings();
-
-                if (modelBaseClasses != null)
-                {
-
-
-                    // from https://stackoverflow.com/questions/34397349/how-do-i-include-subclasses-in-swagger-api-documentation-using-swashbuckle
-                    var documentFilterMethod = typeof(SwaggerGenOptionsExtensions).GetMethod("DocumentFilter");
-                    //var documentFilterMethod = c.GetType().GetMethod("DocumentFilter");
-                    var schemaFilterMethod = typeof(SwaggerGenOptionsExtensions).GetMethod("SchemaFilter");
-                    //var schemaFilterMethod = c.GetType().GetMethod("SchemaFilter");
-                    foreach (var t in modelBaseClasses)
-                    {
-                        documentFilterMethod.MakeGenericMethod(
-                            typeof(PolymorphismDocumentFilter<>).MakeGenericType(t))
-                            .Invoke(null, new object[] { c, Array.Empty<object>() });
-
-                        schemaFilterMethod.MakeGenericMethod(
-                            typeof(PolymorphismSchemaFilter<>).MakeGenericType(t))
-                            .Invoke(c, new object[] { c, Array.Empty<object>() });
-                    }
-                }
 
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetEntryAssembly().GetName().Name}.xml";
@@ -339,77 +317,5 @@ namespace Mailman.Services
             return string.Equals(request.Query["X-Requested-With"], "XMLHttpRequest", StringComparison.Ordinal) ||
                 string.Equals(request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.Ordinal);
         }	
-
-        #region Helper classes
-        private class PolymorphismDocumentFilter<T> : IDocumentFilter
-        {
-            private static void RegisterSubClasses(ISchemaRegistry schemaRegistry, Type abstractType)
-            {
-                const string discriminatorName = "type";
-
-                var parentSchema = schemaRegistry.Definitions[abstractType.Name];
-
-                //set up a discriminator property (it must be required)
-                parentSchema.Discriminator = discriminatorName;
-                parentSchema.Required = new List<string> { discriminatorName };
-
-                if (!parentSchema.Properties.ContainsKey(discriminatorName))
-                    parentSchema.Properties.Add(discriminatorName, new Schema { Type = "string" });
-
-                //register all subclasses
-                var derivedTypes = abstractType.Assembly
-                                               .GetTypes()
-                                               .Where(x => abstractType != x && abstractType.IsAssignableFrom(x));
-
-                foreach (var item in derivedTypes)
-                    schemaRegistry.GetOrRegister(item);
-            }
-
-            public void Apply(SwaggerDocument swaggerDoc, DocumentFilterContext context)
-            {
-                RegisterSubClasses(context.SchemaRegistry, typeof(T));
-            }
-        }
-
-        private class PolymorphismSchemaFilter<T> : ISchemaFilter
-        {
-            private readonly Lazy<HashSet<Type>> derivedTypes = new Lazy<HashSet<Type>>(Init);
-
-            private static HashSet<Type> Init()
-            {
-                var abstractType = typeof(T);
-                var dTypes = abstractType.Assembly
-                                         .GetTypes()
-                                         .Where(x => abstractType != x && abstractType.IsAssignableFrom(x));
-
-                var result = new HashSet<Type>();
-
-                foreach (var item in dTypes)
-                    result.Add(item);
-
-                return result;
-            }
-
-            public void Apply(Schema model, SchemaFilterContext context)
-            {
-                if (!derivedTypes.Value.Contains(context.SystemType)) return;
-
-                var clonedSchema = new Schema
-                {
-                    Properties = model.Properties,
-                    Type = model.Type,
-                    Required = model.Required
-                };
-
-                //schemaRegistry.Definitions[typeof(T).Name]; does not work correctly in SwashBuckle
-                var parentSchema = new Schema { Ref = "#/definitions/" + typeof(T).Name };
-
-                model.AllOf = new List<Schema> { parentSchema, clonedSchema };
-
-                //reset properties for they are included in allOf, should be null but code does not handle it
-                model.Properties = new Dictionary<string, Schema>();
-            }
-        }
-#endregion
     }
 }

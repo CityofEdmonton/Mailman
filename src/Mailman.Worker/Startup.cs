@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -27,7 +28,7 @@ namespace Mailman.Worker
         /// <param name="configuration"></param>
         /// <param name="hostingEnvironment"></param>
         public Startup(IConfiguration configuration,
-            IHostingEnvironment hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment)
         {
             Configuration = configuration;
             HostingEnvironment = hostingEnvironment;
@@ -42,7 +43,7 @@ namespace Mailman.Worker
         /// <summary>
         /// Provides information about the web hosting environment an application is running in. 
         /// </summary>
-        public IHostingEnvironment HostingEnvironment { get; }
+        public IWebHostEnvironment HostingEnvironment { get; }
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -53,7 +54,7 @@ namespace Mailman.Worker
         public void ConfigureServices(IServiceCollection services)
         {
             // Add Automapper
-            services.AddAutoMapper();
+            services.AddAutoMapper(System.Reflection.Assembly.GetEntryAssembly());
 
             services.ConfigureLogging("MailMan Server", Configuration);
 
@@ -72,7 +73,7 @@ namespace Mailman.Worker
                 });
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc();
 
             // Add Swagger
             services.ConfigureSwagger();
@@ -85,7 +86,7 @@ namespace Mailman.Worker
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -102,7 +103,13 @@ namespace Mailman.Worker
                 c.RoutePrefix = "api/docs";
             });
 
-            app.UseMvc();
+            app.UseRouting();
+
+            app.UseMailmanAuthentication();
+
+            app.UseEndpoints(configure => 
+            {
+            });
 
             app.EnsureMailmanDbCreated();
         }

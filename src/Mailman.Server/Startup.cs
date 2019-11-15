@@ -1,20 +1,16 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Mailman.Services;
 using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using AutoMapper;
-using Swashbuckle.AspNetCore.Swagger;
-using System.Reflection;
-using System.IO;
 using Mailman.Server.Hubs;
-using Mailman.Server;
 using Mailman.Server.Controllers;
 
 namespace Mailman
@@ -30,7 +26,7 @@ namespace Mailman
         /// <param name="configuration"></param>
         /// <param name="hostingEnvironment"></param>
         public Startup(IConfiguration configuration,
-            IHostingEnvironment hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment)
         {
             Configuration = configuration;
             HostingEnvironment = hostingEnvironment;
@@ -45,7 +41,7 @@ namespace Mailman
         /// <summary>
         /// Provides information about the web hosting environment an application is running in. 
         /// </summary>
-        public IHostingEnvironment HostingEnvironment { get; }
+        public IWebHostEnvironment HostingEnvironment { get; }
 
         /// <summary>
         /// Configures the services required by Mailman.
@@ -54,7 +50,7 @@ namespace Mailman
         public void ConfigureServices(IServiceCollection services)
         {
             // Add Automapper
-            services.AddAutoMapper();
+            services.AddAutoMapper(System.Reflection.Assembly.GetEntryAssembly());
 
             services.ConfigureLogging("MailMan Server", Configuration);
 
@@ -73,7 +69,7 @@ namespace Mailman
                     options.InstrumentationKey = applicationInsightsInstrumentationKey;
                 });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -95,7 +91,7 @@ namespace Mailman
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -120,18 +116,20 @@ namespace Mailman
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseRouting();
+
             app.UseMailmanAuthentication();
             app.UseSpaStaticFiles();
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<MailmanHub>("/hub");
-            });
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints => 
             {
-                routes.MapRoute(
+                app.UseRouting();
+                endpoints.MapHub<MailmanHub>("/hub");
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    pattern: "{controller}/{action=Index}/{id?}"
+                );
             });
 
             app.UseSpa(spa =>
