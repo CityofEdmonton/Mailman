@@ -105,9 +105,9 @@ namespace Mailman.Services
             await _mergeTemplateContext.SaveChangesAsync(cancellationToken);
         }
 
-        public Task<MergeTemplate> GetMergeTemplate(string id)
+        public async Task<MergeTemplate> GetMergeTemplate(string id)
         {
-            return _mergeTemplateContext.MergeTemplates.FindAsync(id);
+            return await _mergeTemplateContext.MergeTemplates.FindAsync(id);
         }
     }
 }

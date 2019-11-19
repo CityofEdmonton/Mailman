@@ -52,7 +52,6 @@ namespace Mailman.Server.Hubs
         /// <summary>
         /// Registers a signed in user with a unique ID.
         /// </summary>
-        /// <param name="id">The unique identifier of the Merge Template</param>
         /// <returns></returns>
         public String RegisterConnection()
         {

@@ -2,7 +2,7 @@
 # From the parent folder enter:
 # docker image build -t mailman:ui -f ./Dockerfile.UI .
 
-FROM microsoft/dotnet:2.1-sdk AS builder
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS builder
 ARG Configuration=Debug
 
 # set up node
@@ -20,6 +20,6 @@ COPY ./src/ .
 WORKDIR /usr/src/mailman/Mailman.Server
 RUN dotnet publish --configuration $Configuration
 
-FROM nginx:1.15-alpine
+FROM nginx:1.17-alpine
 ARG Configuration=Debug
 COPY --from=builder /usr/src/mailman/Mailman.Server/bin/$Configuration/netcoreapp2.1/publish/ClientApp/build  /usr/share/nginx/html

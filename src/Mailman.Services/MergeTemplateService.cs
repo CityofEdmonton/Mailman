@@ -149,7 +149,7 @@ namespace Mailman.Services
 
             return _tagRegex.Replace(template, match =>
             {
-                foreach (var m in match.Groups.Skip(1))
+                foreach (var m in ((IEnumerable<Group>)match.Groups).Skip(1))
                 {
                     if (m.Success)
                     {

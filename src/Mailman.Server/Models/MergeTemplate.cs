@@ -56,6 +56,9 @@ namespace Mailman.Server.Models
         }
 
         private string spreadSheetId;
+        /// <summary>
+        /// The Google Sheets spreadsheet Id
+        /// </summary>
         [Required]
         public string SpreadSheetId
         {

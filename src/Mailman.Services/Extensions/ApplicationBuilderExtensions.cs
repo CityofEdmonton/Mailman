@@ -16,6 +16,7 @@ namespace Mailman.Services
         public static void UseMailmanAuthentication(this IApplicationBuilder app)
         {
             app.UseAuthentication();
+            app.UseAuthorization();
             app.Use(async (context, next) =>
             {
                 Task ensureTokensUpdatedTask;

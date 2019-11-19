@@ -2,7 +2,7 @@
 # From the parent folder enter:
 # docker image build -t mailman:server -f ./Dockerfile.Server .
 
-FROM microsoft/dotnet:2.1-sdk AS builder
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS builder
 ARG Configuration=Debug
 ARG TlsPrivateKey=Str0ngPassw0rd!!
 
@@ -27,7 +27,7 @@ RUN dotnet publish --configuration $Configuration
 #Remove the React application - it's not needed.
 RUN rm -r /usr/src/mailman/Mailman.Server/bin/$Configuration/netcoreapp2.1/publish/ClientApp
 
-FROM microsoft/dotnet:2.1.5-aspnetcore-runtime-alpine
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-alpine
 ARG Configuration=Debug
 ARG TlsPrivateKey=Str0ngPassw0rd!!
 WORKDIR /app
