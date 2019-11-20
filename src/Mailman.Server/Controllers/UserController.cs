@@ -1,5 +1,7 @@
 using Mailman.Services.Security;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,11 +15,15 @@ namespace Mailman.Server.Controllers
     /// Controller for managing users.
     /// </summary>
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = AuthSchemes)]
     [Produces("application/json")]
     [Route("api/[controller]")]
     public class UserController : Controller
     {
+        private const string AuthSchemes =
+            CookieAuthenticationDefaults.AuthenticationScheme + "," +
+            JwtBearerDefaults.AuthenticationScheme;
+
         /// <summary>
         /// Gets the currently authenticated user.
         /// </summary>
