@@ -116,13 +116,7 @@ namespace Mailman.Server.Controllers
         [Authorize]
         public IActionResult Jwt()
         {
-            return Ok(_jwtSigner.CreateJwtToken(new Claim[]
-            {
-                new Claim("email", User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value),
-                new Claim("name", User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value),
-                new Claim("givenName", User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value),
-                new Claim("surname", User.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value)
-            }));
+            return Ok(_jwtSigner.CreateJwtToken(User.Claims));
         }
     }
 }
