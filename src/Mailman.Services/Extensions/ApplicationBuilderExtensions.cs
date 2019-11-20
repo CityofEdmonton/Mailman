@@ -1,6 +1,9 @@
 ﻿using Mailman.Services.Data;
 using Mailman.Services.Security;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,12 +23,24 @@ namespace Mailman.Services
             app.Use(async (context, next) =>
             {
                 Task ensureTokensUpdatedTask;
+                bool isOK = true;
 
                 bool? isAuthenticated = context.User.Identity?.IsAuthenticated;
                 if (isAuthenticated.HasValue && isAuthenticated.Value)
                 {
                     var authService = context.RequestServices.GetRequiredService<IAuthenticationService>();
-                    var auth = await authService.AuthenticateAsync(context, null);
+                    var auth = await authService.AuthenticateAsync(context, CookieAuthenticationDefaults.AuthenticationScheme);
+                    if (!auth.Succeeded)
+                    {
+                        auth = await authService.AuthenticateAsync(context, JwtBearerDefaults.AuthenticationScheme);
+                    }
+
+                    if (!auth.Succeeded)
+                    {
+                        context.Response.StatusCode = 500;
+                        await context.Response.WriteAsync("Failed updating tokens.");
+                        isOK = false;
+                    }
 
                     // we'll update the tokens asynchronously so as not to slow down the main asp.net pipeline
                     ensureTokensUpdatedTask = context.RequestServices
@@ -35,7 +50,10 @@ namespace Mailman.Services
                 else
                     ensureTokensUpdatedTask = Task.CompletedTask;
 
-                await Task.WhenAll(ensureTokensUpdatedTask, next.Invoke());
+                if (isOK)
+                {
+                    await Task.WhenAll(ensureTokensUpdatedTask, next.Invoke());
+                }
             });
         }
 
