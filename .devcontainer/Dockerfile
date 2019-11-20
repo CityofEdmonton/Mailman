@@ -32,7 +32,6 @@ RUN apt-get update \
     # Verify git, process tools, lsb-release (common in install instructions for CLIs) installed
     && apt-get -y install git iproute2 procps apt-transport-https gnupg2 curl lsb-release \
     #
-    && mkdir /usr/local/share/dotnet/sdk/NuGetFallbackFolder \
     # Create a non-root user to use if preferred - see https://aka.ms/vscode-remote/containers/non-root-user.
     && groupadd --gid $USER_GID $USERNAME \
     && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME \
@@ -71,6 +70,7 @@ RUN apt-get update \
         && apt-get install -y azure-cli; \
     fi \
     #
+    && mkdir -p /usr/local/share/dotnet/sdk/NuGetFallbackFolder \
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
