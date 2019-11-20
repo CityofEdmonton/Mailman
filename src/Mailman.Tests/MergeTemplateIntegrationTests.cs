@@ -5,7 +5,6 @@ using Mailman.Server.Hubs;
 using Mailman.Server.Models;
 using Mailman.Services;
 using Mailman.Services.Google;
-using Mailman.Worker.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;

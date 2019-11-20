@@ -24,7 +24,7 @@ namespace Mailman.Server.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
-  
+
     public class MergeTemplatesController : ControllerBase
     {
         private readonly IMergeTemplateRepository _mergeTemplateRepository;
@@ -41,8 +41,6 @@ namespace Mailman.Server.Controllers
         /// <param name="servicesProxy"></param>
         /// <param name="mapper">Automapper instance</param>
         /// <param name="logger">Serilog logger</param>
-     
-
         public MergeTemplatesController(
             IMergeTemplateRepository mergeTemplateRepository,
             IHubContext<MailmanHub> mailmanHub,
@@ -98,19 +96,20 @@ namespace Mailman.Server.Controllers
         public async Task<IActionResult> PostMergeTemplate([FromBody] EmailMergeTemplate mergeTemplateData)
         {
             EnsureArg.IsNotNull(mergeTemplateData);
-            
+
             if (!ModelState.IsValid)
             {
                 _logger.Warning("Unable to create MergeTemplate because model state is not valid: {ModelState}", ModelState);
                 return BadRequest(ModelState);
             }
 
-            var newMergeTemplate = _mapper.Map<Mailman.Services.Data.MergeTemplate> (mergeTemplateData); 
+            var newMergeTemplate = _mapper.Map<Mailman.Services.Data.MergeTemplate>(mergeTemplateData);
             try
             {
                 await _mergeTemplateRepository.AddMergeTemplateAsync(newMergeTemplate);
             }
-            catch (Exception e){
+            catch (Exception e)
+            {
                 _logger.Error(e, "Unable to save the data to datbase");
                 throw e;
             }
@@ -127,23 +126,24 @@ namespace Mailman.Server.Controllers
         public async Task<IActionResult> Put([FromBody] EmailMergeTemplate mergeTemplateData)
         {
             EnsureArg.IsNotNull(mergeTemplateData);
-            
+
             if (!ModelState.IsValid)
             {
                 _logger.Warning("Unable to update MergeTemplate because model state is not valid: {ModelState}", ModelState);
                 return BadRequest(ModelState);
             }
-            var newMergeTemplate = _mapper.Map<Mailman.Services.Data.MergeTemplate> (mergeTemplateData); 
+            var newMergeTemplate = _mapper.Map<Mailman.Services.Data.MergeTemplate>(mergeTemplateData);
             try
             {
                 await _mergeTemplateRepository.UpdateMergeTemplateAsync(newMergeTemplate);
             }
-            catch (Exception e){
+            catch (Exception e)
+            {
                 _logger.Error(e, "Unable to save the data to datbase");
                 throw e;
             }
-    
-             return Ok(newMergeTemplate);
+
+            return Ok(newMergeTemplate);
         }
 
         // DELETE: api/ApiWithActions/5
@@ -153,9 +153,9 @@ namespace Mailman.Server.Controllers
         /// <returns></returns>
         [HttpDelete("Email")]
         public async Task<IActionResult> Delete([FromBody]RunMailMergeOptions options)
-        
+
         {
-            
+
             if (!ModelState.IsValid)
             {
                 _logger.Warning("Unable to delete MergeTemplate because model state is not valid: {ModelState}", ModelState);
@@ -166,13 +166,14 @@ namespace Mailman.Server.Controllers
             {
                 await _mergeTemplateRepository.DeleteMergeTemplateAsync(oldMergeTemplate);
             }
-            catch (Exception e){
+            catch (Exception e)
+            {
                 _logger.Error(e, "Unable to save the data to datbase");
                 throw e;
             }
-    
-             return Ok(oldMergeTemplate);
-        }        
+
+            return Ok(oldMergeTemplate);
+        }
 
         /// <summary>
         /// Starts a new mail merge in a new worker process and returns immediately
@@ -195,82 +196,9 @@ namespace Mailman.Server.Controllers
 
             var mergeTemplate = await _mergeTemplateRepository.GetMergeTemplate(options.MergeTemplateId);
             if (mergeTemplate == null)
-                return NotFound($"Merge template with id {options.MergeTemplateId} not found");            
-
-            await _servicesProxy.StartMailMergeAsync(options, cancellationToken);
-            return Ok();
-        }
-
-        /// <summary>
-        /// Starts a new mail merge and blocks until the merge is complete
-        /// </summary>
-        /// <param name="options">
-        /// Parameters to start a mail merge, 
-        /// including MergeTemplateId and optionally a SignalR connectionId 
-        /// for proress notifications on the merge.
-        /// </param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        [HttpPost("run")]
-        public async Task<IActionResult> RunMailMerge([FromBody]RunMailMergeOptions options,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var mergeTemplate = await _mergeTemplateRepository.GetMergeTemplate(options.MergeTemplateId);
-            if (mergeTemplate == null)
                 return NotFound($"Merge template with id {options.MergeTemplateId} not found");
 
-            var result = await _servicesProxy.RunMailMergeAsync(options, cancellationToken);
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Callback for MailMan workers to update clients of progress
-        /// </summary>
-        /// <param name="progress">The amount of progress made on the mail merge</param>
-        /// <returns></returns>
-        [HttpPost("run/updated")]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<IActionResult> NotifyMailMergeUpdated([FromBody]MailMergeProgress progress)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            //TODO; ensure only the "workers" can call this
-            if (!string.IsNullOrWhiteSpace(progress.ConnectionId))
-            {
-                await _mailmanHub.Clients.Clients(progress.ConnectionId)
-                    .SendAsync("mailMergeProgressUpdated", progress);
-            }
-            return Ok();
-        }
-
-        /// <summary>
-        /// Callback for MailMan workers to notify clients a mail merge has completed
-        /// </summary>
-        /// <param name="progress">A <see cref="MailMergeProgress"/> object with the merge results</param>
-        /// <returns></returns>
-        [HttpPost("run/completed")]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<IActionResult> NotifyMailMergeCompleted([FromBody]MailMergeProgress progress)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            //TODO; ensure only the "workers" can call this
-            if (!string.IsNullOrWhiteSpace(progress.ConnectionId))
-            {
-                await _mailmanHub.Clients.Clients(progress.ConnectionId)
-                    .SendAsync("mailMergeCompleted", progress);
-            }
+            _servicesProxy.StartMailMerge(options);
             return Ok();
         }
     }

@@ -10,6 +10,7 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using AutoMapper;
+using Mailman.Server;
 using Mailman.Server.Hubs;
 using Mailman.Server.Controllers;
 
@@ -83,6 +84,30 @@ namespace Mailman
             // Add SignalR
             services.AddSignalR();
             services.AddCors();
+
+            // Add Wyrm
+            ConfigureWyrm(services);
+        }
+
+        private void ConfigureWyrm(IServiceCollection services)
+        {
+            string rabbitmqHost = Environment.GetEnvironmentVariable("RABBIT_URL");
+            if (string.IsNullOrWhiteSpace(rabbitmqHost))
+            {
+                rabbitmqHost = Configuration["RabbitMq:Host"];
+            }
+            if (string.IsNullOrWhiteSpace(rabbitmqHost))
+            {
+                // default to name in docker-compose file
+                rabbitmqHost = "rabbitmq";
+            }
+            services.AddWyrm(options => 
+            {
+                options.UseRabbitMq(rabbitmqHost);
+
+                options.AddEventHandler<MergeTemplateNotificationService>(); 
+            });
+
         }
 
 

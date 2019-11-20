@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Mailman.Services;
+using Mailman.Worker;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -28,7 +29,7 @@ namespace Mailman.Worker
         /// <param name="configuration"></param>
         /// <param name="hostingEnvironment"></param>
         public Startup(IConfiguration configuration,
-            IWebHostEnvironment hostingEnvironment)
+            IHostEnvironment hostingEnvironment)
         {
             Configuration = configuration;
             HostingEnvironment = hostingEnvironment;
@@ -43,7 +44,7 @@ namespace Mailman.Worker
         /// <summary>
         /// Provides information about the web hosting environment an application is running in. 
         /// </summary>
-        public IWebHostEnvironment HostingEnvironment { get; }
+        public IHostEnvironment HostingEnvironment { get; }
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -78,40 +79,29 @@ namespace Mailman.Worker
             // Add Swagger
             services.ConfigureSwagger();
             
+            // Add Wyrm
+            ConfigureWyrm(services);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        /// <summary>
-        /// Configures the ASP.NET web application. Standard ASP.NET stuff.
-        /// </summary>
-        /// <param name="app"></param>
-        /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        private void ConfigureWyrm(IServiceCollection services)
         {
-            if (env.IsDevelopment())
+            string rabbitmqHost = Environment.GetEnvironmentVariable("RABBIT_URL");
+            if (string.IsNullOrWhiteSpace(rabbitmqHost))
             {
-                app.UseDeveloperExceptionPage();
+                rabbitmqHost = Configuration["RabbitMq:Host"];
             }
-
-            app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
+            if (string.IsNullOrWhiteSpace(rabbitmqHost))
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                c.RoutePrefix = "api/docs";
+                // default to name in docker-compose file
+                rabbitmqHost = "rabbitmq";
+            }
+            services.AddWyrm(options => 
+            {
+                options.UseRabbitMq(rabbitmqHost);
+
+                options.AddEventHandler<StartMergeTemplateService>(); 
             });
 
-            app.UseRouting();
-
-            app.UseMailmanAuthentication();
-
-            app.UseEndpoints(configure => 
-            {
-            });
-
-            app.EnsureMailmanDbCreated();
-        }
+        }        
     }
 }
