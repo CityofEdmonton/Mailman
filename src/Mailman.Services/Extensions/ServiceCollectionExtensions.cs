@@ -142,10 +142,40 @@ namespace Mailman.Services
       services.AddScoped<IMergeTemplateService, MergeTemplateService>();
 
       services.AddMailMergeProxyServices(configuration);
+      services.AddJwtServices(configuration);
 
       return services;
     }
 
+        private static string GetJwtAudience(IConfiguration configuration)
+        {
+            string jwtAudience = Environment.GetEnvironmentVariable("MAILMAN_JWT_AUDIENCE");
+            if (string.IsNullOrWhiteSpace(jwtAudience) && configuration != null)
+            {
+                jwtAudience = configuration["Security:Audience"];
+            }
+
+            return jwtAudience;
+        }
+
+        private static string GetJwtIssuer(IConfiguration configuration)
+        {
+            string jwtIssuer = Environment.GetEnvironmentVariable("MAILMAN_JWT_ISSUER");
+            if (string.IsNullOrWhiteSpace(jwtIssuer) && configuration != null)
+            {
+                jwtIssuer = configuration["Security:Issuer"];
+            }
+
+            return jwtIssuer;
+        }
+
+        private static string GetMailmanWorkerServiceUrl(IConfiguration configuration)
+        {
+            string workerUrl = Environment.GetEnvironmentVariable("MAILMAN_WORKER_URL");
+            if (string.IsNullOrWhiteSpace(workerUrl) && configuration != null)
+            {
+                workerUrl = configuration["WorkerServiceUrl"];
+            }
 
 
     private static string GetAuthKey(IConfiguration configuration)
@@ -256,9 +286,35 @@ namespace Mailman.Services
             return Task.CompletedTask;
           };
       });
-
       return authenticationBuilder;
     }
+
+        internal static IServiceCollection AddJwtServices(this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            string jwtAudience = GetJwtAudience(configuration);
+            string jwtIssuer = GetJwtIssuer(configuration);
+            string authKey = GetAuthKey(configuration);
+
+            services.Configure<JwtOptions>(x =>
+            {
+                x.Issuer = jwtIssuer;
+                x.Audience = jwtAudience;
+                x.AuthKey = authKey;
+            });
+            services.AddScoped<IJwtSigner, JwtSigner>();
+            return services;
+        }
+
+        internal static AuthenticationBuilder AddCookie(this AuthenticationBuilder authenticationBuilder, IConfiguration configuration)
+        {
+           authenticationBuilder.AddCookie(options =>
+           {
+                options.Cookie.SameSite = SameSiteMode.None;
+           });
+
+            return authenticationBuilder;
+        }
 
     internal static void ConfureGoogleOAuthTokenService(this IServiceCollection services, IConfiguration configuration)
     {

@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Mailman.Server.Hubs;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Mailman.Server.Controllers
 {
@@ -23,13 +24,15 @@ namespace Mailman.Server.Controllers
     public class LoginController : Controller
     {
         private readonly IHubContext<MailmanHub> _hub;
+        private readonly IJwtSigner _jwtSigner;
 
         /// <summary>
         /// Creates a new instance of LoginController.
         /// </summary>
-        public LoginController(IHubContext<MailmanHub> hub)
+        public LoginController(IHubContext<MailmanHub> hub, IJwtSigner signer)
         {
             _hub = hub;
+            _jwtSigner = signer;
         }
 
         /// <summary>
@@ -94,6 +97,26 @@ namespace Mailman.Server.Controllers
                 Content = "<html><body>\n<script>\nwindow.close();</script>\n</body></html>",
                 ContentType = "text/html"
             };
+        }
+
+        /// <summary>
+        /// Retrieves a JWT for a user that is already authenticated. The
+        /// flow would look something like this: 
+        /// 1. Follow standard auth flow: a cookie is set.
+        /// 2. Hit this endpoint: a JWT is returned.
+        /// In future requests, you could use an Authorization header with
+        /// a value of Bearer {JWT_HERE}
+        /// </summary>
+        /// <returns>A JWT string.</returns>
+        /// <remarks>
+        /// This action can't be used to sign in or out. It just grants a 
+        /// JWT to an already authenticated user.
+        /// </remarks>
+        [HttpGet("[action]")]
+        [Authorize]
+        public IActionResult Jwt()
+        {
+            return Ok(_jwtSigner.CreateJwtToken(User.Claims));
         }
     }
 }

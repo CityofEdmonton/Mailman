@@ -10,6 +10,8 @@ using Mailman.Server.Models;
 using Mailman.Services;
 using Mailman.Services.Google;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json.Linq;
@@ -20,13 +22,16 @@ namespace Mailman.Server.Controllers
     /// <summary>
     /// Controller for Merge Templates.
     /// </summary>
-    [Authorize]
+    [Authorize(AuthenticationSchemes = AuthSchemes)]
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
 
     public class MergeTemplatesController : ControllerBase
     {
+        private const string AuthSchemes =
+            CookieAuthenticationDefaults.AuthenticationScheme + "," +
+            JwtBearerDefaults.AuthenticationScheme;
         private readonly IMergeTemplateRepository _mergeTemplateRepository;
         private readonly IHubContext<MailmanHub> _mailmanHub;
         private readonly IMailmanServicesProxy _servicesProxy;

@@ -1,8 +1,9 @@
 ﻿using Google.Apis.Sheets.v4.Data;
 using Mailman.Services;
 using Mailman.Services.Google;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,13 @@ namespace Mailman.Server.Controllers
     /// <summary>
     /// Controller for interacting with Google Sheets
     /// </summary>
-    [Authorize]
+    [Authorize(AuthenticationSchemes = AuthSchemes)]
     [Route("api/[controller]")]
     public class SheetsController : Controller
     {
+        private const string AuthSchemes =
+            CookieAuthenticationDefaults.AuthenticationScheme + "," +
+            JwtBearerDefaults.AuthenticationScheme;
         private readonly ISheetsService _sheetsService;
 
         /// <summary>
