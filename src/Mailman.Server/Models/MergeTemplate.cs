@@ -14,9 +14,21 @@ namespace Mailman.Server.Models
     public class MergeTemplate
     {
         /// <summary>
-        /// Identifier for the merge tempalte
+        /// Identifier for the merge template
         /// </summary>
-        public string Id { get; set; }
+        public string Id
+        { 
+            get
+            {
+                if (_id == null)
+                {
+                    _id = Guid.NewGuid().ToString();
+                }
+                return _id;
+            }
+            set { _id = value; }
+        }
+        private string _id;
         
         /// <summary>
         /// The type of merge template. 
