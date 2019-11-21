@@ -93,15 +93,12 @@ namespace Mailman.Services.Data
                     throw new ArgumentOutOfRangeException(nameof(CreatedDateUtc), value, "CreatedDateUtc cannot be in the future");
             }            
         }
-        //public string Version { get; set; }
 
         public int HeaderRowNumber { get; set; }
 
         public TimestampColumn TimestampColumn { get; set; }
 
         public string Conditional { get; set; }
-        //public RepeaterType Repeater { get; set; }
-
 
         protected void Initialize(string id, string spreadsheetId, string serialized)
         {

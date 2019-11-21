@@ -70,10 +70,13 @@ RUN apt-get update \
         && apt-get install -y azure-cli; \
     fi \
     #
+    && mkdir -p /usr/local/share/dotnet/sdk/NuGetFallbackFolder \
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
+
+EXPOSE 5000-5001
 
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=
