@@ -65,7 +65,6 @@ namespace Mailman.Tests
             mergeTemplate1.SheetName.Should().Be("Data");
             mergeTemplate1.HeaderRowNumber.Should().Be(1);
             mergeTemplate1.Conditional.Should().BeNull();
-            mergeTemplate1.Repeater.Should().Be(RepeaterType.Off);
             mergeTemplate1.TimestampColumn.Should().NotBeNull();
             mergeTemplate1.TimestampColumn.Name.Should().Be("<<Mailman test2 Timestamp>>");
             mergeTemplate1.TimestampColumn.ShouldPrefixNameWithMergeTemplateTitle.Should().BeTrue();
