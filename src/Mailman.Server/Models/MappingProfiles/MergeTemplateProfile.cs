@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Mailman.Server.Models.MappingProfiles
 {
     /// <summary>
-    /// Autmapper profile fo the Server.Models.Mergetemplate dto
+    /// Automapper profile for the Server.Models.MergeTemplate dto
     /// </summary>
     public class MergeTemplateProfile : Profile
     {
@@ -17,11 +17,17 @@ namespace Mailman.Server.Models.MappingProfiles
         public MergeTemplateProfile()
         {
             CreateMap<Services.Data.MergeTemplate, MergeTemplate>()
-                .Include<Services.Data.EmailMergeTemplate, EmailMergeTemplate>();
+                .IncludeAllDerived();
             CreateMap<MergeTemplate, Services.Data.MergeTemplate>()
-                .Include<EmailMergeTemplate, Services.Data.EmailMergeTemplate>();
+                .IncludeAllDerived();
             CreateMap<Services.Data.EmailMergeTemplate, EmailMergeTemplate>();
             CreateMap<EmailMergeTemplate, Services.Data.EmailMergeTemplate>();
+            CreateMap<EmailTemplate, Services.Data.EmailTemplate>();
+            CreateMap<Services.Data.EmailTemplate, EmailTemplate>();
+            CreateMap<TimestampColumn, Services.Data.TimestampColumn>();
+            CreateMap<Services.Data.TimestampColumn, TimestampColumn>();
+            CreateMap<MergeTemplateType, Services.Data.MergeTemplateType>();
+            CreateMap<Services.Data.MergeTemplateType, MergeTemplateType>();
         }
     }
 }
