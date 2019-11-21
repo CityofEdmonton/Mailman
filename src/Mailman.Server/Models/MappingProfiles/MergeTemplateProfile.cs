@@ -26,8 +26,6 @@ namespace Mailman.Server.Models.MappingProfiles
             CreateMap<Services.Data.EmailTemplate, EmailTemplate>();
             CreateMap<TimestampColumn, Services.Data.TimestampColumn>();
             CreateMap<Services.Data.TimestampColumn, TimestampColumn>();
-            CreateMap<MergeTemplateType, Services.Data.MergeTemplateType>();
-            CreateMap<Services.Data.MergeTemplateType, MergeTemplateType>();
         }
     }
 }

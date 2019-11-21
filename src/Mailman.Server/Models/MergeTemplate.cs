@@ -85,12 +85,6 @@ namespace Mailman.Server.Models
         }
 
         /// <summary>
-        /// The version of Mailman at the time this merge 
-        /// template was last saved.
-        /// </summary>
-        public string Version { get; set; }
-
-        /// <summary>
         /// The title of the template, for display purposes.
         /// </summary>
         [Required]
@@ -120,14 +114,5 @@ namespace Mailman.Server.Models
         /// This condition is evaluated for every row.
         /// </summary>
         public string Conditional { get; set; }
-
-        /// <summary>
-        /// Specifies if merges run manually (Off),
-        /// time based (hourly or some time period),
-        /// or when a form is submitted to the sheet.
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public RepeaterType Repeater { get; set; }
-
     }
 }
